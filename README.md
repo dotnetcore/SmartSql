@@ -97,6 +97,12 @@
 </SmartSqlMap>
 
 ```
+## 安装
+```
+Install-Package SmartSql
+
+Install-Package SmartSql.Logging.NLog
+```
 ## Codes
 ### Query
 ``` CSharp
