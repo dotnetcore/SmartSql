@@ -59,6 +59,8 @@
   <LoggerAdapter Name="NLoggerAdapter" Type="SmartSql.Logging.Impl.NLoggerAdapter,SmartSql.Logging.NLog"/>
 </SmartSqlLog>
 ```
+![日志截图](http://git.oschina.net/uploads/images/2017/0404/010249_b39ab723_384561.png "在这里输入图片标题")
+
 ### 3.3 SmartSqlMap
 ``` xml
 <?xml version="1.0" encoding="utf-8" ?>
