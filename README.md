@@ -1,6 +1,6 @@
 # SmartSql
 ## 0. Why ?
- - MyBatis.Net 不再更新。
+ - 使用过 MyBaits.Net 的应该都
  - 拥抱 跨平台、.NET Core，是时候了。 
  - 基于Dapper，不再重复造轮子。Dapper性能你懂的。
 
@@ -8,7 +8,7 @@
  - SmartSql = Dapper + MyBatis 
  - TargetFramework: .NETStandard,Version=v1.4
 
-## 2. 主要特性
+## 2. 主要特性 (√ 为已完成，未打 √ 为计划特性)
 - 1 ORM 
   - 1.1 Sync √
   - 1.2 Async √
@@ -33,7 +33,7 @@
 
 ## 3. 配置
 
-### 1 SmartSqlMapConfig
+### 3.1 SmartSqlMapConfig
 ``` Xml
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
@@ -52,14 +52,14 @@
   </SmartSqlMaps>
 </SmartSqlMapConfig>
 ``` 
-### 2 Logging
+### 3.2 Logging
 ``` xml
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlLog xmlns="http://SmartSql.net/schemas/SmartSqlLog.xsd">
   <LoggerAdapter Name="NLoggerAdapter" Type="SmartSql.Logging.Impl.NLoggerAdapter,SmartSql.Logging.NLog"/>
 </SmartSqlLog>
 ```
-### 3 SmartSqlMap
+### 3.3 SmartSqlMap
 ``` xml
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMap Scope="T_Test"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
@@ -96,16 +96,6 @@
 </SmartSqlMap>
 
 ```
-
-## 安装
-### NPM
-``` CSharp
-Install-Package SmartSql
-
-Install-Package SmartSql.Logging.NLog
-
-```
-
 ## Codes
 ### Query
 ``` CSharp
