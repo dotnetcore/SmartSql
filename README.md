@@ -10,24 +10,24 @@
 
 ## 2. 主要特性
 - 1 ORM 
- - 1.1 Sync √
- - 1.2 Async √
+  - 1.1 Sync √
+  - 1.2 Async √
 - 2 XmlConfig & XmlStatement -> Sql  √
- - 2.1 SmartSqlMapConfig & SmartSqlMap √  (是的，你猜对了，和MyBaits一样，通过XML配置分离SQL。)
- - 2.2 Config Hot Update ->ConfigWatcher & Reload √ (配置文件热更新：当你需要修改Sql的时候，直接修改SqlMap配置文件，保存即可。)
+  - 2.1 SmartSqlMapConfig & SmartSqlMap √  (是的，你猜对了，和MyBaits一样，通过XML配置分离SQL。)
+  - 2.2 Config Hot Update ->ConfigWatcher & Reload √ (配置文件热更新：当你需要修改Sql的时候，直接修改SqlMap配置文件，保存即可。)
 - 3 读写分离 √
- - 3.1 读写分离 √ 
- - 3.2 多读库 权重筛选 √ （配置多读库，根据读库权重选举读库）
+  - 3.1 读写分离 √ 
+  - 3.2 多读库 权重筛选 √ （配置多读库，根据读库权重选举读库）
 - 4 Logging √
- - 4.1 NLog √ （当你需要跟踪调试的时候一切都是那么一目了然）
+  - 4.1 NLog √ （当你需要跟踪调试的时候一切都是那么一目了然）
 - 5 DAO
- - 5.1 DAO
- - 5.2 DAO Tool 
-  - 5.2.1 Template Xml & Entity & DAO
-  - 5.2.2 Generate Tool
+  - 5.1 DAO
+  - 5.2 DAO Tool 
+    - 5.2.1 Template Xml & Entity & DAO
+    - 5.2.2 Generate Tool
 - 6 Query Cache
- - 6.1 SmartSql.Cache.Memory
- - 6.2 SmartSql.Cache.Redis
+  - 6.1 SmartSql.Cache.Memory
+  - 6.2 SmartSql.Cache.Redis
 - 7 分布式事务
 - 8 主从同步
 
