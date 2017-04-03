@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMap Scope="T_Member"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+  <Statements>
+    <Statement Id="GetList">
+      Select * From T_Member Where
+      <IsEmpty Prepend="And" Property="Ids" In="true">
+        
+      </IsEmpty>
+      <IsEqual Prepend="And" Property="Id" CompareValue="0">Id=@Id</IsEqual>
+      <IsGreaterEqual Prepend="" Property="" CompareValue=""></IsGreaterEqual>
+      <IsGreaterThan Prepend="" Property="" CompareValue=""></IsGreaterThan>
+      <IsLessEqual Prepend="" Property="" CompareValue=""></IsLessEqual>
+      <IsLessThan Prepend="" Property="" CompareValue="123"></IsLessThan>
+      <IsNotEmpty Prepend="" Property="">
+        
+      </IsNotEmpty>
+      <IsNotEqual Prepend="" Property="" CompareValue=""></IsNotEqual>
+      <IsNotNull Prepend="" Property=""></IsNotNull>
+      <IsNull Prepend="" Property=""></IsNull>
+      Order By Id Desc
+    </Statement>
+
+
+  </Statements>
+  
+</SmartSqlMap>

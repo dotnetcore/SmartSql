@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
+  <Settings
+    IsWatchConfigFile="false"
+  />
+  <Database>
+    <DbProvider Name="MySqlClientFactory" ParameterPrefix="?" Type="MySql.Data.MySqlClient.MySqlClientFactory,MySql.Data"/>
+    <Write Name="WriteDB" ConnectionString="Data Source=.;database=TestDB;uid=root;pwd=Ahoo123456;CharSet=utf8;"/>
+    <!--<Read Name="ReadDB-0" ConnectionString="Data Source=.;database=TestDB;uid=sa;pwd=Ahoo123456" Weight="80"/>
+    <Read Name="ReadDB-1" ConnectionString="Data Source=.;database=TestDB;uid=sa;pwd=Ahoo123456" Weight="20"/>-->
+  </Database>
+  <SmartSqlMaps>
+    <SmartSqlMap Path="Maps-MySql/T_Test.xml"></SmartSqlMap>
+    
+  </SmartSqlMaps>
+</SmartSqlMapConfig>

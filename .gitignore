@@ -1,0 +1,7 @@
+obj
+bin
+*.user
+.vs
+
+/SmartSql/Properties/PublishProfiles
+/.vs
