@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
+    <Version>1.0.2</Version>
+    <Authors>Ahoo Wang</Authors>
+    <Company>Ahoo Wang</Company>
+    <Description>SmartSql.Logging.NLog</Description>
+    <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
+    <Copyright>Ahoo Wang</Copyright>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

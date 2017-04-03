@@ -33,7 +33,7 @@
 
 ## 3. 配置
 
-### 3.1 SmartSqlMapConfig
+### 1 SmartSqlMapConfig
 ``` Xml
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
@@ -52,14 +52,14 @@
   </SmartSqlMaps>
 </SmartSqlMapConfig>
 ``` 
-### 3.2 Logging
+### 2 Logging
 ``` xml
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlLog xmlns="http://SmartSql.net/schemas/SmartSqlLog.xsd">
   <LoggerAdapter Name="NLoggerAdapter" Type="SmartSql.Logging.Impl.NLoggerAdapter,SmartSql.Logging.NLog"/>
 </SmartSqlLog>
 ```
-### 3.3 SmartSqlMap
+### 3 SmartSqlMap
 ``` xml
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMap Scope="T_Test"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
@@ -96,6 +96,16 @@
 </SmartSqlMap>
 
 ```
+
+## 安装
+### NPM
+``` CSharp
+Install-Package SmartSql
+
+Install-Package SmartSql.Logging.NLog
+
+```
+
 ## Codes
 ### Query
 ``` CSharp
