@@ -1,4 +1,4 @@
-#SmartSql
+# SmartSql
 ## 0. Why ?
  - MyBatis.Net 不再更新。
  - 拥抱 跨平台、.NET Core，是时候了。 
