@@ -11,6 +11,8 @@ namespace SmartSql.Abstractions
         Task<int> ExecuteAsync(IRequestContext context, IDbConnectionSession session);
         Task<T> ExecuteScalarAsync<T>(IRequestContext context, IDbConnectionSession session);
         Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context, IDbConnectionSession session);
+        Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context, IDbConnectionSession session, DataSourceChoice sourceChoice);
         Task<T> QuerySingleAsync<T>(IRequestContext context, IDbConnectionSession session);
+        Task<T> QuerySingleAsync<T>(IRequestContext context, IDbConnectionSession session, DataSourceChoice sourceChoice);
     }
 }

@@ -14,7 +14,7 @@ namespace SmartSql.Abstractions
     /// <summary>
     /// SmartSql 映射器
     /// </summary>
-    public interface ISmartSqlMapper : ISmartSqlMapperAsync,IDisposable
+    public interface ISmartSqlMapper : ISmartSqlMapperAsync, IDisposable
     {
         SmartSqlMapConfig SqlMapConfig { get; }
         IDataSourceManager DataSourceManager { get; }
@@ -28,7 +28,9 @@ namespace SmartSql.Abstractions
         int Execute(IRequestContext context);
         T ExecuteScalar<T>(IRequestContext context);
         IEnumerable<T> Query<T>(IRequestContext context);
+        IEnumerable<T> Query<T>(IRequestContext context, DataSourceChoice sourceChoice);
         T QuerySingle<T>(IRequestContext context);
+        T QuerySingle<T>(IRequestContext context, DataSourceChoice sourceChoice);
         #region Transaction
         IDbConnectionSession BeginTransaction();
         IDbConnectionSession BeginTransaction(IsolationLevel isolationLevel);

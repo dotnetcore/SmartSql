@@ -56,8 +56,119 @@ namespace SmartSql
         {
             SqlMapConfig = smartSqlMapConfig;
         }
+        #region Sync
+        public int Execute(IRequestContext context)
+        {
+            return _sqlRuner.Run<int>(context, DataSourceChoice.Write, (sqlStr, session) =>
+           {
+               return session.Connection.Execute(sqlStr, context.Request, session.Transaction);
+           });
+        }
+        public T ExecuteScalar<T>(IRequestContext context)
+        {
+            return _sqlRuner.Run<T>(context, DataSourceChoice.Write, (sqlStr, session) =>
+            {
+                return session.Connection.ExecuteScalar<T>(sqlStr, context.Request, session.Transaction);
+            });
+        }
+        public IEnumerable<T> Query<T>(IRequestContext context)
+        {
+            return Query<T>(context, DataSourceChoice.Read);
+        }
+        public IEnumerable<T> Query<T>(IRequestContext context, DataSourceChoice sourceChoice)
+        {
+            IDbConnectionSession session = SessionStore.LocalSession;
 
+            if (session == null)
+            {
+                session = CreateDbSession(sourceChoice);
+            }
+            string sqlStr = SqlBuilder.BuildSql(context);
+            try
+            {
+                return session.Connection.Query<T>(sqlStr, context.Request, session.Transaction);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (!session.IsTransactionOpen)
+                {
+                    session.CloseConnection();
+                }
+            }
+        }
 
+        public T QuerySingle<T>(IRequestContext context)
+        {
+            return QuerySingle<T>(context, DataSourceChoice.Read);
+        }
+        public T QuerySingle<T>(IRequestContext context, DataSourceChoice sourceChoice)
+        {
+            return _sqlRuner.Run<T>(context, sourceChoice, (sqlStr, session) =>
+            {
+                return session.Connection.QuerySingle<T>(sqlStr, context.Request, session.Transaction);
+            });
+        }
+        #endregion
+        #region Async
+        public async Task<int> ExecuteAsync(IRequestContext context, IDbConnectionSession session)
+        {
+            return await _sqlRuner.RunAsync<int>(context, session, DataSourceChoice.Write, (sqlStr, _session) =>
+            {
+                return _session.Connection.ExecuteAsync(sqlStr, context.Request, _session.Transaction);
+            });
+        }
+        public async Task<T> ExecuteScalarAsync<T>(IRequestContext context, IDbConnectionSession session)
+        {
+            return await _sqlRuner.RunAsync<T>(context, session, DataSourceChoice.Write, (sqlStr, _session) =>
+            {
+                return _session.Connection.ExecuteScalarAsync<T>(sqlStr, context.Request, _session.Transaction);
+            });
+        }
+        public async Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context, IDbConnectionSession session)
+        {
+            return await QueryAsync<T>(context, session, DataSourceChoice.Read);
+        }
+
+        public async Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context, IDbConnectionSession session, DataSourceChoice sourceChoice)
+        {
+            if (session == null)
+            {
+                session = CreateDbSession(sourceChoice);
+            }
+            string sqlStr = SqlBuilder.BuildSql(context);
+            try
+            {
+                return await session.Connection.QueryAsync<T>(sqlStr, context.Request, session.Transaction);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                //if (!session.IsTransactionOpen)
+                //{
+                //    session.CloseConnection();
+                //}
+            }
+        }
+        public async Task<T> QuerySingleAsync<T>(IRequestContext context, IDbConnectionSession session)
+        {
+            return await QuerySingleAsync<T>(context, session, DataSourceChoice.Read);
+        }
+        public async Task<T> QuerySingleAsync<T>(IRequestContext context, IDbConnectionSession session, DataSourceChoice sourceChoice)
+        {
+            return await _sqlRuner.RunAsync<T>(context, session, sourceChoice, (sqlStr, _session) =>
+            {
+                return _session.Connection.QuerySingleAsync<T>(sqlStr, context.Request, _session.Transaction);
+            });
+        }
+        #endregion
+        #region Transaction
         public IDbConnectionSession BeginTransaction()
         {
             if (SessionStore.LocalSession != null)
@@ -80,7 +191,6 @@ namespace SmartSql
             session.BeginTransaction(isolationLevel);
             return session;
         }
-
         public void CommitTransaction()
         {
             if (SessionStore.LocalSession == null)
@@ -95,103 +205,6 @@ namespace SmartSql
             {
                 SessionStore.Dispose();
             }
-        }
-        public int Execute(IRequestContext context)
-        {
-            return _sqlRuner.Run<int>(context, DataSourceChoice.Write, (sqlStr, session) =>
-           {
-               return session.Connection.Execute(sqlStr, context.Request, session.Transaction);
-           });
-        }
-
-        public async Task<int> ExecuteAsync(IRequestContext context, IDbConnectionSession session)
-        {
-            return await _sqlRuner.RunAsync<int>(context, session, DataSourceChoice.Write, (sqlStr, _session) =>
-            {
-                return _session.Connection.ExecuteAsync(sqlStr, context.Request, _session.Transaction);
-            });
-        }
-
-        public T ExecuteScalar<T>(IRequestContext context)
-        {
-            return _sqlRuner.Run<T>(context, DataSourceChoice.Write, (sqlStr, session) =>
-            {
-                return session.Connection.ExecuteScalar<T>(sqlStr, context.Request, session.Transaction);
-            });
-        }
-
-        public async Task<T> ExecuteScalarAsync<T>(IRequestContext context, IDbConnectionSession session)
-        {
-            return await _sqlRuner.RunAsync<T>(context, session, DataSourceChoice.Write, (sqlStr, _session) =>
-           {
-               return _session.Connection.ExecuteScalarAsync<T>(sqlStr, context.Request, _session.Transaction);
-           });
-        }
-
-        public IEnumerable<T> Query<T>(IRequestContext context)
-        {
-            IDbConnectionSession session = SessionStore.LocalSession;
-
-            if (session == null)
-            {
-                session = CreateDbSession(DataSourceChoice.Read);
-            }
-            string sqlStr = SqlBuilder.BuildSql(context);
-            try
-            {
-                return session.Connection.Query<T>(sqlStr, context.Request, session.Transaction);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (!session.IsTransactionOpen)
-                {
-                    session.CloseConnection();
-                }
-            }
-        }
-
-        public async Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context, IDbConnectionSession session)
-        {
-            if (session == null)
-            {
-                session = CreateDbSession(DataSourceChoice.Read);
-            }
-            string sqlStr = SqlBuilder.BuildSql(context);
-            try
-            {
-                return await session.Connection.QueryAsync<T>(sqlStr, context.Request, session.Transaction);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                //if (!session.IsTransactionOpen)
-                //{
-                //    session.CloseConnection();
-                //}
-            }
-        }
-
-        public T QuerySingle<T>(IRequestContext context)
-        {
-            return _sqlRuner.Run<T>(context, DataSourceChoice.Read, (sqlStr, session) =>
-            {
-                return session.Connection.QuerySingle<T>(sqlStr, context.Request, session.Transaction);
-            });
-        }
-
-        public async Task<T> QuerySingleAsync<T>(IRequestContext context, IDbConnectionSession session)
-        {
-            return await _sqlRuner.RunAsync<T>(context, session, DataSourceChoice.Read, (sqlStr, _session) =>
-            {
-                return _session.Connection.QuerySingleAsync<T>(sqlStr, context.Request, _session.Transaction);
-            });
         }
 
         public void RollbackTransaction()
@@ -210,6 +223,7 @@ namespace SmartSql
             }
         }
 
+        #endregion
         public IDbConnectionSession CreateDbSession(DataSourceChoice sourceChoice)
         {
             IDataSource dataSource = DataSourceManager.GetDataSource(sourceChoice);
@@ -218,7 +232,6 @@ namespace SmartSql
             session.CreateConnection();
             return session;
         }
-
         public void Dispose()
         {
             FileWatcherLoader.Instance.Clear();
@@ -228,6 +241,10 @@ namespace SmartSql
             }
             SessionStore.Dispose();
         }
+
+
+
+
     }
 
 
