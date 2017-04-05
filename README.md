@@ -97,7 +97,7 @@
 </SmartSqlMap>
 
 ```
-## 安装
+## 安装 (NuGet)
 ```
 Install-Package SmartSql
 
