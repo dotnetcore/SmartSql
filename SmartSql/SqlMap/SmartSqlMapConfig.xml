@@ -9,9 +9,9 @@
   </Logger>-->
   <Database>
     <DbProvider Name="SqlClientFactory" ParameterPrefix="@" Type="System.Data.SqlClient.SqlClientFactory,System.Data.SqlClient"/>
-    <Write Name="WriteDB" ConnectionString="Data Source=write.com;database=TestDB;uid=sa;pwd=testpwd"/>
-    <Read Name="ReadDB-0" ConnectionString="Data Source=read-0.com;database=TestDB;uid=sa;pwd=testpwd" Weight="80"/>
-    <Read Name="ReadDB-1" ConnectionString="Data Source=read-1.com;database=TestDB;uid=sa;pwd=testpwd" Weight="20"/>
+    <Write Name="WriteDB" ConnectionString="Data Source=write.com;database=TestDB;uid=sa;pwd=SmartSql.net"/>
+    <Read Name="ReadDB-0" ConnectionString="Data Source=read-0.com;database=TestDB;uid=sa;pwd=SmartSql.net" Weight="80"/>
+    <Read Name="ReadDB-1" ConnectionString="Data Source=read-1.com;database=TestDB;uid=sa;pwd=SmartSql.net" Weight="20"/>
 
   </Database>
   <SmartSqlMaps>

@@ -10,24 +10,28 @@ using System.Diagnostics;
 
 namespace SmartSql.Tests
 {
-    public class SmartSqlMapper_Test:IDisposable
+    public class SmartSqlMapper_Test : IDisposable
     {
         private static readonly SmartSqlMapper SqlMapper = new SmartSqlMapper();
         [Fact]
         public void Query()
         {
             int i = 0;
-            for (i = 0; i < 100; i++)
+            for (i = 0; i < 10; i++)
             {
 
                 var list = SqlMapper.Query<T_Test>(new RequestContext
                 {
                     Scope = "T_Test",
                     SqlId = "GetList",
-                    Request = new { Ids = new long[] { 1, 2, 3, 4 } }
+                    Request = new
+                    {
+                        //Ids = new long[] { 1, 2, 3, 4 },
+                        Name = "Name"
+                    }
                 });
             }
-            Assert.True(i == 100);
+            Assert.True(i == 10);
         }
         [Fact]
         public async void QueryAsync()
@@ -35,7 +39,7 @@ namespace SmartSql.Tests
             int i = 0;
             var session = SqlMapper.CreateDbSession(DataSourceChoice.Read);
             session.BeginTransaction();
-            for (i = 0; i < 60000; i++)
+            for (i = 0; i < 10; i++)
             {
                 var list = await SqlMapper.QueryAsync<T_Test>(new RequestContext
                 {
@@ -45,14 +49,14 @@ namespace SmartSql.Tests
                 }, session);
             }
             session.CommitTransaction();
-            Assert.True(i == 60000);
+            Assert.True(i == 10);
         }
 
         [Fact]
         public void Query_OnChangeConfig()
         {
             int i = 0;
-            for (i = 0; i < 100; i++)
+            for (i = 0; i < 10; i++)
             {
                 var list = SqlMapper.Query<T_Test>(new RequestContext
                 {
@@ -62,7 +66,6 @@ namespace SmartSql.Tests
                 });
                 Thread.Sleep(5000);
             }
-            SqlMapper.Dispose();
         }
 
 

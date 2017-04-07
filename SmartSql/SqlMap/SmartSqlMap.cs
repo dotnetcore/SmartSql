@@ -75,6 +75,7 @@ namespace SmartSql.SqlMap
                 switch (tagNode.Name)
                 {
                     case "#text":
+                    case "#cdata-section":
                         {
                             statement.SqlTags.Add(new SqlText
                             {

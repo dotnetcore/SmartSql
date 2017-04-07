@@ -22,7 +22,7 @@ namespace SmartSql.SqlMap.Tags
             {
                 if (In)
                 {
-                    return $"{Prepend} In {parameterPrefix}{Property}";
+                    return $" {Prepend} In {parameterPrefix}{Property}";
                 }
                 return $" {Prepend} {BodyText}";
             }
