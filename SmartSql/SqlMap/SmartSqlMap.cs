@@ -35,8 +35,8 @@ namespace SmartSql.SqlMap
                 xmlDoc.Load(xmlFile);
                 XmlNamespaceManager xmlNsM = new XmlNamespaceManager(xmlDoc.NameTable);
                 xmlNsM.AddNamespace("ns", "http://SmartSql.net/schemas/SmartSqlMap.xsd");
-                sqlMap.Scope = xmlDoc.SelectSingleNode("//ns:SmartSqlMap", xmlNsM).Attributes["Scope"].Value;
-
+                sqlMap.Scope = xmlDoc.SelectSingleNode("//ns:SmartSqlMap", xmlNsM)
+                    .Attributes["Scope"].Value;
                 var statementNodes = xmlDoc.SelectNodes("//ns:Statement", xmlNsM);
                 foreach (XmlElement statementNode in statementNodes)
                 {
@@ -51,7 +51,6 @@ namespace SmartSql.SqlMap
 
     public class Statement
     {
-
         [XmlIgnore]
         public SmartSqlMap SmartSqlMap { get; private set; }
         public static Statement Load(XmlElement statementNode, SmartSqlMap smartSqlMap)
@@ -70,7 +69,7 @@ namespace SmartSql.SqlMap
                 var prepend = tagNode.Attributes?["Prepend"]?.Value;
                 var property = tagNode.Attributes?["Property"]?.Value;
                 var compareValue = tagNode.Attributes?["CompareValue"]?.Value;
-                var bodyText = tagNode.InnerText;
+                var bodyText = tagNode.InnerText.Replace("\n", "");
                 #region Init Tag
                 switch (tagNode.Name)
                 {
@@ -79,7 +78,7 @@ namespace SmartSql.SqlMap
                         {
                             statement.SqlTags.Add(new SqlText
                             {
-                                BodyText = tagNode.InnerText
+                                BodyText = bodyText
                             });
                             break;
                         }

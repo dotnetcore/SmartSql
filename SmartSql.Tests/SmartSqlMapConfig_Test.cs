@@ -14,7 +14,6 @@ namespace SmartSql.Tests
         {
             SmartSqlMapper mapper = new SmartSqlMapper();
 
-
             mapper.Dispose();
 
         }

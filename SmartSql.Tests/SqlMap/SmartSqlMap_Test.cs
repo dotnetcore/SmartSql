@@ -11,7 +11,6 @@ namespace SmartSql.Tests.SqlMap
         [Fact]
         public void Load()
         {
-
             var map = SmartSqlMap.Load("Maps/T_Test.xml", null);
             Assert.NotNull(map);
         }

@@ -15,7 +15,6 @@ namespace SmartSql
     /// </summary>
     public class DataSourceManager : IDataSourceManager
     {
-
         private static readonly ILog _logger = LogManager.GetLogger(typeof(DataSourceManager));
         public ISmartSqlMapper SmartSqlMapper { get; }
         /// <summary>
@@ -34,12 +33,12 @@ namespace SmartSql
                 && readDataSources.Count > 0
                 )
             {
-                var seekList = readDataSources.Select(readDataSource => new WeightFilter<IReadDataSource>.Seed
+                var seekList = readDataSources.Select(readDataSource => new WeightFilter<IReadDataSource>.WeightSource
                 {
                     Source = readDataSource,
                     Weight = readDataSource.Weight
-                }).ToList();
-                choiceDataSource = weightFilter.Calculate(seekList, 1).First().Source;
+                });
+                choiceDataSource = weightFilter.Elect(seekList).Source;
             }
             _logger.Debug($"SmartSql.DataSourceManager GetDataSource Choice: {choiceDataSource.Name} .");
             return choiceDataSource;
