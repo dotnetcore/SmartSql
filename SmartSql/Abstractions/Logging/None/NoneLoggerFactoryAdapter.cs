@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SmartSql.Abstractions.Logging.None
 {
-    public class NoneLoggerAdapter : ILoggerAdapter
+    public class NoneLoggerFactoryAdapter : ILoggerFactoryAdapter
     {
         public ILog GetLogger(Type type)
         {

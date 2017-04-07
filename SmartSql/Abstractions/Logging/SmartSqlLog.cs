@@ -8,10 +8,10 @@ namespace SmartSql.Abstractions.Logging
     [XmlRoot(Namespace = "http://SmartSql.net/schemas/SmartSqlLog.xsd")]
     public class SmartSqlLog
     {
-        public LoggerAdapter LoggerAdapter { get; set; }
+        public LoggerFactoryAdapter LoggerFactoryAdapter { get; set; }
     }
 
-    public class LoggerAdapter
+    public class LoggerFactoryAdapter
     {
         [XmlAttribute]
         public String Name { get; set; }

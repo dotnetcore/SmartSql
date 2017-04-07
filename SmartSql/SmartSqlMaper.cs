@@ -241,12 +241,5 @@ namespace SmartSql
             }
             SessionStore.Dispose();
         }
-
-
-
-
     }
-
-
-
 }

@@ -11,24 +11,24 @@ namespace SmartSql.Abstractions.Logging
     public class LogManager
     {
         private static object syncObj = new object();
-        private static ILoggerAdapter _loggerAdapter = null;
+        private static ILoggerFactoryAdapter _loggerFactoryAdapter = null;
         private LogManager()
         { }
-        public static ILoggerAdapter Adapter
+        public static ILoggerFactoryAdapter Adapter
         {
             get
             {
-                if (_loggerAdapter == null)
+                if (_loggerFactoryAdapter == null)
                 {
                     lock (syncObj)
                     {
-                        if (_loggerAdapter == null)
+                        if (_loggerFactoryAdapter == null)
                         {
                             LoadLoggerFactoryAdapter();
                         }
                     }
                 }
-                return _loggerAdapter;
+                return _loggerFactoryAdapter;
             }
         }
 
@@ -43,14 +43,14 @@ namespace SmartSql.Abstractions.Logging
                 {
                     smartSqlLog = xmlSerializer.Deserialize(configFile) as SmartSqlLog;
                 }
-                AssemblyName assemblyName = new AssemblyName { Name = smartSqlLog.LoggerAdapter.AssemblyName };
-                Type loggerAdpterType = Assembly.Load(assemblyName)
-                                               .GetType(smartSqlLog.LoggerAdapter.TypeName);
-                _loggerAdapter = Activator.CreateInstance(loggerAdpterType) as ILoggerAdapter;
+                AssemblyName assemblyName = new AssemblyName { Name = smartSqlLog.LoggerFactoryAdapter.AssemblyName };
+                Type loggerFactoryAdpterType = Assembly.Load(assemblyName)
+                                               .GetType(smartSqlLog.LoggerFactoryAdapter.TypeName);
+                _loggerFactoryAdapter = Activator.CreateInstance(loggerFactoryAdpterType) as ILoggerFactoryAdapter;
             }
             catch (Exception ex)
             {
-                _loggerAdapter = new NoneLoggerAdapter();
+                _loggerFactoryAdapter = new NoneLoggerFactoryAdapter();
             }
 
         }

@@ -22,9 +22,11 @@ namespace SmartSql.Common
         }
         private void WatchFileChange(FileInfo fileInfo, Action onFileChanged)
         {
-            FileSystemWatcher fileWatcher = new FileSystemWatcher(fileInfo.DirectoryName);
-            fileWatcher.Filter = fileInfo.Name;
-            fileWatcher.NotifyFilter = NotifyFilters.LastWrite;
+            FileSystemWatcher fileWatcher = new FileSystemWatcher(fileInfo.DirectoryName)
+            {
+                Filter = fileInfo.Name,
+                NotifyFilter = NotifyFilters.LastWrite
+            };
             #region OnChanged
             DateTime lastChangedTime = DateTime.Now;
             int twoTimeInterval = 1000;

@@ -5,7 +5,7 @@ using System.Text;
 using NLog;
 namespace SmartSql.Logging.Impl
 {
-    public class NLoggerAdapter : ILoggerAdapter
+    public class NLoggerFactoryAdapter : ILoggerFactoryAdapter
     {
         public ILog GetLogger(Type type)
         {

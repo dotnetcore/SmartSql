@@ -17,7 +17,7 @@ namespace SmartSql.Abstractions.Cache
         }
         public override string ToString()
         {
-            string key = $"{Prefix}：{RequestContext.FullSqlId}:{RequestContext.Request}";//此处 RequestContext.Request 需重新处理
+            string key = $"{Prefix}:{RequestContext.FullSqlId}:{RequestContext.Request}";//此处 RequestContext.Request 需重新处理
             return key;
         }
     }
