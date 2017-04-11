@@ -7,6 +7,7 @@ namespace SmartSql.DataAccess
 {
     public class MapperContainer
     {
+        private MapperContainer() { }
         /// <summary>
         /// Mapper容器
         /// </summary>
@@ -16,7 +17,7 @@ namespace SmartSql.DataAccess
         /// </summary>
         private static readonly object syncRoot = new object();
 
-        public static ISmartSqlMapper GetInstance(String SmartSqlMapConfigPath = "SmartSqlMapConfig.xml")
+        public static ISmartSqlMapper GetSqlMapper(String SmartSqlMapConfigPath = "SmartSqlMapConfig.xml")
         {
             if (_mapperContainer[SmartSqlMapConfigPath] == null)
             {
@@ -30,6 +31,15 @@ namespace SmartSql.DataAccess
                 }
             }
             return _mapperContainer[SmartSqlMapConfigPath];
+        }
+
+        public static void Clear()
+        {
+            foreach (var mapper in _mapperContainer)
+            {
+                mapper.Value.Dispose();
+            }
+            _mapperContainer.Clear();
         }
     }
 }

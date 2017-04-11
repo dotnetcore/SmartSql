@@ -22,7 +22,7 @@ namespace SmartSql.DataAccess
 
         protected abstract void InitScope();
 
-        public ISmartSqlMapper SqlMapper { get { return MapperContainer.GetInstance(SmartSqlMapConfigPath); } }
+        public ISmartSqlMapper SqlMapper { get { return MapperContainer.GetSqlMapper(SmartSqlMapConfigPath); } }
 
         #region Transaction
         /// <summary>
