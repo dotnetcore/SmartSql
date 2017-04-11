@@ -1,5 +1,7 @@
-﻿using System;
+﻿using SmartSql.Abstractions.DbSession;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace SmartSql.DataAccess.Abstractions
@@ -39,7 +41,6 @@ namespace SmartSql.DataAccess.Abstractions
         /// <param name="Id"></param>
         /// <returns></returns>
         int Delete<TPrimary>(TPrimary Id);
-        int DeleteList(string Ids);
     }
     /// <summary>
     /// 更新
@@ -64,7 +65,8 @@ namespace SmartSql.DataAccess.Abstractions
         /// 开启事务
         /// </summary>
         /// <returns></returns>
-        void BeginTransaction();
+        IDbConnectionSession BeginTransaction();
+        IDbConnectionSession BeginTransaction(IsolationLevel isolationLevel);
         /// <summary>
         /// 提交事务
         /// </summary>
@@ -72,6 +74,6 @@ namespace SmartSql.DataAccess.Abstractions
         /// <summary>
         /// 回滚事务
         /// </summary>
-        void RollBackTransaction();
+        void RollbackTransaction();
     }
 }
