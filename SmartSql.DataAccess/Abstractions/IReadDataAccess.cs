@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartSql.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace SmartSql.DataAccess.Abstractions
     /// 数据查询接口
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public interface IQueryDataAccess<TEntity> : IIsExist, IGetEntity<TEntity>, IGetList, IGetTop, IGetListByPage, IGetRecord
+    public interface IReadDataAccess<TEntity> : IIsExist, IGetEntity<TEntity>, IGetList, IGetListByPage, IGetRecord
          where TEntity : class
     {
     }
@@ -18,7 +19,7 @@ namespace SmartSql.DataAccess.Abstractions
     /// </summary>
     public interface IIsExist
     {
-        bool IsExist(object paramObj);
+        bool IsExist(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read);
     }
     /// <summary>
     /// 获取实体
@@ -26,35 +27,28 @@ namespace SmartSql.DataAccess.Abstractions
     /// <typeparam name="TEntity"></typeparam>
     public interface IGetEntity<TEntity> where TEntity : class
     {
-        TEntity GetEntity(object paramObj);
-        TEntity GetEntity<TPrimary>(TPrimary Id);
+        TEntity GetEntity(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read);
+        TEntity GetEntity<TPrimary>(TPrimary Id, DataSourceChoice sourceChoice = DataSourceChoice.Read);
     }
     /// <summary>
     /// 获取列表
     /// </summary>
     public interface IGetList
     {
-        IList<TResponse> GetList<TResponse>(object paramObj);
-    }
-    /// <summary>
-    /// 获取N个数据列表
-    /// </summary>
-    public interface IGetTop
-    {
-        IList<TResponse> GetTop<TResponse>(int topNum, object paramObj);
+        IEnumerable<TResponse> GetList<TResponse>(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read);
     }
     /// <summary>
     /// 分页
     /// </summary>
     public interface IGetListByPage
     {
-        IList<TResponse> GetListByPage<TResponse>(object paramObj);
+        IEnumerable<TResponse> GetListByPage<TResponse>(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read);
     }
     /// <summary>
     /// 获取记录数
     /// </summary>
     public interface IGetRecord
     {
-        int GetRecord(object paramObj);
+        int GetRecord(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read);
     }
 }

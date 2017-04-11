@@ -16,6 +16,5 @@ namespace SmartSql.DataAccess
         public const String GetListByPage = "GetListByPage";
         public const String GetEntity = "GetEntity";
         public const String IsExist = "IsExist";
-        public const String GetTop = "GetTop";
     }
 }

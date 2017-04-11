@@ -10,8 +10,7 @@ namespace SmartSql.DataAccess.Abstractions
     /// DataAccess功能接口
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IDataAccess<TEntity> : IInsert<TEntity>, IDelete, IUpdate<TEntity>, ITransaction
-        , IQueryDataAccess<TEntity>
+    public interface IWriteDataAccess<TEntity> : IInsert<TEntity>, IDelete, IUpdate<TEntity>
         where TEntity : class
     {
     }
