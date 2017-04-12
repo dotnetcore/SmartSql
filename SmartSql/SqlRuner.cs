@@ -47,8 +47,9 @@ namespace SmartSql
             }
         }
 
-        public async Task<T> RunAsync<T>(IRequestContext context, IDbConnectionSession session, DataSourceChoice sourceChoice, Func<String, IDbConnectionSession, Task<T>> runSql)
+        public async Task<T> RunAsync<T>(IRequestContext context, DataSourceChoice sourceChoice, Func<String, IDbConnectionSession, Task<T>> runSql)
         {
+            IDbConnectionSession session = SmartSqlMapper.SessionStore.LocalSession;
             if (session == null)
             {
                 session = SmartSqlMapper.CreateDbSession(sourceChoice);

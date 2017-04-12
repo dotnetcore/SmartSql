@@ -4,50 +4,52 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SmartSql.CodeGenerator.Models;
-
+using SmartSql;
+using SmartSql.Abstractions;
+using SmartSql.DataAccess;
 namespace SmartSql.CodeGenerator.Controllers
 {
     public class TemplateController : Controller
     {
-        public IActionResult Entity()
-        {
 
-            var table = new Table
+
+        public async Task<IActionResult> Tables()
+        {
+            var sqlMapper = MapperContainer.GetSqlMapper();
+            sqlMapper.BeginTransaction();
+            var tables = await sqlMapper.QueryAsync<Table>(new RequestContext
             {
-                Id = 1,
-                Type = Table.TableType.Table,
-                Name = "T_Member",
-                Description = "会员",
-                Author = new Author
-                {
-                    Name = "Ahoo Wang"
-                },
-                Database = new Database
-                {
-                    Namespace = "Ahoo.GoodJob"
-                },
-                Columns = new List<Column> {
-                     new Column {
-                          Id=1,
-                            Name="Id",
-                             Description="编号",
-                              Type="int",
-                               IsIdentity=true,
-                                IsNullable=false,
-                                 IsPrimaryKey=true
-                     },
-                                          new Column {
-                          Id=2,
-                            Name="UserName",
-                             Description="用户名",
-                              Type="string",
-                               IsIdentity=false,
-                                IsNullable=false,
-                                 IsPrimaryKey=false
-                     },
-                }
-            };
-            return View(table);
+                Scope = "DataBase-SqlServer",
+                SqlId = "GetTables",
+                Request = new { }
+            });
+            tables = await sqlMapper.QueryAsync<Table>(new RequestContext
+            {
+                Scope = "DataBase-SqlServer",
+                SqlId = "GetTables",
+                Request = new { }
+            });
+            tables = await sqlMapper.QueryAsync<Table>(new RequestContext
+            {
+                Scope = "DataBase-SqlServer",
+                SqlId = "GetTables",
+                Request = new { }
+            });
+            sqlMapper.RollbackTransaction();
+            return Json(tables);
+        }
+
+        public IActionResult GetColumnsByTableId(long TableId)
+        {
+            var sqlMapper = MapperContainer.GetSqlMapper();
+            var columns = sqlMapper.Query<Column>(new RequestContext
+            {
+                Scope = "DataBase-SqlServer",
+                SqlId = "GetColumnsByTableId",
+                Request = new { TableId = TableId }
+            });
+
+            return Json(columns);
         }
     }
 }

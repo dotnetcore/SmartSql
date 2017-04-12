@@ -114,27 +114,28 @@ namespace SmartSql
         }
         #endregion
         #region Async
-        public async Task<int> ExecuteAsync(IRequestContext context, IDbConnectionSession session)
+        public async Task<int> ExecuteAsync(IRequestContext context)
         {
-            return await _sqlRuner.RunAsync<int>(context, session, DataSourceChoice.Write, (sqlStr, _session) =>
+            return await _sqlRuner.RunAsync<int>(context,  DataSourceChoice.Write, (sqlStr, _session) =>
             {
                 return _session.Connection.ExecuteAsync(sqlStr, context.Request, _session.Transaction);
             });
         }
-        public async Task<T> ExecuteScalarAsync<T>(IRequestContext context, IDbConnectionSession session)
+        public async Task<T> ExecuteScalarAsync<T>(IRequestContext context)
         {
-            return await _sqlRuner.RunAsync<T>(context, session, DataSourceChoice.Write, (sqlStr, _session) =>
+            return await _sqlRuner.RunAsync<T>(context,  DataSourceChoice.Write, (sqlStr, _session) =>
             {
                 return _session.Connection.ExecuteScalarAsync<T>(sqlStr, context.Request, _session.Transaction);
             });
         }
-        public async Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context, IDbConnectionSession session)
+        public async Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context)
         {
-            return await QueryAsync<T>(context, session, DataSourceChoice.Read);
+            return await QueryAsync<T>(context,  DataSourceChoice.Read);
         }
 
-        public async Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context, IDbConnectionSession session, DataSourceChoice sourceChoice)
+        public async Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context, DataSourceChoice sourceChoice)
         {
+            IDbConnectionSession session = SessionStore.LocalSession;
             if (session == null)
             {
                 session = CreateDbSession(sourceChoice);
@@ -156,13 +157,13 @@ namespace SmartSql
                 //}
             }
         }
-        public async Task<T> QuerySingleAsync<T>(IRequestContext context, IDbConnectionSession session)
+        public async Task<T> QuerySingleAsync<T>(IRequestContext context)
         {
-            return await QuerySingleAsync<T>(context, session, DataSourceChoice.Read);
+            return await QuerySingleAsync<T>(context,  DataSourceChoice.Read);
         }
-        public async Task<T> QuerySingleAsync<T>(IRequestContext context, IDbConnectionSession session, DataSourceChoice sourceChoice)
+        public async Task<T> QuerySingleAsync<T>(IRequestContext context, DataSourceChoice sourceChoice)
         {
-            return await _sqlRuner.RunAsync<T>(context, session, sourceChoice, (sqlStr, _session) =>
+            return await _sqlRuner.RunAsync<T>(context,  sourceChoice, (sqlStr, _session) =>
             {
                 return _session.Connection.QuerySingleAsync<T>(sqlStr, context.Request, _session.Transaction);
             });
@@ -178,6 +179,7 @@ namespace SmartSql
             var session = CreateDbSession(DataSourceChoice.Write);
             SessionStore.Store(session);
             session.BeginTransaction();
+            _logger.Debug($"SmartSqlMapper.BeginTransaction DbSession.Id:{session.Id}");
             return session;
         }
         public IDbConnectionSession BeginTransaction(IsolationLevel isolationLevel)
@@ -193,13 +195,15 @@ namespace SmartSql
         }
         public void CommitTransaction()
         {
-            if (SessionStore.LocalSession == null)
+            var session = SessionStore.LocalSession;
+            if (session == null)
             {
                 throw new SmartSqlException("SmartSqlMapper could not invoke CommitTransaction(). No Transaction was started. Call BeginTransaction() first.");
             }
             try
             {
-                SessionStore.LocalSession.CommitTransaction();
+                _logger.Debug($"SmartSqlMapper.CommitTransaction DbSession.Id:{session.Id}");
+                session.CommitTransaction();
             }
             finally
             {
@@ -209,13 +213,15 @@ namespace SmartSql
 
         public void RollbackTransaction()
         {
-            if (SessionStore.LocalSession == null)
+            var session = SessionStore.LocalSession;
+            if (session == null)
             {
                 throw new SmartSqlException("SmartSqlMapper could not invoke RollBackTransaction(). No Transaction was started. Call BeginTransaction() first.");
             }
             try
             {
-                SessionStore.LocalSession.RollbackTransaction();
+                _logger.Debug($"SmartSqlMapper.RollbackTransaction DbSession.Id:{session.Id}");
+                session.RollbackTransaction();
             }
             finally
             {

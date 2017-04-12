@@ -12,6 +12,7 @@ namespace SmartSql.DbSession
 {
     public class DbConnectionSession : IDbConnectionSession
     {
+        public Guid Id { get; private set; }
         private static readonly ILog _logger = LogManager.GetLogger(typeof(DbConnectionSession));
         public DbProviderFactory DbProviderFactory { get; }
         public IDataSource DataSource { get; }
@@ -20,6 +21,7 @@ namespace SmartSql.DbSession
         public bool IsTransactionOpen { get; private set; }
         public DbConnectionSession(DbProviderFactory dbProviderFactory, IDataSource dataSource)
         {
+            Id = Guid.NewGuid();
             DbProviderFactory = dbProviderFactory;
             DataSource = dataSource;
         }

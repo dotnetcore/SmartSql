@@ -4,7 +4,7 @@ using SmartSql.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using System.Threading;
 
 namespace SmartSql.DbSession
 {
@@ -16,18 +16,21 @@ namespace SmartSql.DbSession
         private static readonly ILog _logger = LogManager.GetLogger(typeof(DbConnectionSessionStore));
         const string KEY = "SmartSql-Local-DbSesstion-";
         protected string sessionName = string.Empty;
-        [ThreadStatic]
-        private static readonly Dictionary<string, IDbConnectionSession> staticSessions = new Dictionary<string, IDbConnectionSession>();
+        private static AsyncLocal<IDictionary<string, IDbConnectionSession>> staticSessions
+            = new AsyncLocal<IDictionary<string, IDbConnectionSession>>(
+                //() => new Dictionary<String, IDbConnectionSession>()
+                );
         public IDbConnectionSession LocalSession
         {
             get
             {
-                if (staticSessions == null)
+                if (staticSessions.Value == null)
                 {
-                    _logger.Error($"SmartSql.DbConnectionSessionStore.LocalSession.staticSessions sessionName:{sessionName} is missing");
-                    throw new SmartSqlException("SmartSql DbConnectionSessionStore.staticSessions is missing.");
+                    staticSessions.Value = new Dictionary<String, IDbConnectionSession>();
+                    //_logger.Error($"SmartSql.DbConnectionSessionStore.LocalSession.staticSessions sessionName:{sessionName} is missing");
+                    //throw new SmartSqlException("SmartSql DbConnectionSessionStore.staticSessions is missing.");
                 };
-                staticSessions.TryGetValue(sessionName, out IDbConnectionSession session);
+                staticSessions.Value.TryGetValue(sessionName, out IDbConnectionSession session);
                 return session;
             }
         }
@@ -37,11 +40,11 @@ namespace SmartSql.DbSession
         }
         public void Dispose()
         {
-            staticSessions[sessionName] = null;
+            staticSessions.Value[sessionName] = null;
         }
         public void Store(IDbConnectionSession session)
         {
-            staticSessions[sessionName] = session;
+            staticSessions.Value[sessionName] = session;
         }
     }
 }

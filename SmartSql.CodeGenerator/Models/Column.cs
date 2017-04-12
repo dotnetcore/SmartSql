@@ -18,7 +18,7 @@ namespace SmartSql.CodeGenerator.Models
         /// <summary>
         /// 类型
         /// </summary>
-        public String Type { get; set; }
+        public String TypeName { get; set; }
         /// <summary>
         /// 描述
         /// </summary>

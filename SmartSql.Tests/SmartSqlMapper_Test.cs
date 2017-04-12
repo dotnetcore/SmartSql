@@ -37,8 +37,6 @@ namespace SmartSql.Tests
         public async void QueryAsync()
         {
             int i = 0;
-            var session = SqlMapper.CreateDbSession(DataSourceChoice.Read);
-            session.BeginTransaction();
             for (i = 0; i < 10; i++)
             {
                 var list = await SqlMapper.QueryAsync<T_Test>(new RequestContext
@@ -46,9 +44,8 @@ namespace SmartSql.Tests
                     Scope = "T_Test",
                     SqlId = "GetList",
                     Request = new { Ids = new long[] { 1, 2, 3, 4 } }
-                }, session);
+                });
             }
-            session.CommitTransaction();
             Assert.True(i == 10);
         }
 
