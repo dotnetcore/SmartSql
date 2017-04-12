@@ -5,6 +5,11 @@ using SmartSql.Abstractions;
 using SmartSql.DataAccess.Abstractions;
 namespace SmartSql.DataAccess
 {
+    /// <summary>
+    /// 泛型数据库访问对象
+    /// 提供常规方法
+    /// </summary>
+    /// <typeparam name="TEntity">Table Entity</typeparam>
     public class DataAccessGeneric<TEntity> : DataAccess, IReadDataAccess<TEntity>, IWriteDataAccess<TEntity>
         where TEntity : class
     {
@@ -88,7 +93,7 @@ namespace SmartSql.DataAccess
             }
             else
             {
-                 SqlMapper.Execute(new RequestContext
+                SqlMapper.Execute(new RequestContext
                 {
                     Scope = this.Scope,
                     SqlId = DefaultSqlId.Insert,
@@ -99,11 +104,16 @@ namespace SmartSql.DataAccess
         }
         public int Delete<TPrimary>(TPrimary Id)
         {
+            return Delete(new { Id = Id });
+        }
+
+        public int Delete(object paramObj)
+        {
             return SqlMapper.Execute(new RequestContext
             {
                 Scope = this.Scope,
                 SqlId = DefaultSqlId.Delete,
-                Request = new { Id = Id }
+                Request = paramObj
             });
         }
 

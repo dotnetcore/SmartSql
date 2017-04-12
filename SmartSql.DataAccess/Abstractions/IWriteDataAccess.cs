@@ -40,6 +40,7 @@ namespace SmartSql.DataAccess.Abstractions
         /// <param name="Id"></param>
         /// <returns></returns>
         int Delete<TPrimary>(TPrimary Id);
+        int Delete(object paramObj);
     }
     /// <summary>
     /// 更新
