@@ -37,6 +37,10 @@ namespace SmartSql.Abstractions
         void CommitTransaction();
         void RollbackTransaction();
         #endregion
+        #region Scoped Session
+        IDbConnectionSession BeginSession(DataSourceChoice sourceChoice = DataSourceChoice.Write);
+        void EndSession();
+        #endregion
     }
 
     public enum DataSourceChoice

@@ -19,11 +19,12 @@ namespace SmartSql.DataAccess
 
         public static ISmartSqlMapper GetSqlMapper(String SmartSqlMapConfigPath = "SmartSqlMapConfig.xml")
         {
-            if (_mapperContainer[SmartSqlMapConfigPath] == null)
+            
+            if (!_mapperContainer.ContainsKey(SmartSqlMapConfigPath))
             {
                 lock (syncRoot)
                 {
-                    if (_mapperContainer[SmartSqlMapConfigPath] == null)
+                    if (!_mapperContainer.ContainsKey(SmartSqlMapConfigPath))
                     {
                         ISmartSqlMapper _mapper = new SmartSqlMapper(SmartSqlMapConfigPath);
                         _mapperContainer.Add(SmartSqlMapConfigPath, _mapper);
