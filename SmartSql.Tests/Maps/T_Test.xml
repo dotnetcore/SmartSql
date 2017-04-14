@@ -36,6 +36,14 @@
       ;
       Select @@IDENTITY
     </Statement>
-
+    <Statement Id="Delete">
+      Delete T_Test
+      Where Id=@Id
+    </Statement>
+    <Statement Id="Update">
+      Update T_Test
+      Set Name=@Name
+      Where Id=@Id
+    </Statement>
   </Statements>
 </SmartSqlMap>

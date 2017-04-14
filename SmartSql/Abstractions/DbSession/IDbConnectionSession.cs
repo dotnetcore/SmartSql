@@ -20,10 +20,25 @@ namespace SmartSql.Abstractions.DbSession
         void CreateConnection();
         void OpenConnection();
         void CloseConnection();
-        bool IsTransactionOpen { get; }
+        DbSessionLifeCycle LifeCycle { get; set; }
         void BeginTransaction();
         void BeginTransaction(IsolationLevel isolationLevel);
         void CommitTransaction();
         void RollbackTransaction();
+    }
+    /// <summary>
+    /// Db会话生命周期
+    /// </summary>
+    public enum DbSessionLifeCycle
+    {
+        /// <summary>
+        /// 瞬态
+        /// </summary>
+        Transient = 1,
+        /// <summary>
+        /// 执行作用域
+        /// [ Transaction | ... ]
+        /// </summary>
+        Scoped = 2
     }
 }

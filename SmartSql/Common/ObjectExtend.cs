@@ -9,7 +9,7 @@ namespace SmartSql.Common
     {
         public static Object GetValue(this Object obj, String propertyName)
         {
-            return obj.GetType().GetProperty(propertyName)?.GetValue(obj);
+            return obj?.GetType().GetProperty(propertyName)?.GetValue(obj);
         }
     }
 }

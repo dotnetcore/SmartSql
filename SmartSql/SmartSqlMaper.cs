@@ -94,7 +94,7 @@ namespace SmartSql
             }
             finally
             {
-                if (!session.IsTransactionOpen)
+                if (session.LifeCycle == DbSessionLifeCycle.Transient)
                 {
                     session.CloseConnection();
                 }
@@ -116,21 +116,21 @@ namespace SmartSql
         #region Async
         public async Task<int> ExecuteAsync(IRequestContext context)
         {
-            return await _sqlRuner.RunAsync<int>(context,  DataSourceChoice.Write, (sqlStr, _session) =>
-            {
-                return _session.Connection.ExecuteAsync(sqlStr, context.Request, _session.Transaction);
-            });
+            return await _sqlRuner.RunAsync<int>(context, DataSourceChoice.Write, (sqlStr, _session) =>
+           {
+               return _session.Connection.ExecuteAsync(sqlStr, context.Request, _session.Transaction);
+           });
         }
         public async Task<T> ExecuteScalarAsync<T>(IRequestContext context)
         {
-            return await _sqlRuner.RunAsync<T>(context,  DataSourceChoice.Write, (sqlStr, _session) =>
-            {
-                return _session.Connection.ExecuteScalarAsync<T>(sqlStr, context.Request, _session.Transaction);
-            });
+            return await _sqlRuner.RunAsync<T>(context, DataSourceChoice.Write, (sqlStr, _session) =>
+           {
+               return _session.Connection.ExecuteScalarAsync<T>(sqlStr, context.Request, _session.Transaction);
+           });
         }
         public async Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context)
         {
-            return await QueryAsync<T>(context,  DataSourceChoice.Read);
+            return await QueryAsync<T>(context, DataSourceChoice.Read);
         }
 
         public async Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context, DataSourceChoice sourceChoice)
@@ -151,46 +151,37 @@ namespace SmartSql
             }
             finally
             {
-                //if (!session.IsTransactionOpen)
-                //{
-                //    session.CloseConnection();
-                //}
+                if (session.LifeCycle == DbSessionLifeCycle.Transient)
+                {
+                    session.CloseConnection();
+                }
             }
         }
         public async Task<T> QuerySingleAsync<T>(IRequestContext context)
         {
-            return await QuerySingleAsync<T>(context,  DataSourceChoice.Read);
+            return await QuerySingleAsync<T>(context, DataSourceChoice.Read);
         }
         public async Task<T> QuerySingleAsync<T>(IRequestContext context, DataSourceChoice sourceChoice)
         {
-            return await _sqlRuner.RunAsync<T>(context,  sourceChoice, (sqlStr, _session) =>
-            {
-                return _session.Connection.QuerySingleAsync<T>(sqlStr, context.Request, _session.Transaction);
-            });
+            return await _sqlRuner.RunAsync<T>(context, sourceChoice, (sqlStr, _session) =>
+           {
+               return _session.Connection.QuerySingleAsync<T>(sqlStr, context.Request, _session.Transaction);
+           });
         }
         #endregion
         #region Transaction
         public IDbConnectionSession BeginTransaction()
         {
-            if (SessionStore.LocalSession != null)
-            {
-                throw new SmartSqlException("SmartSqlMapper could not invoke BeginTransaction(). A Transaction is already started. Call CommitTransaction() or RollbackTransaction first.");
-            }
-            var session = CreateDbSession(DataSourceChoice.Write);
-            SessionStore.Store(session);
+            var session = BeginSession(DataSourceChoice.Write);
             session.BeginTransaction();
             _logger.Debug($"SmartSqlMapper.BeginTransaction DbSession.Id:{session.Id}");
             return session;
         }
         public IDbConnectionSession BeginTransaction(IsolationLevel isolationLevel)
         {
-            if (SessionStore.LocalSession != null)
-            {
-                throw new SmartSqlException("SmartSqlMapper could not invoke BeginTransaction(). A Transaction is already started. Call CommitTransaction() or RollbackTransaction first.");
-            }
-            var session = CreateDbSession(DataSourceChoice.Write);
-            SessionStore.Store(session);
+            var session = BeginSession(DataSourceChoice.Write);
             session.BeginTransaction(isolationLevel);
+            _logger.Debug($"SmartSqlMapper.BeginTransaction DbSession.Id:{session.Id}");
             return session;
         }
         public void CommitTransaction()
@@ -230,6 +221,33 @@ namespace SmartSql
         }
 
         #endregion
+        #region Scoped Session
+        public IDbConnectionSession BeginSession(DataSourceChoice sourceChoice = DataSourceChoice.Write)
+        {
+            if (SessionStore.LocalSession != null)
+            {
+                throw new SmartSqlException("SmartSqlMapper could not invoke BeginSession(). A LocalSession is already existed.");
+            }
+            var session = CreateDbSession(sourceChoice);
+            session.LifeCycle = DbSessionLifeCycle.Scoped;
+            session.OpenConnection();
+            SessionStore.Store(session);
+            return session;
+        }
+
+        public void EndSession()
+        {
+            var session = SessionStore.LocalSession;
+            if (session == null)
+            {
+                throw new SmartSqlException("SmartSqlMapper could not invoke EndSession(). No LocalSession was existed. ");
+            }
+            session.LifeCycle = DbSessionLifeCycle.Transient;
+            session.CloseConnection();
+            SessionStore.Dispose();
+        }
+        #endregion
+
         public IDbConnectionSession CreateDbSession(DataSourceChoice sourceChoice)
         {
             IDataSource dataSource = DataSourceManager.GetDataSource(sourceChoice);
@@ -247,5 +265,7 @@ namespace SmartSql
             }
             SessionStore.Dispose();
         }
+
+
     }
 }

@@ -16,19 +16,15 @@ namespace SmartSql.DbSession
         private static readonly ILog _logger = LogManager.GetLogger(typeof(DbConnectionSessionStore));
         const string KEY = "SmartSql-Local-DbSesstion-";
         protected string sessionName = string.Empty;
-        private static AsyncLocal<IDictionary<string, IDbConnectionSession>> staticSessions
-            = new AsyncLocal<IDictionary<string, IDbConnectionSession>>(
-                //() => new Dictionary<String, IDbConnectionSession>()
-                );
+        private AsyncLocal<IDictionary<string, IDbConnectionSession>> staticSessions
+            = new AsyncLocal<IDictionary<string, IDbConnectionSession>>();
         public IDbConnectionSession LocalSession
         {
             get
             {
                 if (staticSessions.Value == null)
                 {
-                    staticSessions.Value = new Dictionary<String, IDbConnectionSession>();
-                    //_logger.Error($"SmartSql.DbConnectionSessionStore.LocalSession.staticSessions sessionName:{sessionName} is missing");
-                    //throw new SmartSqlException("SmartSql DbConnectionSessionStore.staticSessions is missing.");
+                    return null;
                 };
                 staticSessions.Value.TryGetValue(sessionName, out IDbConnectionSession session);
                 return session;
@@ -40,10 +36,24 @@ namespace SmartSql.DbSession
         }
         public void Dispose()
         {
-            staticSessions.Value[sessionName] = null;
+            if (staticSessions.Value != null)
+            {
+                staticSessions.Value[sessionName] = null;
+            }
         }
+
         public void Store(IDbConnectionSession session)
         {
+            if (staticSessions.Value == null)
+            {
+                lock (this)
+                {
+                    if (staticSessions.Value == null)
+                    {
+                        staticSessions.Value = new Dictionary<String, IDbConnectionSession>();
+                    }
+                }
+            }
             staticSessions.Value[sessionName] = session;
         }
     }

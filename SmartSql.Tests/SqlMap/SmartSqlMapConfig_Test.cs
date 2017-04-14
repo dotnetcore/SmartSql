@@ -6,10 +6,12 @@ using Xunit;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
+using SmartSql.Abstractions;
+using System.Threading;
 
 namespace SmartSql.Tests.SqlMap
 {
-    public class SmartSqlMapConfig_Test
+    public class SmartSqlMapConfig_Test : TestBase
     {
         [Fact]
         public void Load()
@@ -41,32 +43,22 @@ namespace SmartSql.Tests.SqlMap
                  }
             });
             xmlFile.Dispose();
-
-
         }
 
         [Fact]
-        public void SmartSqlMap_Serialize()
+        public void Query_OnChangeConfig()
         {
-            //XmlSerializer serializer = new XmlSerializer(typeof(SmartSqlMap));
-            //var xmlFile = File.Create(@"E:\SmartSqlMap.xml");
-            //serializer.Serialize(xmlFile, new SmartSqlMap
-            //{
-            //    Scope = "T_Test",
-            //    Statements = new List<Statement> {
-            //          new Statement{
-            //               Id="GetList",
-            //                SqlTags=new List<SqlTag>{
-            //                    new SqlTag{Type= TagType.SqlText, BodyText=new string[]{"Select * From T_Test Where 1=1"}},
-            //                    new SqlTag{Type= TagType.IsNotEmpty, Prepend="And", Property="Id", BodyText=new string[]{"Id=@Id" } },
-            //                    new SqlTag{Type= TagType.IsNotEmpty, Prepend="And", Property="Ids", Iterate=new Iterate{
-            //                         Prepend="Ids In", Open="(", Close=")", Conjunction=",", Property="Ids", Type= TagType.Iterate, BodyText=new string[]{"#Ids[]#" }
-            //                    } },
-            //                }
-            //          }
-            //      }
-            //});
-            //xmlFile.Dispose();
+            int i = 0;
+            for (i = 0; i < 10; i++)
+            {
+                var list = SqlMapper.Query<T_Test>(new RequestContext
+                {
+                    Scope = "T_Test",
+                    SqlId = "GetList",
+                    Request = new { Ids = new long[] { 1, 2, 3, 4 } }
+                });
+                Thread.Sleep(5000);
+            }
         }
 
         [Fact]

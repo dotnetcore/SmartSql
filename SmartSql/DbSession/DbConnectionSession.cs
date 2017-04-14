@@ -18,7 +18,7 @@ namespace SmartSql.DbSession
         public IDataSource DataSource { get; }
         public IDbConnection Connection { get; private set; }
         public IDbTransaction Transaction { get; private set; }
-        public bool IsTransactionOpen { get; private set; }
+        public DbSessionLifeCycle LifeCycle { get;  set; }
         public DbConnectionSession(DbProviderFactory dbProviderFactory, IDataSource dataSource)
         {
             Id = Guid.NewGuid();
@@ -27,24 +27,18 @@ namespace SmartSql.DbSession
         }
         public void BeginTransaction()
         {
-            if (Connection == null || Connection.State != ConnectionState.Open)
-            {
-                OpenConnection();
-            }
+            OpenConnection();
             _logger.Debug("DbConnectionSession.BeginTransaction.");
             Transaction = Connection.BeginTransaction();
 
-            IsTransactionOpen = true;
+            LifeCycle = DbSessionLifeCycle.Scoped;
         }
         public void BeginTransaction(IsolationLevel isolationLevel)
         {
-            if (Connection == null || Connection.State != ConnectionState.Open)
-            {
-                OpenConnection();
-            }
+            OpenConnection();
             _logger.Debug("DbConnectionSession.BeginTransaction.");
             Transaction = Connection.BeginTransaction(isolationLevel);
-            IsTransactionOpen = true;
+            LifeCycle = DbSessionLifeCycle.Scoped;
         }
         public void CreateConnection()
         {
@@ -69,31 +63,24 @@ namespace SmartSql.DbSession
             Transaction.Commit();
             Transaction.Dispose();
             Transaction = null;
-            IsTransactionOpen = false;
-
-            if (Connection.State != ConnectionState.Closed)
-            {
-                this.CloseConnection();
-            }
+            LifeCycle = DbSessionLifeCycle.Transient;
+            this.CloseConnection();
         }
 
         public void Dispose()
         {
             _logger.Debug("DbConnectionSession.Dispose.");
-            if (IsTransactionOpen)
+
+            if (Transaction != null)
             {
                 if (Connection.State != ConnectionState.Closed)
                 {
                     RollbackTransaction();
-                    IsTransactionOpen = false;
                 }
             }
             else
             {
-                if (Connection.State != ConnectionState.Closed)
-                {
-                    CloseConnection();
-                }
+                CloseConnection();
             }
         }
 
@@ -134,11 +121,8 @@ namespace SmartSql.DbSession
             Transaction.Rollback();
             Transaction.Dispose();
             Transaction = null;
-            IsTransactionOpen = false;
-            if (Connection.State != ConnectionState.Closed)
-            {
-                this.CloseConnection();
-            }
+            LifeCycle = DbSessionLifeCycle.Transient;
+            this.CloseConnection();
         }
 
     }

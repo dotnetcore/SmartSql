@@ -23,7 +23,7 @@ namespace SmartSql
         public T Run<T>(IRequestContext context, DataSourceChoice sourceChoice, Func<String, IDbConnectionSession, T> runSql)
         {
             IDbConnectionSession session = SmartSqlMapper.SessionStore.LocalSession;
-            
+
             if (session == null)
             {
                 session = SmartSqlMapper.CreateDbSession(sourceChoice);
@@ -40,7 +40,7 @@ namespace SmartSql
             }
             finally
             {
-                if (!session.IsTransactionOpen)
+                if (session.LifeCycle == DbSessionLifeCycle.Transient)
                 {
                     session.CloseConnection();
                 }
@@ -66,10 +66,10 @@ namespace SmartSql
             }
             finally
             {
-                //if (!session.IsTransactionOpen)
-                //{
-                //    session.CloseConnection();
-                //}
+                if (session.LifeCycle == DbSessionLifeCycle.Transient)
+                {
+                    session.CloseConnection();
+                }
             }
         }
 
