@@ -8,12 +8,12 @@ namespace SmartSql.Abstractions.Cache
     public interface ICacheProvider
     {
         void Initialize(IDictionary properties);
-        object this[object key]
+        object this[CacheKey key, Type type]
         {
             get;
             set;
         }
-        object Remove(object key);
+        bool Remove(CacheKey key);
         void Flush();
     }
 }
