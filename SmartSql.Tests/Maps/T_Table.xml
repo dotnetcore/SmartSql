@@ -2,16 +2,7 @@
 <SmartSqlMap Scope="T_Test"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
     <Statement Id="QueryParams">
-      Where 1=1
-      <IsNotEmpty Prepend="And T.Id" Property="Ids" In="true"/>
-      <IsNotEmpty Prepend="And" Property="Name">
-        T.Name Like '%'+ @Name + '%'
-      </IsNotEmpty>
-    </Statement>
-    <Statement Id="GetList">
-      Select Top 10 * From T_Test T
-      <Include RefId="QueryParams"/>
-      Order By Id Desc
+      
     </Statement>
     <Statement Id="Insert">
       INSERT INTO T_Test
@@ -30,5 +21,11 @@
       Set Name=@Name
       Where Id=@Id
     </Statement>
+    <Statement Id="GetList">
+      Select Top 10 T.* From T_Test T
+      <Include RefId="QueryParams"/>
+      Order By Id Desc
+    </Statement>
+
   </Statements>
 </SmartSqlMap>

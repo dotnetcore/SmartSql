@@ -109,6 +109,11 @@
                         <xs:attribute name="In" type="xs:boolean" use="optional" default="false"/>
                       </xs:complexType>
                     </xs:element>
+                    <xs:element name="Include">
+                      <xs:complexType>
+                        <xs:attribute name="RefId" type="xs:string" use="required" />
+                      </xs:complexType>
+                    </xs:element>
                   </xs:choice>
                   <xs:attribute name="Id" type="xs:string" use="required" />
                 </xs:complexType>

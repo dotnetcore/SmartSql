@@ -23,6 +23,7 @@ namespace SmartSql.SqlMap.Tags
         IsNotEmpty,
         IsNotEqual,
         IsNotNull,
-        IsNull
+        IsNull,
+        Include
     }
 }

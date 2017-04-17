@@ -1,5 +1,6 @@
 ﻿using SmartSql.Abstractions;
 using SmartSql.Abstractions.Logging;
+using System.Linq;
 using SmartSql.Common;
 using SmartSql.SqlMap.Tags;
 using System;
@@ -8,6 +9,8 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using SmartSql.Exceptions;
+
 namespace SmartSql.SqlMap
 {
     [XmlRoot(Namespace = "http://SmartSql.net/schemas/SmartSqlMap.xsd")]
@@ -195,6 +198,21 @@ namespace SmartSql.SqlMap
                                 Prepend = prepend,
                                 Property = property,
                                 BodyText = bodyText
+                            });
+                            break;
+                        }
+                    case "Include":
+                        {
+                            var refId = tagNode.Attributes?["RefId"]?.Value;
+                            var refStatement = smartSqlMap.Statements.FirstOrDefault(m => m.Id == refId);
+                            if (refStatement == null)
+                            {
+                                throw new SmartSqlException($"SmartSql.Statement.Load can not find statement.id:{refId}");
+                            }
+                            statement.SqlTags.Add(new Include
+                            {
+                                RefId = refId,
+                                Ref = refStatement
                             });
                             break;
                         }

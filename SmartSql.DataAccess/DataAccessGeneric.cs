@@ -5,6 +5,7 @@ using SmartSql.Abstractions;
 using SmartSql.DataAccess.Abstractions;
 namespace SmartSql.DataAccess
 {
+
     /// <summary>
     /// 泛型数据库访问对象
     /// 提供常规方法
@@ -17,7 +18,7 @@ namespace SmartSql.DataAccess
         {
 
         }
-        protected bool IsAutoPrimary { get; set; } = true;
+
         protected override void InitScope()
         {
             Scope = typeof(TEntity).Name;
@@ -82,7 +83,8 @@ namespace SmartSql.DataAccess
         #region Write
         public TPrimary Insert<TPrimary>(TEntity entity)
         {
-            if (IsAutoPrimary)
+            bool isNoneIdentity = typeof(TPrimary) == typeof(NoneIdentity);
+            if (!isNoneIdentity)
             {
                 return SqlMapper.ExecuteScalar<TPrimary>(new RequestContext
                 {
@@ -128,4 +130,5 @@ namespace SmartSql.DataAccess
         }
         #endregion
     }
+
 }
