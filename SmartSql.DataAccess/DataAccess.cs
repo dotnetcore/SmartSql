@@ -10,7 +10,7 @@ namespace SmartSql.DataAccess
 {
     public abstract class DataAccess : ITransaction
     {
-        public DataAccess(String smartSqlMapConfigPath = "SmartSqlMapConfig.config")
+        public DataAccess(String smartSqlMapConfigPath = "SmartSqlMapConfig.xml")
         {
             SmartSqlMapConfigPath = smartSqlMapConfigPath;
             InitScope();

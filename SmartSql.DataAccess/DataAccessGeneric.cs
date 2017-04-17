@@ -5,7 +5,6 @@ using SmartSql.Abstractions;
 using SmartSql.DataAccess.Abstractions;
 namespace SmartSql.DataAccess
 {
-
     /// <summary>
     /// 泛型数据库访问对象
     /// 提供常规方法
@@ -14,7 +13,7 @@ namespace SmartSql.DataAccess
     public class DataAccessGeneric<TEntity> : DataAccess, IReadDataAccess<TEntity>, IWriteDataAccess<TEntity>
         where TEntity : class
     {
-        public DataAccessGeneric(String smartSqlMapConfigPath = "SmartSqlMapConfig.config") : base(smartSqlMapConfigPath)
+        public DataAccessGeneric(String smartSqlMapConfigPath = "SmartSqlMapConfig.xml") : base(smartSqlMapConfigPath)
         {
 
         }
@@ -24,19 +23,15 @@ namespace SmartSql.DataAccess
             Scope = typeof(TEntity).Name;
         }
         #region Read
-        public TEntity GetEntity(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
+
+        public TEntity GetEntity<TPrimary>(TPrimary Id, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
             return SqlMapper.QuerySingle<TEntity>(new RequestContext
             {
                 Scope = this.Scope,
                 SqlId = DefaultSqlId.GetEntity,
-                Request = paramObj
+                Request = new { Id = Id }
             }, sourceChoice);
-        }
-
-        public TEntity GetEntity<TPrimary>(TPrimary Id, DataSourceChoice sourceChoice = DataSourceChoice.Read)
-        {
-            return GetEntity(new { Id = Id }, sourceChoice);
         }
 
         public IEnumerable<TResponse> GetList<TResponse>(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
@@ -49,7 +44,7 @@ namespace SmartSql.DataAccess
             }, sourceChoice);
         }
 
-        public IEnumerable<TResponse> GetListByPage<TResponse>(object paramObj,  DataSourceChoice sourceChoice = DataSourceChoice.Read)
+        public IEnumerable<TResponse> GetListByPage<TResponse>(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
             return SqlMapper.Query<TResponse>(new RequestContext
             {
@@ -106,16 +101,11 @@ namespace SmartSql.DataAccess
         }
         public int Delete<TPrimary>(TPrimary Id)
         {
-            return Delete(new { Id = Id });
-        }
-
-        public int Delete(object paramObj)
-        {
             return SqlMapper.Execute(new RequestContext
             {
                 Scope = this.Scope,
                 SqlId = DefaultSqlId.Delete,
-                Request = paramObj
+                Request = new { Id = Id }
             });
         }
 

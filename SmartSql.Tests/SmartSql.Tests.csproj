@@ -28,9 +28,6 @@
     <None Update="Maps-MySql\T_Test.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Maps\T_Table.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Maps\T_Test.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

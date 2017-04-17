@@ -27,7 +27,6 @@ namespace SmartSql.DataAccess.Abstractions
     /// <typeparam name="TEntity"></typeparam>
     public interface IGetEntity<TEntity> where TEntity : class
     {
-        TEntity GetEntity(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read);
         TEntity GetEntity<TPrimary>(TPrimary Id, DataSourceChoice sourceChoice = DataSourceChoice.Read);
     }
     /// <summary>
