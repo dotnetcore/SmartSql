@@ -4,6 +4,7 @@
     IsWatchConfigFile="true"
   />
   <Database>
+    <!--ParameterPrefix:[SqlServer:@ | MySQL:? |Oracle::] -->
     <DbProvider Name="SqlClientFactory" ParameterPrefix="@" Type="System.Data.SqlClient.SqlClientFactory,System.Data.SqlClient"/>
     <Write Name="WriteDB" ConnectionString="Data Source=.;database=TestDB;uid=sa;pwd=SmartSql.net"/>
     <Read Name="ReadDB-0" ConnectionString="Data Source=.;database=TestDB;uid=sa;pwd=SmartSql.net" Weight="80"/>
