@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.5</TargetFramework>
+    <Description>Redis Cache For SmartSql</Description>
+    <Authors>Ahoo Wang</Authors>
+    <Company>Ahoo Wang</Company>
+    <Copyright>Ahoo Wang</Copyright>
+    <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
+    <PackageTags>SmartSql Dapper MyBatis  ORM Redis Cache</PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
