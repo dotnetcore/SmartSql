@@ -9,6 +9,17 @@
   <Statements>
     <Statement Id="QueryParams">
       Where 1=1
+      <Switch Prepend="Order By" Property="OrderBy">
+        <Case CompareValue="1">
+          Id Desc
+        </Case>
+        <Case CompareValue="2">
+          Id Asc
+        </Case>
+        <Case CompareValue="3">
+          Name Desc
+        </Case>
+      </Switch>
     </Statement>
     <!--新增-->
     <Statement Id="Insert">
@@ -38,7 +49,7 @@
     <Statement Id="GetList">
       SELECT T.* From T_Test T With(NoLock)
       <Include RefId="QueryParams"/>
-      Order By T.Id Desc
+      <!--Order By T.Id Desc-->
     </Statement>
 
     <!--获取分页数据-->

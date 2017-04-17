@@ -18,10 +18,11 @@ namespace SmartSql.DbSession
         public IDataSource DataSource { get; }
         public IDbConnection Connection { get; private set; }
         public IDbTransaction Transaction { get; private set; }
-        public DbSessionLifeCycle LifeCycle { get;  set; }
+        public DbSessionLifeCycle LifeCycle { get; set; }
         public DbConnectionSession(DbProviderFactory dbProviderFactory, IDataSource dataSource)
         {
             Id = Guid.NewGuid();
+            LifeCycle = DbSessionLifeCycle.Transient;
             DbProviderFactory = dbProviderFactory;
             DataSource = dataSource;
         }

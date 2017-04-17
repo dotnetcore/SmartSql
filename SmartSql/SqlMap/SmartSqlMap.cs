@@ -216,6 +216,28 @@ namespace SmartSql.SqlMap
                             });
                             break;
                         }
+                    case "Switch":
+                        {
+                            var switchTag = new Switch
+                            {
+                                Property = property,
+                                Prepend = prepend,
+                                Cases = new List<Switch.Case>()
+                            };
+                            var caseNodes = tagNode.ChildNodes;
+                            foreach (XmlNode caseNode in caseNodes)
+                            {
+                                var caseCompareValue = caseNode.Attributes?["CompareValue"]?.Value;
+                                var caseBodyText = caseNode.InnerText.Replace("\n", "");
+                                switchTag.Cases.Add(new Switch.Case
+                                {
+                                    CompareValue = caseCompareValue,
+                                    BodyText = caseBodyText
+                                });
+                            }
+                            statement.SqlTags.Add(switchTag);
+                            break;
+                        }
                     default: { break; };
                 }
                 #endregion

@@ -7,7 +7,6 @@ namespace SmartSql.SqlMap.Tags
     public interface ITag
     {
         TagType Type { get; }
-        String BodyText { get; set; }
         String BuildSql(Object paramObj, String parameterPrefix);
     }
 
@@ -24,6 +23,7 @@ namespace SmartSql.SqlMap.Tags
         IsNotEqual,
         IsNotNull,
         IsNull,
-        Include
+        Include,
+        Switch
     }
 }
