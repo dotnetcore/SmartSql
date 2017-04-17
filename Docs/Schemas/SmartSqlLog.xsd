@@ -3,7 +3,7 @@
   <xs:element name="SmartSqlLog">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="LoggerAdapter">
+        <xs:element name="LoggerFactoryAdapter">
           <xs:complexType>
             <xs:attribute name="Name" type="xs:string" use="required" />
             <xs:attribute name="Type" type="xs:string" use="required" />
