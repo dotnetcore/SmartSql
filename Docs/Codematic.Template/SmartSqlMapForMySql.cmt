@@ -1,0 +1,85 @@
+﻿<#@ template language="c#" HostSpecific="True" #>
+<#@ output extension= ".xml" #>
+<#
+  TableHost host = (TableHost)(Host);
+  host.Fieldlist.Sort(CodeCommon.CompareByintOrder);
+#>
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+*******************************
+ Create By Ahoo Wang 
+ Date <#= DateTime.Now.ToString("yyyy-MM-dd HH:mm") #>
+*******************************
+-->
+<!--需要设置 Scope 一般设置为TableName -->
+<SmartSqlMap Scope="<#= host.GetModelClass(host.TableName) #>"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+  <Statements>
+     <Statement Id="QueryParams">
+      Where 1=1
+     </Statement>
+    <!--新增-->
+     <Statement Id="Insert">
+      INSERT INTO <#= host.GetModelClass(host.TableName) #>     
+      <# for (int i = 1; i < host.Fieldlist.Count; ++i) { #><# if (i == 1) { #>(<#= host.Fieldlist[i].ColumnName.ToString() #><# } else { #>        
+      ,<#= host.Fieldlist[i].ColumnName.ToString() #><# } #><# } #>)
+      VALUES
+      <# for (int i = 1; i < host.Fieldlist.Count; ++i) { #><# if (i == 1) { #>(#<#= host.Fieldlist[i].ColumnName.ToString() #>#<# } else { #>        
+      ,#<#= host.Fieldlist[i].ColumnName.ToString() #>#<# } #><# } #>)    
+      ;Select LAST_INSERT_ID()
+    </Statement>
+    
+    <!--删除-->
+    <Statement Id="Delete">
+      Delete <#= host.GetModelClass(host.TableName) #>
+      Where <#= host.Keys[0].ColumnName #>=#Id#
+    </Statement>
+    
+    
+    <!--更新-->
+    <Statement Id="Update">
+      UPDATE <#= host.GetModelClass(host.TableName) #>
+      SET 
+      <# for (int i = 1; i < host.Fieldlist.Count; ++i) { #><# if (i == 1) { #><#= host.Fieldlist[i].ColumnName.ToString() #> = #<#= host.Fieldlist[i].ColumnName.ToString() #>#
+      <# } else { #>,<#= host.Fieldlist[i].ColumnName.ToString() #> = #<#= host.Fieldlist[i].ColumnName.ToString() #>#
+      <# }}#>Where <#= host.Keys[0].ColumnName #>=#<#= host.Keys[0].ColumnName #>#
+    </Statement>
+    
+    <!--获取数据列-->
+    <Statement Id="GetList">
+      SELECT T.* From <#= host.GetModelClass(host.TableName) #> T With(NoLock)
+      <Include RefId="QueryParams"/>
+      Order By T.<#= host.Keys[0].ColumnName #> Desc
+    </Statement>
+
+	<!--获取分页数据-->
+    <Statement Id="GetListByPage">
+      Select T.*  
+      From <#= host.GetModelClass(host.TableName) #> T
+      <Include RefId="QueryParams"/>
+      Limit #Offset#,#Rows#
+    </Statement>
+       
+    <!--获取记录数-->
+    <Statement Id="GetRecord">
+      Select Count(1) From <#= host.GetModelClass(host.TableName) #> T With(NoLock)
+      <Include RefId="QueryParams"/>
+    </Statement>
+    
+    <!--获取表映射实体-->
+    <Statement Id="GetEntity">
+      Select T.* From <#= host.GetModelClass(host.TableName) #> T With(NoLock)
+      Where 1=1
+      <IsNotEmpty Prepend="And" Property="Id">
+        T.<#= host.Keys[0].ColumnName #>=#Id#
+      </IsNotEmpty>
+      Limit 1
+    </Statement>
+    
+    <!--是否存在该记录-->
+    <Statement Id="IsExist">
+      Select Count(1) From <#= host.GetModelClass(host.TableName) #> T With(NoLock)
+      <Include RefId="QueryParams"/>
+    </Statement>
+    
+  </Statements>
+</SmartSqlMap>
