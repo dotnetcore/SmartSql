@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
+    <Authors>Ahoo Wang</Authors>
+    <Description>DataAccess For SmartSql</Description>
+    <Company>Ahoo Wang</Company>
+    <Copyright>Ahoo Wang</Copyright>
+    <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
+    <PackageTags>SmartSql Dapper MyBatis  ORM DataAccess</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
