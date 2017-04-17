@@ -11,7 +11,6 @@
  Date <#= DateTime.Now.ToString("yyyy-MM-dd HH:mm") #>
 *******************************
 -->
-<!--需要设置 Scope 一般设置为TableName -->
 <SmartSqlMap Scope="<#= host.GetModelClass(host.TableName) #>"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
      <Statement Id="QueryParams">
