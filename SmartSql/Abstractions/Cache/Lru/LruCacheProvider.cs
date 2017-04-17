@@ -18,13 +18,13 @@ namespace SmartSql.Abstractions.Cache.Lru
             _keyList = ArrayList.Synchronized(new ArrayList());
         }
 
-        public object Remove(CacheKey key)
+        public bool Remove(CacheKey key)
         {
-            object o = this[key];
+            object o = this[key,typeof(object)];
 
             _keyList.Remove(key);
             _cache.Remove(key);
-            return o;
+            return true;
         }
 
         public void Flush()
@@ -32,7 +32,7 @@ namespace SmartSql.Abstractions.Cache.Lru
             _cache.Clear();
             _keyList.Clear();
         }
-        public object this[CacheKey key]
+        public object this[CacheKey key, Type type]
         {
             get
             {
