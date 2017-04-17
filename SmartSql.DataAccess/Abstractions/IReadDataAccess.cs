@@ -42,7 +42,7 @@ namespace SmartSql.DataAccess.Abstractions
     /// </summary>
     public interface IGetListByPage
     {
-        IEnumerable<TResponse> GetListByPage<TResponse>(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read);
+        IEnumerable<TResponse> GetListByPage<TResponse>(object paramObj,  DataSourceChoice sourceChoice = DataSourceChoice.Read);
     }
     /// <summary>
     /// 获取记录数

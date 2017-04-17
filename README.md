@@ -21,10 +21,10 @@
 - 4 Logging √
   - 4.1 NLog √ （当你需要跟踪调试的时候一切都是那么一目了然）
 - 5 DAO
-  - 5.1 DAO
-  - 5.2 DAO Tool 
-    - 5.2.1 Template Xml & Entity & DAO
-    - 5.2.2 Generate Tool
+  - 5.1 DAO √
+  - 5.2 DAO Tool  √
+    - 5.2.1 Template Xml & Entity & DAO  √
+    - 5.2.2 Generate Tool  √
 - 6 Query Cache
   - 6.1 SmartSql.Cache.Memory
   - 6.2 SmartSql.Cache.Redis

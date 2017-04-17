@@ -49,7 +49,7 @@ namespace SmartSql.DataAccess
             }, sourceChoice);
         }
 
-        public IEnumerable<TResponse> GetListByPage<TResponse>(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
+        public IEnumerable<TResponse> GetListByPage<TResponse>(object paramObj,  DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
             return SqlMapper.Query<TResponse>(new RequestContext
             {
