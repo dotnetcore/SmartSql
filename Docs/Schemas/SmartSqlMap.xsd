@@ -114,6 +114,23 @@
                         <xs:attribute name="RefId" type="xs:string" use="required" />
                       </xs:complexType>
                     </xs:element>
+                    <xs:element  name="Switch">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element minOccurs="1" maxOccurs="unbounded" name="Case">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                  <xs:attribute name="CompareValue" type="xs:string" use="required" />
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Prepend" type="xs:string" use="required" />
+                        <xs:attribute name="Property" type="xs:string" use="required" />
+                      </xs:complexType>
+                    </xs:element>
                   </xs:choice>
                   <xs:attribute name="Id" type="xs:string" use="required" />
                 </xs:complexType>
