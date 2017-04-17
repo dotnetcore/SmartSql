@@ -22,15 +22,15 @@
       <# for (int i = 1; i < host.Fieldlist.Count; ++i) { #><# if (i == 1) { #>(<#= host.Fieldlist[i].ColumnName.ToString() #><# } else { #>        
       ,<#= host.Fieldlist[i].ColumnName.ToString() #><# } #><# } #>)
       VALUES
-      <# for (int i = 1; i < host.Fieldlist.Count; ++i) { #><# if (i == 1) { #>(#<#= host.Fieldlist[i].ColumnName.ToString() #>#<# } else { #>        
-      ,#<#= host.Fieldlist[i].ColumnName.ToString() #>#<# } #><# } #>)    
+      <# for (int i = 1; i < host.Fieldlist.Count; ++i) { #><# if (i == 1) { #>(?<#= host.Fieldlist[i].ColumnName.ToString() #><# } else { #>        
+      ,?<#= host.Fieldlist[i].ColumnName.ToString() #><# } #><# } #>)    
       ;Select LAST_INSERT_ID()
     </Statement>
     
     <!--删除-->
     <Statement Id="Delete">
       Delete <#= host.GetModelClass(host.TableName) #>
-      Where <#= host.Keys[0].ColumnName #>=#Id#
+      Where <#= host.Keys[0].ColumnName #>=?Id
     </Statement>
     
     
@@ -38,9 +38,9 @@
     <Statement Id="Update">
       UPDATE <#= host.GetModelClass(host.TableName) #>
       SET 
-      <# for (int i = 1; i < host.Fieldlist.Count; ++i) { #><# if (i == 1) { #><#= host.Fieldlist[i].ColumnName.ToString() #> = #<#= host.Fieldlist[i].ColumnName.ToString() #>#
-      <# } else { #>,<#= host.Fieldlist[i].ColumnName.ToString() #> = #<#= host.Fieldlist[i].ColumnName.ToString() #>#
-      <# }}#>Where <#= host.Keys[0].ColumnName #>=#<#= host.Keys[0].ColumnName #>#
+      <# for (int i = 1; i < host.Fieldlist.Count; ++i) { #><# if (i == 1) { #><#= host.Fieldlist[i].ColumnName.ToString() #> = ?<#= host.Fieldlist[i].ColumnName.ToString() #>
+      <# } else { #>,<#= host.Fieldlist[i].ColumnName.ToString() #> = ?<#= host.Fieldlist[i].ColumnName.ToString() #>
+      <# }}#>Where <#= host.Keys[0].ColumnName #>=?<#= host.Keys[0].ColumnName #>
     </Statement>
     
     <!--获取数据列-->
@@ -55,7 +55,7 @@
       Select T.*  
       From <#= host.GetModelClass(host.TableName) #> T
       <Include RefId="QueryParams"/>
-      Limit #Offset#,#Rows#
+      Limit ?Offset,?Rows
     </Statement>
        
     <!--获取记录数-->
@@ -69,7 +69,7 @@
       Select T.* From <#= host.GetModelClass(host.TableName) #> T With(NoLock)
       Where 1=1
       <IsNotEmpty Prepend="And" Property="Id">
-        T.<#= host.Keys[0].ColumnName #>=#Id#
+        T.<#= host.Keys[0].ColumnName #>=?Id
       </IsNotEmpty>
       Limit 1
     </Statement>
