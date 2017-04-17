@@ -40,9 +40,9 @@ namespace SmartSql.Cache.Redis
 
         public void Flush()
         {
-            var endPoint = connection.GetEndPoints()[0];
-            var dbServer = connection.GetServer(endPoint);
-            dbServer.FlushDatabase(databaseId);
+            //var endPoint = connection.GetEndPoints()[0];
+            //var dbServer = connection.GetServer(endPoint);
+            //dbServer.FlushDatabase(databaseId);
             cacheDB.KeyDelete("*");
         }
 
