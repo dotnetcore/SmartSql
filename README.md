@@ -65,37 +65,71 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMap Scope="T_Test"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
-    <Statement Id="GetList">
-      Select Top 10 * From T_Test Where 1=1
-
-      <IsNotEmpty Prepend="And Id" Property="Ids" In="true">
-      </IsNotEmpty>
-      <IsEmpty Prepend="And" Property="Id">
-      </IsEmpty>
-      <IsEqual Prepend="And" Property="Id" CompareValue="0">Id=@Id</IsEqual>
-      <IsGreaterEqual Prepend="" Property="" CompareValue=""></IsGreaterEqual>
-      <IsGreaterThan Prepend="" Property="" CompareValue=""></IsGreaterThan>
-      <IsLessEqual Prepend="" Property="" CompareValue=""></IsLessEqual>
-      <IsLessThan Prepend="" Property="" CompareValue=""></IsLessThan>
-      <IsNotEmpty Prepend="" Property="">
-      </IsNotEmpty>
-      <IsNotEqual Prepend="" Property="" CompareValue=""></IsNotEqual>
-      <IsNotNull Prepend="" Property=""></IsNotNull>
-      <IsNull Prepend="" Property=""></IsNull>
-      Order By Id Desc
+    <Statement Id="QueryParams">
+      Where 1=1
     </Statement>
+    <!--新增-->
     <Statement Id="Insert">
       INSERT INTO T_Test
-      ([Name])
+      (Name)
       VALUES
       (@Name)
-      ;
-      Select @@IDENTITY
+      ;Select @@IDENTITY
     </Statement>
-    
+
+    <!--删除-->
+    <Statement Id="Delete">
+      Delete T_Test
+      Where Id=@Id
+    </Statement>
+
+
+    <!--更新-->
+    <Statement Id="Update">
+      UPDATE T_Test
+      SET
+      Name = @Name
+      Where Id=@Id
+    </Statement>
+
+    <!--获取数据列-->
+    <Statement Id="GetList">
+      SELECT T.* From T_Test T With(NoLock)
+      <Include RefId="QueryParams"/>
+      Order By T.Id Desc
+    </Statement>
+
+    <!--获取分页数据-->
+    <Statement Id="GetListByPage">
+      Select TT.* From
+      (Select ROW_NUMBER() Over(Order By T.Id Desc) Row_Index,T.* From T_Test T With(NoLock)
+      <Include RefId="QueryParams"/>) TT
+      Where TT.Row_Index Between ((@PageIndex-1)*@PageSize+1) And (@PageIndex*@PageSize)
+    </Statement>
+
+    <!--获取记录数-->
+    <Statement Id="GetRecord">
+      Select Count(1) From T_Test T With(NoLock)
+      <Include RefId="QueryParams"/>
+    </Statement>
+
+    <!--获取表映射实体-->
+    <Statement Id="GetEntity">
+      Select Top 1 T.* From T_Test T With(NoLock)
+      Where 1=1
+      <IsNotEmpty Prepend="And" Property="Id">
+        T.Id=@Id
+      </IsNotEmpty>
+    </Statement>
+
+    <!--是否存在该记录-->
+    <Statement Id="IsExist">
+      Select Count(1) From T_Test T With(NoLock)
+      <Include RefId="QueryParams"/>
+    </Statement>
+
   </Statements>
 </SmartSqlMap>
-
 ```
 ## 安装 (NuGet)
 ```
