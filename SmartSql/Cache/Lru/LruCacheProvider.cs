@@ -1,9 +1,10 @@
-﻿using System;
+﻿using SmartSql.Abstractions.Cache;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SmartSql.Abstractions.Cache.Lru
+namespace SmartSql.Cache
 {
     public class LruCacheProvider : ICacheProvider
     {

@@ -6,9 +6,26 @@
 *******************************
 -->
 <SmartSqlMap Scope="T_Test"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+  <Caches>
+    <Cache Id="T_Test.RedisCache" Type="Redis">
+      <Parameter Key="CacheSize" Value="1000"/>
+      <Parameter Key="ConnectionString" Value=""/>
+      <Parameter Key="DatabaseId" Value="0"/>
+      <FlushInterval Hours="24" Minutes="0" Seconds="0"/>
+      <FlushOnExecute Statement="T_Test.Insert"/>
+      <FlushOnExecute Statement="T_Test.Update"/>
+    </Cache>
+    <Cache Id="T_Test.LruCache" Type="Lru">
+      <Parameter Key="CacheSize" Value="1000"/>
+      <FlushInterval Hours="24" Minutes="0" Seconds="0"/>
+      <FlushOnExecute Statement="T_Test.Insert"/>
+      <FlushOnExecute Statement="T_Test.Update"/>
+    </Cache>
+  </Caches>
   <Statements>
     <Statement Id="QueryParams">
       Where 1=1
+      
       <Switch Prepend="Order By" Property="OrderBy">
         <Case CompareValue="1">
           Id Desc
@@ -46,7 +63,7 @@
     </Statement>
 
     <!--获取数据列-->
-    <Statement Id="GetList">
+    <Statement Id="GetList" Cache="T_Test.RedisCache">
       SELECT T.* From T_Test T With(NoLock)
       <Include RefId="QueryParams"/>
       <!--Order By T.Id Desc-->
@@ -64,6 +81,7 @@
     <Statement Id="GetRecord">
       Select Count(1) From T_Test T With(NoLock)
       <Include RefId="QueryParams"/>
+    
     </Statement>
 
     <!--获取表映射实体-->
@@ -72,7 +90,9 @@
       Where 1=1
       <IsNotEmpty Prepend="And" Property="Id">
         T.Id=@Id
+
       </IsNotEmpty>
+      
     </Statement>
 
     <!--是否存在该记录-->
