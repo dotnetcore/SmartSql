@@ -9,6 +9,6 @@ namespace SmartSql.Abstractions
     /// </summary>
     public interface ISqlBuilder
     {
-        String BuildSql(IRequestContext context);
+        String BuildSql(RequestContext context);
     }
 }

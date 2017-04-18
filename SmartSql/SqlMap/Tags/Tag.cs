@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartSql.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
@@ -16,9 +17,9 @@ namespace SmartSql.SqlMap.Tags
         public IList<ITag> ChildTags { get; set; }
         public bool In { get; set; }
         public abstract bool IsCondition(object paramObj);
-        public virtual String BuildSql(object paramObj, String parameterPrefix)
+        public virtual String BuildSql(RequestContext context, String parameterPrefix)
         {
-            if (IsCondition(paramObj))
+            if (IsCondition(context.Request))
             {
                 if (In)
                 {
@@ -29,7 +30,7 @@ namespace SmartSql.SqlMap.Tags
                 {
                     foreach (var childTag in ChildTags)
                     {
-                        string strSql = childTag.BuildSql(paramObj, parameterPrefix);
+                        string strSql = childTag.BuildSql(context, parameterPrefix);
                         strBuilder.Append(strSql);
                     }
                 }

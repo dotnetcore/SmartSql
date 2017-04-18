@@ -8,11 +8,11 @@ namespace SmartSql.Abstractions
 {
     public interface ISmartSqlMapperAsync
     {
-        Task<int> ExecuteAsync(IRequestContext context);
-        Task<T> ExecuteScalarAsync<T>(IRequestContext context);
-        Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context);
-        Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context, DataSourceChoice sourceChoice);
-        Task<T> QuerySingleAsync<T>(IRequestContext context);
-        Task<T> QuerySingleAsync<T>(IRequestContext context, DataSourceChoice sourceChoice);
+        Task<int> ExecuteAsync(RequestContext context);
+        Task<T> ExecuteScalarAsync<T>(RequestContext context);
+        Task<IEnumerable<T>> QueryAsync<T>(RequestContext context);
+        Task<IEnumerable<T>> QueryAsync<T>(RequestContext context, DataSourceChoice sourceChoice);
+        Task<T> QuerySingleAsync<T>(RequestContext context);
+        Task<T> QuerySingleAsync<T>(RequestContext context, DataSourceChoice sourceChoice);
     }
 }

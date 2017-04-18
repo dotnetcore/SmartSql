@@ -25,12 +25,12 @@ namespace SmartSql.Abstractions
 
         void LoadConfig(SmartSqlMapConfig smartSqlMapConfig);
 
-        int Execute(IRequestContext context);
-        T ExecuteScalar<T>(IRequestContext context);
-        IEnumerable<T> Query<T>(IRequestContext context);
-        IEnumerable<T> Query<T>(IRequestContext context, DataSourceChoice sourceChoice);
-        T QuerySingle<T>(IRequestContext context);
-        T QuerySingle<T>(IRequestContext context, DataSourceChoice sourceChoice);
+        int Execute(RequestContext context);
+        T ExecuteScalar<T>(RequestContext context);
+        IEnumerable<T> Query<T>(RequestContext context);
+        IEnumerable<T> Query<T>(RequestContext context, DataSourceChoice sourceChoice);
+        T QuerySingle<T>(RequestContext context);
+        T QuerySingle<T>(RequestContext context, DataSourceChoice sourceChoice);
         #region Transaction
         IDbConnectionSession BeginTransaction();
         IDbConnectionSession BeginTransaction(IsolationLevel isolationLevel);

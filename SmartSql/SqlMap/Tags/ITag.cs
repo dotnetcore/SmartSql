@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartSql.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,7 +8,7 @@ namespace SmartSql.SqlMap.Tags
     public interface ITag
     {
         TagType Type { get; }
-        String BuildSql(Object paramObj, String parameterPrefix);
+        String BuildSql(RequestContext context, String parameterPrefix);
     }
 
     public enum TagType

@@ -19,15 +19,20 @@ namespace SmartSql
             SmartSqlMapper = smartSqlMapper;
         }
 
-        public string BuildSql(IRequestContext context)
+        public string BuildSql(RequestContext context)
         {
             var statement = MappedStatements[context.FullSqlId];
+            return BuildSql(context, statement);
+        }
+
+        public string BuildSql(RequestContext context, Statement statement)
+        {
             if (statement == null)
             {
                 _logger.Error($"SmartSql.SqlBuilder BuildSql Not Find Statement.Id: {context.FullSqlId}.");
                 throw new SmartSqlException($"SmartSqlMapper could not find statement:{context.FullSqlId}");
             }
-            string sql = statement.BuildSql(context.Request);
+            string sql = statement.BuildSql(context);
             _logger.Debug($"SmartSql.SqlBuilder BuildSql Statement.Id: {context.FullSqlId},Sql:[{sql}]");
             return sql;
         }

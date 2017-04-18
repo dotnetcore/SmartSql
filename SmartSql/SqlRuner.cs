@@ -20,7 +20,7 @@ namespace SmartSql
             SmartSqlMapper = smartSqlMapper;
         }
 
-        public T Run<T>(IRequestContext context, DataSourceChoice sourceChoice, Func<String, IDbConnectionSession, T> runSql)
+        public T Run<T>(RequestContext context, DataSourceChoice sourceChoice, Func<String, IDbConnectionSession, T> runSql)
         {
             IDbConnectionSession session = SmartSqlMapper.SessionStore.LocalSession;
 
@@ -47,7 +47,7 @@ namespace SmartSql
             }
         }
 
-        public async Task<T> RunAsync<T>(IRequestContext context, DataSourceChoice sourceChoice, Func<String, IDbConnectionSession, Task<T>> runSql)
+        public async Task<T> RunAsync<T>(RequestContext context, DataSourceChoice sourceChoice, Func<String, IDbConnectionSession, Task<T>> runSql)
         {
             IDbConnectionSession session = SmartSqlMapper.SessionStore.LocalSession;
             if (session == null)

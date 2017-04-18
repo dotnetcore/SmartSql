@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartSql.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,9 +10,9 @@ namespace SmartSql.SqlMap.Tags
         public TagType Type => TagType.Include;
         public String RefId { get; set; }
         public Statement Ref { get; set; }
-        public string BuildSql(object paramObj, string parameterPrefix)
+        public string BuildSql(RequestContext context, string parameterPrefix)
         {
-            return Ref.BuildSql(paramObj);
+            return Ref.BuildSql(context);
         }
     }
 }

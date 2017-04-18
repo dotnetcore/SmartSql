@@ -57,25 +57,25 @@ namespace SmartSql
             SqlMapConfig = smartSqlMapConfig;
         }
         #region Sync
-        public int Execute(IRequestContext context)
+        public int Execute(RequestContext context)
         {
             return _sqlRuner.Run<int>(context, DataSourceChoice.Write, (sqlStr, session) =>
            {
                return session.Connection.Execute(sqlStr, context.Request, session.Transaction);
            });
         }
-        public T ExecuteScalar<T>(IRequestContext context)
+        public T ExecuteScalar<T>(RequestContext context)
         {
             return _sqlRuner.Run<T>(context, DataSourceChoice.Write, (sqlStr, session) =>
             {
                 return session.Connection.ExecuteScalar<T>(sqlStr, context.Request, session.Transaction);
             });
         }
-        public IEnumerable<T> Query<T>(IRequestContext context)
+        public IEnumerable<T> Query<T>(RequestContext context)
         {
             return Query<T>(context, DataSourceChoice.Read);
         }
-        public IEnumerable<T> Query<T>(IRequestContext context, DataSourceChoice sourceChoice)
+        public IEnumerable<T> Query<T>(RequestContext context, DataSourceChoice sourceChoice)
         {
             IDbConnectionSession session = SessionStore.LocalSession;
 
@@ -101,11 +101,11 @@ namespace SmartSql
             }
         }
 
-        public T QuerySingle<T>(IRequestContext context)
+        public T QuerySingle<T>(RequestContext context)
         {
             return QuerySingle<T>(context, DataSourceChoice.Read);
         }
-        public T QuerySingle<T>(IRequestContext context, DataSourceChoice sourceChoice)
+        public T QuerySingle<T>(RequestContext context, DataSourceChoice sourceChoice)
         {
             return _sqlRuner.Run<T>(context, sourceChoice, (sqlStr, session) =>
             {
@@ -114,26 +114,26 @@ namespace SmartSql
         }
         #endregion
         #region Async
-        public async Task<int> ExecuteAsync(IRequestContext context)
+        public async Task<int> ExecuteAsync(RequestContext context)
         {
             return await _sqlRuner.RunAsync<int>(context, DataSourceChoice.Write, (sqlStr, _session) =>
            {
                return _session.Connection.ExecuteAsync(sqlStr, context.Request, _session.Transaction);
            });
         }
-        public async Task<T> ExecuteScalarAsync<T>(IRequestContext context)
+        public async Task<T> ExecuteScalarAsync<T>(RequestContext context)
         {
             return await _sqlRuner.RunAsync<T>(context, DataSourceChoice.Write, (sqlStr, _session) =>
            {
                return _session.Connection.ExecuteScalarAsync<T>(sqlStr, context.Request, _session.Transaction);
            });
         }
-        public async Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context)
+        public async Task<IEnumerable<T>> QueryAsync<T>(RequestContext context)
         {
             return await QueryAsync<T>(context, DataSourceChoice.Read);
         }
 
-        public async Task<IEnumerable<T>> QueryAsync<T>(IRequestContext context, DataSourceChoice sourceChoice)
+        public async Task<IEnumerable<T>> QueryAsync<T>(RequestContext context, DataSourceChoice sourceChoice)
         {
             IDbConnectionSession session = SessionStore.LocalSession;
             if (session == null)
@@ -157,11 +157,11 @@ namespace SmartSql
                 }
             }
         }
-        public async Task<T> QuerySingleAsync<T>(IRequestContext context)
+        public async Task<T> QuerySingleAsync<T>(RequestContext context)
         {
             return await QuerySingleAsync<T>(context, DataSourceChoice.Read);
         }
-        public async Task<T> QuerySingleAsync<T>(IRequestContext context, DataSourceChoice sourceChoice)
+        public async Task<T> QuerySingleAsync<T>(RequestContext context, DataSourceChoice sourceChoice)
         {
             return await _sqlRuner.RunAsync<T>(context, sourceChoice, (sqlStr, _session) =>
            {

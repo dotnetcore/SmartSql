@@ -12,7 +12,7 @@ namespace SmartSql.Tests.DbSession
     {
         static DbConnectionSession dbConnSession = new DbConnectionSession(SqlClientFactory.Instance, new DataSource
         {
-            ConnectionString = "Data Source=.;database=TestDB;uid=sa;pwd=GoodJob",
+            ConnectionString = "Data Source=.;database=TestDB;uid=sa;pwd=SmartSql.net",
             Name = "TestDB"
         });
 

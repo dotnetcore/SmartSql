@@ -11,7 +11,7 @@ namespace SmartSql.Abstractions.Cache
         /// 缓存前缀
         /// </summary>
         public String Prefix { get; set; } = "SmartSql-Cache";
-        public IRequestContext RequestContext { get; private set; }
+        public RequestContext RequestContext { get; private set; }
         public String RequestQueryString
         {
             get
