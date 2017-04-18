@@ -27,19 +27,8 @@
       Where 1=1
       <IsNotEmpty Property="Name" Prepend="And">
         <IsNotEmpty Property="Id" Prepend="And">
-          T.Id=1
-          <IsEmpty Property="Id">
-            <IsNotEmpty Property="Name" Prepend="And">
-              <IsNotEmpty Property="Id" Prepend="And">
-                T.Id=1
-                <IsEmpty Property="Id">
-                  Hello
-                </IsEmpty>
-              </IsNotEmpty>
-            </IsNotEmpty>
-          </IsEmpty>
+          
         </IsNotEmpty>
-
       </IsNotEmpty>
       <Switch Prepend="Order By" Property="OrderBy">
         <Case CompareValue="1">

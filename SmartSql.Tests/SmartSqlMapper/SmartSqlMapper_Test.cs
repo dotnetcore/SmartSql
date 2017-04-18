@@ -80,7 +80,9 @@ namespace SmartSql.Tests
                 SqlId = "GetList",
                 Request = new
                 {
-                    OrderBy = "1"
+                    OrderBy = "1",
+                    Id=1,
+                    //Name="Hi"
                 }
             });
             Assert.NotNull(list);

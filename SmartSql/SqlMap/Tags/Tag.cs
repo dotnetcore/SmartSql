@@ -32,8 +32,8 @@ namespace SmartSql.SqlMap.Tags
                         string strSql = childTag.BuildSql(paramObj, parameterPrefix);
                         strBuilder.Append(strSql);
                     }
-                    return $" {Prepend} {strBuilder.ToString()}";
                 }
+                return $" {Prepend} {strBuilder.ToString()}";
             }
             return String.Empty;
         }
