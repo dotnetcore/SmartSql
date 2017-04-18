@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema 
-  attributeFormDefault="unqualified" 
-  elementFormDefault="qualified" 
-  targetNamespace="http://SmartSql.net/schemas/SmartSqlMap.xsd" 
+<xs:schema
+  attributeFormDefault="unqualified"
+  elementFormDefault="qualified"
+  targetNamespace="http://SmartSql.net/schemas/SmartSqlMap.xsd"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:vs="http://schemas.microsoft.com/Visual-Studio-Intellisense" 
+  xmlns:vs="http://schemas.microsoft.com/Visual-Studio-Intellisense"
   vs:friendlyname="SmartSqlMap Configuration Schema"
   vs:ishtmlschema="false"
   vs:iscasesensitive="true"
@@ -14,7 +14,39 @@
   >
   <xs:element name="SmartSqlMap">
     <xs:complexType>
-      <xs:choice  minOccurs="1" maxOccurs="1">
+      <xs:sequence >
+        <xs:element name="Caches">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="Cache">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element maxOccurs="unbounded" name="Parameter">
+                      <xs:complexType>
+                        <xs:attribute name="Key" type="xs:string" use="required" />
+                        <xs:attribute name="Value" type="xs:string" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="FlushInterval">
+                      <xs:complexType>
+                        <xs:attribute name="Hours" type="xs:unsignedByte" use="required" />
+                        <xs:attribute name="Minutes" type="xs:unsignedByte" use="required" />
+                        <xs:attribute name="Seconds" type="xs:unsignedByte" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element maxOccurs="unbounded" name="FlushOnExecute">
+                      <xs:complexType>
+                        <xs:attribute name="Statement" type="xs:string" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="Id" type="xs:string" use="required" />
+                  <xs:attribute name="Type" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="Statements" >
           <xs:complexType>
             <xs:choice  minOccurs="1" maxOccurs="unbounded">
@@ -133,14 +165,15 @@
                     </xs:element>
                   </xs:choice>
                   <xs:attribute name="Id" type="xs:string" use="required" />
+                  <xs:attribute name="Cache" type="xs:string" use="optional" />
                 </xs:complexType>
               </xs:element>
             </xs:choice>
           </xs:complexType>
         </xs:element>
-      </xs:choice>
+      </xs:sequence>
       <xs:attribute name="Scope" type="xs:string" use="required" />
-    
-  </xs:complexType>
+
+    </xs:complexType>
   </xs:element>
 </xs:schema>
