@@ -76,10 +76,15 @@ namespace SmartSql.SqlMap
                     case "Include":
                         {
                             var refId = tagNode.Attributes?["RefId"]?.Value;
+
                             var refStatement = smartSqlMap.Statements.FirstOrDefault(m => m.Id == refId);
                             if (refStatement == null)
                             {
                                 throw new SmartSqlException($"SmartSql.Statement.Load can not find statement.id:{refId}");
+                            }
+                            if (refId == statement.Id)
+                            {
+                                throw new SmartSqlException($"SmartSql.Statement.Load Include.RefId can not be self statement.id:{refId}");
                             }
                             statement.SqlTags.Add(new Include
                             {
