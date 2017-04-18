@@ -3,6 +3,7 @@
   elementFormDefault="qualified" 
   targetNamespace="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd" 
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd"
   xmlns:vs="http://schemas.microsoft.com/Visual-Studio-Intellisense" 
   vs:friendlyname="SmartSql Configuration Schema"
   vs:ishtmlschema="false"
@@ -35,7 +36,7 @@
                   <xs:attribute name="ConnectionString" type="xs:string" use="required" />
                 </xs:complexType>
               </xs:element>
-              <xs:element maxOccurs="unbounded" name="Read">
+              <xs:element maxOccurs="unbounded" name="Read" minOccurs="0">
                 <xs:complexType>
                   <xs:attribute name="Name" type="xs:string" use="required" />
                   <xs:attribute name="ConnectionString" type="xs:string" use="required" />
@@ -47,13 +48,13 @@
         </xs:element>
         <xs:element name="SmartSqlMaps">
           <xs:complexType>
-            <xs:sequence>
+            <xs:choice>
               <xs:element maxOccurs="unbounded" name="SmartSqlMap">
                 <xs:complexType>
                   <xs:attribute name="Path" type="xs:string" use="required" />
                 </xs:complexType>
               </xs:element>
-            </xs:sequence>
+            </xs:choice>
           </xs:complexType>
         </xs:element>
       </xs:sequence>
