@@ -68,139 +68,11 @@ namespace SmartSql.SqlMap
             var tagNodes = statementNode.ChildNodes;
             foreach (XmlNode tagNode in tagNodes)
             {
-                bool isIn = tagNode.Attributes?["In"] != null;
                 var prepend = tagNode.Attributes?["Prepend"]?.Value;
                 var property = tagNode.Attributes?["Property"]?.Value;
-                var compareValue = tagNode.Attributes?["CompareValue"]?.Value;
-                var bodyText = tagNode.InnerText.Replace("\n", "");
                 #region Init Tag
                 switch (tagNode.Name)
                 {
-                    case "#text":
-                    case "#cdata-section":
-                        {
-                            statement.SqlTags.Add(new SqlText
-                            {
-                                BodyText = bodyText
-                            });
-                            break;
-                        }
-                    case "IsEmpty":
-                        {
-                            statement.SqlTags.Add(new IsEmpty
-                            {
-                                In = isIn,
-                                Prepend = prepend,
-                                Property = property,
-                                BodyText = bodyText
-                            });
-                            break;
-                        }
-                    case "IsEqual":
-                        {
-                            statement.SqlTags.Add(new IsEqual
-                            {
-                                In = isIn,
-                                Prepend = prepend,
-                                Property = property,
-                                CompareValue = compareValue,
-                                BodyText = bodyText
-                            });
-                            break;
-                        }
-                    case "IsGreaterEqual":
-                        {
-                            statement.SqlTags.Add(new IsGreaterEqual
-                            {
-                                In = isIn,
-                                Prepend = prepend,
-                                Property = property,
-                                CompareValue = compareValue,
-                                BodyText = bodyText
-                            });
-                            break;
-                        }
-                    case "IsGreaterThan":
-                        {
-                            statement.SqlTags.Add(new IsGreaterThan
-                            {
-                                In = isIn,
-                                Prepend = prepend,
-                                Property = property,
-                                CompareValue = compareValue,
-                                BodyText = bodyText
-                            });
-                            break;
-                        }
-                    case "IsLessEqual":
-                        {
-                            statement.SqlTags.Add(new IsLessEqual
-                            {
-                                In = isIn,
-                                Prepend = prepend,
-                                Property = property,
-                                CompareValue = compareValue,
-                                BodyText = bodyText
-                            });
-                            break;
-                        }
-                    case "IsLessThan":
-                        {
-                            statement.SqlTags.Add(new IsLessThan
-                            {
-                                In = isIn,
-                                Prepend = prepend,
-                                Property = property,
-                                CompareValue = compareValue,
-                                BodyText = bodyText
-                            });
-                            break;
-                        }
-                    case "IsNotEmpty":
-                        {
-                            statement.SqlTags.Add(new IsNotEmpty
-                            {
-                                In = isIn,
-                                Prepend = prepend,
-                                Property = property,
-                                BodyText = bodyText
-                            });
-                            break;
-                        }
-                    case "IsNotEqual":
-                        {
-                            statement.SqlTags.Add(new IsNotEqual
-                            {
-                                In = isIn,
-                                Prepend = prepend,
-                                Property = property,
-                                CompareValue = compareValue,
-                                BodyText = bodyText
-                            });
-                            break;
-                        }
-                    case "IsNotNull":
-                        {
-                            statement.SqlTags.Add(new IsNotNull
-                            {
-                                In = isIn,
-                                Prepend = prepend,
-                                Property = property,
-                                BodyText = bodyText
-                            });
-                            break;
-                        }
-                    case "IsNull":
-                        {
-                            statement.SqlTags.Add(new IsNull
-                            {
-                                In = isIn,
-                                Prepend = prepend,
-                                Property = property,
-                                BodyText = bodyText
-                            });
-                            break;
-                        }
                     case "Include":
                         {
                             var refId = tagNode.Attributes?["RefId"]?.Value;
@@ -238,12 +110,164 @@ namespace SmartSql.SqlMap
                             statement.SqlTags.Add(switchTag);
                             break;
                         }
-                    default: { break; };
+                    default:
+                        {
+                            var tag = LoadTag(tagNode);
+                            if (tag != null) { statement.SqlTags.Add(tag); }
+                            break;
+                        };
                 }
                 #endregion
             }
             return statement;
         }
+
+        public static ITag LoadTag(XmlNode xmlNode)
+        {
+            ITag tag = null;
+            bool isIn = xmlNode.Attributes?["In"] != null;
+            var prepend = xmlNode.Attributes?["Prepend"]?.Value;
+            var property = xmlNode.Attributes?["Property"]?.Value;
+            var compareValue = xmlNode.Attributes?["CompareValue"]?.Value;
+            #region Init Tag
+            switch (xmlNode.Name)
+            {
+                case "#text":
+                case "#cdata-section":
+                    {
+                        var bodyText = xmlNode.InnerText.Replace("\n", "");
+                        return new SqlText
+                        {
+                            BodyText = bodyText
+                        };
+                    }
+                case "IsEmpty":
+                    {
+                        tag = new IsEmpty
+                        {
+                            In = isIn,
+                            Prepend = prepend,
+                            Property = property,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
+
+                case "IsEqual":
+                    {
+                        tag = new IsEqual
+                        {
+                            In = isIn,
+                            Prepend = prepend,
+                            Property = property,
+                            CompareValue = compareValue,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
+                case "IsGreaterEqual":
+                    {
+                        tag = new IsGreaterEqual
+                        {
+                            In = isIn,
+                            Prepend = prepend,
+                            Property = property,
+                            CompareValue = compareValue,
+                        };
+                        break;
+                    }
+                case "IsGreaterThan":
+                    {
+                        tag = new IsGreaterThan
+                        {
+                            In = isIn,
+                            Prepend = prepend,
+                            Property = property,
+                            CompareValue = compareValue,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
+                case "IsLessEqual":
+                    {
+                        tag = new IsLessEqual
+                        {
+                            In = isIn,
+                            Prepend = prepend,
+                            Property = property,
+                            CompareValue = compareValue,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
+                case "IsLessThan":
+                    {
+                        tag = new IsLessThan
+                        {
+                            In = isIn,
+                            Prepend = prepend,
+                            Property = property,
+                            CompareValue = compareValue,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
+                case "IsNotEmpty":
+                    {
+                        tag = new IsNotEmpty
+                        {
+                            In = isIn,
+                            Prepend = prepend,
+                            Property = property,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
+                case "IsNotEqual":
+                    {
+                        tag = new IsNotEqual
+                        {
+                            In = isIn,
+                            Prepend = prepend,
+                            Property = property,
+                            CompareValue = compareValue,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
+                case "IsNotNull":
+                    {
+                        tag = new IsNotNull
+                        {
+                            In = isIn,
+                            Prepend = prepend,
+                            Property = property,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
+                case "IsNull":
+                    {
+                        tag = new IsNull
+                        {
+                            In = isIn,
+                            Prepend = prepend,
+                            Property = property,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
+                default: { return null; };
+            }
+            #endregion
+            foreach (XmlNode childNode in xmlNode)
+            {
+                ITag childTag = LoadTag(childNode);
+                (tag as Tag).ChildTags.Add(childTag);
+            }
+            return tag;
+        }
+
 
         [XmlAttribute]
         public String Id { get; set; }

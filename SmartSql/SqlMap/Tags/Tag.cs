@@ -11,9 +11,9 @@ namespace SmartSql.SqlMap.Tags
         public String Prepend { get; set; }
         [XmlAttribute]
         public String Property { get; set; }
-        public String BodyText { get; set; }
         [XmlIgnore]
         public abstract TagType Type { get; }
+        public IList<ITag> ChildTags { get; set; }
         public bool In { get; set; }
         public abstract bool IsCondition(object paramObj);
         public virtual String BuildSql(object paramObj, String parameterPrefix)
@@ -24,7 +24,16 @@ namespace SmartSql.SqlMap.Tags
                 {
                     return $" {Prepend} In {parameterPrefix}{Property}";
                 }
-                return $" {Prepend} {BodyText}";
+                StringBuilder strBuilder = new StringBuilder();
+                if (ChildTags != null && ChildTags.Count > 0)
+                {
+                    foreach (var childTag in ChildTags)
+                    {
+                        string strSql = childTag.BuildSql(paramObj, parameterPrefix);
+                        strBuilder.Append(strSql);
+                    }
+                    return $" {Prepend} {strBuilder.ToString()}";
+                }
             }
             return String.Empty;
         }

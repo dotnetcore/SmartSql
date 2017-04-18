@@ -8,6 +8,7 @@
     <Write Name="WriteDB" ConnectionString="Data Source=.;database=TestDB;uid=root;pwd=Ahoo123456;CharSet=utf8;"/>
     <!--<Read Name="ReadDB-0" ConnectionString="Data Source=.;database=TestDB;uid=sa;pwd=Ahoo123456" Weight="80"/>
     <Read Name="ReadDB-1" ConnectionString="Data Source=.;database=TestDB;uid=sa;pwd=Ahoo123456" Weight="20"/>-->
+    
   </Database>
   <SmartSqlMaps>
     <SmartSqlMap Path="Maps-MySql/T_Test.xml"></SmartSqlMap>

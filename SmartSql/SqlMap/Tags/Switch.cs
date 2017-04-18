@@ -24,10 +24,16 @@ namespace SmartSql.SqlMap.Tags
             if (caseVal == null) { return ""; }
             return $" {Prepend} {caseVal.BodyText}";
         }
-        public class Case
+        public class Case : ITag
         {
             public String CompareValue { get; set; }
             public String BodyText { get; set; }
+            public TagType Type => TagType.Case;
+
+            public string BuildSql(object paramObj, string parameterPrefix)
+            {
+                return BodyText;
+            }
         }
     }
 }

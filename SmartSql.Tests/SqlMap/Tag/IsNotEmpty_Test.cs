@@ -13,7 +13,7 @@ namespace SmartSql.Tests.SqlMap.Tag
         {
             IsNotEmpty isNotEmpty = new IsNotEmpty
             {
-                BodyText = "",
+                //BodyText = "",
                 Prepend = "And Id",
                 Property = "Ids",
                 In = true

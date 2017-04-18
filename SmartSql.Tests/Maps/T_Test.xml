@@ -5,7 +5,7 @@
  Date 2017-04-17 10:49
 *******************************
 -->
-<SmartSqlMap Scope="T_Test"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+<SmartSqlMap Scope="T_Test" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Caches>
     <Cache Id="T_Test.RedisCache" Type="Redis">
       <Parameter Key="CacheSize" Value="1000"/>
@@ -25,7 +25,22 @@
   <Statements>
     <Statement Id="QueryParams">
       Where 1=1
-      
+      <IsNotEmpty Property="Name" Prepend="And">
+        <IsNotEmpty Property="Id" Prepend="And">
+          T.Id=1
+          <IsEmpty Property="Id">
+            <IsNotEmpty Property="Name" Prepend="And">
+              <IsNotEmpty Property="Id" Prepend="And">
+                T.Id=1
+                <IsEmpty Property="Id">
+                  Hello
+                </IsEmpty>
+              </IsNotEmpty>
+            </IsNotEmpty>
+          </IsEmpty>
+        </IsNotEmpty>
+
+      </IsNotEmpty>
       <Switch Prepend="Order By" Property="OrderBy">
         <Case CompareValue="1">
           Id Desc
@@ -81,7 +96,7 @@
     <Statement Id="GetRecord">
       Select Count(1) From T_Test T With(NoLock)
       <Include RefId="QueryParams"/>
-    
+
     </Statement>
 
     <!--获取表映射实体-->
@@ -92,7 +107,7 @@
         T.Id=@Id
 
       </IsNotEmpty>
-      
+
     </Statement>
 
     <!--是否存在该记录-->

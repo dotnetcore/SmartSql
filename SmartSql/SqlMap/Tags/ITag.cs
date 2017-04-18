@@ -24,6 +24,7 @@ namespace SmartSql.SqlMap.Tags
         IsNotNull,
         IsNull,
         Include,
-        Switch
+        Switch,
+        Case
     }
 }
