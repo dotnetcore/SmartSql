@@ -1,6 +1,6 @@
 # SmartSql
 ## 0. Why ?
- - MyBaits.Net 不再更新维护。
+ - MyBatis.Net 不再更新维护。
  - 拥抱 跨平台、.NET Core，是时候了。 
  - 基于Dapper，不再重复造轮子。Dapper性能你懂的。
 
@@ -13,7 +13,7 @@
   - 1.1 Sync √
   - 1.2 Async √
 - 2 XmlConfig & XmlStatement -> Sql  √
-  - 2.1 SmartSqlMapConfig & SmartSqlMap √  (是的，你猜对了，和MyBaits一样，通过XML配置分离SQL。)
+  - 2.1 SmartSqlMapConfig & SmartSqlMap √  (是的，你猜对了，和MyBatis一样，通过XML配置分离SQL。)
   - 2.2 Config Hot Update ->ConfigWatcher & Reload √ (配置文件热更新：当你需要修改Sql的时候，直接修改SqlMap配置文件，保存即可。)
 - 3 读写分离 √
   - 3.1 读写分离 √ 
