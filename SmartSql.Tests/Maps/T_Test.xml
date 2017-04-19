@@ -77,11 +77,11 @@
       <Include RefId="QueryParams"/>
       <!--Order By T.Id Desc-->
     </Statement>
-    <Statement Id="GetListByRedisCache" Cache="T_Test.RedisCache">
+    <!--<Statement Id="GetListByRedisCache" Cache="T_Test.RedisCache">
       SELECT Top 10 T.* From T_Test T With(NoLock)
       <Include RefId="QueryParams"/>
-      <!--Order By T.Id Desc-->
-    </Statement>
+      --><!--Order By T.Id Desc--><!--
+    </Statement>-->
     <!--获取分页数据-->
     <Statement Id="GetListByPage">
       Select TT.* From

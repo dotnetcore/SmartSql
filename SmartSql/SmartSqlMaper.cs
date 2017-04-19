@@ -131,7 +131,7 @@ namespace SmartSql
             }
             var result = _sqlRuner.Run<T>(context, sourceChoice, (sqlStr, session) =>
              {
-                 return session.Connection.QuerySingle<T>(sqlStr, context.Request, session.Transaction);
+                 return session.Connection.QuerySingleOrDefault<T>(sqlStr, context.Request, session.Transaction);
              });
             CacheManager[context, typeof(T)] = result;
             return result;
@@ -205,7 +205,7 @@ namespace SmartSql
             }
             var result = await _sqlRuner.RunAsync<T>(context, sourceChoice, (sqlStr, _session) =>
             {
-                return _session.Connection.QuerySingleAsync<T>(sqlStr, context.Request, _session.Transaction);
+                return _session.Connection.QuerySingleOrDefaultAsync<T>(sqlStr, context.Request, _session.Transaction);
             });
             CacheManager[context, typeof(T)] = result;
             return result;

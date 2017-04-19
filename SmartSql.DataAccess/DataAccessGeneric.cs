@@ -26,6 +26,7 @@ namespace SmartSql.DataAccess
 
         public TEntity GetEntity<TPrimary>(TPrimary Id, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
+            
             return SqlMapper.QuerySingle<TEntity>(new RequestContext
             {
                 Scope = this.Scope,
