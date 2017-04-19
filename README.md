@@ -25,9 +25,11 @@
   - 5.2 DAO Tool  √
     - 5.2.1 Template Xml & Entity & DAO  √
     - 5.2.2 Generate Tool  √
-- 6 Query Cache
-  - 6.1 SmartSql.Cache.Memory
-  - 6.2 SmartSql.Cache.Redis
+- 6 Query Cache  √
+  - 6.1 SmartSql.Cache.Memory  √
+      - 6.1.1 Fifo  √
+      - 6.1.2 Lru  √
+  - 6.2 SmartSql.Cache.Redis  √
 - 7 分布式事务
 - 8 主从同步
 
