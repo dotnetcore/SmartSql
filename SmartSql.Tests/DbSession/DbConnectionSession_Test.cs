@@ -28,7 +28,7 @@ namespace SmartSql.Tests.DbSession
         public void Insert()
         {
             dbConnSession.BeginTransaction();
-            for (int i = 0; i < 1000000; i++)
+            for (int i = 0; i < 100; i++)
             {
                 long Id = dbConnSession.Connection.ExecuteScalar<long>("Insert T_Test(Name) Values (@Name); Select @@IDENTITY", new T_Test
                 {

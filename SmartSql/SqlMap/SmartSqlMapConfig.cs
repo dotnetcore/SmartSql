@@ -115,7 +115,7 @@ namespace SmartSql.SqlMap
                                 foreach (var statement in sqlmap.Statements)
                                 {
                                     var statementId = $"{sqlmap.Scope}.{statement.Id}";
-                                    _mappedStatements.Add(statementId, statement);
+                                    _mappedStatements[statementId] = statement;
                                 }
                             }
                         }

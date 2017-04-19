@@ -87,11 +87,11 @@ namespace SmartSql
             get
             {
                 string fullSqlId = context.FullSqlId;
-                var statement = MappedStatements[fullSqlId];
-                if (statement == null)
+                if (!MappedStatements.ContainsKey(fullSqlId))
                 {
                     throw new SmartSqlException($"SmartSql.CacheManager can not find Statement.Id:{fullSqlId}");
                 }
+                var statement = MappedStatements[fullSqlId];
                 if (statement.Cache == null) { return null; }
 
                 lock (this)
@@ -111,7 +111,7 @@ namespace SmartSql
                 {
                     throw new SmartSqlException($"SmartSql.CacheManager can not find Statement.Id:{fullSqlId}");
                 }
-                if (statement.Cache == null) { }
+                if (statement.Cache == null) { return; }
                 lock (this)
                 {
                     FlushByInterval(statement);

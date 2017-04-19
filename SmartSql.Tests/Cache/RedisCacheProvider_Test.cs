@@ -38,6 +38,8 @@ namespace SmartSql.Tests.Cache
             {
                 Scope = "T_Test",
                 SqlId = "GetListByCache",
+
+                Request = new { Id = 1, Name = "Ahoo" }
             });
             var result = provider[cacheKey, typeof(IEnumerable<T_Test>)];
             Assert.NotNull(result);
