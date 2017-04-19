@@ -47,7 +47,7 @@ namespace SmartSql.SqlMap
                 var cacheNodes = xmlDoc.SelectNodes("//ns:Cache", xmlNsM);
                 foreach (XmlElement cacheNode in cacheNodes)
                 {
-                    var cache = Cache.Load(cacheNode, sqlMap);
+                    var cache = Cache.Load(cacheNode);
                     sqlMap.Caches.Add(cache);
                 }
                 #endregion

@@ -1,6 +1,10 @@
-﻿using System;
+﻿using SmartSql.Abstractions.Cache;
+using SmartSql.Cache;
+using SmartSql.Cache.Fifo;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 
@@ -8,7 +12,7 @@ namespace SmartSql.SqlMap
 {
     public class Cache
     {
-        public static Cache Load(XmlElement cacheNode, SmartSqlMap smartSqlMap)
+        public static Cache Load(XmlElement cacheNode)
         {
             var cache = new Cache
             {
@@ -17,7 +21,6 @@ namespace SmartSql.SqlMap
                 Parameters = new Dictionary<String, String>(),
                 FlushOnExecutes = new List<FlushOnExecute>()
             };
-
             foreach (XmlNode childNode in cacheNode.ChildNodes)
             {
                 switch (childNode.Name)
@@ -63,9 +66,38 @@ namespace SmartSql.SqlMap
         }
         public String Id { get; set; }
         public String Type { get; set; }
+        public String TypeName { get { return Type.Split(',')[0]; } }
+        public String AssemblyName { get { return Type.Split(',')[1]; } }
         public IDictionary Parameters { get; set; }
         public IList<FlushOnExecute> FlushOnExecutes { get; set; }
         public FlushInterval FlushInterval { get; set; }
+        public ICacheProvider CreateCacheProvider(Statement statement)
+        {
+            ICacheProvider _cacheProvider = null;
+            Parameters["Prefix"] = statement.FullSqlId;
+            switch (Type)
+            {
+                case "Lru":
+                    {
+                        _cacheProvider = new LruCacheProvider();
+                        break;
+                    }
+                case "Fifo":
+                    {
+                        _cacheProvider = new FifoCacheProvider();
+                        break;
+                    }
+                default:
+                    {
+                        var assName = new AssemblyName { Name = AssemblyName };
+                        Type _cacheProviderType = Assembly.Load(assName).GetType(TypeName);
+                        _cacheProvider = Activator.CreateInstance(_cacheProviderType) as ICacheProvider;
+                        break;
+                    }
+            }
+            _cacheProvider.Initialize(Parameters);
+            return _cacheProvider;
+        }
     }
     public class FlushInterval
     {

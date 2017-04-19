@@ -27,7 +27,7 @@ namespace SmartSql.Abstractions.Cache
                 return strBuilder.ToString().Trim('&');
             }
         }
-        public String Key { get { return $"{Prefix}:{RequestContext.FullSqlId}:{RequestQueryString}"; } }
+        public String Key { get { return $"{RequestContext.FullSqlId}:{RequestQueryString}"; } }
         public CacheKey(RequestContext context)
         {
             RequestContext = context;

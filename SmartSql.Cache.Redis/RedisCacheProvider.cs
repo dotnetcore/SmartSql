@@ -10,17 +10,39 @@ namespace SmartSql.Cache.Redis
 {
     public class RedisCacheProvider : ICacheProvider
     {
-        private ConnectionMultiplexer connection;
-        private int databaseId =0;
-        private IDatabase cacheDB { get { return connection.GetDatabase(databaseId); } }
+        private String connStr;
+        private ConnectionMultiplexer redis;
+        private int databaseId = 0;
+        private IDatabase cacheDB { get { return redis.GetDatabase(databaseId); } }
+        private String prefix;
+
         public void Initialize(IDictionary properties)
         {
-            String connStr = properties["ConnectionString"]?.ToString();
+            connStr = properties["ConnectionString"]?.ToString();
             if (String.IsNullOrEmpty(connStr))
             {
                 throw new Exception("SmartSql.Cache.Redis.ConnectionString string can't empty.");
             }
-            connection = ConnectionMultiplexer.Connect(connStr);
+
+            String databaseIdStr = properties["DatabaseId"]?.ToString();
+            if (String.IsNullOrEmpty(databaseIdStr))
+            {
+                throw new Exception("SmartSql.Cache.Redis.DatabaseId string can't empty.");
+            }
+            else
+            {
+                if (!Int32.TryParse(databaseIdStr, out databaseId))
+                {
+                    throw new Exception("SmartSql.Cache.Redis.DatabaseId string is not int.");
+                }
+            }
+            prefix = properties["Prefix"]?.ToString();
+            if (String.IsNullOrEmpty(connStr))
+            {
+                throw new Exception("SmartSql.Cache.Redis.Prefix string can't empty.");
+            }
+
+            redis = RedisManager.GetRedis(connStr);
         }
 
         public object this[CacheKey key, Type type]
@@ -40,10 +62,13 @@ namespace SmartSql.Cache.Redis
 
         public void Flush()
         {
-            //var endPoint = connection.GetEndPoints()[0];
-            //var dbServer = connection.GetServer(endPoint);
-            //dbServer.FlushDatabase(databaseId);
-            cacheDB.KeyDelete("*");
+            var serverEndPoint = redis.GetEndPoints()[0];
+            IServer servier = redis.GetServer(serverEndPoint);
+            var keys = servier.Keys(databaseId, pattern: $"{prefix}*");
+            foreach (string key in keys)
+            {
+                cacheDB.KeyDelete(key);
+            }
         }
 
         public bool Remove(CacheKey key)

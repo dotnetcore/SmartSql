@@ -12,7 +12,7 @@ namespace SmartSql.Abstractions
     {
         public String Scope { get; set; }
         public String SqlId { get; set; }
-        public String FullSqlId { get { return $"{Scope}.{SqlId}"; } }
+        public String FullSqlId => $"{Scope}.{SqlId}";
         public Object Request { get; set; }
 
         /// <summary>

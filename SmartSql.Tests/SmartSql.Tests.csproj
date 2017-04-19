@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SmartSql.Cache.Redis\SmartSql.Cache.Redis.csproj" />
     <ProjectReference Include="..\SmartSql.DataAccess\SmartSql.DataAccess.csproj" />
     <ProjectReference Include="..\SmartSql.Logging.NLog\SmartSql.Logging.NLog.csproj" />
     <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
@@ -32,6 +33,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SmartSqlLog.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SmartSqlMapConfig-MySql.xml">

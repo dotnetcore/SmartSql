@@ -6,6 +6,7 @@ using System.Text;
 using Dapper;
 using System.Threading.Tasks;
 using SmartSql.Abstractions.Logging;
+using SmartSql.Abstractions.Cache;
 
 namespace SmartSql
 {
@@ -22,6 +23,7 @@ namespace SmartSql
 
         public T Run<T>(RequestContext context, DataSourceChoice sourceChoice, Func<String, IDbConnectionSession, T> runSql)
         {
+
             IDbConnectionSession session = SmartSqlMapper.SessionStore.LocalSession;
 
             if (session == null)
@@ -32,7 +34,9 @@ namespace SmartSql
             string sqlStr = SqlBuilder.BuildSql(context);
             try
             {
-                return runSql(sqlStr, session);
+                T result = runSql(sqlStr, session);
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -49,6 +53,7 @@ namespace SmartSql
 
         public async Task<T> RunAsync<T>(RequestContext context, DataSourceChoice sourceChoice, Func<String, IDbConnectionSession, Task<T>> runSql)
         {
+
             IDbConnectionSession session = SmartSqlMapper.SessionStore.LocalSession;
             if (session == null)
             {
@@ -58,7 +63,9 @@ namespace SmartSql
             string sqlStr = SqlBuilder.BuildSql(context);
             try
             {
-                return await runSql(sqlStr, session);
+                T result = await runSql(sqlStr, session);
+
+                return result;
             }
             catch (Exception ex)
             {

@@ -8,6 +8,7 @@ using System.Data.Common;
 using System.Threading.Tasks;
 using SmartSql.Abstractions.DbSession;
 using SmartSql.Abstractions.DataSource;
+using SmartSql.Abstractions.Cache;
 
 namespace SmartSql.Abstractions
 {
@@ -18,6 +19,7 @@ namespace SmartSql.Abstractions
     {
         SmartSqlMapConfig SqlMapConfig { get; }
         IDataSourceManager DataSourceManager { get; }
+        ICacheManager CacheManager { get; }
         ISqlBuilder SqlBuilder { get; }
         DbProviderFactory DbProviderFactory { get; }
         IDbConnectionSessionStore SessionStore { get; }

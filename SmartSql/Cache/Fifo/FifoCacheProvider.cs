@@ -1,18 +1,18 @@
-﻿using SmartSql.Abstractions.Cache;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using SmartSql.Abstractions.Cache;
 
-namespace SmartSql.Cache
+namespace SmartSql.Cache.Fifo
 {
-    public class LruCacheProvider : ICacheProvider
+    public class FifoCacheProvider : ICacheProvider
     {
         private int _cacheSize = 0;
         private Hashtable _cache = null;
         private IList _keyList = null;
 
-        public LruCacheProvider()
+        public FifoCacheProvider()
         {
             _cacheSize = 100;
             _cache = Hashtable.Synchronized(new Hashtable());
@@ -21,7 +21,7 @@ namespace SmartSql.Cache
 
         public bool Remove(CacheKey cacheKey)
         {
-            object o = this[cacheKey,typeof(object)];
+            object o = this[cacheKey, typeof(object)];
 
             _keyList.Remove(cacheKey);
             _cache.Remove(cacheKey);
@@ -33,12 +33,11 @@ namespace SmartSql.Cache
             _cache.Clear();
             _keyList.Clear();
         }
+
         public object this[CacheKey cacheKey, Type type]
         {
             get
             {
-                _keyList.Remove(cacheKey);
-                _keyList.Add(cacheKey);
                 return _cache[cacheKey];
             }
             set
@@ -53,6 +52,7 @@ namespace SmartSql.Cache
                 }
             }
         }
+
         public void Initialize(IDictionary properties)
         {
             string size = (string)properties["CacheSize"]; ;

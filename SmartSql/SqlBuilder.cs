@@ -12,7 +12,7 @@ namespace SmartSql
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(SqlBuilder));
         public ISmartSqlMapper SmartSqlMapper { get; private set; }
-        public IDictionary<String, Statement> MappedStatements { get { return SmartSqlMapper.SqlMapConfig.MappedStatements; } }
+        public IDictionary<String, Statement> MappedStatements => SmartSqlMapper.SqlMapConfig.MappedStatements;
 
         public SqlBuilder(ISmartSqlMapper smartSqlMapper)
         {

@@ -97,23 +97,34 @@ namespace SmartSql.SqlMap
         public List<SmartSqlMapSource> SmartSqlMapSources { get; set; }
         [XmlIgnore]
         public IList<SmartSqlMap> SmartSqlMaps { get; private set; }
+        private IDictionary<String, Statement> _mappedStatements;
         [XmlIgnore]
         public IDictionary<String, Statement> MappedStatements
         {
             get
             {
-                Dictionary<String, Statement> mappedStatements = new Dictionary<string, Statement>();
-                foreach (var sqlmap in SmartSqlMaps)
+                if (_mappedStatements == null)
                 {
-                    foreach (var statement in sqlmap.Statements)
+                    lock (this)
                     {
-                        var statementId = $"{sqlmap.Scope}.{statement.Id}";
-                        mappedStatements.Add(statementId, statement);
+                        if (_mappedStatements == null)
+                        {
+                            Dictionary<String, Statement> mappedStatements = new Dictionary<string, Statement>();
+                            foreach (var sqlmap in SmartSqlMaps)
+                            {
+                                foreach (var statement in sqlmap.Statements)
+                                {
+                                    var statementId = $"{sqlmap.Scope}.{statement.Id}";
+                                    mappedStatements.Add(statementId, statement);
+                                }
+                            }
+                        }
                     }
                 }
-                return mappedStatements;
+                return _mappedStatements;
             }
         }
+
     }
 
     public class Settings
@@ -170,7 +181,7 @@ namespace SmartSql.SqlMap
         [XmlIgnore]
         public String AssemblyName { get { return Type.Split(',')[1]; } }
         private DbProviderFactory _dbProviderFactory;
-        public void LoadFactory()
+        private void LoadFactory()
         {
             _dbProviderFactory = Assembly.Load(new AssemblyName { Name = AssemblyName })
                                          .GetType(TypeName)

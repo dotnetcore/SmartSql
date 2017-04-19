@@ -9,7 +9,7 @@ namespace SmartSql.Tests.Performance
 {
     public class SmartSqlMapper_Test : TestBase
     {
-        const int testTime = 100;
+        const int testTime = 10;
         [Fact]
         public void Query_Transient()
         {
@@ -25,6 +25,37 @@ namespace SmartSql.Tests.Performance
             }
             Assert.Equal<int>(i, testTime);
         }
+        [Fact]
+        public void Query_LruCache()
+        {
+            int i = 0;
+            for (i = 0; i < testTime; i++)
+            {
+                var list = SqlMapper.Query<T_Test>(new RequestContext
+                {
+                    Scope = "T_Test",
+                    SqlId = "GetListByLruCache",
+
+                });
+            }
+            Assert.Equal<int>(i, testTime);
+        }
+        [Fact]
+        public void Query_RedisCache()
+        {
+            int i = 0;
+            for (i = 0; i < testTime; i++)
+            {
+                var list = SqlMapper.Query<T_Test>(new RequestContext
+                {
+                    Scope = "T_Test",
+                    SqlId = "GetListByRedisCache",
+
+                });
+            }
+            Assert.Equal<int>(i, testTime);
+        }
+
         [Fact]
         public void Query_Scoped()
         {

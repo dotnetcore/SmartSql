@@ -13,17 +13,19 @@ using SmartSql.DbSession;
 using SmartSql.Abstractions.DataSource;
 using SmartSql.Common;
 using SmartSql.Abstractions.Logging;
+using SmartSql.Abstractions.Cache;
 
 namespace SmartSql
 {
     public class SmartSqlMapper : ISmartSqlMapper
     {
-        private static readonly ILog _logger = LogManager.GetLogger(typeof(SqlBuilder));
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(SmartSqlMapper));
         public SmartSqlMapConfig SqlMapConfig { get; private set; }
         public DbProviderFactory DbProviderFactory { get; }
         public IDbConnectionSessionStore SessionStore { get; }
         public ISqlBuilder SqlBuilder { get; }
         public IDataSourceManager DataSourceManager { get; }
+        public ICacheManager CacheManager { get; }
         private SqlRuner _sqlRuner;
         public SmartSqlMapper(
              String sqlMapConfigFilePath = "SmartSqlMapConfig.xml"
@@ -34,6 +36,7 @@ namespace SmartSql
             SessionStore = new DbConnectionSessionStore(this.GetHashCode().ToString());
             SqlBuilder = new SqlBuilder(this);
             DataSourceManager = new DataSourceManager(this);
+            CacheManager = new CacheManager(this);
             _sqlRuner = new SqlRuner(SqlBuilder, this);
         }
 
@@ -41,6 +44,7 @@ namespace SmartSql
              String sqlMapConfigFilePath
             , IDbConnectionSessionStore sessionStore
             , IDataSourceManager dataSourceManager
+            , ICacheManager cacheManager
            , ISqlBuilder sqlBuilder
             )
         {
@@ -49,6 +53,7 @@ namespace SmartSql
             SessionStore = sessionStore;
             SqlBuilder = sqlBuilder;
             DataSourceManager = dataSourceManager;
+            CacheManager = cacheManager;
             _sqlRuner = new SqlRuner(SqlBuilder, this);
         }
 
@@ -59,17 +64,21 @@ namespace SmartSql
         #region Sync
         public int Execute(RequestContext context)
         {
-            return _sqlRuner.Run<int>(context, DataSourceChoice.Write, (sqlStr, session) =>
-           {
-               return session.Connection.Execute(sqlStr, context.Request, session.Transaction);
-           });
+            int result = _sqlRuner.Run<int>(context, DataSourceChoice.Write, (sqlStr, session) =>
+            {
+                return session.Connection.Execute(sqlStr, context.Request, session.Transaction);
+            });
+            CacheManager.TriggerFlush(context);
+            return result;
         }
         public T ExecuteScalar<T>(RequestContext context)
         {
-            return _sqlRuner.Run<T>(context, DataSourceChoice.Write, (sqlStr, session) =>
-            {
-                return session.Connection.ExecuteScalar<T>(sqlStr, context.Request, session.Transaction);
-            });
+            T result = _sqlRuner.Run<T>(context, DataSourceChoice.Write, (sqlStr, session) =>
+             {
+                 return session.Connection.ExecuteScalar<T>(sqlStr, context.Request, session.Transaction);
+             });
+            CacheManager.TriggerFlush(context);
+            return result;
         }
         public IEnumerable<T> Query<T>(RequestContext context)
         {
@@ -77,6 +86,12 @@ namespace SmartSql
         }
         public IEnumerable<T> Query<T>(RequestContext context, DataSourceChoice sourceChoice)
         {
+            var cache = CacheManager[context, typeof(IEnumerable<T>)];
+            if (cache != null)
+            {
+                return (IEnumerable<T>)cache;
+            }
+
             IDbConnectionSession session = SessionStore.LocalSession;
 
             if (session == null)
@@ -86,7 +101,9 @@ namespace SmartSql
             string sqlStr = SqlBuilder.BuildSql(context);
             try
             {
-                return session.Connection.Query<T>(sqlStr, context.Request, session.Transaction);
+                var result = session.Connection.Query<T>(sqlStr, context.Request, session.Transaction);
+                CacheManager[context, typeof(IEnumerable<T>)] = result;
+                return result;
             }
             catch (Exception ex)
             {
@@ -107,26 +124,37 @@ namespace SmartSql
         }
         public T QuerySingle<T>(RequestContext context, DataSourceChoice sourceChoice)
         {
-            return _sqlRuner.Run<T>(context, sourceChoice, (sqlStr, session) =>
+            var cache = CacheManager[context, typeof(T)];
+            if (cache != null)
             {
-                return session.Connection.QuerySingle<T>(sqlStr, context.Request, session.Transaction);
-            });
+                return (T)cache;
+            }
+            var result = _sqlRuner.Run<T>(context, sourceChoice, (sqlStr, session) =>
+             {
+                 return session.Connection.QuerySingle<T>(sqlStr, context.Request, session.Transaction);
+             });
+            CacheManager[context, typeof(T)] = result;
+            return result;
         }
         #endregion
         #region Async
         public async Task<int> ExecuteAsync(RequestContext context)
         {
-            return await _sqlRuner.RunAsync<int>(context, DataSourceChoice.Write, (sqlStr, _session) =>
-           {
-               return _session.Connection.ExecuteAsync(sqlStr, context.Request, _session.Transaction);
-           });
+            int result = await _sqlRuner.RunAsync<int>(context, DataSourceChoice.Write, (sqlStr, _session) =>
+            {
+                return _session.Connection.ExecuteAsync(sqlStr, context.Request, _session.Transaction);
+            });
+            CacheManager.TriggerFlush(context);
+            return result;
         }
         public async Task<T> ExecuteScalarAsync<T>(RequestContext context)
         {
-            return await _sqlRuner.RunAsync<T>(context, DataSourceChoice.Write, (sqlStr, _session) =>
+            T result = await _sqlRuner.RunAsync<T>(context, DataSourceChoice.Write, (sqlStr, _session) =>
            {
                return _session.Connection.ExecuteScalarAsync<T>(sqlStr, context.Request, _session.Transaction);
            });
+            CacheManager.TriggerFlush(context);
+            return result;
         }
         public async Task<IEnumerable<T>> QueryAsync<T>(RequestContext context)
         {
@@ -135,6 +163,11 @@ namespace SmartSql
 
         public async Task<IEnumerable<T>> QueryAsync<T>(RequestContext context, DataSourceChoice sourceChoice)
         {
+            var cache = CacheManager[context, typeof(IEnumerable<T>)];
+            if (cache != null)
+            {
+                return (IEnumerable<T>)cache;
+            }
             IDbConnectionSession session = SessionStore.LocalSession;
             if (session == null)
             {
@@ -143,7 +176,9 @@ namespace SmartSql
             string sqlStr = SqlBuilder.BuildSql(context);
             try
             {
-                return await session.Connection.QueryAsync<T>(sqlStr, context.Request, session.Transaction);
+                var result = await session.Connection.QueryAsync<T>(sqlStr, context.Request, session.Transaction);
+                CacheManager[context, typeof(IEnumerable<T>)] = result;
+                return result;
             }
             catch (Exception ex)
             {
@@ -163,10 +198,17 @@ namespace SmartSql
         }
         public async Task<T> QuerySingleAsync<T>(RequestContext context, DataSourceChoice sourceChoice)
         {
-            return await _sqlRuner.RunAsync<T>(context, sourceChoice, (sqlStr, _session) =>
-           {
-               return _session.Connection.QuerySingleAsync<T>(sqlStr, context.Request, _session.Transaction);
-           });
+            var cache = CacheManager[context, typeof(IEnumerable<T>)];
+            if (cache != null)
+            {
+                return (T)cache;
+            }
+            var result = await _sqlRuner.RunAsync<T>(context, sourceChoice, (sqlStr, _session) =>
+            {
+                return _session.Connection.QuerySingleAsync<T>(sqlStr, context.Request, _session.Transaction);
+            });
+            CacheManager[context, typeof(T)] = result;
+            return result;
         }
         #endregion
         #region Transaction
