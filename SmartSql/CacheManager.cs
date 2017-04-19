@@ -22,23 +22,39 @@ namespace SmartSql
         {
             get
             {
-                _mappedTriggerFlushs = new Dictionary<String, IList<Statement>>();
-                foreach (var sqlMap in SmartSqlMapper.SqlMapConfig.SmartSqlMaps)
+                if (_mappedTriggerFlushs == null)
                 {
-                    foreach (var statement in sqlMap.Statements)
+                    lock (this)
                     {
-                        foreach (var triggerStatement in statement.Cache.FlushOnExecutes)
+                        if (_mappedTriggerFlushs == null)
                         {
-                            IList<Statement> triggerStatements = null;
-                            if (_mappedTriggerFlushs.ContainsKey(triggerStatement.Statement))
+                            _mappedTriggerFlushs = new Dictionary<String, IList<Statement>>();
+                            foreach (var sqlMap in SmartSqlMapper.SqlMapConfig.SmartSqlMaps)
                             {
-                                triggerStatements = _mappedTriggerFlushs[triggerStatement.Statement];
+                                foreach (var statement in sqlMap.Statements)
+                                {
+                                    if (statement.Cache == null) { continue; }
+                                    if (statement.Cache.FlushOnExecutes == null) { continue; }
+                                    foreach (var triggerStatement in statement.Cache.FlushOnExecutes)
+                                    {
+                                        IList<Statement> triggerStatements = null;
+                                        if (_mappedTriggerFlushs.ContainsKey(triggerStatement.Statement))
+                                        {
+                                            triggerStatements = _mappedTriggerFlushs[triggerStatement.Statement];
+                                        }
+                                        else
+                                        {
+                                            triggerStatements = new List<Statement>();
+                                            _mappedTriggerFlushs[triggerStatement.Statement] = triggerStatements;
+                                        }
+                                        triggerStatements.Add(statement);
+                                    }
+                                }
                             }
-                            else { triggerStatements = new List<Statement>(); }
-                            triggerStatements.Add(statement);
                         }
                     }
                 }
+
                 return _mappedTriggerFlushs;
             }
         }
@@ -46,11 +62,11 @@ namespace SmartSql
         public void TriggerFlush(RequestContext context)
         {
             String exeFullSqlId = context.FullSqlId;
-            if (_mappedTriggerFlushs.ContainsKey(exeFullSqlId))
+            if (MappedTriggerFlushs.ContainsKey(exeFullSqlId))
             {
                 lock (this)
                 {
-                    IList<Statement> triggerStatements = _mappedTriggerFlushs[exeFullSqlId];
+                    IList<Statement> triggerStatements = MappedTriggerFlushs[exeFullSqlId];
                     foreach (var statement in triggerStatements)
                     {
                         _logger.Debug($"SmartSql.CacheManager FlushCache.OnInterval FullSqlId:{statement.FullSqlId},ExeFullSqlId:{exeFullSqlId}");

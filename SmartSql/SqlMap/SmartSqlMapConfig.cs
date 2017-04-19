@@ -109,13 +109,13 @@ namespace SmartSql.SqlMap
                     {
                         if (_mappedStatements == null)
                         {
-                            Dictionary<String, Statement> mappedStatements = new Dictionary<string, Statement>();
+                            _mappedStatements = new Dictionary<string, Statement>();
                             foreach (var sqlmap in SmartSqlMaps)
                             {
                                 foreach (var statement in sqlmap.Statements)
                                 {
                                     var statementId = $"{sqlmap.Scope}.{statement.Id}";
-                                    mappedStatements.Add(statementId, statement);
+                                    _mappedStatements.Add(statementId, statement);
                                 }
                             }
                         }
