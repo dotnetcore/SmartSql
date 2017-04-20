@@ -32,7 +32,7 @@ namespace SmartSql
                 _logger.Error($"SmartSql.SqlBuilder BuildSql Not Find Statement.Id: {context.FullSqlId}.");
                 throw new SmartSqlException($"SmartSqlMapper could not find statement:{context.FullSqlId}");
             }
-            string sql = statement.BuildSql(context);
+            string sql = statement.BuildSql(context).Trim() ;
             _logger.Debug($"SmartSql.SqlBuilder BuildSql Statement.Id: {context.FullSqlId},Sql:[{sql}]");
             return sql;
         }
