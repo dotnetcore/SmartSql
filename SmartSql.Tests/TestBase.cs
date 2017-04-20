@@ -8,11 +8,11 @@ namespace SmartSql.Tests
 {
     public abstract class TestBase: IDisposable
     {
-        protected ISmartSqlMapper SqlMapper = MapperContainer.GetSqlMapper();
+        protected ISmartSqlMapper SqlMapper = MapperContainer.Instance.GetSqlMapper();
 
         public void Dispose()
         {
-            SqlMapper.Dispose();
+            MapperContainer.Instance.Dispose();
         }
     }
 

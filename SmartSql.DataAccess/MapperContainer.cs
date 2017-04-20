@@ -5,24 +5,21 @@ using System.Text;
 using SmartSql.Abstractions;
 namespace SmartSql.DataAccess
 {
-    public class MapperContainer
+    public class MapperContainer : IDisposable
     {
         private MapperContainer() { }
+        public static MapperContainer Instance = new MapperContainer();
+
         /// <summary>
         /// Mapper容器
         /// </summary>
-        private static IDictionary<String, ISmartSqlMapper> _mapperContainer = new Dictionary<String, ISmartSqlMapper>();
-        /// <summary>
-        /// 同步锁
-        /// </summary>
-        private static readonly object syncRoot = new object();
+        private IDictionary<String, ISmartSqlMapper> _mapperContainer = new Dictionary<String, ISmartSqlMapper>();
 
-        public static ISmartSqlMapper GetSqlMapper(String SmartSqlMapConfigPath = "SmartSqlMapConfig.xml")
+        public ISmartSqlMapper GetSqlMapper(String SmartSqlMapConfigPath = "SmartSqlMapConfig.xml")
         {
-            
             if (!_mapperContainer.ContainsKey(SmartSqlMapConfigPath))
             {
-                lock (syncRoot)
+                lock (this)
                 {
                     if (!_mapperContainer.ContainsKey(SmartSqlMapConfigPath))
                     {
@@ -34,7 +31,7 @@ namespace SmartSql.DataAccess
             return _mapperContainer[SmartSqlMapConfigPath];
         }
 
-        public static void Clear()
+        public void Dispose()
         {
             foreach (var mapper in _mapperContainer)
             {

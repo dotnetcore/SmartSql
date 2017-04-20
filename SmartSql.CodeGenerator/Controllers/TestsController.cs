@@ -12,7 +12,7 @@ namespace SmartSql.CodeGenerator.Controllers
     {
         public IActionResult Transaction()
         {
-            ISmartSqlMapper mapper = MapperContainer.GetSqlMapper();
+            ISmartSqlMapper mapper = MapperContainer.Instance.GetSqlMapper();
             mapper.BeginTransaction();
             mapper.RollbackTransaction();
             return Json(new { Ok = true });

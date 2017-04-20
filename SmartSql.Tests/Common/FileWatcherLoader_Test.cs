@@ -17,14 +17,14 @@ namespace SmartSql.Tests.Common
             Trace.WriteLine("Watch");
             FileWatcherLoader.Instance.Watch(new System.IO.FileInfo(@"E:\Loader.xml"), () =>
             {
-                Trace.WriteLine("FileChanged-"+changeTimes);
+                Trace.WriteLine("FileChanged-" + changeTimes);
                 ++changeTimes;
             });
 
-            Thread.Sleep(20000);
-            FileWatcherLoader.Instance.Clear();
+            //Thread.Sleep(20000);
+            //FileWatcherLoader.Instance.Clear();
             Trace.WriteLine("FileWatcherLoader.Clear");
-            Thread.Sleep(20000);
+            //Thread.Sleep(20000);
         }
     }
 }

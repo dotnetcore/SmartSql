@@ -15,7 +15,7 @@ namespace SmartSql.CodeGenerator.Controllers
 
         public async Task<IActionResult> Tables()
         {
-            var sqlMapper = MapperContainer.GetSqlMapper();
+            var sqlMapper = MapperContainer.Instance.GetSqlMapper();
             sqlMapper.BeginTransaction();
             var tables = await sqlMapper.QueryAsync<Table>(new RequestContext
             {
@@ -41,7 +41,7 @@ namespace SmartSql.CodeGenerator.Controllers
 
         public IActionResult GetColumnsByTableId(long TableId)
         {
-            var sqlMapper = MapperContainer.GetSqlMapper();
+            var sqlMapper = MapperContainer.Instance.GetSqlMapper();
             var columns = sqlMapper.Query<Column>(new RequestContext
             {
                 Scope = "DataBase-SqlServer",

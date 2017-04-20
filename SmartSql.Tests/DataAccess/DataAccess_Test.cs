@@ -62,7 +62,7 @@ namespace SmartSql.Tests.DataAccess
 
         public void Dispose()
         {
-            MapperContainer.Clear();
+            MapperContainer.Instance.Dispose();
         }
     }
 
