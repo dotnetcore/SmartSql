@@ -42,7 +42,7 @@ namespace SmartSql.Cache.Redis
                 throw new Exception("SmartSql.Cache.Redis.Prefix string can't empty.");
             }
 
-            redis = RedisManager.GetRedis(connStr);
+            redis = RedisManager.Instance.GetRedis(connStr);
         }
 
         public object this[CacheKey key, Type type]

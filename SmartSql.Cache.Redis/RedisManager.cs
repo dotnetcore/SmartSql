@@ -7,17 +7,28 @@ namespace SmartSql.Cache.Redis
 {
     public class RedisManager
     {
-        private static IDictionary<String, ConnectionMultiplexer> redises = new Dictionary<String, ConnectionMultiplexer>();
+        private RedisManager() { }
+        public static RedisManager Instance = new RedisManager();
 
-        public static ConnectionMultiplexer GetRedis(String connStr)
+        private IDictionary<String, ConnectionMultiplexer> redises = new Dictionary<String, ConnectionMultiplexer>();
+
+        public ConnectionMultiplexer GetRedis(String connStr)
         {
             if (redises.ContainsKey(connStr))
             {
                 return redises[connStr];
             }
-            var redis = ConnectionMultiplexer.Connect(connStr);
-            redises.Add(connStr, redis);
-            return redis;
+            lock (this)
+            {
+                if (redises.ContainsKey(connStr))
+                {
+                    return redises[connStr];
+                }
+                var redis = ConnectionMultiplexer.Connect(connStr);
+                redises.Add(connStr, redis);
+                return redis;
+            }
+
         }
 
 

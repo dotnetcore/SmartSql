@@ -12,8 +12,9 @@ namespace SmartSql.DbSession
 {
     public class DbConnectionSession : IDbConnectionSession
     {
-        public Guid Id { get; private set; }
         private static readonly ILog _logger = LogManager.GetLogger(typeof(DbConnectionSession));
+
+        public Guid Id { get; private set; }
         public DbProviderFactory DbProviderFactory { get; }
         public IDataSource DataSource { get; }
         public IDbConnection Connection { get; private set; }

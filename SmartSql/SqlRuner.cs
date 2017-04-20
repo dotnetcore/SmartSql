@@ -12,7 +12,7 @@ namespace SmartSql
 {
     public class SqlRuner
     {
-        private static readonly ILog _logger = LogManager.GetLogger(typeof(SqlBuilder));
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(SqlRuner));
         public ISqlBuilder SqlBuilder { get; }
         public ISmartSqlMapper SmartSqlMapper { get; }
         public SqlRuner(ISqlBuilder sqlBuilder, ISmartSqlMapper smartSqlMapper)
