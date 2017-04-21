@@ -1,9 +1,8 @@
-# SmartSql
+# SmartSql - [Wiki Docs](https://github.com/Ahoo-Wang/SmartSql/wiki)
 ## 0. Why ?
  - MyBatis.Net 不再更新维护。
  - 拥抱 跨平台、.NET Core，是时候了。 
  - 基于Dapper，不再重复造轮子。Dapper性能你懂的。
-
 ## 1. So SmartSql
  - SmartSql = Dapper + MyBatis 
  - TargetFramework: .NETStandard,Version=v1.4
