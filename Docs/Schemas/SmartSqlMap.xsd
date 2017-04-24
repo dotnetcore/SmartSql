@@ -316,9 +316,9 @@
   
   <xs:element name="SmartSqlMap">
     <xs:complexType mixed="true">
-      <xs:all>
-        <xs:element ref="Caches"/>
-        <xs:element ref="Statements" />
+      <xs:all >
+        <xs:element ref="Caches" minOccurs="0"  maxOccurs="1"/>
+        <xs:element ref="Statements"  minOccurs="0"  maxOccurs="1"/>
       </xs:all>
       <xs:attribute name="Scope" type="xs:string" use="required" />
     </xs:complexType>
