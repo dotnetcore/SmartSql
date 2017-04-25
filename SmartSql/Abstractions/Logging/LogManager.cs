@@ -1,10 +1,11 @@
-﻿using SmartSql.Abstractions.Logging.None;
+﻿using SmartSql.Logging.None;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using SmartSql.Common;
 using System.Xml.Serialization;
+using System.IO;
 
 namespace SmartSql.Abstractions.Logging
 {
@@ -12,8 +13,7 @@ namespace SmartSql.Abstractions.Logging
     {
         private static object syncObj = new object();
         private static ILoggerFactoryAdapter _loggerFactoryAdapter = null;
-        private LogManager()
-        { }
+        private LogManager() { }
         public static ILoggerFactoryAdapter Adapter
         {
             get
@@ -35,24 +35,23 @@ namespace SmartSql.Abstractions.Logging
 
         private static void LoadLoggerFactoryAdapter()
         {
-            try
+            var fileInfo = FileLoader.GetInfo("SmartSqlLog.xml");
+            if (fileInfo.Exists)
             {
-                XmlSerializer xmlSerializer = new XmlSerializer(typeof(SmartSqlLog));
-                SmartSqlLog smartSqlLog = null;
-                using (var configFile = FileLoader.Load("SmartSqlLog.xml"))
+                using (var configFile = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    smartSqlLog = xmlSerializer.Deserialize(configFile) as SmartSqlLog;
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(SmartSqlLog));
+                    SmartSqlLog smartSqlLog = xmlSerializer.Deserialize(configFile) as SmartSqlLog;
+                    AssemblyName assemblyName = new AssemblyName { Name = smartSqlLog.LoggerFactoryAdapter.AssemblyName };
+                    Type loggerFactoryAdpterType = Assembly.Load(assemblyName)
+                                                   .GetType(smartSqlLog.LoggerFactoryAdapter.TypeName);
+                    _loggerFactoryAdapter = Activator.CreateInstance(loggerFactoryAdpterType) as ILoggerFactoryAdapter;
                 }
-                AssemblyName assemblyName = new AssemblyName { Name = smartSqlLog.LoggerFactoryAdapter.AssemblyName };
-                Type loggerFactoryAdpterType = Assembly.Load(assemblyName)
-                                               .GetType(smartSqlLog.LoggerFactoryAdapter.TypeName);
-                _loggerFactoryAdapter = Activator.CreateInstance(loggerFactoryAdpterType) as ILoggerFactoryAdapter;
             }
-            catch (Exception ex)
+            else
             {
                 _loggerFactoryAdapter = new NoneLoggerFactoryAdapter();
             }
-
         }
 
         public static ILog GetLogger(Type type)

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using SmartSql.Abstractions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SmartSql.Abstractions.Logging.None
+namespace SmartSql.Logging.None
 {
     public class NoneLoggerFactoryAdapter : ILoggerFactoryAdapter
     {

@@ -19,8 +19,12 @@ namespace SmartSql.Common
 
         public static Stream Load(String filePath)
         {
-            var fullPath = GetInfo(filePath).FullName;
-            return new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            var fileInfo = GetInfo(filePath);
+            return Load(fileInfo);
+        }
+        public static Stream Load(FileInfo fileInfo)
+        {
+            return fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
     }
 }
