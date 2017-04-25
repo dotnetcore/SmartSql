@@ -18,12 +18,10 @@ namespace SmartSql.Logging
             Console.WriteLine($"{DateTime.Now}:{message}");
             Console.WriteLine($"{exception}");
         }
-
         public void Error(string message)
         {
             Console.WriteLine($"{DateTime.Now}:{message}");
         }
-
         public void Error(string message, Exception exception)
         {
             Console.WriteLine($"{DateTime.Now}:{message}");
