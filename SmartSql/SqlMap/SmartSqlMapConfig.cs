@@ -64,6 +64,7 @@ namespace SmartSql.SqlMap
                     var newSqlmap = SmartSqlMap.Load(sqlmap.FilePath, config);
                     sqlmap.Scope = newSqlmap.Scope;
                     sqlmap.Statements = newSqlmap.Statements;
+                    config._mappedStatements = null;
                     _logger.Debug($"SmartSql.SmartSqlMapConfig Changed Reload SmartSqlMap: {sqlmap.FilePath} End");
                 });
                 #endregion
