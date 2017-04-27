@@ -34,7 +34,7 @@ namespace SmartSql.DataAccess
             return SqlMapper.BeginTransaction();
         }
 
-        public IDbConnectionSession BeginTransaction(IsolationLevel isolationLevel)
+        public virtual IDbConnectionSession BeginTransaction(IsolationLevel isolationLevel)
         {
             return SqlMapper.BeginTransaction(isolationLevel);
         }

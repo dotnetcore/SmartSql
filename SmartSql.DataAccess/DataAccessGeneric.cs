@@ -24,7 +24,7 @@ namespace SmartSql.DataAccess
         }
         #region Read
 
-        public TEntity GetEntity<TPrimary>(TPrimary Id, DataSourceChoice sourceChoice = DataSourceChoice.Read)
+        public virtual TEntity GetEntity<TPrimary>(TPrimary Id, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
             
             return SqlMapper.QuerySingle<TEntity>(new RequestContext
@@ -35,7 +35,7 @@ namespace SmartSql.DataAccess
             }, sourceChoice);
         }
 
-        public IEnumerable<TResponse> GetList<TResponse>(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
+        public virtual IEnumerable<TResponse> GetList<TResponse>(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
             return SqlMapper.Query<TResponse>(new RequestContext
             {
@@ -45,7 +45,7 @@ namespace SmartSql.DataAccess
             }, sourceChoice);
         }
 
-        public IEnumerable<TResponse> GetListByPage<TResponse>(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
+        public virtual IEnumerable<TResponse> GetListByPage<TResponse>(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
             return SqlMapper.Query<TResponse>(new RequestContext
             {
@@ -55,7 +55,7 @@ namespace SmartSql.DataAccess
             }, sourceChoice);
         }
 
-        public int GetRecord(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
+        public virtual int GetRecord(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
             return SqlMapper.QuerySingle<int>(new RequestContext
             {
@@ -65,7 +65,7 @@ namespace SmartSql.DataAccess
             }, sourceChoice);
         }
 
-        public bool IsExist(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
+        public virtual bool IsExist(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
             return SqlMapper.QuerySingle<int>(new RequestContext
             {
@@ -77,7 +77,7 @@ namespace SmartSql.DataAccess
 
         #endregion
         #region Write
-        public TPrimary Insert<TPrimary>(TEntity entity)
+        public virtual TPrimary Insert<TPrimary>(TEntity entity)
         {
             bool isNoneIdentity = typeof(TPrimary) == typeof(NoneIdentity);
             if (!isNoneIdentity)
@@ -100,7 +100,7 @@ namespace SmartSql.DataAccess
                 return default(TPrimary);
             }
         }
-        public int Delete<TPrimary>(TPrimary Id)
+        public virtual int Delete<TPrimary>(TPrimary Id)
         {
             return SqlMapper.Execute(new RequestContext
             {
@@ -110,7 +110,7 @@ namespace SmartSql.DataAccess
             });
         }
 
-        public int Update(TEntity entity)
+        public virtual int Update(TEntity entity)
         {
             return SqlMapper.Execute(new RequestContext
             {
