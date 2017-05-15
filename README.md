@@ -136,8 +136,11 @@
 ## 安装 (NuGet)
 ```
 Install-Package SmartSql
+Install-Package SmartSql.DataAccess
 
+Install-Package SmartSql.Cache.Redis
 Install-Package SmartSql.Logging.NLog
+
 ```
 ## Codes
 ### Query
