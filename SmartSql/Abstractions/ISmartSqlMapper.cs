@@ -23,6 +23,7 @@ namespace SmartSql.Abstractions
         ISqlBuilder SqlBuilder { get; }
         DbProviderFactory DbProviderFactory { get; }
         IDbConnectionSessionStore SessionStore { get; }
+         IConfigLoader ConfigLoader { get; }
         IDbConnectionSession CreateDbSession(DataSourceChoice commandMethod);
 
         void LoadConfig(SmartSqlMapConfig smartSqlMapConfig);

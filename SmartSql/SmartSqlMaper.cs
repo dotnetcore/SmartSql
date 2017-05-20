@@ -26,12 +26,25 @@ namespace SmartSql
         public ISqlBuilder SqlBuilder { get; }
         public IDataSourceManager DataSourceManager { get; }
         public ICacheManager CacheManager { get; }
+        public IConfigLoader ConfigLoader { get; }
         private SqlRuner _sqlRuner;
         public SmartSqlMapper(
              String sqlMapConfigFilePath = "SmartSqlMapConfig.xml"
         )
         {
-            SmartSqlMapConfig.Load(sqlMapConfigFilePath, this);
+            ConfigLoader = new LocalFileConfigLoader();
+            ConfigLoader.Load(sqlMapConfigFilePath, this);
+            DbProviderFactory = SqlMapConfig.Database.DbProvider.DbProviderFactory;
+            SessionStore = new DbConnectionSessionStore(this.GetHashCode().ToString());
+            SqlBuilder = new SqlBuilder(this);
+            DataSourceManager = new DataSourceManager(this);
+            CacheManager = new CacheManager(this);
+            _sqlRuner = new SqlRuner(SqlBuilder, this);
+        }
+        public SmartSqlMapper(String sqlMapConfigFilePath, IConfigLoader configLoader)
+        {
+            ConfigLoader = configLoader;
+            ConfigLoader.Load(sqlMapConfigFilePath, this);
             DbProviderFactory = SqlMapConfig.Database.DbProvider.DbProviderFactory;
             SessionStore = new DbConnectionSessionStore(this.GetHashCode().ToString());
             SqlBuilder = new SqlBuilder(this);
@@ -45,10 +58,11 @@ namespace SmartSql
             , IDbConnectionSessionStore sessionStore
             , IDataSourceManager dataSourceManager
             , ICacheManager cacheManager
-           , ISqlBuilder sqlBuilder
+            , ISqlBuilder sqlBuilder
+            , IConfigLoader configLoader
             )
         {
-            SmartSqlMapConfig.Load(sqlMapConfigFilePath, this);
+            configLoader.Load(sqlMapConfigFilePath, this);
             DbProviderFactory = SqlMapConfig.Database.DbProvider.DbProviderFactory;
             SessionStore = sessionStore;
             SqlBuilder = sqlBuilder;

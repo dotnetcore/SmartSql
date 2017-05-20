@@ -12,8 +12,8 @@
       <Parameter Key="ConnectionString" Value="localhost"/>
       <Parameter Key="DatabaseId" Value="0"/>
       <FlushInterval Hours="24" Minutes="0" Seconds="0"/>
-      <FlushOnExecute Statement="T_Test.Insert"/>
-      <FlushOnExecute Statement="T_Test.Update"/>
+      <!--<FlushOnExecute Statement="T_Test.Insert"/>
+      <FlushOnExecute Statement="T_Test.Update"/>-->
     </Cache>
     <Cache Id="T_Test.LruCache" Type="Lru">
       <Parameter Key="CacheSize" Value="100"/>
