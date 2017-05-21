@@ -21,7 +21,7 @@ namespace SmartSql.SqlMap
         [XmlIgnore]
         public ISmartSqlMapper SmartSqlMapper { get; set; }
         [XmlIgnore]
-        public String FilePath { get; set; }
+        public String Path { get; set; }
         public Settings Settings { get; set; }
         public Database Database { get; set; }
         [XmlArray("SmartSqlMaps")]
@@ -41,7 +41,7 @@ namespace SmartSql.SqlMap
                     {
                         if (_mappedStatements == null)
                         {
-                            _logger.Debug($"SmartSqlMapConfig. FilePath:{FilePath} Load MappedStatements !");
+                            _logger.Debug($"SmartSqlMapConfig. Path:{Path} Load MappedStatements !");
                             _mappedStatements = new Dictionary<string, Statement>();
                             foreach (var sqlmap in SmartSqlMaps)
                             {
