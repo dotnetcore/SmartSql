@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ZooKeeperNetEx" Version="3.4.9.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
   </ItemGroup>
 

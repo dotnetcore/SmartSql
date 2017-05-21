@@ -35,9 +35,9 @@ namespace SmartSql
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(SmartSqlMapConfig));
             SmartSqlMapConfig config = null;
-            using (var configFile = FileLoader.Load(path))
+            using (var configStream = FileLoader.Load(path))
             {
-                config = xmlSerializer.Deserialize(configFile) as SmartSqlMapConfig;
+                config = xmlSerializer.Deserialize(configStream) as SmartSqlMapConfig;
                 config.Path = path;
                 config.SmartSqlMapper = smartSqlMapper;
             }
@@ -97,10 +97,10 @@ namespace SmartSql
                 Statements = new List<Statement> { },
                 Caches = new List<SqlMap.Cache> { }
             };
-            using (var xmlFile = FileLoader.Load(path))
+            using (var configStream = FileLoader.Load(path))
             {
                 XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(xmlFile);
+                xmlDoc.Load(configStream);
                 XmlNamespaceManager xmlNsM = new XmlNamespaceManager(xmlDoc.NameTable);
                 xmlNsM.AddNamespace("ns", "http://SmartSql.net/schemas/SmartSqlMap.xsd");
                 sqlMap.Scope = xmlDoc.SelectSingleNode("//ns:SmartSqlMap", xmlNsM)
