@@ -12,6 +12,9 @@ using SmartSql.Abstractions.Logging;
 
 namespace SmartSql.ZooKeeperConfig
 {
+    /// <summary>
+    /// ZooKeeper 配置加载器
+    /// </summary>
     public class ZooKeeperConfigLoader : IConfigLoader
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(LocalFileConfigLoader));
