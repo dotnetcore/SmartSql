@@ -31,11 +31,11 @@
       - 6.1.2 Lru  √
   - 6.2 SmartSql.Cache.Redis  √
 - 7 分布式配置插件 
-  - 7.1 IConfigLoader 配置文件加载器  √
-  - 7.2 LocalFileConfigLoader 本地文件配置加载器  √
-  - 7.3 SmartSql.ZooKeeperConfig ZooKeeper 分布式配置文件加载器
-- 7 ~~分布式事务~~
-- 8 ~~主从同步~~
+  - 7.1 IConfigLoader  √ (配置文件加载器)
+  - 7.2 LocalFileConfigLoader  √ (本地文件配置加载器)
+  - 7.3 SmartSql.ZooKeeperConfig  (ZooKeeper 分布式配置文件加载器)
+- 8 ~~分布式事务~~
+- 9 ~~主从同步~~
 
 ## 3. 配置
 
