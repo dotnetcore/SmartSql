@@ -10,6 +10,9 @@ using System.Xml;
 
 namespace SmartSql
 {
+    /// <summary>
+    /// 本地文件配置加载器
+    /// </summary>
     public class LocalFileConfigLoader : IConfigLoader
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(LocalFileConfigLoader));
