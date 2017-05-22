@@ -9,7 +9,7 @@ using System.IO;
 using System.Xml.Serialization;
 using System.Xml;
 using SmartSql.Abstractions.Logging;
-
+using System.Linq;
 namespace SmartSql.ZooKeeperConfig
 {
     /// <summary>
@@ -39,9 +39,9 @@ namespace SmartSql.ZooKeeperConfig
 
         public async Task<SmartSqlMapConfig> LoadAsync(string path, ISmartSqlMapper smartSqlMapper)
         {
-            _logger.Debug($"SmartSql.SmartSqlMapConfig Load: {path} Starting");
+            _logger.Debug($"SmartSql.ZooKeeperConfigLoader Load: {path} Starting");
             var config = await LoadConfigAsync(path, smartSqlMapper);
-            _logger.Debug($"SmartSql.SmartSqlMapConfig Load: {path} End");
+            _logger.Debug($"SmartSql.ZooKeeperConfigLoader Load: {path} End");
             smartSqlMapper.LoadConfig(config);
             return config;
         }
@@ -75,10 +75,8 @@ namespace SmartSql.ZooKeeperConfig
                 Statements = new List<Statement> { },
                 Caches = new List<SqlMap.Cache> { }
             };
-            var configResult = await ZooClient.getDataAsync(path, new SmartSqlMapWatcher(sqlMap, this));
+            var configResult = await ZooClient.getDataAsync(path, new SmartSqlMapWatcher(smartSqlMapConfig, this));
 
-            //string configDataString = Encoding.UTF8.GetString(configResult.Data);
-            //_logger.Info(configDataString);
             using (MemoryStream configStream = new MemoryStream(configResult.Data))
             {
                 XmlDocument xmlDoc = new XmlDocument();
@@ -128,22 +126,23 @@ namespace SmartSql.ZooKeeperConfig
         }
         public override async Task process(WatchedEvent @event)
         {
-            _logger.Debug($"SmartSql.SmartSqlMapConfigWatcher process : {@event.getPath()} .");
+            string path = @event.getPath();
+            _logger.Debug($"ZooKeeperConfigLoader.SmartSqlMapConfigWatcher process : {path} .");
             var eventType = @event.get_Type();
             if (eventType == Event.EventType.NodeDataChanged)
             {
                 var config = SmartSqlMapper.SqlMapConfig;
                 if (!config.Settings.IsWatchConfigFile)
                 {
-                    _logger.Debug($"SmartSql.SmartSqlMapConfig Changed ,dot not watch: {config.Path} .");
+                    _logger.Debug($"ZooKeeperConfigLoader.SmartSqlMapConfigWatcher Changed ,dot not watch: {path} .");
                 }
                 else
                 {
                     #region SmartSqlMapConfig File Watch
 
-                    _logger.Debug($"SmartSql.SmartSqlMapConfig Changed ReloadConfig: {config.Path} Starting");
-                    var newConfig = await ConfigLoader.LoadAsync(config.Path, SmartSqlMapper);
-                    _logger.Debug($"SmartSql.SmartSqlMapConfig Changed ReloadConfig: {config.Path} End");
+                    _logger.Debug($"ZooKeeperConfigLoader.SmartSqlMapConfigWatcher Changed ReloadConfig: {path} Starting");
+                    var newConfig = await ConfigLoader.LoadAsync(path, SmartSqlMapper);
+                    _logger.Debug($"ZooKeeperConfigLoader.SmartSqlMapConfigWatcher Changed ReloadConfig: {path} End");
 
                     #endregion
                 }
@@ -157,31 +156,35 @@ namespace SmartSql.ZooKeeperConfig
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(SmartSqlMapWatcher));
 
-        public SmartSqlMap SmartSqlMap { get; private set; }
+        public SmartSqlMapConfig SmartSqlMapConfig { get; private set; }
         public ZooKeeperConfigLoader ConfigLoader { get; set; }
-        public SmartSqlMapWatcher(SmartSqlMap smartSqlMap, ZooKeeperConfigLoader configLoader)
+        public SmartSqlMapWatcher(SmartSqlMapConfig smartSqlMapConfig, ZooKeeperConfigLoader configLoader)
         {
-            SmartSqlMap = smartSqlMap;
+            SmartSqlMapConfig = smartSqlMapConfig;
             ConfigLoader = configLoader;
         }
         public override async Task process(WatchedEvent @event)
         {
-            _logger.Debug($"SmartSql.SmartSqlMapWatcher process : {@event.getPath()} .");
+            string path = @event.getPath();
+            _logger.Debug($"ZooKeeperConfigLoader.SmartSqlMapWatcher process : {path} .");
             var eventType = @event.get_Type();
             if (eventType == Event.EventType.NodeDataChanged)
             {
-                if (!SmartSqlMap.SmartSqlMapConfig.Settings.IsWatchConfigFile)
+                if (!SmartSqlMapConfig.Settings.IsWatchConfigFile)
                 {
-                    _logger.Debug($"SmartSql.SmartSqlMapConfig Changed Reload SmartSqlMap,dot not watch: {SmartSqlMap.Path} .");
+                    _logger.Debug($"ZooKeeperConfigLoader.SmartSqlMapWatcher Changed Reload SmartSqlMap,dot not watch: {path} .");
                 }
                 else
                 {
-                    _logger.Debug($"SmartSql.SmartSqlMapConfig Changed Reload SmartSqlMap: {SmartSqlMap.Path} Starting");
-                    var newSqlmap = await ConfigLoader.LoadSmartSqlMapAsync(SmartSqlMap.Path, SmartSqlMap.SmartSqlMapConfig);
-                    SmartSqlMap.Scope = newSqlmap.Scope;
-                    SmartSqlMap.Statements = newSqlmap.Statements;
-                    SmartSqlMap.SmartSqlMapConfig.ResetMappedStatements();
-                    _logger.Debug($"SmartSql.SmartSqlMapConfig Changed Reload SmartSqlMap: {SmartSqlMap.Path} End");
+                    _logger.Debug($"ZooKeeperConfigLoader.SmartSqlMapWatcher Changed Reload SmartSqlMap: {path} Starting");
+                    var sqlmap = SmartSqlMapConfig.SmartSqlMaps.FirstOrDefault(m => m.Path == path);
+                    var newSqlmap = await ConfigLoader.LoadSmartSqlMapAsync(path, SmartSqlMapConfig);
+
+                    sqlmap.Scope = newSqlmap.Scope;
+                    sqlmap.Statements = newSqlmap.Statements;
+                    sqlmap.Caches = newSqlmap.Caches;
+                    SmartSqlMapConfig.ResetMappedStatements();
+                    _logger.Debug($"ZooKeeperConfigLoader.SmartSqlMapWatcher Changed Reload SmartSqlMap: {path} End");
                 }
             }
         }
