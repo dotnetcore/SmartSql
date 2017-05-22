@@ -7,7 +7,7 @@ namespace SmartSql.Abstractions
     /// <summary>
     /// 配置文件加载器
     /// </summary>
-    public interface IConfigLoader
+    public interface IConfigLoader : IDisposable
     {
         /// <summary>
         /// 加载配置文件

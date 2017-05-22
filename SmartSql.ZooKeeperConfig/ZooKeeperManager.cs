@@ -66,10 +66,7 @@ namespace SmartSql.ZooKeeperConfig
         private NoneWatcher() { }
         public override Task process(WatchedEvent @event)
         {
-            var state = @event.getState();
-            var type = @event.get_Type();
             return Task.CompletedTask;
-            // nada
         }
     }
 }

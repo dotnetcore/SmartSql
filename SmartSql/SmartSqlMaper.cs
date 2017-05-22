@@ -314,7 +314,7 @@ namespace SmartSql
         }
         public void Dispose()
         {
-            FileWatcherLoader.Instance.Clear();
+            ConfigLoader.Dispose();
             if (SessionStore.LocalSession != null)
             {
                 SessionStore.LocalSession.Dispose();

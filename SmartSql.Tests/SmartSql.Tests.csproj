@@ -18,6 +18,7 @@
     <ProjectReference Include="..\SmartSql.Cache.Redis\SmartSql.Cache.Redis.csproj" />
     <ProjectReference Include="..\SmartSql.DataAccess\SmartSql.DataAccess.csproj" />
     <ProjectReference Include="..\SmartSql.Logging.NLog\SmartSql.Logging.NLog.csproj" />
+    <ProjectReference Include="..\SmartSql.ZooKeeperConfig\SmartSql.ZooKeeperConfig.csproj" />
     <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
   </ItemGroup>
 

@@ -33,18 +33,24 @@ namespace SmartSql.ZooKeeperConfig
         }
         public SmartSqlMapConfig Load(string path, ISmartSqlMapper smartSqlMapper)
         {
+            var config = LoadAsync(path, smartSqlMapper).Result;
+            return config;
+        }
+
+        public async Task<SmartSqlMapConfig> LoadAsync(string path, ISmartSqlMapper smartSqlMapper)
+        {
             _logger.Debug($"SmartSql.SmartSqlMapConfig Load: {path} Starting");
-            var config = LoadConfig(path, smartSqlMapper);
+            var config = await LoadConfigAsync(path, smartSqlMapper);
             _logger.Debug($"SmartSql.SmartSqlMapConfig Load: {path} End");
             smartSqlMapper.LoadConfig(config);
             return config;
         }
 
-        private SmartSqlMapConfig LoadConfig(String path, ISmartSqlMapper smartSqlMapper)
+        public async Task<SmartSqlMapConfig> LoadConfigAsync(String path, ISmartSqlMapper smartSqlMapper)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(SmartSqlMapConfig));
             SmartSqlMapConfig config = null;
-            var configResult = ZooClient.getDataAsync(path, new SmartSqlMapConfigWatcher(smartSqlMapper)).Result;
+            var configResult = await ZooClient.getDataAsync(path, new SmartSqlMapConfigWatcher(smartSqlMapper, this));
             using (MemoryStream configStream = new MemoryStream(configResult.Data))
             {
                 config = xmlSerializer.Deserialize(configStream) as SmartSqlMapConfig;
@@ -54,13 +60,13 @@ namespace SmartSql.ZooKeeperConfig
             config.SmartSqlMaps = new List<SmartSqlMap> { };
             foreach (var sqlmapSource in config.SmartSqlMapSources)
             {
-                var sqlmap = LoadSmartSqlMap(sqlmapSource.Path, config);
+                var sqlmap = await LoadSmartSqlMapAsync(sqlmapSource.Path, config);
                 config.SmartSqlMaps.Add(sqlmap);
             }
             return config;
         }
 
-        private SmartSqlMap LoadSmartSqlMap(string path, SmartSqlMapConfig smartSqlMapConfig)
+        public async Task<SmartSqlMap> LoadSmartSqlMapAsync(string path, SmartSqlMapConfig smartSqlMapConfig)
         {
             var sqlMap = new SmartSqlMap
             {
@@ -69,7 +75,7 @@ namespace SmartSql.ZooKeeperConfig
                 Statements = new List<Statement> { },
                 Caches = new List<SqlMap.Cache> { }
             };
-            var configResult = ZooClient.getDataAsync(path, new SmartSqlMapWatcher(sqlMap)).Result;
+            var configResult = await ZooClient.getDataAsync(path, new SmartSqlMapWatcher(sqlMap, this));
             using (MemoryStream configStream = new MemoryStream(configResult.Data))
             {
                 XmlDocument xmlDoc = new XmlDocument();
@@ -97,6 +103,11 @@ namespace SmartSql.ZooKeeperConfig
                 return sqlMap;
             }
         }
+
+        public void Dispose()
+        {
+            ZooKeeperManager.Instance.Dispose();
+        }
     }
     /// <summary>
     /// SmartSqlMapConfig 监控
@@ -106,25 +117,32 @@ namespace SmartSql.ZooKeeperConfig
         private static readonly ILog _logger = LogManager.GetLogger(typeof(SmartSqlMapConfigWatcher));
 
         public ISmartSqlMapper SmartSqlMapper { get; private set; }
-        public SmartSqlMapConfigWatcher(ISmartSqlMapper smartSqlMapper)
+        public ZooKeeperConfigLoader ConfigLoader { get; set; }
+        public SmartSqlMapConfigWatcher(ISmartSqlMapper smartSqlMapper, ZooKeeperConfigLoader configLoader)
         {
             SmartSqlMapper = smartSqlMapper;
+            ConfigLoader = configLoader;
         }
-        public override Task process(WatchedEvent @event)
+        public override async Task process(WatchedEvent @event)
         {
             if (@event.get_Type() == Event.EventType.NodeDataChanged)
             {
                 var config = SmartSqlMapper.SqlMapConfig;
-                #region SmartSqlMapConfig File Watch
+                if (!config.Settings.IsWatchConfigFile)
+                {
+                    _logger.Debug($"SmartSql.SmartSqlMapConfig Changed ,dot not watch: {config.Path} .");
+                }
+                else
+                {
+                    #region SmartSqlMapConfig File Watch
 
-                _logger.Debug($"SmartSql.SmartSqlMapConfig Changed ReloadConfig: {config.Path} Starting");
-                //var newConfig = Load(config.Path, smartSqlMapper);
-                //SmartSqlMapper.LoadConfig(newConfig);
-                _logger.Debug($"SmartSql.SmartSqlMapConfig Changed ReloadConfig: {config.Path} End");
+                    _logger.Debug($"SmartSql.SmartSqlMapConfig Changed ReloadConfig: {config.Path} Starting");
+                    var newConfig = await ConfigLoader.LoadAsync(config.Path, SmartSqlMapper);
+                    _logger.Debug($"SmartSql.SmartSqlMapConfig Changed ReloadConfig: {config.Path} End");
 
-                #endregion
+                    #endregion
+                }
             }
-            throw new NotImplementedException();
         }
     }
     /// <summary>
@@ -132,18 +150,33 @@ namespace SmartSql.ZooKeeperConfig
     /// </summary>
     public class SmartSqlMapWatcher : Watcher
     {
-        public SmartSqlMap CurrentSmartSqlMap { get; private set; }
-        public SmartSqlMapWatcher(SmartSqlMap smartSqlMap)
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(SmartSqlMapWatcher));
+
+        public SmartSqlMap SmartSqlMap { get; private set; }
+        public ZooKeeperConfigLoader ConfigLoader { get; set; }
+        public SmartSqlMapWatcher(SmartSqlMap smartSqlMap, ZooKeeperConfigLoader configLoader)
         {
-            CurrentSmartSqlMap = smartSqlMap;
+            SmartSqlMap = smartSqlMap;
+            ConfigLoader = configLoader;
         }
-        public override Task process(WatchedEvent @event)
+        public override async Task process(WatchedEvent @event)
         {
             if (@event.get_Type() == Event.EventType.NodeDataChanged)
             {
-
+                if (!SmartSqlMap.SmartSqlMapConfig.Settings.IsWatchConfigFile)
+                {
+                    _logger.Debug($"SmartSql.SmartSqlMapConfig Changed Reload SmartSqlMap,dot not watch: {SmartSqlMap.Path} .");
+                }
+                else
+                {
+                    _logger.Debug($"SmartSql.SmartSqlMapConfig Changed Reload SmartSqlMap: {SmartSqlMap.Path} Starting");
+                    var newSqlmap = await ConfigLoader.LoadSmartSqlMapAsync(SmartSqlMap.Path, SmartSqlMap.SmartSqlMapConfig);
+                    SmartSqlMap.Scope = newSqlmap.Scope;
+                    SmartSqlMap.Statements = newSqlmap.Statements;
+                    SmartSqlMap.SmartSqlMapConfig.ResetMappedStatements();
+                    _logger.Debug($"SmartSql.SmartSqlMapConfig Changed Reload SmartSqlMap: {SmartSqlMap.Path} End");
+                }
             }
-            throw new NotImplementedException();
         }
     }
 }

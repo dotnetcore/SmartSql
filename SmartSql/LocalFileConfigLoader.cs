@@ -64,7 +64,6 @@ namespace SmartSql
             {
                 _logger.Debug($"SmartSql.SmartSqlMapConfig Changed ReloadConfig: {config.Path} Starting");
                 var newConfig = Load(config.Path, smartSqlMapper);
-                smartSqlMapper.LoadConfig(newConfig);
                 _logger.Debug($"SmartSql.SmartSqlMapConfig Changed ReloadConfig: {config.Path} End");
             });
             #endregion
@@ -124,6 +123,11 @@ namespace SmartSql
                 return sqlMap;
             }
 
+        }
+
+        public void Dispose()
+        {
+            FileWatcherLoader.Instance.Clear();
         }
     }
 }
