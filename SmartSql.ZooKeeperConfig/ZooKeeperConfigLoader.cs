@@ -76,6 +76,9 @@ namespace SmartSql.ZooKeeperConfig
                 Caches = new List<SqlMap.Cache> { }
             };
             var configResult = await ZooClient.getDataAsync(path, new SmartSqlMapWatcher(sqlMap, this));
+
+            //string configDataString = Encoding.UTF8.GetString(configResult.Data);
+            //_logger.Info(configDataString);
             using (MemoryStream configStream = new MemoryStream(configResult.Data))
             {
                 XmlDocument xmlDoc = new XmlDocument();
@@ -125,7 +128,9 @@ namespace SmartSql.ZooKeeperConfig
         }
         public override async Task process(WatchedEvent @event)
         {
-            if (@event.get_Type() == Event.EventType.NodeDataChanged)
+            _logger.Debug($"SmartSql.SmartSqlMapConfigWatcher process : {@event.getPath()} .");
+            var eventType = @event.get_Type();
+            if (eventType == Event.EventType.NodeDataChanged)
             {
                 var config = SmartSqlMapper.SqlMapConfig;
                 if (!config.Settings.IsWatchConfigFile)
@@ -161,7 +166,9 @@ namespace SmartSql.ZooKeeperConfig
         }
         public override async Task process(WatchedEvent @event)
         {
-            if (@event.get_Type() == Event.EventType.NodeDataChanged)
+            _logger.Debug($"SmartSql.SmartSqlMapWatcher process : {@event.getPath()} .");
+            var eventType = @event.get_Type();
+            if (eventType == Event.EventType.NodeDataChanged)
             {
                 if (!SmartSqlMap.SmartSqlMapConfig.Settings.IsWatchConfigFile)
                 {

@@ -1,40 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
+﻿using SmartSql.Abstractions;
 using SmartSql.ZooKeeperConfig;
-using SmartSql;
-using SmartSql.Abstractions;
+using System;
 using System.Threading;
+using System.Linq;
 
-namespace SmartSql.Tests.ZooKeeperConfig
+namespace SmartSql.ConsoleTests
 {
-    public class ZooKeeperConfigLoader_Tests
+    class Program
     {
-        protected ISmartSqlMapper SqlMapper { get; set; }
-
-        public ZooKeeperConfigLoader_Tests()
+        static void Main(string[] args)
         {
             string connStr = "192.168.31.103:2181";
             var configLoader = new ZooKeeperConfigLoader(connStr);
             string configPath = "/Config/App1/SmartSqlMapConfig.xml";
-            SqlMapper = new SmartSqlMapper(configPath, configLoader);
-        }
+            var SqlMapper = new SmartSqlMapper(configPath, configLoader);
 
-        [Fact]
-        public void Query_OnChangeConfig()
-        {
             int i = 0;
             for (i = 0; i < 10; i++)
             {
+                Console.ReadLine();
                 var list = SqlMapper.Query<T_Test>(new RequestContext
                 {
                     Scope = "T_Test",
                     SqlId = "GetList",
                     Request = new { Ids = new long[] { 1, 2, 3, 4 } }
                 });
-                Thread.Sleep(50);
+                Console.WriteLine($"{list.Count()}");
             }
+
+            Console.WriteLine("Hello World!");
         }
+    }
+    public class T_Test
+    {
+        public long Id { get; set; }
+        public String Name { get; set; }
     }
 }
