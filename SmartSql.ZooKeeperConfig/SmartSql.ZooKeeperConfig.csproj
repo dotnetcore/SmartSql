@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
+    <Description>SmartSql ZooKeeper 分布式配置文件加载器</Description>
+    <Copyright>Ahoo Wang</Copyright>
+    <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
+    <PackageTags>SmartSql Dapper MyBatis  ORM ZooKeeper Config</PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
