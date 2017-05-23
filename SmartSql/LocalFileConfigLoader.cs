@@ -26,6 +26,7 @@ namespace SmartSql
 
             foreach (var sqlmapSource in config.SmartSqlMapSources)
             {
+                _logger.Debug($"SmartSql.LoadSmartSqlMap Load: {sqlmapSource.Path}");
                 var sqlmapStream = LoadConfigStream(sqlmapSource.Path);
                 var sqlmap = LoadSmartSqlMap(sqlmapStream, config);
                 config.SmartSqlMaps.Add(sqlmap);
