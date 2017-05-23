@@ -9,13 +9,13 @@ using System.Threading;
 
 namespace SmartSql.Tests.ZooKeeperConfig
 {
-    public class ZooKeeperConfigLoader_Tests
+    public class ZooKeeperConfigLoader_Tests : IDisposable
     {
         protected ISmartSqlMapper SqlMapper { get; set; }
 
         public ZooKeeperConfigLoader_Tests()
         {
-            string connStr = "192.168.1.5:2181";//192.168.1.5:2181,192.168.1.5:2182,192.168.1.5:2183 192.168.31.103:2181
+            string connStr = "192.168.31.103:2181";//192.168.1.5:2181,192.168.1.5:2182,192.168.1.5:2183 192.168.31.103:2181
             var configLoader = new ZooKeeperConfigLoader(connStr);
             string configPath = "/Config/App1/SmartSqlMapConfig.xml";
             SqlMapper = new SmartSqlMapper(configPath, configLoader);
@@ -35,6 +35,11 @@ namespace SmartSql.Tests.ZooKeeperConfig
                 });
                 Thread.Sleep(50);
             }
+        }
+
+        public void Dispose()
+        {
+            SqlMapper.Dispose();
         }
     }
 }
