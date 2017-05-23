@@ -44,7 +44,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
   <Settings
-    IsWatchConfigFile="false"
+    IsWatchConfigFile="true"
   />
   <Database>
     <DbProvider Name="SqlClientFactory" ParameterPrefix="@" Type="System.Data.SqlClient.SqlClientFactory,System.Data.SqlClient"/>
