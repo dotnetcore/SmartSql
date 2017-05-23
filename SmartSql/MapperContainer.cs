@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using SmartSql.Abstractions;
+using SmartSql.Abstractions.Config;
 namespace SmartSql
 {
     public class MapperContainer : IDisposable

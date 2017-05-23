@@ -14,6 +14,7 @@ using SmartSql.Abstractions.DataSource;
 using SmartSql.Common;
 using SmartSql.Abstractions.Logging;
 using SmartSql.Abstractions.Cache;
+using SmartSql.Abstractions.Config;
 
 namespace SmartSql
 {

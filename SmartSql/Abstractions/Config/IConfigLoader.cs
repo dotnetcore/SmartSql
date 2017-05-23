@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using SmartSql.SqlMap;
-namespace SmartSql.Abstractions
+namespace SmartSql.Abstractions.Config
 {
     /// <summary>
     /// 配置文件加载器

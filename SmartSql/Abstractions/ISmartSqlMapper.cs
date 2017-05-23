@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using SmartSql.Abstractions.DbSession;
 using SmartSql.Abstractions.DataSource;
 using SmartSql.Abstractions.Cache;
+using SmartSql.Abstractions.Config;
 
 namespace SmartSql.Abstractions
 {
