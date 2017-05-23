@@ -5,7 +5,7 @@
  - 基于Dapper，不再重复造轮子。Dapper性能你懂的。
  
 ## 1. So SmartSql
- - SmartSql = Dapper + MyBatis 
+ - SmartSql = Dapper + MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting + ......
  - TargetFramework: .NETStandard,Version=v1.4
 
 ## 2. 主要特性 (√ 为已完成，未打 √ 为计划特性)
