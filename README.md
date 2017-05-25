@@ -183,6 +183,3 @@ Install-Package SmartSql.Logging.NLog
                 throw ex;
             }
 ```
-
-### SmartSql 官方交流群
-QQ群 : 604762592
