@@ -9,7 +9,7 @@ namespace SmartSql.Tests.Performance
 {
     public class SmartSqlMapper_Test : TestBase
     {
-        const int testTime = 100000;
+        const int testTime = 100;
         [Fact]
         public void Query_Transient()
         {

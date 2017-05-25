@@ -10,7 +10,7 @@ namespace SmartSql.Tests.Performance
 {
     public class Dapper_Test
     {
-        int testTime = 100000;
+        int testTime = 10000;
         [Fact]
         public void Query()
         {

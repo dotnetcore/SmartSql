@@ -14,7 +14,7 @@ namespace SmartSql.Tests.Cache
         {
 
             Dictionary<String, String> properties = new Dictionary<string, string>();
-            properties.Add("ConnectionString", "localhost");
+            properties.Add("ConnectionString", "192.168.31.103");
             properties.Add("DatabaseId", "0");
             properties.Add("Prefix", "T_Test.GetListByCache");
             provider.Initialize(properties);

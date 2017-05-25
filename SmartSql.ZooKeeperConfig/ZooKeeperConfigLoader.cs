@@ -154,6 +154,7 @@ namespace SmartSql.ZooKeeperConfig
                     sqlmap.Statements = newSqlmap.Statements;
                     sqlmap.Caches = newSqlmap.Caches;
                     SmartSqlMapConfig.ResetMappedStatements();
+                    SmartSqlMapConfig.SmartSqlMapper.CacheManager.ResetMappedCaches();
                     _logger.Debug($"ZooKeeperConfigLoader.SmartSqlMapWatcher Changed Reload SmartSqlMap: {path} End");
                 }
             }

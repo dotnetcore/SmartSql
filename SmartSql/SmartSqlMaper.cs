@@ -251,6 +251,7 @@ namespace SmartSql
             {
                 _logger.Debug($"SmartSqlMapper.CommitTransaction DbSession.Id:{session.Id}");
                 session.CommitTransaction();
+                CacheManager.FlushQueue();
             }
             finally
             {
@@ -269,6 +270,7 @@ namespace SmartSql
             {
                 _logger.Debug($"SmartSqlMapper.RollbackTransaction DbSession.Id:{session.Id}");
                 session.RollbackTransaction();
+                CacheManager.ClearQueue();
             }
             finally
             {
