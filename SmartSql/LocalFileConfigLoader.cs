@@ -85,6 +85,7 @@ namespace SmartSql
                     sqlmap.Statements = newSqlmap.Statements;
                     sqlmap.Caches = newSqlmap.Caches;
                     config.ResetMappedStatements();
+                    smartSqlMapper.CacheManager.ResetMappedCaches();
                     _logger.Debug($"SmartSql.LocalFileConfigLoader Changed Reload SmartSqlMap: {sqlmap.Path} End");
                 });
                 #endregion

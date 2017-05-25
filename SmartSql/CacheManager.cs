@@ -13,10 +13,10 @@ namespace SmartSql
     public class CacheManager : ICacheManager
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(CacheManager));
-        public ISmartSqlMapper SmartSqlMapper { get; private set; }
+        public ISmartSqlMapper SmartSqlMapper { get; set; }
         public IDictionary<String, Statement> MappedStatements => SmartSqlMapper.SqlMapConfig.MappedStatements;
         public IDictionary<String, DateTime> MappedLastFlushTimes { get; } = new Dictionary<String, DateTime>();
-
+        public Queue<RequestContext> RequestQueue { get; set; } = new Queue<RequestContext>();
         private IDictionary<String, IList<Statement>> _mappedTriggerFlushs;
         public IDictionary<String, IList<Statement>> MappedTriggerFlushs
         {
@@ -28,6 +28,7 @@ namespace SmartSql
                     {
                         if (_mappedTriggerFlushs == null)
                         {
+                            _logger.Debug($"SmartSql.CacheManager Load MappedTriggerFlushs !");
                             _mappedTriggerFlushs = new Dictionary<String, IList<Statement>>();
                             foreach (var sqlMap in SmartSqlMapper.SqlMapConfig.SmartSqlMaps)
                             {
@@ -59,7 +60,38 @@ namespace SmartSql
             }
         }
 
+        private void Enqueue(RequestContext context)
+        {
+            RequestQueue.Enqueue(context);
+        }
+        public void FlushQueue()
+        {
+            while (RequestQueue.Count > 0)
+            {
+                var reqContext = RequestQueue.Dequeue();
+                Flush(reqContext);
+            }
+        }
+        public void ClearQueue()
+        {
+            RequestQueue.Clear();
+        }
+
         public void TriggerFlush(RequestContext context)
+        {
+            var session = SmartSqlMapper.SessionStore.LocalSession;
+            if (session != null
+                && session.Transaction != null)
+            {
+                Enqueue(context);
+            }
+            else
+            {
+                Flush(context);
+            }
+        }
+
+        private void Flush(RequestContext context)
         {
             String exeFullSqlId = context.FullSqlId;
             if (MappedTriggerFlushs.ContainsKey(exeFullSqlId))
@@ -76,7 +108,6 @@ namespace SmartSql
                 }
             }
         }
-
 
         public CacheManager(ISmartSqlMapper smartSqlMapper)
         {
@@ -139,15 +170,20 @@ namespace SmartSql
             var lastInterval = DateTime.Now - lastFlushTime;
             if (lastInterval >= statement.Cache.FlushInterval.Interval)
             {
-                Flush(statement, fullSqlId, lastInterval);
+                Flush(statement, lastInterval);
             }
         }
 
-        private void Flush(Statement statement, string fullSqlId, TimeSpan lastInterval)
+        private void Flush(Statement statement, TimeSpan lastInterval)
         {
-            _logger.Debug($"SmartSql.CacheManager FlushCache.OnInterval FullSqlId:{fullSqlId},LastInterval:{lastInterval}");
-            MappedLastFlushTimes[fullSqlId] = DateTime.Now;
+            _logger.Debug($"SmartSql.CacheManager FlushCache.OnInterval FullSqlId:{statement.FullSqlId},LastInterval:{lastInterval}");
+            MappedLastFlushTimes[statement.FullSqlId] = DateTime.Now;
             statement.CacheProvider.Flush();
+        }
+
+        public void ResetMappedCaches()
+        {
+            _mappedTriggerFlushs = null;
         }
     }
 }
