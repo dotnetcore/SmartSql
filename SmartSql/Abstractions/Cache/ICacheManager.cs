@@ -8,6 +8,7 @@ namespace SmartSql.Abstractions.Cache
     {
         ISmartSqlMapper SmartSqlMapper { get; set; }
         object this[RequestContext context, Type type] { get; set; }
+        void ResetMappedCaches();
         void TriggerFlush(RequestContext context);
     }
 }

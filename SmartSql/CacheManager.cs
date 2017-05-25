@@ -149,5 +149,10 @@ namespace SmartSql
             MappedLastFlushTimes[fullSqlId] = DateTime.Now;
             statement.CacheProvider.Flush();
         }
+
+        public void ResetMappedCaches()
+        {
+            _mappedTriggerFlushs = null;
+        }
     }
 }

@@ -133,7 +133,6 @@ namespace SmartSql
                 }
             }
         }
-
         public T QuerySingle<T>(RequestContext context)
         {
             return QuerySingle<T>(context, DataSourceChoice.Read);
@@ -176,7 +175,6 @@ namespace SmartSql
         {
             return await QueryAsync<T>(context, DataSourceChoice.Read);
         }
-
         public async Task<IEnumerable<T>> QueryAsync<T>(RequestContext context, DataSourceChoice sourceChoice)
         {
             var cache = CacheManager[context, typeof(IEnumerable<T>)];
