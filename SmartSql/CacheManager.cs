@@ -13,7 +13,7 @@ namespace SmartSql
     public class CacheManager : ICacheManager
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(CacheManager));
-        public ISmartSqlMapper SmartSqlMapper { get; private set; }
+        public ISmartSqlMapper SmartSqlMapper { get; set; }
         public IDictionary<String, Statement> MappedStatements => SmartSqlMapper.SqlMapConfig.MappedStatements;
         public IDictionary<String, DateTime> MappedLastFlushTimes { get; } = new Dictionary<String, DateTime>();
 

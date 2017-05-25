@@ -69,6 +69,7 @@ namespace SmartSql
             SqlBuilder = sqlBuilder;
             DataSourceManager = dataSourceManager;
             CacheManager = cacheManager;
+            CacheManager.SmartSqlMapper = this;
             _sqlRuner = new SqlRuner(SqlBuilder, this);
         }
 
