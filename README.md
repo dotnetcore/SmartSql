@@ -30,6 +30,7 @@
       - 6.1.1 Fifo  √
       - 6.1.2 Lru  √
   - 6.2 SmartSql.Cache.Redis  √
+  - 6.3 缓存事务一致性  √
 - 7 分布式配置插件 
   - 7.1 IConfigLoader  √ (配置文件加载器)
   - 7.2 LocalFileConfigLoader  √ (本地文件配置加载器)
@@ -182,3 +183,6 @@ Install-Package SmartSql.Logging.NLog
                 throw ex;
             }
 ```
+
+### SmartSql 官方交流群
+QQ群 : 604762592
