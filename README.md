@@ -65,7 +65,6 @@
   <LoggerFactoryAdapter Name="NLoggerFactoryAdapter" Type="SmartSql.Logging.Impl.NLoggerFactoryAdapter,SmartSql.Logging.NLog"/>
 </SmartSqlLog>
 ```
-
 ### 3.3 SmartSqlMap
 ``` xml
 <?xml version="1.0" encoding="utf-8" ?>
@@ -131,11 +130,6 @@
 ## 安装 (NuGet)
 ```
 Install-Package SmartSql
-Install-Package SmartSql.DataAccess
-
-Install-Package SmartSql.Cache.Redis
-Install-Package SmartSql.Logging.NLog
-
 ```
 ## Codes
 ### Query
@@ -173,3 +167,5 @@ Install-Package SmartSql.Logging.NLog
                 throw ex;
             }
 ```
+##  技术交流
+- QQ群:604762592
