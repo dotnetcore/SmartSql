@@ -49,6 +49,7 @@ namespace SmartSql.Tests
                     Request = new { Id = test.Id }
                 });
             }
+
         }
         [Fact]
         public void Update()
@@ -59,6 +60,7 @@ namespace SmartSql.Tests
                 SqlId = "GetList",
                 Request = null
             });
+
             foreach (var test in list)
             {
                 test.Name = test.Name + "-Update";
@@ -69,6 +71,8 @@ namespace SmartSql.Tests
                     Request = test
                 });
             }
+
+
         }
 
         [Fact]
@@ -81,7 +85,7 @@ namespace SmartSql.Tests
                 Request = new
                 {
                     OrderBy = "1",
-                    Id=1,
+                    Id = 1,
                     //Name="Hi"
                 }
             });
@@ -90,27 +94,27 @@ namespace SmartSql.Tests
         [Fact]
         public void Insert_Transaction()
         {
+            var sqlMapper = MapperContainer.Instance.GetSqlMapper();
             try
             {
-                SqlMapper.BeginTransaction();
+                sqlMapper.BeginTransaction();
                 int i = 0;
                 int insertNum = 10;
                 long preId = 0;
                 for (i = 0; i < insertNum; i++)
                 {
-                    preId = SqlMapper.ExecuteScalar<long>(new RequestContext
+                    preId = sqlMapper.ExecuteScalar<long>(new RequestContext
                     {
                         Scope = "T_Test",
                         SqlId = "Insert",
                         Request = new T_Test { Name = $"Name-{preId}" }
                     });
                 }
-                SqlMapper.CommitTransaction();
-                Assert.Equal<int>(i, insertNum);
+                sqlMapper.CommitTransaction();
             }
             catch (Exception ex)
             {
-                SqlMapper.RollbackTransaction();
+                sqlMapper.RollbackTransaction();
                 throw ex;
             }
         }

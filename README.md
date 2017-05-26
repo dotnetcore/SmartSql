@@ -1,11 +1,11 @@
 # SmartSql - [Documentation](https://ahoo-wang.gitbooks.io/smartsql/content/)
 ## 0. Why ?
- - 拥抱 跨平台、.NET Core，是时候了。 
+ - 拥抱 跨平台 DotNet Core，是时候了。 
  - 基于Dapper，不再重复造轮子。Dapper性能你懂的。
  
 ## 1. So SmartSql
- - SmartSql = Dapper + MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting + ......
  - TargetFramework: .NETStandard,Version=v1.4
+ - SmartSql = Dapper + MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting + ......
 
 ## 2. 主要特性 (√ 为已完成，未打 √ 为计划特性)
 - 1 ORM 
@@ -41,7 +41,7 @@
 ## 3. 配置
 
 ### 3.1 SmartSqlMapConfig
-``` Xml
+``` xml
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
   <Settings
@@ -55,7 +55,6 @@
   </Database>
   <SmartSqlMaps>
     <SmartSqlMap Path="Maps/T_Test.xml"></SmartSqlMap>
-    
   </SmartSqlMaps>
 </SmartSqlMapConfig>
 ``` 
@@ -83,14 +82,11 @@
       (@Name)
       ;Select @@IDENTITY
     </Statement>
-
     <!--删除-->
     <Statement Id="Delete">
       Delete T_Test
       Where Id=@Id
     </Statement>
-
-
     <!--更新-->
     <Statement Id="Update">
       UPDATE T_Test
@@ -98,14 +94,12 @@
       Name = @Name
       Where Id=@Id
     </Statement>
-
     <!--获取数据列-->
     <Statement Id="GetList">
       SELECT T.* From T_Test T With(NoLock)
       <Include RefId="QueryParams"/>
       Order By T.Id Desc
     </Statement>
-
     <!--获取分页数据-->
     <Statement Id="GetListByPage">
       Select TT.* From
@@ -113,13 +107,11 @@
       <Include RefId="QueryParams"/>) TT
       Where TT.Row_Index Between ((@PageIndex-1)*@PageSize+1) And (@PageIndex*@PageSize)
     </Statement>
-
     <!--获取记录数-->
     <Statement Id="GetRecord">
       Select Count(1) From T_Test T With(NoLock)
       <Include RefId="QueryParams"/>
     </Statement>
-
     <!--获取表映射实体-->
     <Statement Id="GetEntity">
       Select Top 1 T.* From T_Test T With(NoLock)
@@ -128,13 +120,11 @@
         T.Id=@Id
       </IsNotEmpty>
     </Statement>
-
     <!--是否存在该记录-->
     <Statement Id="IsExist">
       Select Count(1) From T_Test T With(NoLock)
       <Include RefId="QueryParams"/>
     </Statement>
-
   </Statements>
 </SmartSqlMap>
 ```

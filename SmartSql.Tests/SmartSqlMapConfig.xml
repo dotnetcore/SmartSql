@@ -11,6 +11,5 @@
   </Database>
   <SmartSqlMaps>
     <SmartSqlMap Path="Maps/T_Test.xml"></SmartSqlMap>
-    
   </SmartSqlMaps>
 </SmartSqlMapConfig>

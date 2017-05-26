@@ -12,8 +12,8 @@
       <Parameter Key="ConnectionString" Value="192.168.31.103"/>
       <Parameter Key="DatabaseId" Value="0"/>
       <FlushInterval Hours="24" Minutes="0" Seconds="0"/>
-      <!--<FlushOnExecute Statement="T_Test.Insert"/>
-      <FlushOnExecute Statement="T_Test.Update"/>-->
+      <FlushOnExecute Statement="T_Test.Insert"/>
+      <FlushOnExecute Statement="T_Test.Update"/>
     </Cache>
     <Cache Id="T_Test.LruCache" Type="Lru">
       <Parameter Key="CacheSize" Value="100"/>
@@ -26,9 +26,7 @@
     <Statement Id="QueryParams">
       Where 1=1
       <IsNotEmpty Property="Name" Prepend="And">
-        <IsNotEmpty Property="Id" Prepend="And">
-          
-        </IsNotEmpty>
+        Name Like Concat('%','Name','-%')
       </IsNotEmpty>
       <Switch Prepend="Order By" Property="OrderBy">
         <Case CompareValue="1">
