@@ -5,6 +5,9 @@
  Date 2017-04-17 10:49
 *******************************
 -->
+
+
+
 <SmartSqlMap Scope="T_Test" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Caches>
     <Cache Id="T_Test.RedisCache" Type="SmartSql.Cache.Redis.RedisCacheProvider,SmartSql.Cache.Redis">
@@ -39,7 +42,7 @@
           Name Desc
         </Case>
       </Switch>
-      
+
     </Statement>
     <!--新增-->
     <Statement Id="Insert">

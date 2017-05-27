@@ -16,7 +16,12 @@ namespace SmartSql
         /// </summary>
         private IDictionary<String, ISmartSqlMapper> _mapperContainer = new Dictionary<String, ISmartSqlMapper>();
 
-        public ISmartSqlMapper GetSqlMapper(String smartSqlMapConfigPath = "SmartSqlMapConfig.xml", IConfigLoader configLoader = null)
+        public ISmartSqlMapper GetSqlMapper(String smartSqlMapConfigPath = "SmartSqlMapConfig.xml")
+        {
+            return GetSqlMapper(smartSqlMapConfigPath, new LocalFileConfigLoader());
+        }
+
+        public ISmartSqlMapper GetSqlMapper(String smartSqlMapConfigPath, IConfigLoader configLoader)
         {
             if (!_mapperContainer.ContainsKey(smartSqlMapConfigPath))
             {
@@ -24,10 +29,6 @@ namespace SmartSql
                 {
                     if (!_mapperContainer.ContainsKey(smartSqlMapConfigPath))
                     {
-                        if (configLoader == null)
-                        {
-                            configLoader = new LocalFileConfigLoader();
-                        }
                         ISmartSqlMapper _mapper = new SmartSqlMapper(smartSqlMapConfigPath, configLoader);
                         _mapperContainer.Add(smartSqlMapConfigPath, _mapper);
                     }
