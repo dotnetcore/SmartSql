@@ -78,6 +78,7 @@ namespace SmartSql.Tests
         [Fact]
         public void Query()
         {
+          
             var list = SqlMapper.Query<T_Test>(new RequestContext
             {
                 Scope = "T_Test",
