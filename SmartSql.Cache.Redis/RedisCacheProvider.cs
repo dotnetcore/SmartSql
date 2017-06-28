@@ -37,7 +37,7 @@ namespace SmartSql.Cache.Redis
                 }
             }
             prefix = properties["Prefix"]?.ToString();
-            if (String.IsNullOrEmpty(connStr))
+            if (String.IsNullOrEmpty(prefix))
             {
                 throw new Exception("SmartSql.Cache.Redis.Prefix string can't empty.");
             }
