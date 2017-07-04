@@ -24,7 +24,7 @@ namespace <#= host.NameSpace #>.Entity<# if( host.Folder.Length > 0) {#>.<#= hos
 		{ #>/// <summary>
 		/// <#= string.IsNullOrEmpty(c.Description) ? c.ColumnName : c.Description #>
         /// </summary>		
-        public virtual <#= CodeCommon.DbTypeToCS(c.TypeName) #><# if(c.Nullable) {  #><#if(CodeCommon.isValueType(CodeCommon.DbTypeToCS(c.TypeName
+        public <#= CodeCommon.DbTypeToCS(c.TypeName) #><# if(c.Nullable) {  #><#if(CodeCommon.isValueType(CodeCommon.DbTypeToCS(c.TypeName
 ))){ #>?<# }#><# }#> <#= c.ColumnName #> { get; set; }
         
 		<# } #>
