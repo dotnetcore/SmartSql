@@ -5,15 +5,18 @@ using System.Text;
 
 namespace SmartSql.SqlMap.Tags
 {
-    public class IsNull : Tag
+    public class IsFalse : Tag
     {
-        public override TagType Type => TagType.IsNull;
+        public override TagType Type => TagType.IsFalse;
 
         public override bool IsCondition(object paramObj)
         {
             Object reqVal = paramObj.GetValue(Property);
-            return reqVal == null;
-
+            if (reqVal is Boolean)
+            {
+                return (bool)reqVal == false;
+            }
+            return false;
         }
     }
 }

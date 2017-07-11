@@ -78,7 +78,7 @@ namespace SmartSql.Tests
         [Fact]
         public void Query()
         {
-          
+
             var list = SqlMapper.Query<T_Test>(new RequestContext
             {
                 Scope = "T_Test",
@@ -87,6 +87,8 @@ namespace SmartSql.Tests
                 {
                     OrderBy = "1",
                     Id = 1,
+                    Yes = true,
+                    No = false
                     //Name="Hi"
                 }
             });

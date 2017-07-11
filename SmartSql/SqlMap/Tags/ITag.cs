@@ -24,6 +24,8 @@ namespace SmartSql.SqlMap.Tags
         IsNotEqual,
         IsNotNull,
         IsNull,
+        IsTrue,
+        IsFalse,
         Include,
         Switch,
         Case

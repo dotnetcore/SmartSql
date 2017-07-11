@@ -232,6 +232,29 @@ namespace SmartSql.SqlMap
                         };
                         break;
                     }
+                case "IsTrue":
+                    {
+                        tag = new IsTrue
+                        {
+                            In = isIn,
+                            Prepend = prepend,
+                            Property = property,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
+                case "IsFalse":
+                    {
+                        tag = new IsFalse
+                        {
+                            In = isIn,
+                            Prepend = prepend,
+                            Property = property,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
+                case "#comment": { break; }
                 default: { return null; };
             }
             #endregion
