@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMap Scope="T_Test">
+  
   <Statements>
     <Statement Id="GetList">
       Select  * From T_Test Where 1=1

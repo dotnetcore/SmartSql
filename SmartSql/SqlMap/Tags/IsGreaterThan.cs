@@ -12,12 +12,20 @@ namespace SmartSql.SqlMap.Tags
         public override bool IsCondition(object paramObj)
         {
             Object reqVal = paramObj.GetValue(Property);
-            bool isCondition = false;
             if (reqVal == null) { return false; }
-            if (!Decimal.TryParse(reqVal.ToString(), out Decimal reqValNum)) { } ;
-            if (!Decimal.TryParse(CompareValue, out decimal comVal)) {  }
-            if (reqValNum > comVal) { isCondition = true; }
-            return isCondition;
+
+            Decimal reqValNum = 0M;
+            Decimal comVal = 0M;
+            if (reqVal is Enum)
+            {
+                reqValNum = (Decimal)reqVal;
+            }
+            else
+            {
+                if (!Decimal.TryParse(reqVal.ToString(), out reqValNum)) { return false; }
+            }
+            if (!Decimal.TryParse(CompareValue, out comVal)) { return false; }
+            return reqValNum > comVal;
         }
     }
 }

@@ -37,7 +37,14 @@
         </xs:element>
       </xs:sequence>
       <xs:attribute name="Id" type="xs:string" use="required" />
-      <xs:attribute name="Type" type="xs:string" use="required" />
+      <xs:attribute name="Type" use="required" >
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="Lru"/>
+            <xs:enumeration value="Fifo"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:element name="Caches">

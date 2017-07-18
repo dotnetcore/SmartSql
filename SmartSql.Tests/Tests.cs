@@ -36,5 +36,33 @@ namespace SmartSql.Tests
                 //Trace.WriteLine(queryBase64);
             }
         }
+        [Fact]
+        public void EnumToNumber()
+        {
+            var status = OrderStatus.Delivered;
+            var reqValNum = (Decimal)status;
+            Assert.Equal<Decimal>(reqValNum, 4M);
+        }
+        [Fact]
+        public void Eq()
+        {
+            bool isEq = 8.888.ToString().Equals("8.888");
+            Assert.True(isEq);
+        }
+
+        [Fact]
+        public void EnumToString()
+        {
+            bool isEq = OrderStatus.Delivered.ToString().Equals("Delivered");
+            Assert.True(isEq);
+        }
+
+        public enum OrderStatus
+        {
+            Created = 1 << 0,
+            Paid = 1 << 1,
+            Delivered = 1 << 2,
+            Received = 1 << 3
+        }
     }
 }
