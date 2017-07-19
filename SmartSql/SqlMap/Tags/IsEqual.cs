@@ -13,7 +13,16 @@ namespace SmartSql.SqlMap.Tags
         {
             var reqVal = paramObj.GetValue(Property);
             if (reqVal == null) { return false; }
-            return reqVal.ToString().Equals(CompareValue);
+            string reqValStr = string.Empty;
+            if (reqVal is Enum)
+            {
+                reqValStr = reqVal.GetHashCode().ToString();
+            }
+            else
+            {
+                reqValStr = reqVal.ToString();
+            }
+            return reqValStr.Equals(CompareValue);
         }
     }
 }

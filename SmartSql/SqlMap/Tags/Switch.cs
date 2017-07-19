@@ -20,8 +20,20 @@ namespace SmartSql.SqlMap.Tags
         {
             Object reqVal = context.Request.GetValue(Property);
             if (reqVal == null) { return ""; }
-            String valStr = reqVal.ToString();
-            var caseVal = Cases.FirstOrDefault(m => m.CompareValue == valStr);
+            
+            var caseVal = Cases.FirstOrDefault(m =>
+            {
+                string reqValStr = string.Empty;
+                if (reqVal is Enum)
+                {
+                    reqValStr = reqVal.GetHashCode().ToString();
+                }
+                else
+                {
+                    reqValStr = reqVal.ToString();
+                }
+                return m.CompareValue == reqValStr;
+            });
             if (caseVal == null) { return ""; }
             return $" {Prepend} {caseVal.BodyText}";
         }
