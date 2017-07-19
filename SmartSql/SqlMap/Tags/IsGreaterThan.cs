@@ -18,7 +18,7 @@ namespace SmartSql.SqlMap.Tags
             Decimal comVal = 0M;
             if (reqVal is Enum)
             {
-                reqValNum = (Decimal)reqVal;
+                reqValNum = reqVal.GetHashCode();
             }
             else
             {
