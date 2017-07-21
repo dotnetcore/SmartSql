@@ -7,7 +7,7 @@ namespace SmartSql.CodeGenerator.Models
 {
     public class Database
     {
-        public String Namespace { get; set; }
-        
+        public String ConnectionString { get; set; }
+        public IList<Table> Tables { get; set; }
     }
 }

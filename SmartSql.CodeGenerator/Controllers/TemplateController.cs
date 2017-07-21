@@ -12,7 +12,6 @@ namespace SmartSql.CodeGenerator.Controllers
     public class TemplateController : Controller
     {
 
-
         public async Task<IActionResult> Tables()
         {
             var sqlMapper = MapperContainer.Instance.GetSqlMapper();
