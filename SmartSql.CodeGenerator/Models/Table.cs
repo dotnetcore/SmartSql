@@ -34,7 +34,6 @@ namespace SmartSql.CodeGenerator.Models
         /// </summary>
         public String Description { get; set; }
         public IEnumerable<Column> Columns { get; set; }
-
         public enum TableType
         {
             Table,
