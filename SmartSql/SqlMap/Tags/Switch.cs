@@ -8,21 +8,22 @@ using SmartSql.Abstractions;
 
 namespace SmartSql.SqlMap.Tags
 {
-    public class Switch : ITag
+    public class Switch : Tag
     {
-        public TagType Type => TagType.Switch;
-        [XmlAttribute]
-        public String Prepend { get; set; }
-        [XmlAttribute]
-        public String Property { get; set; }
-        public IList<Case> Cases { get; set; }
-        public string BuildSql(RequestContext context, string parameterPrefix)
+        public override TagType Type => TagType.Switch;
+
+        public override bool IsCondition(object paramObj)
         {
-            Object reqVal = context.Request.GetValue(Property);
-            if (reqVal == null) { return ""; }
-            
-            var caseVal = Cases.FirstOrDefault(m =>
+            return true;
+        }
+
+        public class Case : CompareTag
+        {
+            public override TagType Type => TagType.Case;
+            public override bool IsCondition(object paramObj)
             {
+                var reqVal = paramObj.GetValue(Property);
+                if (reqVal == null) { return false; }
                 string reqValStr = string.Empty;
                 if (reqVal is Enum)
                 {
@@ -32,20 +33,7 @@ namespace SmartSql.SqlMap.Tags
                 {
                     reqValStr = reqVal.ToString();
                 }
-                return m.CompareValue == reqValStr;
-            });
-            if (caseVal == null) { return ""; }
-            return $" {Prepend} {caseVal.BodyText}";
-        }
-        public class Case : ITag
-        {
-            public String CompareValue { get; set; }
-            public String BodyText { get; set; }
-            public TagType Type => TagType.Case;
-
-            public string BuildSql(RequestContext context, string parameterPrefix)
-            {
-                return BodyText;
+                return reqValStr.Equals(CompareValue);
             }
         }
     }

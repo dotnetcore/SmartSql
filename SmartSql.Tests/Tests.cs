@@ -56,6 +56,12 @@ namespace SmartSql.Tests
             bool isEq = OrderStatus.Delivered.ToString().Equals("Delivered");
             Assert.True(isEq);
         }
+        [Fact]
+        public void BoolToString()
+        {
+            var str = true.ToString();
+            Assert.NotEmpty(str);
+        }
 
         public enum OrderStatus
         {

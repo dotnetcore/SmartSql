@@ -59,20 +59,34 @@
       <xs:attribute name="RefId" type="xs:string" use="required" />
     </xs:complexType>
   </xs:element>
+  <xs:element name="Case">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+      </xs:choice>
+      <xs:attribute name="CompareValue" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  
   <xs:element  name="Switch">
     <xs:complexType mixed="true">
-      <xs:sequence>
-        <xs:element minOccurs="1" maxOccurs="unbounded" name="Case">
-          <xs:complexType>
-            <xs:simpleContent>
-              <xs:extension base="xs:string">
-                <xs:attribute name="CompareValue" type="xs:string" use="required" />
-              </xs:extension>
-            </xs:simpleContent>
-          </xs:complexType>
-        </xs:element>
-      </xs:sequence>
-      <xs:attribute name="Prepend" type="xs:string" use="required" />
+      <xs:choice minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="Case" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
     </xs:complexType>
   </xs:element>

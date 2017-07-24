@@ -85,7 +85,7 @@ namespace SmartSql.Tests
                 SqlId = "GetList",
                 Request = new
                 {
-                    OrderBy = "1",
+                    OrderBy = "4",
                     Id = 1,
                     Yes = true,
                     No = false

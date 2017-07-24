@@ -37,9 +37,13 @@
       <IsFalse Prepend="And" Property="No">
         2=2
       </IsFalse>
+
       <Switch Prepend="Order By" Property="OrderBy">
         <Case CompareValue="1">
-          Id Desc
+          <IsNotEmpty Property="OrderBy">
+            Id Desc
+          </IsNotEmpty>
+          
         </Case>
         <Case CompareValue="2">
           Id Asc
