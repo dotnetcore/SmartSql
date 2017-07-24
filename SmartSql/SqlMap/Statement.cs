@@ -46,7 +46,6 @@ namespace SmartSql.SqlMap
                     case "Include":
                         {
                             var refId = tagNode.Attributes?["RefId"]?.Value;
-
                             var refStatement = smartSqlMap.Statements.FirstOrDefault(m => m.Id == refId);
                             if (refStatement == null)
                             {
@@ -63,7 +62,6 @@ namespace SmartSql.SqlMap
                             });
                             break;
                         }
-
                     default:
                         {
                             var tag = LoadTag(tagNode);
