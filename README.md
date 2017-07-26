@@ -78,7 +78,7 @@
       (Name)
       VALUES
       (@Name)
-      ;Select @@IDENTITY
+      ;Select Scope_Identity();
     </Statement>
     <!--删除-->
     <Statement Id="Delete">

@@ -24,7 +24,7 @@
       VALUES
       <# for (int i = 1; i < host.Fieldlist.Count; ++i) { #><# if (i == 1) { #>(@<#= host.Fieldlist[i].ColumnName.ToString() #><# } else { #>        
       ,@<#= host.Fieldlist[i].ColumnName.ToString() #><# } #><# } #>)    
-      ;Select @@IDENTITY
+      ;Select Scope_Identity();
     </Statement>
     
     <!--删除-->

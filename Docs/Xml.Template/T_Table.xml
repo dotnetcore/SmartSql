@@ -14,8 +14,7 @@
       ([Name])
       VALUES
       (@Name)
-      ;
-      Select @@IDENTITY
+      ;Select Scope_Identity();
     </Statement>
     <Statement Id="Delete">
       Delete T_Test
