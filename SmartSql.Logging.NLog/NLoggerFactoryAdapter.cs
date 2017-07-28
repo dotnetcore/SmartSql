@@ -9,7 +9,7 @@ namespace SmartSql.Logging.Impl
     {
         public ILog GetLogger(Type type)
         {
-            var nlogger = NLog.LogManager.GetLogger("", type);
+            var nlogger = NLog.LogManager.GetLogger(type.FullName);
             return new NLogger(nlogger);
         }
 
