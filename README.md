@@ -1,4 +1,4 @@
-# SmartSql - [Documentation](https://ahoo-wang.gitbooks.io/smartsql/content/)
+# SmartSql - [Documentation](https://doc.smartsql.net/)
 ## 0. Why ?
  - 拥抱 跨平台 DotNet Core，是时候了。 
  - 基于Dapper，不再重复造轮子。Dapper性能你懂的。
