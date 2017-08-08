@@ -17,6 +17,7 @@ namespace SmartSql
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(DataSourceManager));
         public ISmartSqlMapper SmartSqlMapper { get; }
+
         /// <summary>
         /// 权重筛选器
         /// </summary>

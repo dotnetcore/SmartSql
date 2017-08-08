@@ -18,6 +18,7 @@ namespace SmartSql.Abstractions.DataSource
         /// <param name="sourceChoice"></param>
         /// <returns></returns>
         IDataSource GetDataSource(DataSourceChoice sourceChoice);
+
     }
 
 
