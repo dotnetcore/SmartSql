@@ -147,6 +147,13 @@ namespace SmartSql.SqlMap
     {
         [XmlAttribute]
         public String Path { get; set; }
+        [XmlAttribute]
+        public ResourceType Type { get; set; } = ResourceType.File;
+        public enum ResourceType
+        {
+            File = 1,
+            Directory = 2,
+        }
     }
 
 
