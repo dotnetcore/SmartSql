@@ -1,7 +1,7 @@
 # SmartSql - [Documentation](https://doc.smartsql.net/)
 ## 0. Why ?
- - 拥抱 跨平台 DotNet Core，是时候了。 
- - 基于Dapper，不再重复造轮子。Dapper性能你懂的。
+ - Embrace the cross platform. DotNet Core, it's time！
+ - Based on Dapper, no more wheels are repeated. Dapper performance you know!
  
 ## 1. So SmartSql
  - TargetFramework: .NETStandard,Version=v1.4
@@ -34,10 +34,11 @@
 - 7 分布式配置插件 
   - 7.1 IConfigLoader  √ (配置文件加载器)
   - 7.2 LocalFileConfigLoader  √ (本地文件配置加载器)
+      - 7.2.1 Load SmartSqlMapSource Xml  √
+      - 7.3.1 Load SmartSqlMapSource Directory
   - 7.3 SmartSql.ZooKeeperConfig √ (ZooKeeper 分布式配置文件加载器)
-- 8 ~~主从同步~~
 
-## 3. 配置
+## 3. Configuration
 
 ### 3.1 SmartSqlMapConfig
 ``` xml
@@ -126,7 +127,7 @@
   </Statements>
 </SmartSqlMap>
 ```
-## 安装 (NuGet)
+## Install (NuGet)
 ```
 Install-Package SmartSql
 ```
