@@ -52,6 +52,14 @@
               <xs:element maxOccurs="unbounded" name="SmartSqlMap">
                 <xs:complexType>
                   <xs:attribute name="Path" type="xs:string" use="required" />
+                        <xs:attribute name="Type" use="optional" >
+                        <xs:simpleType>
+                          <xs:restriction base="xs:NMTOKEN">
+                            <xs:enumeration value="File"/>
+                            <xs:enumeration value="Directory"/>
+                          </xs:restriction>
+                        </xs:simpleType>
+                      </xs:attribute>
                 </xs:complexType>
               </xs:element>
             </xs:choice>
