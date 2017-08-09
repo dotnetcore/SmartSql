@@ -26,6 +26,5 @@ namespace SmartSql.Common
         {
             return fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
-
     }
 }

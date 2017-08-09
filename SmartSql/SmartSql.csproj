@@ -10,10 +10,13 @@
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>1.7.0</Version>
-    <AssemblyVersion>1.7.0.0</AssemblyVersion>
-    <FileVersion>1.7.0.0</FileVersion>
+    <Version>1.7.8</Version>
+    <AssemblyVersion>1.7.8.0</AssemblyVersion>
+    <FileVersion>1.7.8.0</FileVersion>
     <PackageTags>Dapper MyBatis Cache(Memory | Redis)  ZooKeeper   R/W Splitting</PackageTags>
+    <PackageReleaseNotes>1. add support  SmartSqlMapConfig.SmartSqlMaps.SmartSqlMap.Type:Directory.
+2. add support  partial SmartSqlMap.xml like partial class.
+</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

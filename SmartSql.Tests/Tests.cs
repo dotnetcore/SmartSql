@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace SmartSql.Tests
 {
-    public class Tests
+    public  class Tests
     {
         [Fact]
         public void Dy()

@@ -48,7 +48,14 @@ namespace SmartSql.SqlMap
                                 foreach (var statement in sqlmap.Statements)
                                 {
                                     var statementId = $"{sqlmap.Scope}.{statement.Id}";
-                                    _mappedStatements.Add(statementId, statement);
+                                    if (!_mappedStatements.ContainsKey(statementId))
+                                    {
+                                        _mappedStatements.Add(statementId, statement);
+                                    }
+                                    else
+                                    {
+                                        _logger.Warn($"SmartSqlMapConfig Load MappedStatements: StatementId:{statementId}  already exists!");
+                                    }
                                 }
                             }
                         }
