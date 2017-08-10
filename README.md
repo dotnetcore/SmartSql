@@ -71,7 +71,7 @@
 <SmartSqlMap Scope="T_Test"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
     <Statement Id="QueryParams">
-      Where 1=1
+      
     </Statement>
     <!--新增-->
     <Statement Id="Insert">

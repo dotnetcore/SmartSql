@@ -76,6 +76,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
       <xs:attribute name="CompareValue" type="xs:string" use="required" />
     </xs:complexType>
@@ -107,6 +108,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -129,6 +131,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -152,6 +155,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -175,6 +179,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -198,6 +203,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -221,6 +227,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -244,6 +251,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -267,6 +275,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -290,6 +299,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -313,6 +323,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -335,6 +346,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -357,9 +369,31 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Where">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
+      </xs:choice>
     </xs:complexType>
   </xs:element>
   <xs:element name="Statement">
@@ -379,6 +413,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
       <xs:attribute name="Id" type="xs:string" use="required" />
       <xs:attribute name="Cache" type="xs:string" use="optional" />

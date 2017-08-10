@@ -25,18 +25,25 @@ namespace SmartSql.SqlMap.Tags
                 {
                     return $" {Prepend} In {parameterPrefix}{Property}";
                 }
-                StringBuilder strBuilder = new StringBuilder();
-                if (ChildTags != null && ChildTags.Count > 0)
-                {
-                    foreach (var childTag in ChildTags)
-                    {
-                        string strSql = childTag.BuildSql(context, parameterPrefix);
-                        strBuilder.Append(strSql);
-                    }
-                }
+                StringBuilder strBuilder = BuildChildSql(context, parameterPrefix);
                 return $" {Prepend} {strBuilder.ToString()}";
             }
             return String.Empty;
+        }
+
+        public virtual StringBuilder BuildChildSql(RequestContext context, string parameterPrefix)
+        {
+            StringBuilder strBuilder = new StringBuilder();
+            if (ChildTags != null && ChildTags.Count > 0)
+            {
+                foreach (var childTag in ChildTags)
+                {
+                    string strSql = childTag.BuildSql(context, parameterPrefix);
+                    strBuilder.Append(strSql);
+                }
+            }
+
+            return strBuilder;
         }
     }
 }

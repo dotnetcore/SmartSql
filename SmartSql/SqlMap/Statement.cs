@@ -255,6 +255,14 @@ namespace SmartSql.SqlMap
                         };
                         break;
                     }
+                case "Where":
+                    {
+                        tag = new Where
+                        {
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
                 case "#comment": { break; }
                 default: { break; };
             }
