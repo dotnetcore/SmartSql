@@ -28,7 +28,8 @@ namespace SmartSql.SqlMap.Tags
         IsFalse,
         Include,
         Switch,
-        Case,
+        SwitchCase,
+        SwitchDefault,
         Where
     }
 }

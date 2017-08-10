@@ -255,6 +255,19 @@ namespace SmartSql.SqlMap
                         };
                         break;
                     }
+                case "Default":
+                    {
+                        var switchNode = xmlNode.ParentNode;
+                        var switchProperty = switchNode.Attributes?["Property"]?.Value;
+                        var switchPrepend = switchNode.Attributes?["Prepend"]?.Value;
+                        tag = new Switch.Defalut
+                        {
+                            Property = switchProperty,
+                            Prepend = switchPrepend,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
                 case "Where":
                     {
                         tag = new Where
@@ -270,7 +283,10 @@ namespace SmartSql.SqlMap
             foreach (XmlNode childNode in xmlNode)
             {
                 ITag childTag = LoadTag(childNode);
-                (tag as Tag).ChildTags.Add(childTag);
+                if (childTag != null)
+                {
+                    (tag as Tag).ChildTags.Add(childTag);
+                }
             }
             return tag;
         }

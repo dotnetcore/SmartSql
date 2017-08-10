@@ -16,10 +16,31 @@ namespace SmartSql.SqlMap.Tags
         {
             return true;
         }
+        public override string BuildSql(RequestContext context, string parameterPrefix)
+        {
+            var matchedTag = ChildTags.FirstOrDefault(tag =>
+            {
+                if (tag.Type == TagType.SwitchCase)
+                {
+                    var caseTag = tag as Case;
+                    return caseTag.IsCondition(context.Request);
+                }
+                return false;
+            });
+            if (matchedTag == null)
+            {
+                matchedTag = ChildTags.FirstOrDefault(tag => tag.Type == TagType.SwitchDefault);
+            }
+            if (matchedTag != null)
+            {
+                return matchedTag.BuildSql(context, parameterPrefix);
+            }
+            return String.Empty;
+        }
 
         public class Case : CompareTag
         {
-            public override TagType Type => TagType.Case;
+            public override TagType Type => TagType.SwitchCase;
             public override bool IsCondition(object paramObj)
             {
                 var reqVal = paramObj.GetValue(Property);
@@ -34,6 +55,16 @@ namespace SmartSql.SqlMap.Tags
                     reqValStr = reqVal.ToString();
                 }
                 return reqValStr.Equals(CompareValue);
+            }
+        }
+
+        public class Defalut : Tag
+        {
+            public override TagType Type => TagType.SwitchDefault;
+
+            public override bool IsCondition(object paramObj)
+            {
+                return true;
             }
         }
     }
