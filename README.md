@@ -114,10 +114,11 @@
     <!--获取表映射实体-->
     <Statement Id="GetEntity">
       Select Top 1 T.* From T_Test T With(NoLock)
-      Where 1=1
-      <IsNotEmpty Prepend="And" Property="Id">
-        T.Id=@Id
-      </IsNotEmpty>
+      <Where>
+        <IsNotEmpty Prepend="And" Property="Id">
+          T.Id=@Id
+        </IsNotEmpty>
+      </Where>
     </Statement>
     <!--是否存在该记录-->
     <Statement Id="IsExist">
