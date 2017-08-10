@@ -26,7 +26,12 @@ namespace SmartSql.SqlMap.Tags
         public override string BuildSql(RequestContext context, string parameterPrefix)
         {
             StringBuilder strBuilder = BuildChildSql(context, parameterPrefix);
-            return strBuilder.ToString();
+            string strSql = strBuilder.ToString();
+            if (!String.IsNullOrWhiteSpace(strSql))
+            {
+                return " Where " + strSql;
+            }
+            return String.Empty;
         }
         public override StringBuilder BuildChildSql(RequestContext context, string parameterPrefix)
         {
@@ -48,15 +53,13 @@ namespace SmartSql.SqlMap.Tags
                         string firstTerm = sqlTerms[0];
                         if (FilterTerms.Any(term => term.ToUpper() == firstTerm.ToUpper()))
                         {
-                            sqlTerms[0] = "Where";
-                            strSql = String.Join(" ", sqlTerms);
+                            sqlTerms[0] = "";
                         }
                         isFirstChild = false;
                     }
                     strBuilder.Append(strSql);
                 }
             }
-
             return strBuilder;
         }
     }
