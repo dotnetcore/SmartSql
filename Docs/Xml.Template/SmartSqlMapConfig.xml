@@ -11,7 +11,8 @@
     <Read Name="ReadDB-1" ConnectionString="Data Source=.;database=TestDB;uid=sa;pwd=SmartSql.net" Weight="20"/>
   </Database>
   <SmartSqlMaps>
-    <SmartSqlMap Path="Maps/T_Table.xml"></SmartSqlMap>
+    <SmartSqlMap Path="Maps" Type="Directory"></SmartSqlMap>
+    <!--<SmartSqlMap Path="Maps/T_Table.xml"></SmartSqlMap>-->
     
   </SmartSqlMaps>
 </SmartSqlMapConfig>

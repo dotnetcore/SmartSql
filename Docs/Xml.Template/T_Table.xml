@@ -2,11 +2,13 @@
 <SmartSqlMap Scope="T_Table"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
     <Statement Id="GetList">
-      Select Top 10 * From T_Test T Where 1=1
-      <IsNotEmpty Prepend="And T.Id" Property="Ids" In="true"/>
-      <IsNotEmpty Prepend="And" Property="Name">
-        And T.Name Like '%'+ @Name + '%'
-      </IsNotEmpty>
+      Select Top 10 * From T_Test T
+      <Where>
+        <IsNotEmpty Prepend="And T.Id" Property="Ids" In="true"/>
+        <IsNotEmpty Prepend="And" Property="Name">
+          And T.Name Like '%'+ @Name + '%'
+        </IsNotEmpty>
+      </Where>
       Order By Id Desc
     </Statement>
     <Statement Id="Insert">
