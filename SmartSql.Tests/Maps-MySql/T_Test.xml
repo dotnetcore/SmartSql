@@ -3,11 +3,11 @@
   
   <Statements>
     <Statement Id="GetList">
-      Select  * From T_Test Where 1=1
+      Select  * From T_Test
+      <Where>
+        <IsNotEmpty Prepend="And Id" Property="Ids" In="true"/>
+      </Where>
 
-      <IsNotEmpty Prepend="And Id" Property="Ids" In="true">
-
-      </IsNotEmpty>
       
       <!--<IsEmpty Prepend="And" Property="Id">
         

@@ -14,7 +14,7 @@
 <SmartSqlMap Scope="<#= host.GetModelClass(host.TableName) #>"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
      <Statement Id="QueryParams">
-      Where 1=1
+      
      </Statement>
     <!--新增-->
      <Statement Id="Insert">
@@ -67,10 +67,11 @@
     <!--获取表映射实体-->
     <Statement Id="GetEntity">
       Select Top 1 T.* From <#= host.GetModelClass(host.TableName) #> T With(NoLock)
-      Where 1=1
-      <IsNotEmpty Prepend="And" Property="Id">
-        T.<#= host.Keys[0].ColumnName #>=@Id
-      </IsNotEmpty>
+      <Where>
+        <IsNotEmpty Prepend="And" Property="Id">
+          T.<#= host.Keys[0].ColumnName #>=@Id
+        </IsNotEmpty>
+      </Where>
     </Statement>
     
     <!--是否存在该记录-->

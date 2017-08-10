@@ -52,7 +52,7 @@
             Id,Name Desc
           </Default>
         </Switch>
-        
+
       </Where>
     </Statement>
     <!--新增-->
@@ -113,11 +113,11 @@
     <!--获取表映射实体-->
     <Statement Id="GetEntity">
       Select Top 1 T.* From T_Test T With(NoLock)
-      Where 1=1
-      <IsNotEmpty Prepend="And" Property="Id">
-        T.Id=@Id
-
-      </IsNotEmpty>
+      <Where>
+        <IsNotEmpty Prepend="And" Property="Id">
+          T.Id=@Id
+        </IsNotEmpty>
+      </Where>
 
     </Statement>
 

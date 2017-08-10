@@ -14,7 +14,7 @@
 <SmartSqlMap Scope="<#= host.GetModelClass(host.TableName) #>"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
      <Statement Id="QueryParams">
-      Where 1=1
+
      </Statement>
 
      
@@ -69,10 +69,11 @@
     <!--获取表映射实体-->
     <Statement Id="GetEntity">
       Select T.* From <#= host.GetModelClass(host.TableName) #> T
-      Where 1=1
-      <IsNotEmpty Prepend="And" Property="Id">
-        T.<#= host.Keys[0].ColumnName #>=?Id
-      </IsNotEmpty>
+      <Where>
+        <IsNotEmpty Prepend="And" Property="Id">
+          T.<#= host.Keys[0].ColumnName #>=?Id
+        </IsNotEmpty>
+      </Where>
       Limit 1
     </Statement>
     
