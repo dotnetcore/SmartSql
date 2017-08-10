@@ -54,6 +54,7 @@ namespace SmartSql.SqlMap.Tags
                         if (FilterTerms.Any(term => term.ToUpper() == firstTerm.ToUpper()))
                         {
                             sqlTerms[0] = "";
+                            strSql = String.Join("", sqlTerms);
                         }
                         isFirstChild = false;
                     }
