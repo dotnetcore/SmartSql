@@ -81,12 +81,33 @@
       <xs:attribute name="CompareValue" type="xs:string" use="required" />
     </xs:complexType>
   </xs:element>
-  
-  <xs:element  name="Switch">
+  <xs:element name="Default">
     <xs:complexType mixed="true">
-      <xs:choice minOccurs="1" maxOccurs="unbounded">
-        <xs:element ref="Case" />
+      <xs:choice maxOccurs="1" minOccurs="0">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="Where" />
       </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Switch">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element ref="Case"  minOccurs="1" maxOccurs="unbounded"/>
+        <xs:element ref="Default"  minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
     </xs:complexType>
@@ -426,7 +447,7 @@
       </xs:choice>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="SmartSqlMap">
     <xs:complexType mixed="true">
       <xs:all >
