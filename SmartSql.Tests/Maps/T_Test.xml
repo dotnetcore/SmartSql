@@ -30,20 +30,17 @@
         <IsNotEmpty Property="Name" Prepend="And">
           Name Like Concat('%','Name','-%')
         </IsNotEmpty>
-
         <IsTrue Prepend="And" Property="Yes">
           1=1
         </IsTrue>
         <IsFalse Prepend="And" Property="No">
           2=2
         </IsFalse>
-
         <Switch Prepend="Order By" Property="OrderBy">
           <Case CompareValue="1">
             <IsNotEmpty Property="OrderBy">
               Id Desc
             </IsNotEmpty>
-
           </Case>
           <Case CompareValue="2">
             Id Asc
@@ -53,7 +50,6 @@
           </Case>
         </Switch>
       </Where>
-
     </Statement>
     <!--新增-->
     <Statement Id="Insert">
