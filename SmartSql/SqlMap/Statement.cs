@@ -37,8 +37,8 @@ namespace SmartSql.SqlMap
             var tagNodes = statementNode.ChildNodes;
             foreach (XmlNode tagNode in tagNodes)
             {
-                var prepend = tagNode.Attributes?["Prepend"]?.Value;
-                var property = tagNode.Attributes?["Property"]?.Value;
+                var prepend = tagNode.Attributes?["Prepend"]?.Value.Trim();
+                var property = tagNode.Attributes?["Property"]?.Value.Trim();
 
                 #region Init Tag
                 switch (tagNode.Name)
@@ -78,16 +78,16 @@ namespace SmartSql.SqlMap
         {
             ITag tag = null;
             bool isIn = xmlNode.Attributes?["In"] != null;
-            var prepend = xmlNode.Attributes?["Prepend"]?.Value;
-            var property = xmlNode.Attributes?["Property"]?.Value;
-            var compareValue = xmlNode.Attributes?["CompareValue"]?.Value;
+            var prepend = xmlNode.Attributes?["Prepend"]?.Value.Trim();
+            var property = xmlNode.Attributes?["Property"]?.Value.Trim();
+            var compareValue = xmlNode.Attributes?["CompareValue"]?.Value.Trim();
             #region Init Tag
             switch (xmlNode.Name)
             {
                 case "#text":
                 case "#cdata-section":
                     {
-                        var bodyText = xmlNode.InnerText.Replace("\n", "");
+                        var bodyText = " " + xmlNode.InnerText.Replace("\n", "").Trim();
                         return new SqlText
                         {
                             BodyText = bodyText
@@ -244,8 +244,8 @@ namespace SmartSql.SqlMap
                 case "Case":
                     {
                         var switchNode = xmlNode.ParentNode;
-                        var switchProperty = switchNode.Attributes?["Property"]?.Value;
-                        var switchPrepend = switchNode.Attributes?["Prepend"]?.Value;
+                        var switchProperty = switchNode.Attributes?["Property"]?.Value.Trim();
+                        var switchPrepend = switchNode.Attributes?["Prepend"]?.Value.Trim();
                         tag = new Switch.Case
                         {
                             CompareValue = compareValue,
@@ -258,8 +258,8 @@ namespace SmartSql.SqlMap
                 case "Default":
                     {
                         var switchNode = xmlNode.ParentNode;
-                        var switchProperty = switchNode.Attributes?["Property"]?.Value;
-                        var switchPrepend = switchNode.Attributes?["Prepend"]?.Value;
+                        var switchProperty = switchNode.Attributes?["Property"]?.Value.Trim();
+                        var switchPrepend = switchNode.Attributes?["Prepend"]?.Value.Trim();
                         tag = new Switch.Defalut
                         {
                             Property = switchProperty,
@@ -272,6 +272,7 @@ namespace SmartSql.SqlMap
                     {
                         tag = new Where
                         {
+                            Prepend = "Where",
                             ChildTags = new List<ITag>()
                         };
                         break;

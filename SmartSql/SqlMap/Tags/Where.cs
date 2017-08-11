@@ -9,6 +9,7 @@ namespace SmartSql.SqlMap.Tags
     public class Where : Tag
     {
         public override TagType Type => TagType.Where;
+
         public String[] FilterTerms
         {
             get
@@ -29,7 +30,7 @@ namespace SmartSql.SqlMap.Tags
             string strSql = strBuilder.ToString();
             if (!String.IsNullOrWhiteSpace(strSql))
             {
-                return " Where " + strSql;
+                return $" {Prepend} {strSql}";
             }
             return String.Empty;
         }
@@ -48,7 +49,7 @@ namespace SmartSql.SqlMap.Tags
                     }
                     if (isFirstChild)
                     {
-                        strSql = strSql.TrimStart(' ');
+                        strSql = strSql.TrimStart();
                         string[] sqlTerms = strSql.Split(' ');
                         string firstTerm = sqlTerms[0];
                         if (FilterTerms.Any(term => term.ToUpper() == firstTerm.ToUpper()))

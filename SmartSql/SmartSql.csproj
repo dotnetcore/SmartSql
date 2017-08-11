@@ -10,11 +10,11 @@
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>1.8.5</Version>
-    <AssemblyVersion>1.8.5.0</AssemblyVersion>
-    <FileVersion>1.8.5.0</FileVersion>
+    <Version>1.8.6</Version>
+    <AssemblyVersion>1.8.6.0</AssemblyVersion>
+    <FileVersion>1.8.6.0</FileVersion>
     <PackageTags>Dapper MyBatis Cache(Memory | Redis)  ZooKeeper   R/W Splitting</PackageTags>
-    <PackageReleaseNotes>1.fix Where Tag.</PackageReleaseNotes>
+    <PackageReleaseNotes>1. Optimize the generated SQL .</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

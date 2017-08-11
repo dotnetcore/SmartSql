@@ -23,10 +23,11 @@ namespace SmartSql.SqlMap.Tags
             {
                 if (In)
                 {
-                    return $" {Prepend} In {parameterPrefix}{Property}";
+                    return $" {Prepend} In {parameterPrefix}{Property} ";
                 }
+
                 StringBuilder strBuilder = BuildChildSql(context, parameterPrefix);
-                return $" {Prepend} {strBuilder.ToString()}";
+                return $" {Prepend}{strBuilder.ToString()}";
             }
             return String.Empty;
         }
@@ -39,6 +40,10 @@ namespace SmartSql.SqlMap.Tags
                 foreach (var childTag in ChildTags)
                 {
                     string strSql = childTag.BuildSql(context, parameterPrefix);
+                    if (String.IsNullOrWhiteSpace(strSql))
+                    {
+                        continue;
+                    }
                     strBuilder.Append(strSql);
                 }
             }
