@@ -85,6 +85,7 @@ namespace SmartSql.Tests
                 SqlId = "GetList",
                 Request = new
                 {
+                    Ids = new int[] { 1, 2, 3, 45, 6 },
                     OrderBy = "4",
                     Id = 1,
                     Yes = true,

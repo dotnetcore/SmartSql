@@ -27,6 +27,9 @@
   <Statements>
     <Statement Id="QueryParams">
       <Where>
+        <!--<IsNotEmpty Prepend="And Id" Property="Ids" In="true">
+          
+        </IsNotEmpty>-->
         <IsNotEmpty Property="Name" Prepend="And">
           Name Like Concat('%','Name','-%')
         </IsNotEmpty>
