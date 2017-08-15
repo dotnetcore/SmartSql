@@ -9,7 +9,7 @@ namespace SmartSql.SqlMap.Tags
     public abstract class Tag : ITag
     {
         [XmlAttribute]
-        public String Prepend { get; set; }
+        public virtual String Prepend { get; set; }
         [XmlAttribute]
         public String Property { get; set; }
         [XmlIgnore]

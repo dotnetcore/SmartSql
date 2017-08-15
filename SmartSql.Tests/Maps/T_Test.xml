@@ -26,14 +26,11 @@
   </Caches>
   <Statements>
     <Statement Id="QueryParams">
-      <Where>
-        <!--<IsNotEmpty Prepend="And Id" Property="Ids" In="true">
-          
-        </IsNotEmpty>-->
+      <Dynamic Prepend="Where">
         <IsNotEmpty Property="Name" Prepend="And">
           Name Like Concat('%','Name','-%')
         </IsNotEmpty>
-        <IsTrue Prepend="And" Property="Yes">
+        <IsTrue Prepend="," Property="Yes">
           1=1
         </IsTrue>
         <IsFalse Prepend="And" Property="No">
@@ -55,8 +52,8 @@
             Id,Name Desc
           </Default>
         </Switch>
-
-      </Where>
+      </Dynamic>
+      
     </Statement>
     <!--新增-->
     <Statement Id="Insert">
