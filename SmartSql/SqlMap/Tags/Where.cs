@@ -13,7 +13,7 @@ namespace SmartSql.SqlMap.Tags
 
         public override string BuildSql(RequestContext context, string parameterPrefix)
         {
-            string strSql = BuildSql(context, parameterPrefix);
+            string strSql = BuildChildSql(context, parameterPrefix).ToString();
             if (strSql.Trim() != Prepend)
             {
                 return strSql;
