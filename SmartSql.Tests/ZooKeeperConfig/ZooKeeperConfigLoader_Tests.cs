@@ -6,6 +6,7 @@ using SmartSql.ZooKeeperConfig;
 using SmartSql;
 using SmartSql.Abstractions;
 using System.Threading;
+using SmartSql.Abstractions.Logging;
 
 namespace SmartSql.Tests.ZooKeeperConfig
 {
@@ -18,7 +19,7 @@ namespace SmartSql.Tests.ZooKeeperConfig
             string connStr = "192.168.31.103:2181";//192.168.1.5:2181,192.168.1.5:2182,192.168.1.5:2183 192.168.31.103:2181
             var configLoader = new ZooKeeperConfigLoader(connStr);
             string configPath = "/Config/App1/SmartSqlMapConfig.xml";
-            SqlMapper = new SmartSqlMapper(configPath, configLoader);
+            SqlMapper = new SmartSqlMapper(NullLoggerFactory.Instance, configPath, configLoader);
         }
 
         [Fact]

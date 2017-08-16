@@ -1,5 +1,4 @@
 ﻿using SmartSql.Abstractions;
-using SmartSql.Abstractions.Logging;
 using System.Linq;
 using SmartSql.Common;
 using SmartSql.SqlMap.Tags;

@@ -37,8 +37,11 @@ namespace SmartSql.SqlMap.Tags
                         {
                             Tag tag = childTag as Tag;
                             strSql = strSql.TrimStart();
-                            string prepend = tag.Prepend.TrimStart();
-                            strSql = strSql.Substring(prepend.Length);
+                            if (!String.IsNullOrWhiteSpace(tag.Prepend))
+                            {
+                                string prepend = tag.Prepend.TrimStart();
+                                strSql = strSql.Substring(prepend.Length);
+                            }
                         }
                         strSql = $" {Prepend} {strSql}";
                         isFirstChild = false;

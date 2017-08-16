@@ -1,5 +1,5 @@
-﻿using SmartSql.Abstractions;
-using SmartSql.Abstractions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using SmartSql.Abstractions;
 using SmartSql.Exceptions;
 using SmartSql.SqlMap;
 using System;
@@ -10,12 +10,13 @@ namespace SmartSql
 {
     public class SqlBuilder : ISqlBuilder
     {
-        private static readonly ILog _logger = LogManager.GetLogger(typeof(SqlBuilder));
+        private readonly ILogger _logger;
         public ISmartSqlMapper SmartSqlMapper { get; private set; }
         public IDictionary<String, Statement> MappedStatements => SmartSqlMapper.SqlMapConfig.MappedStatements;
 
-        public SqlBuilder(ISmartSqlMapper smartSqlMapper)
+        public SqlBuilder(ILoggerFactory loggerFactory, ISmartSqlMapper smartSqlMapper)
         {
+            _logger = loggerFactory.CreateLogger<SqlBuilder>();
             SmartSqlMapper = smartSqlMapper;
         }
 
@@ -23,7 +24,7 @@ namespace SmartSql
         {
             if (!MappedStatements.ContainsKey(context.FullSqlId))
             {
-                _logger.Error($"SmartSql.SqlBuilder BuildSql Not Find Statement.Id: {context.FullSqlId}.");
+                _logger.LogError($"SmartSql.SqlBuilder BuildSql Not Find Statement.Id: {context.FullSqlId}.");
                 throw new SmartSqlException($"SmartSqlMapper could not find statement:{context.FullSqlId}");
             }
             var statement = MappedStatements[context.FullSqlId];
@@ -35,11 +36,11 @@ namespace SmartSql
         {
             if (statement == null)
             {
-                _logger.Error($"SmartSql.SqlBuilder BuildSql Not Find Statement.Id: {context.FullSqlId}.");
+                _logger.LogError($"SmartSql.SqlBuilder BuildSql Not Find Statement.Id: {context.FullSqlId}.");
                 throw new SmartSqlException($"SmartSqlMapper could not find statement:{context.FullSqlId}");
             }
             string sql = statement.BuildSql(context).Trim();
-            _logger.Debug($"SmartSql.SqlBuilder BuildSql Statement.Id: {context.FullSqlId},Sql:[{sql}]");
+            _logger.LogDebug($"SmartSql.SqlBuilder BuildSql Statement.Id: {context.FullSqlId},Sql:[{sql}]");
             return sql;
         }
     }

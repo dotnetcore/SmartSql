@@ -6,7 +6,7 @@ using SmartSql.Abstractions;
 using SmartSql.Common;
 using System.Linq;
 using SmartSql.Abstractions.DbSession;
-using SmartSql.Abstractions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace SmartSql
 {
@@ -15,15 +15,16 @@ namespace SmartSql
     /// </summary>
     public class DataSourceManager : IDataSourceManager
     {
-        private static readonly ILog _logger = LogManager.GetLogger(typeof(DataSourceManager));
+        private readonly ILogger _logger;
         public ISmartSqlMapper SmartSqlMapper { get; }
 
         /// <summary>
         /// 权重筛选器
         /// </summary>
         private WeightFilter<IReadDataSource> weightFilter = new WeightFilter<IReadDataSource>();
-        public DataSourceManager(ISmartSqlMapper sqlMaper)
+        public DataSourceManager(ILoggerFactory loggerFactory, ISmartSqlMapper sqlMaper)
         {
+            _logger = loggerFactory.CreateLogger<DataSourceManager>();
             SmartSqlMapper = sqlMaper;
         }
         public IDataSource GetDataSource(DataSourceChoice sourceChoice)
@@ -41,7 +42,7 @@ namespace SmartSql
                 });
                 choiceDataSource = weightFilter.Elect(seekList).Source;
             }
-            _logger.Debug($"SmartSql.DataSourceManager GetDataSource Choice: {choiceDataSource.Name} .");
+            _logger.LogDebug($"SmartSql.DataSourceManager GetDataSource Choice: {choiceDataSource.Name} .");
             return choiceDataSource;
         }
     }

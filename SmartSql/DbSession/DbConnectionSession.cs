@@ -6,13 +6,13 @@ using System.Data;
 using System.Data.Common;
 using SmartSql.Abstractions.DataSource;
 using SmartSql.Exceptions;
-using SmartSql.Abstractions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace SmartSql.DbSession
 {
     public class DbConnectionSession : IDbConnectionSession
     {
-        private static readonly ILog _logger = LogManager.GetLogger(typeof(DbConnectionSession));
+        private readonly ILogger _logger;
 
         public Guid Id { get; private set; }
         public DbProviderFactory DbProviderFactory { get; }
@@ -20,8 +20,9 @@ namespace SmartSql.DbSession
         public IDbConnection Connection { get; private set; }
         public IDbTransaction Transaction { get; private set; }
         public DbSessionLifeCycle LifeCycle { get; set; }
-        public DbConnectionSession(DbProviderFactory dbProviderFactory, IDataSource dataSource)
+        public DbConnectionSession(ILoggerFactory loggerFactory, DbProviderFactory dbProviderFactory, IDataSource dataSource)
         {
+            _logger = loggerFactory.CreateLogger<DbConnectionSession>();
             Id = Guid.NewGuid();
             LifeCycle = DbSessionLifeCycle.Transient;
             DbProviderFactory = dbProviderFactory;
@@ -30,7 +31,7 @@ namespace SmartSql.DbSession
         public void BeginTransaction()
         {
             OpenConnection();
-            _logger.Debug("DbConnectionSession.BeginTransaction.");
+            _logger.LogDebug("DbConnectionSession.BeginTransaction.");
             Transaction = Connection.BeginTransaction();
 
             LifeCycle = DbSessionLifeCycle.Scoped;
@@ -38,7 +39,7 @@ namespace SmartSql.DbSession
         public void BeginTransaction(IsolationLevel isolationLevel)
         {
             OpenConnection();
-            _logger.Debug("DbConnectionSession.BeginTransaction.");
+            _logger.LogDebug("DbConnectionSession.BeginTransaction.");
             Transaction = Connection.BeginTransaction(isolationLevel);
             LifeCycle = DbSessionLifeCycle.Scoped;
         }
@@ -53,7 +54,7 @@ namespace SmartSql.DbSession
             if ((Connection != null) && (Connection.State != ConnectionState.Closed))
             {
                 Connection.Close();
-                _logger.Debug($"DbConnectionSession.CloseConnection {Connection.GetHashCode()}:{DataSource.Name} ");
+                _logger.LogDebug($"DbConnectionSession.CloseConnection {Connection.GetHashCode()}:{DataSource.Name} ");
                 Connection.Dispose();
             }
             Connection = null;
@@ -61,7 +62,7 @@ namespace SmartSql.DbSession
 
         public void CommitTransaction()
         {
-            _logger.Debug("DbConnectionSession.CommitTransaction.");
+            _logger.LogDebug("DbConnectionSession.CommitTransaction.");
             Transaction.Commit();
             Transaction.Dispose();
             Transaction = null;
@@ -71,7 +72,7 @@ namespace SmartSql.DbSession
 
         public void Dispose()
         {
-            _logger.Debug("DbConnectionSession.Dispose.");
+            _logger.LogDebug("DbConnectionSession.Dispose.");
 
             if (Transaction != null)
             {
@@ -93,12 +94,12 @@ namespace SmartSql.DbSession
                 CreateConnection();
                 try
                 {
-                    _logger.Debug($"DbConnectionSession.OpenConnection {Connection.GetHashCode()} to {DataSource.Name} .");
+                    _logger.LogDebug($"DbConnectionSession.OpenConnection {Connection.GetHashCode()} to {DataSource.Name} .");
                     Connection.Open();
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error($"DbConnectionSession.OpenConnection Unable to open connection to { DataSource.Name }.");
+                    _logger.LogError($"DbConnectionSession.OpenConnection Unable to open connection to { DataSource.Name }.");
                     throw new SmartSqlException($"DbConnectionSession.OpenConnection Unable to open connection to { DataSource.Name }.", ex);
                 }
             }
@@ -106,12 +107,12 @@ namespace SmartSql.DbSession
             {
                 try
                 {
-                    _logger.Debug($"DbConnectionSession.OpenConnection {Connection.GetHashCode()} to {DataSource.Name} .");
+                    _logger.LogDebug($"DbConnectionSession.OpenConnection {Connection.GetHashCode()} to {DataSource.Name} .");
                     Connection.Open();
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error($"DbConnectionSession.OpenConnection Unable to open connection to { DataSource.Name }.");
+                    _logger.LogError($"DbConnectionSession.OpenConnection Unable to open connection to { DataSource.Name }.");
                     throw new SmartSqlException($"DbConnectionSession.OpenConnection Unable to open connection to { DataSource.Name }.", ex);
                 }
             }
@@ -119,7 +120,7 @@ namespace SmartSql.DbSession
 
         public void RollbackTransaction()
         {
-            _logger.Debug("DbConnectionSession.RollbackTransaction .");
+            _logger.LogDebug("DbConnectionSession.RollbackTransaction .");
             Transaction.Rollback();
             Transaction.Dispose();
             Transaction = null;

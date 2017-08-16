@@ -8,16 +8,13 @@ using SmartSql.Common;
 using System.Data.Common;
 using SmartSql.Abstractions;
 using System.Reflection;
-using SmartSql.Abstractions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace SmartSql.SqlMap
 {
     [XmlRoot(Namespace = "http://SmartSql.net/schemas/SmartSqlMapConfig.xsd")]
     public class SmartSqlMapConfig
     {
-        [XmlIgnore]
-        private static readonly ILog _logger = LogManager.GetLogger(typeof(SmartSqlMapConfig));
-
         [XmlIgnore]
         public ISmartSqlMapper SmartSqlMapper { get; set; }
         [XmlIgnore]
@@ -41,7 +38,7 @@ namespace SmartSql.SqlMap
                     {
                         if (_mappedStatements == null)
                         {
-                            _logger.Debug($"SmartSqlMapConfig. Path:{Path} Load MappedStatements !");
+                            //_logger.LogDebug($"SmartSqlMapConfig. Path:{Path} Load MappedStatements !");
                             _mappedStatements = new Dictionary<string, Statement>();
                             foreach (var sqlmap in SmartSqlMaps)
                             {
@@ -52,10 +49,10 @@ namespace SmartSql.SqlMap
                                     {
                                         _mappedStatements.Add(statementId, statement);
                                     }
-                                    else
-                                    {
-                                        _logger.Warn($"SmartSqlMapConfig Load MappedStatements: StatementId:{statementId}  already exists!");
-                                    }
+                                    //else
+                                    //{
+                                    //    _logger.LogDebug($"SmartSqlMapConfig Load MappedStatements: StatementId:{statementId}  already exists!");
+                                    //}
                                 }
                             }
                         }

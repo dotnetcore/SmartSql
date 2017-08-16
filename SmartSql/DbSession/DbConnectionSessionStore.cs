@@ -1,5 +1,5 @@
-﻿using SmartSql.Abstractions.DbSession;
-using SmartSql.Abstractions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using SmartSql.Abstractions.DbSession;
 using SmartSql.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace SmartSql.DbSession
     /// </summary>
     public class DbConnectionSessionStore : IDbConnectionSessionStore
     {
-        private static readonly ILog _logger = LogManager.GetLogger(typeof(DbConnectionSessionStore));
+        private readonly ILogger _logger;
         const string KEY = "SmartSql-Local-DbSesstion-";
         protected string sessionName = string.Empty;
         private AsyncLocal<IDictionary<string, IDbConnectionSession>> staticSessions
@@ -30,8 +30,9 @@ namespace SmartSql.DbSession
                 return session;
             }
         }
-        public DbConnectionSessionStore(String smartSqlMapperId)
+        public DbConnectionSessionStore(ILoggerFactory loggerFactory, String smartSqlMapperId)
         {
+            _logger = loggerFactory.CreateLogger<DbConnectionSessionStore>();
             sessionName = KEY + smartSqlMapperId;
         }
         public void Dispose()

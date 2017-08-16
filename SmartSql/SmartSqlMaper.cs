@@ -12,15 +12,17 @@ using SmartSql.Exceptions;
 using SmartSql.DbSession;
 using SmartSql.Abstractions.DataSource;
 using SmartSql.Common;
-using SmartSql.Abstractions.Logging;
 using SmartSql.Abstractions.Cache;
 using SmartSql.Abstractions.Config;
+using Microsoft.Extensions.Logging;
+using SmartSql.Abstractions.Logging;
 
 namespace SmartSql
 {
     public class SmartSqlMapper : ISmartSqlMapper
     {
-        private static readonly ILog _logger = LogManager.GetLogger(typeof(SmartSqlMapper));
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger _logger;
         public SmartSqlMapConfig SqlMapConfig { get; private set; }
         public DbProviderFactory DbProviderFactory { get; }
         public IDbConnectionSessionStore SessionStore { get; }
@@ -29,32 +31,43 @@ namespace SmartSql
         public ICacheManager CacheManager { get; }
         public IConfigLoader ConfigLoader { get; }
         private SqlRuner _sqlRuner;
+
+        public SmartSqlMapper(String sqlMapConfigFilePath = "SmartSqlMapConfig.xml") : this(NullLoggerFactory.Instance, sqlMapConfigFilePath)
+        {
+
+        }
         public SmartSqlMapper(
+             ILoggerFactory loggerFactory,
              String sqlMapConfigFilePath = "SmartSqlMapConfig.xml"
         )
         {
-            ConfigLoader = new LocalFileConfigLoader();
+            _loggerFactory = loggerFactory;
+            _logger = loggerFactory.CreateLogger<SmartSqlMapper>();
+            ConfigLoader = new LocalFileConfigLoader(loggerFactory);
             ConfigLoader.Load(sqlMapConfigFilePath, this);
             DbProviderFactory = SqlMapConfig.Database.DbProvider.DbProviderFactory;
-            SessionStore = new DbConnectionSessionStore(this.GetHashCode().ToString());
-            SqlBuilder = new SqlBuilder(this);
-            DataSourceManager = new DataSourceManager(this);
-            CacheManager = new CacheManager(this);
-            _sqlRuner = new SqlRuner(SqlBuilder, this);
+            SessionStore = new DbConnectionSessionStore(loggerFactory, this.GetHashCode().ToString());
+            SqlBuilder = new SqlBuilder(loggerFactory, this);
+            DataSourceManager = new DataSourceManager(loggerFactory, this);
+            CacheManager = new CacheManager(loggerFactory, this);
+            _sqlRuner = new SqlRuner(loggerFactory, SqlBuilder, this);
         }
-        public SmartSqlMapper(String sqlMapConfigFilePath, IConfigLoader configLoader)
+        public SmartSqlMapper(ILoggerFactory loggerFactory, String sqlMapConfigFilePath, IConfigLoader configLoader)
         {
+            _loggerFactory = loggerFactory;
+            _logger = loggerFactory.CreateLogger<SmartSqlMapper>();
             ConfigLoader = configLoader;
             ConfigLoader.Load(sqlMapConfigFilePath, this);
             DbProviderFactory = SqlMapConfig.Database.DbProvider.DbProviderFactory;
-            SessionStore = new DbConnectionSessionStore(this.GetHashCode().ToString());
-            SqlBuilder = new SqlBuilder(this);
-            DataSourceManager = new DataSourceManager(this);
-            CacheManager = new CacheManager(this);
-            _sqlRuner = new SqlRuner(SqlBuilder, this);
+            SessionStore = new DbConnectionSessionStore(loggerFactory, this.GetHashCode().ToString());
+            SqlBuilder = new SqlBuilder(loggerFactory, this);
+            DataSourceManager = new DataSourceManager(loggerFactory, this);
+            CacheManager = new CacheManager(loggerFactory, this);
+            _sqlRuner = new SqlRuner(loggerFactory, SqlBuilder, this);
         }
 
         public SmartSqlMapper(
+            ILoggerFactory loggerFactory,
              String sqlMapConfigFilePath
             , IDbConnectionSessionStore sessionStore
             , IDataSourceManager dataSourceManager
@@ -63,6 +76,8 @@ namespace SmartSql
             , IConfigLoader configLoader
             )
         {
+            _loggerFactory = loggerFactory;
+            _logger = loggerFactory.CreateLogger<SmartSqlMapper>();
             configLoader.Load(sqlMapConfigFilePath, this);
             DbProviderFactory = SqlMapConfig.Database.DbProvider.DbProviderFactory;
             SessionStore = sessionStore;
@@ -70,7 +85,7 @@ namespace SmartSql
             DataSourceManager = dataSourceManager;
             CacheManager = cacheManager;
             CacheManager.SmartSqlMapper = this;
-            _sqlRuner = new SqlRuner(SqlBuilder, this);
+            _sqlRuner = new SqlRuner(loggerFactory, SqlBuilder, this);
         }
 
         public void LoadConfig(SmartSqlMapConfig smartSqlMapConfig)
@@ -230,14 +245,14 @@ namespace SmartSql
         {
             var session = BeginSession(DataSourceChoice.Write);
             session.BeginTransaction();
-            _logger.Debug($"SmartSqlMapper.BeginTransaction DbSession.Id:{session.Id}");
+            _logger.LogDebug($"SmartSqlMapper.BeginTransaction DbSession.Id:{session.Id}");
             return session;
         }
         public IDbConnectionSession BeginTransaction(IsolationLevel isolationLevel)
         {
             var session = BeginSession(DataSourceChoice.Write);
             session.BeginTransaction(isolationLevel);
-            _logger.Debug($"SmartSqlMapper.BeginTransaction DbSession.Id:{session.Id}");
+            _logger.LogDebug($"SmartSqlMapper.BeginTransaction DbSession.Id:{session.Id}");
             return session;
         }
         public void CommitTransaction()
@@ -249,7 +264,7 @@ namespace SmartSql
             }
             try
             {
-                _logger.Debug($"SmartSqlMapper.CommitTransaction DbSession.Id:{session.Id}");
+                _logger.LogDebug($"SmartSqlMapper.CommitTransaction DbSession.Id:{session.Id}");
                 session.CommitTransaction();
                 CacheManager.FlushQueue();
             }
@@ -268,7 +283,7 @@ namespace SmartSql
             }
             try
             {
-                _logger.Debug($"SmartSqlMapper.RollbackTransaction DbSession.Id:{session.Id}");
+                _logger.LogDebug($"SmartSqlMapper.RollbackTransaction DbSession.Id:{session.Id}");
                 session.RollbackTransaction();
                 CacheManager.ClearQueue();
             }
@@ -309,7 +324,7 @@ namespace SmartSql
         public IDbConnectionSession CreateDbSession(DataSourceChoice sourceChoice)
         {
             IDataSource dataSource = DataSourceManager.GetDataSource(sourceChoice);
-            IDbConnectionSession session = new DbConnectionSession(DbProviderFactory, dataSource);
+            IDbConnectionSession session = new DbConnectionSession(_loggerFactory, DbProviderFactory, dataSource);
 
             session.CreateConnection();
             return session;

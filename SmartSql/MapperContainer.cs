@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Text;
 using SmartSql.Abstractions;
 using SmartSql.Abstractions.Config;
+using Microsoft.Extensions.Logging;
+using SmartSql.Abstractions.Logging;
+
 namespace SmartSql
 {
     public class MapperContainer : IDisposable
@@ -18,10 +21,13 @@ namespace SmartSql
 
         public ISmartSqlMapper GetSqlMapper(String smartSqlMapConfigPath = "SmartSqlMapConfig.xml")
         {
-            return GetSqlMapper(smartSqlMapConfigPath, new LocalFileConfigLoader());
+            return GetSqlMapper(NullLoggerFactory.Instance, smartSqlMapConfigPath);
         }
-
-        public ISmartSqlMapper GetSqlMapper(String smartSqlMapConfigPath, IConfigLoader configLoader)
+        public ISmartSqlMapper GetSqlMapper(ILoggerFactory loggerFactory, String smartSqlMapConfigPath = "SmartSqlMapConfig.xml")
+        {
+            return GetSqlMapper(loggerFactory, smartSqlMapConfigPath, new LocalFileConfigLoader(NullLoggerFactory.Instance));
+        }
+        public ISmartSqlMapper GetSqlMapper(ILoggerFactory loggerFactory, String smartSqlMapConfigPath, IConfigLoader configLoader)
         {
             if (!_mapperContainer.ContainsKey(smartSqlMapConfigPath))
             {
@@ -29,7 +35,7 @@ namespace SmartSql
                 {
                     if (!_mapperContainer.ContainsKey(smartSqlMapConfigPath))
                     {
-                        ISmartSqlMapper _mapper = new SmartSqlMapper(smartSqlMapConfigPath, configLoader);
+                        ISmartSqlMapper _mapper = new SmartSqlMapper(loggerFactory, smartSqlMapConfigPath, configLoader);
                         _mapperContainer.Add(smartSqlMapConfigPath, _mapper);
                     }
                 }

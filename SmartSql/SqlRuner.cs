@@ -5,18 +5,19 @@ using System.Collections.Generic;
 using System.Text;
 using Dapper;
 using System.Threading.Tasks;
-using SmartSql.Abstractions.Logging;
 using SmartSql.Abstractions.Cache;
+using Microsoft.Extensions.Logging;
 
 namespace SmartSql
 {
     public class SqlRuner
     {
-        private static readonly ILog _logger = LogManager.GetLogger(typeof(SqlRuner));
+        private readonly ILogger _logger;
         public ISqlBuilder SqlBuilder { get; }
         public ISmartSqlMapper SmartSqlMapper { get; }
-        public SqlRuner(ISqlBuilder sqlBuilder, ISmartSqlMapper smartSqlMapper)
+        public SqlRuner(ILoggerFactory loggerFactory, ISqlBuilder sqlBuilder, ISmartSqlMapper smartSqlMapper)
         {
+            _logger = loggerFactory.CreateLogger<SqlRuner>();
             SqlBuilder = sqlBuilder;
             SmartSqlMapper = smartSqlMapper;
         }

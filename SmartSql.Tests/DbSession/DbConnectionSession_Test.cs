@@ -6,11 +6,13 @@ using SmartSql.DbSession;
 using System.Data.SqlClient;
 using SmartSql.SqlMap;
 using Dapper;
+using SmartSql.Abstractions.Logging;
+
 namespace SmartSql.Tests.DbSession
 {
     public class DbConnectionSession_Test
     {
-        static DbConnectionSession dbConnSession = new DbConnectionSession(SqlClientFactory.Instance, new DataSource
+        static DbConnectionSession dbConnSession = new DbConnectionSession(NullLoggerFactory.Instance, SqlClientFactory.Instance, new DataSource
         {
             ConnectionString = "Data Source=.;database=TestDB;uid=sa;pwd=SmartSql.net",
             Name = "TestDB"

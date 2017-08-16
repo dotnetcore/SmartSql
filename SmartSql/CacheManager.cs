@@ -5,14 +5,14 @@ using System.Text;
 using SmartSql.Abstractions;
 using SmartSql.SqlMap;
 using SmartSql.Exceptions;
-using SmartSql.Abstractions.Logging;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace SmartSql
 {
     public class CacheManager : ICacheManager
     {
-        private static readonly ILog _logger = LogManager.GetLogger(typeof(CacheManager));
+        private readonly ILogger _logger;
         public ISmartSqlMapper SmartSqlMapper { get; set; }
         public IDictionary<String, Statement> MappedStatements => SmartSqlMapper.SqlMapConfig.MappedStatements;
         public IDictionary<String, DateTime> MappedLastFlushTimes { get; } = new Dictionary<String, DateTime>();
@@ -28,7 +28,7 @@ namespace SmartSql
                     {
                         if (_mappedTriggerFlushs == null)
                         {
-                            _logger.Debug($"SmartSql.CacheManager Load MappedTriggerFlushs !");
+                            _logger.LogDebug($"SmartSql.CacheManager Load MappedTriggerFlushs !");
                             _mappedTriggerFlushs = new Dictionary<String, IList<Statement>>();
                             foreach (var sqlMap in SmartSqlMapper.SqlMapConfig.SmartSqlMaps)
                             {
@@ -59,7 +59,11 @@ namespace SmartSql
                 return _mappedTriggerFlushs;
             }
         }
-
+        public CacheManager(ILoggerFactory loggerFactory, ISmartSqlMapper smartSqlMapper)
+        {
+            _logger = loggerFactory.CreateLogger<CacheManager>();
+            SmartSqlMapper = smartSqlMapper;
+        }
         private void Enqueue(RequestContext context)
         {
             RequestQueue.Enqueue(context);
@@ -101,7 +105,7 @@ namespace SmartSql
                     IList<Statement> triggerStatements = MappedTriggerFlushs[exeFullSqlId];
                     foreach (var statement in triggerStatements)
                     {
-                        _logger.Debug($"SmartSql.CacheManager FlushCache.OnInterval FullSqlId:{statement.FullSqlId},ExeFullSqlId:{exeFullSqlId}");
+                        _logger.LogDebug($"SmartSql.CacheManager FlushCache.OnInterval FullSqlId:{statement.FullSqlId},ExeFullSqlId:{exeFullSqlId}");
                         MappedLastFlushTimes[statement.FullSqlId] = DateTime.Now;
                         statement.CacheProvider.Flush();
                     }
@@ -109,10 +113,7 @@ namespace SmartSql
             }
         }
 
-        public CacheManager(ISmartSqlMapper smartSqlMapper)
-        {
-            SmartSqlMapper = smartSqlMapper;
-        }
+
         public object this[RequestContext context, Type type]
         {
             get
@@ -132,7 +133,7 @@ namespace SmartSql
                 }
                 var cacheKey = new CacheKey(context);
                 var cache = statement.CacheProvider[cacheKey, type];
-                _logger.Debug($"SmartSql.CacheManager GetCache FullSqlId:{fullSqlId}，Success:{cache != null} !");
+                _logger.LogDebug($"SmartSql.CacheManager GetCache FullSqlId:{fullSqlId}，Success:{cache != null} !");
                 return cache;
             }
             set
@@ -149,7 +150,7 @@ namespace SmartSql
                     FlushByInterval(statement);
                 }
                 var cacheKey = new CacheKey(context);
-                _logger.Debug($"SmartSql.CacheManager SetCache FullSqlId:{fullSqlId}");
+                _logger.LogDebug($"SmartSql.CacheManager SetCache FullSqlId:{fullSqlId}");
                 statement.CacheProvider[cacheKey, type] = value;
             }
         }
@@ -176,7 +177,7 @@ namespace SmartSql
 
         private void Flush(Statement statement, TimeSpan lastInterval)
         {
-            _logger.Debug($"SmartSql.CacheManager FlushCache.OnInterval FullSqlId:{statement.FullSqlId},LastInterval:{lastInterval}");
+            _logger.LogDebug($"SmartSql.CacheManager FlushCache.OnInterval FullSqlId:{statement.FullSqlId},LastInterval:{lastInterval}");
             MappedLastFlushTimes[statement.FullSqlId] = DateTime.Now;
             statement.CacheProvider.Flush();
         }

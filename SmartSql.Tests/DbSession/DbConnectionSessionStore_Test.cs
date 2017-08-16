@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 using SmartSql.DbSession;
+using SmartSql.Abstractions.Logging;
 
 namespace SmartSql.Tests.DbSession
 {
@@ -11,8 +12,8 @@ namespace SmartSql.Tests.DbSession
         [Fact]
         public void CreateInstance()
         {
-            DbConnectionSessionStore sesstionStore = new DbConnectionSessionStore("dbStore");
-            
+            DbConnectionSessionStore sesstionStore = new DbConnectionSessionStore(NullLoggerFactory.Instance, "dbStore");
+
             Assert.NotNull(sesstionStore);
         }
     }

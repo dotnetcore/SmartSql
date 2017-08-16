@@ -9,14 +9,14 @@
 
 <SmartSqlMap Scope="T_Test"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Caches>
-    <Cache Id="T_Test.RedisCache" Type="SmartSql.Cache.Redis.RedisCacheProvider,SmartSql.Cache.Redis">
+    <!--<Cache Id="T_Test.RedisCache" Type="SmartSql.Cache.Redis.RedisCacheProvider,SmartSql.Cache.Redis">
       <Parameter Key="CacheSize" Value="1000"/>
       <Parameter Key="ConnectionString" Value="192.168.31.103"/>
       <Parameter Key="DatabaseId" Value="0"/>
       <FlushInterval Hours="24" Minutes="0" Seconds="0"/>
       <FlushOnExecute Statement="T_Test.Insert"/>
       <FlushOnExecute Statement="T_Test.Update"/>
-    </Cache>
+    </Cache>-->
     <Cache Id="T_Test.LruCache" Type="Lru">
       <Parameter Key="CacheSize" Value="100"/>
       <FlushInterval Hours="0" Minutes="10" Seconds="0"/>
@@ -36,7 +36,7 @@
         <IsFalse Prepend="And" Property="No">
           2=2
         </IsFalse>
-        <Switch Prepend="Order By" Property="OrderBy">
+        <!--<Switch Prepend="Order By" Property="OrderBy">
           <Case CompareValue="1">
             <IsNotEmpty Property="OrderBy">
               Id Desc
@@ -51,7 +51,7 @@
           <Default>
             Id,Name Desc
           </Default>
-        </Switch>
+        </Switch>-->
       </Dynamic>
       
     </Statement>
@@ -90,11 +90,11 @@
       <Include RefId="QueryParams"/>
       <!--Order By T.Id Desc-->
     </Statement>
-    <Statement Id="GetListByRedisCache" Cache="T_Test.RedisCache">
+    <!--<Statement Id="GetListByRedisCache" Cache="T_Test.RedisCache">
       SELECT Top 10 T.* From T_Test T With(NoLock)
       <Include RefId="QueryParams"/>
-      <!--Order By T.Id Desc-->
-    </Statement>
+      --><!--Order By T.Id Desc--><!--
+    </Statement>-->
     <!--获取分页数据-->
     <Statement Id="GetListByPage">
       Select TT.* From

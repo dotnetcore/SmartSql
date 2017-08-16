@@ -1,6 +1,5 @@
 ﻿using SmartSql.Abstractions;
 using SmartSql.Abstractions.Cache;
-using SmartSql.Abstractions.Logging;
 using SmartSql.Cache;
 using SmartSql.Cache.Fifo;
 using SmartSql.Cache.None;
@@ -18,8 +17,6 @@ namespace SmartSql.SqlMap
 {
     public class Statement
     {
-        [XmlIgnore]
-        private static readonly ILog _logger = LogManager.GetLogger(typeof(Statement));
         [XmlIgnore]
         public SmartSqlMap SmartSqlMap { get; private set; }
         public static Statement Load(XmlElement statementNode, SmartSqlMap smartSqlMap)
@@ -291,8 +288,7 @@ namespace SmartSql.SqlMap
                 case "#comment": { break; }
                 default:
                     {
-                        _logger.Warn($"Statement.LoadTag unkonw tagName:{xmlNode.Name}.");
-                        break;
+                        throw new SmartSqlException($"Statement.LoadTag unkonw tagName:{xmlNode.Name}.");
                     };
             }
             #endregion
