@@ -42,7 +42,7 @@ namespace SmartSql
                 });
                 choiceDataSource = weightFilter.Elect(seekList).Source;
             }
-            _logger.LogDebug($"SmartSql.DataSourceManager GetDataSource Choice: {choiceDataSource.Name} .");
+            _logger.LogDebug($"DataSourceManager GetDataSource Choice: {choiceDataSource.Name} .");
             return choiceDataSource;
         }
     }

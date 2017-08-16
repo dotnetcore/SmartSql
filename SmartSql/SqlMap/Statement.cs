@@ -32,7 +32,7 @@ namespace SmartSql.SqlMap
             if (!String.IsNullOrEmpty(cacheId))
             {
                 var cache = smartSqlMap.Caches.FirstOrDefault(m => m.Id == cacheId);
-                statement.Cache = cache ?? throw new SmartSqlException($"SmartSql.Statement.Id:{statement.Id} can not find Cache.Id:{cacheId}");
+                statement.Cache = cache ?? throw new SmartSqlException($"Statement.Id:{statement.Id} can not find Cache.Id:{cacheId}");
             }
             var tagNodes = statementNode.ChildNodes;
             foreach (XmlNode tagNode in tagNodes)
@@ -49,11 +49,11 @@ namespace SmartSql.SqlMap
                             var refStatement = smartSqlMap.Statements.FirstOrDefault(m => m.Id == refId);
                             if (refStatement == null)
                             {
-                                throw new SmartSqlException($"SmartSql.Statement.Load can not find statement.id:{refId}");
+                                throw new SmartSqlException($"Statement.Load can not find statement.id:{refId}");
                             }
                             if (refId == statement.Id)
                             {
-                                throw new SmartSqlException($"SmartSql.Statement.Load Include.RefId can not be self statement.id:{refId}");
+                                throw new SmartSqlException($"Statement.Load Include.RefId can not be self statement.id:{refId}");
                             }
                             statement.SqlTags.Add(new Include
                             {

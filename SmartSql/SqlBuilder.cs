@@ -24,7 +24,7 @@ namespace SmartSql
         {
             if (!MappedStatements.ContainsKey(context.FullSqlId))
             {
-                _logger.LogError($"SmartSql.SqlBuilder BuildSql Not Find Statement.Id: {context.FullSqlId}.");
+                _logger.LogError($"SqlBuilder BuildSql Not Find Statement.Id: {context.FullSqlId}.");
                 throw new SmartSqlException($"SmartSqlMapper could not find statement:{context.FullSqlId}");
             }
             var statement = MappedStatements[context.FullSqlId];
@@ -36,11 +36,11 @@ namespace SmartSql
         {
             if (statement == null)
             {
-                _logger.LogError($"SmartSql.SqlBuilder BuildSql Not Find Statement.Id: {context.FullSqlId}.");
+                _logger.LogError($"SqlBuilder BuildSql Not Find Statement.Id: {context.FullSqlId}.");
                 throw new SmartSqlException($"SmartSqlMapper could not find statement:{context.FullSqlId}");
             }
             string sql = statement.BuildSql(context).Trim();
-            _logger.LogDebug($"SmartSql.SqlBuilder BuildSql Statement.Id: {context.FullSqlId},Sql:[{sql}]");
+            _logger.LogDebug($"SqlBuilder BuildSql Statement.Id: {context.FullSqlId},Sql:[{sql}]");
             return sql;
         }
     }

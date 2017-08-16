@@ -7,6 +7,7 @@ using Dapper;
 using System.Threading.Tasks;
 using SmartSql.Abstractions.Cache;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace SmartSql
 {

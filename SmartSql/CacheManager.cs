@@ -28,7 +28,7 @@ namespace SmartSql
                     {
                         if (_mappedTriggerFlushs == null)
                         {
-                            _logger.LogDebug($"SmartSql.CacheManager Load MappedTriggerFlushs !");
+                            _logger.LogDebug($"CacheManager Load MappedTriggerFlushs !");
                             _mappedTriggerFlushs = new Dictionary<String, IList<Statement>>();
                             foreach (var sqlMap in SmartSqlMapper.SqlMapConfig.SmartSqlMaps)
                             {
@@ -105,7 +105,7 @@ namespace SmartSql
                     IList<Statement> triggerStatements = MappedTriggerFlushs[exeFullSqlId];
                     foreach (var statement in triggerStatements)
                     {
-                        _logger.LogDebug($"SmartSql.CacheManager FlushCache.OnInterval FullSqlId:{statement.FullSqlId},ExeFullSqlId:{exeFullSqlId}");
+                        _logger.LogDebug($"CacheManager FlushCache.OnInterval FullSqlId:{statement.FullSqlId},ExeFullSqlId:{exeFullSqlId}");
                         MappedLastFlushTimes[statement.FullSqlId] = DateTime.Now;
                         statement.CacheProvider.Flush();
                     }
@@ -122,7 +122,7 @@ namespace SmartSql
 
                 if (!MappedStatements.ContainsKey(fullSqlId))
                 {
-                    throw new SmartSqlException($"SmartSql.CacheManager can not find Statement.Id:{fullSqlId}");
+                    throw new SmartSqlException($"CacheManager can not find Statement.Id:{fullSqlId}");
                 }
                 var statement = MappedStatements[fullSqlId];
                 if (statement.Cache == null) { return null; }
@@ -133,7 +133,7 @@ namespace SmartSql
                 }
                 var cacheKey = new CacheKey(context);
                 var cache = statement.CacheProvider[cacheKey, type];
-                _logger.LogDebug($"SmartSql.CacheManager GetCache FullSqlId:{fullSqlId}，Success:{cache != null} !");
+                _logger.LogDebug($"CacheManager GetCache FullSqlId:{fullSqlId}，Success:{cache != null} !");
                 return cache;
             }
             set
@@ -141,7 +141,7 @@ namespace SmartSql
                 string fullSqlId = context.FullSqlId;
                 if (!MappedStatements.ContainsKey(fullSqlId))
                 {
-                    throw new SmartSqlException($"SmartSql.CacheManager can not find Statement.Id:{fullSqlId}");
+                    throw new SmartSqlException($"CacheManager can not find Statement.Id:{fullSqlId}");
                 }
                 var statement = MappedStatements[fullSqlId];
                 if (statement.Cache == null) { return; }
@@ -150,7 +150,7 @@ namespace SmartSql
                     FlushByInterval(statement);
                 }
                 var cacheKey = new CacheKey(context);
-                _logger.LogDebug($"SmartSql.CacheManager SetCache FullSqlId:{fullSqlId}");
+                _logger.LogDebug($"CacheManager SetCache FullSqlId:{fullSqlId}");
                 statement.CacheProvider[cacheKey, type] = value;
             }
         }
@@ -177,14 +177,17 @@ namespace SmartSql
 
         private void Flush(Statement statement, TimeSpan lastInterval)
         {
-            _logger.LogDebug($"SmartSql.CacheManager FlushCache.OnInterval FullSqlId:{statement.FullSqlId},LastInterval:{lastInterval}");
+            _logger.LogDebug($"CacheManager FlushCache.OnInterval FullSqlId:{statement.FullSqlId},LastInterval:{lastInterval}");
             MappedLastFlushTimes[statement.FullSqlId] = DateTime.Now;
             statement.CacheProvider.Flush();
         }
 
         public void ResetMappedCaches()
         {
-            _mappedTriggerFlushs = null;
+            lock (this)
+            {
+                _mappedTriggerFlushs = null;
+            }
         }
     }
 }

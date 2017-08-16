@@ -245,14 +245,14 @@ namespace SmartSql
         {
             var session = BeginSession(DataSourceChoice.Write);
             session.BeginTransaction();
-            _logger.LogDebug($"SmartSqlMapper.BeginTransaction DbSession.Id:{session.Id}");
+            _logger.LogDebug($"BeginTransaction DbSession.Id:{session.Id}");
             return session;
         }
         public IDbConnectionSession BeginTransaction(IsolationLevel isolationLevel)
         {
             var session = BeginSession(DataSourceChoice.Write);
             session.BeginTransaction(isolationLevel);
-            _logger.LogDebug($"SmartSqlMapper.BeginTransaction DbSession.Id:{session.Id}");
+            _logger.LogDebug($"BeginTransaction DbSession.Id:{session.Id}");
             return session;
         }
         public void CommitTransaction()
@@ -264,7 +264,7 @@ namespace SmartSql
             }
             try
             {
-                _logger.LogDebug($"SmartSqlMapper.CommitTransaction DbSession.Id:{session.Id}");
+                _logger.LogDebug($"CommitTransaction DbSession.Id:{session.Id}");
                 session.CommitTransaction();
                 CacheManager.FlushQueue();
             }
@@ -283,7 +283,7 @@ namespace SmartSql
             }
             try
             {
-                _logger.LogDebug($"SmartSqlMapper.RollbackTransaction DbSession.Id:{session.Id}");
+                _logger.LogDebug($"RollbackTransaction DbSession.Id:{session.Id}");
                 session.RollbackTransaction();
                 CacheManager.ClearQueue();
             }
