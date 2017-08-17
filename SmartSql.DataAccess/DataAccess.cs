@@ -5,6 +5,7 @@ using System.Text;
 using SmartSql.DataAccess.Abstractions;
 using System.Data;
 using SmartSql.Abstractions.DbSession;
+using Microsoft.Extensions.Logging;
 
 namespace SmartSql.DataAccess
 {
@@ -12,17 +13,24 @@ namespace SmartSql.DataAccess
     {
         public DataAccess(String smartSqlMapConfigPath = "SmartSqlMapConfig.xml")
         {
-            SmartSqlMapConfigPath = smartSqlMapConfigPath;
+            SqlMapper = MapperContainer.Instance.GetSqlMapper(smartSqlMapConfigPath);
             InitScope();
         }
-
-        public String SmartSqlMapConfigPath { get; private set; }
-
+        public DataAccess(ILoggerFactory loggerFactory, String smartSqlMapConfigPath = "SmartSqlMapConfig.xml")
+        {
+            SqlMapper = MapperContainer.Instance.GetSqlMapper(loggerFactory, smartSqlMapConfigPath);
+            InitScope();
+        }
+        public DataAccess(ISmartSqlMapper sqlMapper)
+        {
+            SqlMapper = sqlMapper;
+            InitScope();
+        }
         public string Scope { get; protected set; }
 
         protected abstract void InitScope();
 
-        public ISmartSqlMapper SqlMapper { get { return MapperContainer.Instance.GetSqlMapper(SmartSqlMapConfigPath); } }
+        public ISmartSqlMapper SqlMapper { get; }
 
         #region Transaction
         /// <summary>

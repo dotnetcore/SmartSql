@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections;
 using StackExchange.Redis;
 using Newtonsoft.Json;
+using SmartSql.Exceptions;
 
 namespace SmartSql.Cache.Redis
 {
@@ -21,25 +22,25 @@ namespace SmartSql.Cache.Redis
             connStr = properties["ConnectionString"]?.ToString();
             if (String.IsNullOrEmpty(connStr))
             {
-                throw new Exception("SmartSql.Cache.Redis.ConnectionString string can't empty.");
+                throw new SmartSqlException("SmartSql.Cache.Redis.ConnectionString string can't empty.");
             }
 
             String databaseIdStr = properties["DatabaseId"]?.ToString();
             if (String.IsNullOrEmpty(databaseIdStr))
             {
-                throw new Exception("SmartSql.Cache.Redis.DatabaseId string can't empty.");
+                throw new SmartSqlException("SmartSql.Cache.Redis.DatabaseId string can't empty.");
             }
             else
             {
                 if (!Int32.TryParse(databaseIdStr, out databaseId))
                 {
-                    throw new Exception("SmartSql.Cache.Redis.DatabaseId string is not int.");
+                    throw new SmartSqlException("SmartSql.Cache.Redis.DatabaseId string is not int.");
                 }
             }
             prefix = properties["Prefix"]?.ToString();
             if (String.IsNullOrEmpty(prefix))
             {
-                throw new Exception("SmartSql.Cache.Redis.Prefix string can't empty.");
+                throw new SmartSqlException("SmartSql.Cache.Redis.Prefix string can't empty.");
             }
 
             redis = RedisManager.Instance.GetRedis(connStr);

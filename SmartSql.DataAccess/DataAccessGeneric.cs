@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using SmartSql.Abstractions;
 using SmartSql.DataAccess.Abstractions;
+using Microsoft.Extensions.Logging;
+
 namespace SmartSql.DataAccess
 {
     /// <summary>
@@ -17,7 +19,10 @@ namespace SmartSql.DataAccess
         {
 
         }
+        public DataAccessGeneric(ISmartSqlMapper smartSqlMapper) : base(smartSqlMapper)
+        {
 
+        }
         protected override void InitScope()
         {
             Scope = typeof(TEntity).Name;
@@ -26,7 +31,7 @@ namespace SmartSql.DataAccess
 
         public virtual TEntity GetEntity<TPrimary>(TPrimary Id, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
-            
+
             return SqlMapper.QuerySingle<TEntity>(new RequestContext
             {
                 Scope = this.Scope,

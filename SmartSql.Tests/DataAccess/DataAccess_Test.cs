@@ -14,13 +14,13 @@ namespace SmartSql.Tests.DataAccess
         public void Insert()
         {
             var id = dao.Insert<long>(new T_Test { Name = "Dao-Insert" });
-            
+
         }
         [Fact]
         public void Delete()
         {
             var exeNum = dao.Delete<long>(230151);
-            
+
         }
 
         [Fact]
@@ -31,7 +31,7 @@ namespace SmartSql.Tests.DataAccess
                 Id = 230150,
                 Name = "Dao-Update"
             });
-           
+
         }
         [Fact]
         public void GetList()
@@ -57,7 +57,7 @@ namespace SmartSql.Tests.DataAccess
         public void GetEntity()
         {
             var entity = dao.GetEntity<long>(240162);
-           // Assert.NotNull(entity);
+            // Assert.NotNull(entity);
         }
 
         public void Dispose()
@@ -68,6 +68,9 @@ namespace SmartSql.Tests.DataAccess
 
     public class TestDataAccess : DataAccessGeneric<T_Test>
     {
+        public TestDataAccess()
+        {
 
+        }
     }
 }
