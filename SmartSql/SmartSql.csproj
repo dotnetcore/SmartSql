@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFrameworks>netstandard1.3;netstandard2.0;net46</TargetFrameworks>
     <Authors>Ahoo Wang</Authors>
     <Company>Ahoo Wang</Company>
     <Description>SmartSql = Dapper + MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting + ......</Description>
@@ -10,9 +10,9 @@
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>2.0.4</Version>
-    <AssemblyVersion>2.0.4.0</AssemblyVersion>
-    <FileVersion>2.0.4.0</FileVersion>
+    <Version>2.0.5</Version>
+    <AssemblyVersion>2.0.5.0</AssemblyVersion>
+    <FileVersion>2.0.5.0</FileVersion>
     <PackageTags>SmartSql Dapper MyBatis Cache(Memory | Redis)  ZooKeeper   R/W Splitting</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
