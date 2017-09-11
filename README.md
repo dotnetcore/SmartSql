@@ -2,45 +2,62 @@
 ## 0. Why ?
  - Embrace the cross platform. DotNet Core, it's time！
  - Based on Dapper, no more wheels are repeated. Dapper performance you know!
- 
+ ----
 ## 1. So SmartSql
- - TargetFramework: .NETStandard,Version=v1.4
+ - TargetFramework: .NETStandard,Version=v1.3
  - SmartSql = Dapper + MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting + ......
-
-## 2. 主要特性 (√ 为已完成，未打 √ 为计划特性)
+----
+## 2. Feature
 - 1 ORM 
-  - 1.1 Sync √
-  - 1.2 Async √
-- 2 XmlConfig & XmlStatement -> Sql  √
-  - 2.1 SmartSqlMapConfig & SmartSqlMap √  (是的，你猜对了，和MyBatis一样，通过XML配置分离SQL。)
-  - 2.2 Config Hot Update ->ConfigWatcher & Reload √ (配置文件热更新：当你需要修改Sql的时候，直接修改SqlMap配置文件，保存即可。)
-- 3 读写分离 √
-  - 3.1 读写分离 √ 
-  - 3.2 多读库 权重筛选 √ （配置多读库，根据读库权重选举读库）
-  - 3.3 读库故障检测,剔除 
+  - 1.1 Sync
+  - 1.2 Async
+- 2 XmlConfig & XmlStatement -> Sql
+  - 2.1 SmartSqlMapConfig & SmartSqlMap √  (Yes, you guessed that, like MyBatis, you separated SQL from the XML configuration.)
+  - 2.2 Config Hot Update ->ConfigWatcher & Reload (Configuration file hot update: when you need to change Sql, modify the SqlMap configuration file directly and save it.)
+- 3 Read-write separation
+  - 3.1 Read-write separation
+  - 3.2 Election of the read database by weight
+  - 3.3 ~~读库故障检测,剔除~~
 - 4 Logging √
-  - 4.1 NLog √ （当你需要跟踪调试的时候一切都是那么一目了然）
+  - 4.1 Base on Microsoft.Extensions.Logging.Abstractions  (When you need to track the debugging when everything is so clear at a glance)
 - 5 DAO
-  - 5.1 DAO √
-  - 5.2 DAO Tool  √
-    - 5.2.1 Template Xml & Entity & DAO  √
-    - 5.2.2 Generate Tool  √
-- 6 Query Cache  √
-  - 6.1 SmartSql.Cache.Memory  √
-      - 6.1.1 Fifo  √
-      - 6.1.2 Lru  √
-  - 6.2 SmartSql.Cache.Redis  √
-  - 6.3 缓存事务一致性  √
-- 7 分布式配置插件 
-  - 7.1 IConfigLoader  √ (配置文件加载器)
-  - 7.2 LocalFileConfigLoader  √ (本地文件配置加载器)
+  - 5.1 DAO
+  - 5.2 DAO Tool
+    - 5.2.1 Template Xml & Entity & DAO
+    - 5.2.2 Generate Tool
+- 6 Query Cache
+  - 6.1 SmartSql.Cache.Memory
+      - 6.1.1 Fifo
+      - 6.1.2 Lru
+  - 6.2 SmartSql.Cache.Redis
+  - 6.3 Cache transaction consistency
+- 7 Distributed configuration plugin 
+  - 7.1 IConfigLoader
+  - 7.2 LocalFileConfigLoader  √ (Local file configuration loader)
       - 7.2.1 Load SmartSqlMapSource Xml  √
       - 7.3.1 Load SmartSqlMapSource Directory √
-  - 7.3 SmartSql.ZooKeeperConfig √ (ZooKeeper 分布式配置文件加载器)
+  - 7.3 SmartSql.ZooKeeperConfig √ (Distributed configuration file loader by ZooKeeper)
+----
+## 3. Performance
+### Query Times:1000000
 
-## 3. Configuration
+| ORM | Total\(ms\) |
+| --- | :---: |
+| SmartSql | 63568 |
+| Dapper | 60023 |
+| MyBaits | 83566 |
 
-### 3.1 SmartSqlMapConfig
+### Query Times:100000
+
+| ORM | Total\(ms\) |
+| --- | :---: |
+| SmartSql | 6075 |
+| Dapper | 5931 |
+| MyBaits | 6574 |
+----
+## 4. Configuration
+
+### 4.1 SmartSqlMapConfig
 ``` xml
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
@@ -58,14 +75,8 @@
   </SmartSqlMaps>
 </SmartSqlMapConfig>
 ``` 
-### 3.2 Logging
-``` xml
-<?xml version="1.0" encoding="utf-8" ?>
-<SmartSqlLog xmlns="http://SmartSql.net/schemas/SmartSqlLog.xsd">
-  <LoggerFactoryAdapter Name="NLoggerFactoryAdapter" Type="SmartSql.Logging.Impl.NLoggerFactoryAdapter,SmartSql.Logging.NLog"/>
-</SmartSqlLog>
-```
-### 3.3 SmartSqlMap
+
+### 4.2 SmartSqlMap
 ``` xml
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMap Scope="T_Test"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
@@ -73,7 +84,7 @@
     <Statement Id="QueryParams">
       
     </Statement>
-    <!--新增-->
+    <!--Insert-->
     <Statement Id="Insert">
       INSERT INTO T_Test
       (Name)
@@ -81,37 +92,37 @@
       (@Name)
       ;Select Scope_Identity();
     </Statement>
-    <!--删除-->
+    <!--Delete-->
     <Statement Id="Delete">
       Delete T_Test
       Where Id=@Id
     </Statement>
-    <!--更新-->
+    <!--Update-->
     <Statement Id="Update">
       UPDATE T_Test
       SET
       Name = @Name
       Where Id=@Id
     </Statement>
-    <!--获取数据列-->
+    <!--GetList-->
     <Statement Id="GetList">
       SELECT T.* From T_Test T With(NoLock)
       <Include RefId="QueryParams"/>
       Order By T.Id Desc
     </Statement>
-    <!--获取分页数据-->
+    <!--GetListByPage-->
     <Statement Id="GetListByPage">
       Select TT.* From
       (Select ROW_NUMBER() Over(Order By T.Id Desc) Row_Index,T.* From T_Test T With(NoLock)
       <Include RefId="QueryParams"/>) TT
       Where TT.Row_Index Between ((@PageIndex-1)*@PageSize+1) And (@PageIndex*@PageSize)
     </Statement>
-    <!--获取记录数-->
+    <!--GetRecord-->
     <Statement Id="GetRecord">
       Select Count(1) From T_Test T With(NoLock)
       <Include RefId="QueryParams"/>
     </Statement>
-    <!--获取表映射实体-->
+    <!--GetEntity-->
     <Statement Id="GetEntity">
       Select Top 1 T.* From T_Test T With(NoLock)
       <Where>
@@ -120,7 +131,7 @@
         </IsNotEmpty>
       </Where>
     </Statement>
-    <!--是否存在该记录-->
+    <!--IsExist-->
     <Statement Id="IsExist">
       Select Count(1) From T_Test T With(NoLock)
       <Include RefId="QueryParams"/>
@@ -135,7 +146,7 @@ Install-Package SmartSql
 ## Codes
 ### Query
 ``` CSharp
-            ISmartSqlMapper SqlMapper = new SmartSqlMapper();
+            ISmartSqlMapper SqlMapper = MapperContainer.Instance.GetSqlMapper();
             SqlMapper.Query<T_Test>(new RequestContext
             {
                 Scope = "T_Test",
@@ -168,5 +179,5 @@ Install-Package SmartSql
                 throw ex;
             }
 ```
-##  技术交流
-- QQ群:604762592
+##  Technology exchange group
+- QQ group Id : 604762592
