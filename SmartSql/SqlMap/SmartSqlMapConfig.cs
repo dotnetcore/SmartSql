@@ -118,9 +118,9 @@ namespace SmartSql.SqlMap
         [XmlAttribute]
         public String ParameterPrefix { get; set; }
         [XmlIgnore]
-        public String TypeName { get { return Type.Split(',')[0]; } }
+        public String TypeName { get { return Type.Split(',')[0].Trim(); } }
         [XmlIgnore]
-        public String AssemblyName { get { return Type.Split(',')[1]; } }
+        public String AssemblyName { get { return Type.Split(',')[1].Trim(); } }
         private DbProviderFactory _dbProviderFactory;
         private void LoadFactory()
         {

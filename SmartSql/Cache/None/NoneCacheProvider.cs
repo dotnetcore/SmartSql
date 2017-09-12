@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 
-namespace SmartSql.Cache.None
+namespace SmartSql.Cache
 {
     public class NoneCacheProvider : ICacheProvider
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using SmartSql.Abstractions.Cache;
 
-namespace SmartSql.Cache.Fifo
+namespace SmartSql.Cache
 {
     public class FifoCacheProvider : ICacheProvider
     {

@@ -1,6 +1,5 @@
 ﻿using SmartSql.Abstractions.Cache;
 using SmartSql.Cache;
-using SmartSql.Cache.Fifo;
 using System;
 using System.Collections;
 using System.Collections.Generic;

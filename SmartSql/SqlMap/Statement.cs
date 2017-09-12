@@ -1,8 +1,6 @@
 ﻿using SmartSql.Abstractions;
 using SmartSql.Abstractions.Cache;
 using SmartSql.Cache;
-using SmartSql.Cache.Fifo;
-using SmartSql.Cache.None;
 using SmartSql.Exceptions;
 using SmartSql.SqlMap.Tags;
 using System;
