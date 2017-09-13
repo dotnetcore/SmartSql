@@ -6,6 +6,9 @@ using System.Text;
 
 namespace SmartSql.Cache
 {
+    /// <summary>
+    /// Least Recently Used
+    /// </summary>
     public class LruCacheProvider : ICacheProvider
     {
         private int _cacheSize = 0;
@@ -48,7 +51,7 @@ namespace SmartSql.Cache
                 if (_keyList.Count > _cacheSize)
                 {
                     object oldestKey = _keyList[0];
-                    _keyList.Remove(0);
+                    _keyList.RemoveAt(0);
                     _cache.Remove(oldestKey);
                 }
             }
