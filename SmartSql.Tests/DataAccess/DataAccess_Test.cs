@@ -3,13 +3,19 @@ using System.Collections.Generic;
 using System.Text;
 using SmartSql.DataAccess;
 using Xunit;
+using SmartSql.Abstractions;
 
 namespace SmartSql.Tests.DataAccess
 {
 
-    public class DataAccess_Test : IDisposable
+    public class DataAccess_Test : TestBase
     {
-        private static TestDataAccess dao = new TestDataAccess();
+        private TestDataAccess dao;
+        public DataAccess_Test()
+        {
+            dao = new TestDataAccess(SqlMapper);
+        }
+
         [Fact]
         public void Insert()
         {
@@ -59,16 +65,11 @@ namespace SmartSql.Tests.DataAccess
             var entity = dao.GetEntity<long>(240162);
             // Assert.NotNull(entity);
         }
-
-        public void Dispose()
-        {
-            MapperContainer.Instance.Dispose();
-        }
     }
 
     public class TestDataAccess : DataAccessGeneric<T_Test>
     {
-        public TestDataAccess()
+        public TestDataAccess(ISmartSqlMapper smartSqlMapper) : base(smartSqlMapper)
         {
 
         }

@@ -6,13 +6,18 @@ using System.Text;
 
 namespace SmartSql.Tests
 {
-    public abstract class TestBase: IDisposable
+    public abstract class TestBase : IDisposable
     {
-        protected ISmartSqlMapper SqlMapper = MapperContainer.Instance.GetSqlMapper();
+        protected ISmartSqlMapper SqlMapper;
+        public TestBase()
+        {
+            SqlMapper = new SmartSqlMapper();
+        }
+
 
         public void Dispose()
         {
-            MapperContainer.Instance.Dispose();
+            SqlMapper.Dispose();
         }
     }
 

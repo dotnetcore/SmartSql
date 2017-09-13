@@ -46,7 +46,7 @@ namespace SmartSql.Common
         {
             for (int i = 0; i < _fileWatchers.Count; i++)
             {
-                FileSystemWatcher fileWatcher = (FileSystemWatcher)_fileWatchers[i];
+                FileSystemWatcher fileWatcher = _fileWatchers[i];
                 fileWatcher.EnableRaisingEvents = false;
                 fileWatcher.Dispose();
             }

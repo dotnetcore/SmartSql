@@ -9,14 +9,14 @@ using System.Threading;
 namespace SmartSql.DbSession
 {
     /// <summary>
-    /// For 
+    /// DbConnection Session Store 
     /// </summary>
     public class DbConnectionSessionStore : IDbConnectionSessionStore
     {
         private readonly ILogger _logger;
         const string KEY = "SmartSql-Local-DbSesstion-";
         protected string sessionName = string.Empty;
-        private AsyncLocal<IDictionary<string, IDbConnectionSession>> staticSessions
+        private static AsyncLocal<IDictionary<string, IDbConnectionSession>> staticSessions
             = new AsyncLocal<IDictionary<string, IDbConnectionSession>>();
         public IDbConnectionSession LocalSession
         {
@@ -47,13 +47,7 @@ namespace SmartSql.DbSession
         {
             if (staticSessions.Value == null)
             {
-                lock (this)
-                {
-                    if (staticSessions.Value == null)
-                    {
-                        staticSessions.Value = new Dictionary<String, IDbConnectionSession>();
-                    }
-                }
+                staticSessions.Value = new Dictionary<String, IDbConnectionSession>();
             }
             staticSessions.Value[sessionName] = session;
         }
