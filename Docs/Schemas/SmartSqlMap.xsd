@@ -15,27 +15,27 @@
   >
 
   <xs:element name="Cache">
-    <xs:complexType mixed="true">
-      <xs:sequence>
-        <xs:element maxOccurs="unbounded" name="Parameter">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="Parameter">
           <xs:complexType>
             <xs:attribute name="Key" type="xs:string" use="required" />
             <xs:attribute name="Value" type="xs:string" use="required" />
           </xs:complexType>
         </xs:element>
-        <xs:element name="FlushInterval">
+        <xs:element name="FlushInterval" maxOccurs="1">
           <xs:complexType>
-            <xs:attribute name="Hours" type="xs:unsignedByte" use="required" />
-            <xs:attribute name="Minutes" type="xs:unsignedByte" use="required" />
-            <xs:attribute name="Seconds" type="xs:unsignedByte" use="required" />
+            <xs:attribute name="Hours" type="xs:unsignedByte" use="optional" />
+            <xs:attribute name="Minutes" type="xs:unsignedByte" use="optional" />
+            <xs:attribute name="Seconds" type="xs:unsignedByte" use="optional" />
           </xs:complexType>
         </xs:element>
-        <xs:element maxOccurs="unbounded" name="FlushOnExecute">
+        <xs:element name="FlushOnExecute">
           <xs:complexType>
             <xs:attribute name="Statement" type="xs:string" use="required" />
           </xs:complexType>
         </xs:element>
-      </xs:sequence>
+      </xs:choice>
       <xs:attribute name="Id" type="xs:string" use="required" />
       <xs:attribute name="Type" use="required" >
         <xs:simpleType>
@@ -48,7 +48,7 @@
     </xs:complexType>
   </xs:element>
   <xs:element name="Caches">
-    <xs:complexType mixed="true">
+    <xs:complexType>
       <xs:sequence>
         <xs:element ref="Cache" maxOccurs="unbounded" />
       </xs:sequence>
