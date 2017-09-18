@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 using System.Linq;
+using System.Collections;
+
 namespace SmartSql.Abstractions.Cache
 {
     public class CacheKey
@@ -22,7 +24,19 @@ namespace SmartSql.Abstractions.Cache
                 foreach (var property in properties)
                 {
                     var val = property.GetValue(RequestContext.Request);
-                    strBuilder.AppendFormat("&{0}", val);
+                    if (val is IEnumerable list && !(val is String))
+                    {
+                        strBuilder.Append("&(");
+                        foreach (var item in list)
+                        {
+                            strBuilder.AppendFormat("{0},", item);
+                        }
+                        strBuilder.Append(")");
+                    }
+                    else
+                    {
+                        strBuilder.AppendFormat("&{0}", val);
+                    }
                 }
                 return strBuilder.ToString().Trim('&');
             }
