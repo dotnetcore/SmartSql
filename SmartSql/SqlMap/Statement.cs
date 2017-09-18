@@ -33,46 +33,29 @@ namespace SmartSql.SqlMap
                 statement.Cache = cache ?? throw new SmartSqlException($"Statement.Id:{statement.Id} can not find Cache.Id:{cacheId}");
             }
             var tagNodes = statementNode.ChildNodes;
+            IList<Include> includes = new List<Include>();
             foreach (XmlNode tagNode in tagNodes)
             {
-                var prepend = tagNode.Attributes?["Prepend"]?.Value.Trim();
-                var property = tagNode.Attributes?["Property"]?.Value.Trim();
-
-                #region Init Tag
-                switch (tagNode.Name)
-                {
-                    case "Include":
-                        {
-                            var refId = tagNode.Attributes?["RefId"]?.Value;
-                            var refStatement = smartSqlMap.Statements.FirstOrDefault(m => m.Id == refId);
-                            if (refStatement == null)
-                            {
-                                throw new SmartSqlException($"Statement.Load can not find statement.id:{refId}");
-                            }
-                            if (refId == statement.Id)
-                            {
-                                throw new SmartSqlException($"Statement.Load Include.RefId can not be self statement.id:{refId}");
-                            }
-                            statement.SqlTags.Add(new Include
-                            {
-                                RefId = refId,
-                                Ref = refStatement
-                            });
-                            break;
-                        }
-                    default:
-                        {
-                            var tag = LoadTag(tagNode);
-                            if (tag != null) { statement.SqlTags.Add(tag); }
-                            break;
-                        };
-                }
-                #endregion
+                var tag = LoadTag(tagNode, includes);
+                if (tag != null) { statement.SqlTags.Add(tag); }
             }
+
+            #region Init Include
+            foreach (var include in includes)
+            {
+                if (include.RefId == statement.Id)
+                {
+                    throw new SmartSqlException($"Statement.Load Include.RefId can not be self statement.id:{include.RefId}");
+                }
+                var refStatement = smartSqlMap.Statements.FirstOrDefault(m => m.Id == include.RefId);
+
+                include.Ref = refStatement ?? throw new SmartSqlException($"Statement.Load can not find statement.id:{include.RefId}");
+            }
+            #endregion
             return statement;
         }
 
-        public static ITag LoadTag(XmlNode xmlNode)
+        public static ITag LoadTag(XmlNode xmlNode, IList<Include> includes)
         {
             ITag tag = null;
             bool isIn = xmlNode.Attributes?["In"] != null;
@@ -90,6 +73,17 @@ namespace SmartSql.SqlMap
                         {
                             BodyText = bodyText
                         };
+                    }
+                case "Include":
+                    {
+                        var refId = xmlNode.Attributes?["RefId"]?.Value;
+                        var include_tag = new Include
+                        {
+                            RefId = refId
+                        };
+                        includes.Add(include_tag);
+                        tag = include_tag;
+                        break;
                     }
                 case "IsEmpty":
                     {
@@ -292,7 +286,7 @@ namespace SmartSql.SqlMap
             #endregion
             foreach (XmlNode childNode in xmlNode)
             {
-                ITag childTag = LoadTag(childNode);
+                ITag childTag = LoadTag(childNode, includes);
                 if (childTag != null && tag != null)
                 {
                     (tag as Tag).ChildTags.Add(childTag);
