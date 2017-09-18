@@ -17,12 +17,13 @@
       <FlushOnExecute Statement="T_Test.Insert"/>
       <FlushOnExecute Statement="T_Test.Update"/>
     </Cache>-->
-    <Cache Id="T_Test.LruCache" Type="Lru">
+    <Cache Id="T_Test.LruCache"  Type="Lru">
       <Parameter Key="CacheSize" Value="100"/>
       <!--<FlushInterval Hours="0" Minutes="10" Seconds="0"/>-->
       <FlushOnExecute Statement="T_Test.Insert"/>
       <FlushOnExecute Statement="T_Test.Update"/>
     </Cache>
+    
   </Caches>
   <Statements>
     <Statement Id="QueryParams">
@@ -62,6 +63,9 @@
       VALUES
       (@Name)
       ;Select Scope_Identity();
+      <Dynamic>
+        
+      </Dynamic>
     </Statement>
 
     <!--删除-->

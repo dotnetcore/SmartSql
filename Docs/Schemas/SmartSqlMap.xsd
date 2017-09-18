@@ -57,6 +57,7 @@
   <xs:element name="Include">
     <xs:complexType mixed="true">
       <xs:attribute name="RefId" type="xs:string" use="required" />
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="Case">
