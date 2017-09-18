@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.3
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql", "SmartSql\SmartSql.csproj", "{A579D5D5-1311-4DD9-AE62-3EFE43BB87A1}"
 EndProject
@@ -20,6 +20,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8EF12533-817B-464A-A5B3-FEAE6E7541B7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.ConsoleTests", "SmartSql.ConsoleTests\SmartSql.ConsoleTests.csproj", "{4FFABF3E-6443-4BFF-976D-1949197096AE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{0F671EB0-B3CF-444B-AB9F-7FC7F11D9A81}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\Schemas\NLog.xsd = Docs\Schemas\NLog.xsd
+		Docs\Schemas\SmartSqlMap.xsd = Docs\Schemas\SmartSqlMap.xsd
+		Docs\Schemas\SmartSqlMapConfig.xsd = Docs\Schemas\SmartSqlMapConfig.xsd
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

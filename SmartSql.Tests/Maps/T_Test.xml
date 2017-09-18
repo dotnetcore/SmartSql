@@ -84,7 +84,7 @@
     </Statement>
 
     <!--获取数据列-->
-    <Statement Id="GetList">
+    <Statement Id="GetList" Cache="T_Test.LruCache">
       SELECT Top 10 T.* From T_Test T With(NoLock)
       <Include RefId="QueryParams"/>
       <!--Order By T.Id Desc-->

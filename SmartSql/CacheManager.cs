@@ -126,7 +126,7 @@ namespace SmartSql
                 }
                 var statement = MappedStatements[fullSqlId];
                 if (statement.Cache == null) { return null; }
-                if (statement.Cache.FlushInterval.Interval.Ticks >= 0)
+                if (statement.Cache.FlushInterval != null)
                 {
                     lock (this)
                     {
@@ -147,7 +147,7 @@ namespace SmartSql
                 }
                 var statement = MappedStatements[fullSqlId];
                 if (statement.Cache == null) { return; }
-                if (statement.Cache.FlushInterval.Interval.Ticks >= 0)
+                if (statement.Cache.FlushInterval != null)
                 {
                     lock (this)
                     {

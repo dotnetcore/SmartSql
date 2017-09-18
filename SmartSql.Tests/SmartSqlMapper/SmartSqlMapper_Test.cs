@@ -93,6 +93,20 @@ namespace SmartSql.Tests
                     //Name="Hi"
                 }
             });
+            var list_c = SqlMapper.Query<T_Test>(new RequestContext
+            {
+                Scope = "T_Test",
+                SqlId = "GetList",
+                Request = new
+                {
+                    Ids = new int[] { 1, 2, 3, 45, 6 },
+                    OrderBy = "4",
+                    Id = 1,
+                    Yes = true,
+                    No = false
+                    //Name="Hi"
+                }
+            });
             Assert.NotNull(list);
         }
         [Fact]
