@@ -126,10 +126,12 @@ namespace SmartSql
                 }
                 var statement = MappedStatements[fullSqlId];
                 if (statement.Cache == null) { return null; }
-
-                lock (this)
+                if (statement.Cache.FlushInterval.Interval.Ticks >= 0)
                 {
-                    FlushByInterval(statement);
+                    lock (this)
+                    {
+                        FlushByInterval(statement);
+                    }
                 }
                 var cacheKey = new CacheKey(context);
                 var cache = statement.CacheProvider[cacheKey, type];
@@ -145,19 +147,21 @@ namespace SmartSql
                 }
                 var statement = MappedStatements[fullSqlId];
                 if (statement.Cache == null) { return; }
-                lock (this)
+                if (statement.Cache.FlushInterval.Interval.Ticks >= 0)
                 {
-                    FlushByInterval(statement);
+                    lock (this)
+                    {
+                        FlushByInterval(statement);
+                    }
                 }
                 var cacheKey = new CacheKey(context);
-                _logger.LogDebug($"CacheManager SetCache FullSqlId:{fullSqlId}");
                 statement.CacheProvider[cacheKey, type] = value;
+                _logger.LogDebug($"CacheManager SetCache FullSqlId:{fullSqlId}");
             }
         }
 
         private void FlushByInterval(Statement statement)
         {
-            if (statement.Cache.FlushInterval.Interval.Ticks == 0) { return; }
             String fullSqlId = statement.FullSqlId;
             DateTime lastFlushTime = DateTime.Now;
             if (!MappedLastFlushTimes.ContainsKey(fullSqlId))

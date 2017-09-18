@@ -18,6 +18,12 @@ namespace SmartSql.SqlMap
                 Id = cacheNode.Attributes["Id"].Value,
                 Type = cacheNode.Attributes["Type"].Value,
                 Parameters = new Dictionary<String, String>(),
+                FlushInterval = new FlushInterval
+                {
+                    Hours = 0,
+                    Minutes = 0,
+                    Seconds = 0
+                },
                 FlushOnExecutes = new List<FlushOnExecute>()
             };
             foreach (XmlNode childNode in cacheNode.ChildNodes)
