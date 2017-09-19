@@ -10,11 +10,11 @@
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>2.0.15</Version>
-    <AssemblyVersion>2.0.15.0</AssemblyVersion>
-    <FileVersion>2.0.15.0</FileVersion>
+    <Version>2.0.16</Version>
+    <AssemblyVersion>2.0.16.0</AssemblyVersion>
+    <FileVersion>2.0.16.0</FileVersion>
     <PackageTags>orm dapper sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
-    <PackageReleaseNotes>1. Fixed a problem with the SmartSql local file hot update in some scenes that could not get the configuration file.</PackageReleaseNotes>
+    <PackageReleaseNotes>1. increase log buried point range (SmartSqlMapConfig.get_MappedStatements)</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
     <PackageReference Include="Dapper" Version="1.50.2" />

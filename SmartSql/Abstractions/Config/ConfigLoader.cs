@@ -36,10 +36,7 @@ namespace SmartSql.Abstractions.Config
                     Caches = new List<SqlMap.Cache> { }
                 };
                 XmlDocument xmlDoc = new XmlDocument();
-                StreamReader streamReader = new StreamReader(configStream.Stream);
-                string xmlString = streamReader.ReadToEnd();
-                Console.WriteLine(xmlString);
-                xmlDoc.LoadXml(xmlString);
+                xmlDoc.Load(configStream.Stream);
                 XmlNamespaceManager xmlNsM = new XmlNamespaceManager(xmlDoc.NameTable);
                 xmlNsM.AddNamespace("ns", "http://SmartSql.net/schemas/SmartSqlMap.xsd");
                 sqlMap.Scope = xmlDoc.SelectSingleNode("//ns:SmartSqlMap", xmlNsM)

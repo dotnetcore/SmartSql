@@ -91,6 +91,7 @@ namespace SmartSql
         public void LoadConfig(SmartSqlMapConfig smartSqlMapConfig)
         {
             SqlMapConfig = smartSqlMapConfig;
+            SqlMapConfig.SetLogger(_loggerFactory.CreateLogger<SmartSqlMapConfig>());
         }
         #region Sync
         public int Execute(RequestContext context)

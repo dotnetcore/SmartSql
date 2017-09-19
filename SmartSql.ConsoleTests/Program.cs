@@ -26,7 +26,17 @@ namespace SmartSql.ConsoleTests
         {
 
             var sqlMapper = new SmartSqlMapper(loggerFactory);
-            
+            while (true)
+            {
+                string ipt = Console.ReadLine();
+                var list = sqlMapper.Query<T_Test>(new RequestContext
+                {
+                    Scope = "T_Test",
+                    SqlId = "GetList",
+                    Request = new { Ids = new long[] { 1, 2, 3, 4 } }
+                });
+            }
+
 
         }
 
