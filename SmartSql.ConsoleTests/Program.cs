@@ -4,17 +4,38 @@ using System;
 using System.Threading;
 using System.Linq;
 using SmartSql.Abstractions.Logging;
-
+using Microsoft.Extensions.Logging;
 namespace SmartSql.ConsoleTests
 {
     class Program
     {
+        static ILoggerFactory loggerFactory = new LoggerFactory();
         static void Main(string[] args)
+        {
+            loggerFactory.AddConsole(LogLevel.Trace);
+            loggerFactory.AddDebug(LogLevel.Trace);
+
+            LocalFileConfigLoader_Test();
+
+            Console.WriteLine("Hello World!");
+            Console.ReadLine();
+        }
+
+
+        static void LocalFileConfigLoader_Test()
+        {
+
+            var sqlMapper = new SmartSqlMapper(loggerFactory);
+            
+
+        }
+
+        static void ZooKeeperConfigLoader_Test()
         {
             string connStr = "192.168.31.103:2181";//192.168.31.103:2181 192.168.1.5:2181,192.168.1.5:2182,192.168.1.5:2183
             var configLoader = new ZooKeeperConfigLoader(connStr);
             string configPath = "/Config/App1/SmartSqlMapConfig.xml";
-            var SqlMapper = new SmartSqlMapper(NullLoggerFactory.Instance,configPath, configLoader);
+            var SqlMapper = new SmartSqlMapper(loggerFactory, configPath, configLoader);
 
             int i = 0;
             for (i = 0; i < 10; i++)
@@ -28,10 +49,10 @@ namespace SmartSql.ConsoleTests
                 });
                 Console.WriteLine($"{list.Count()}");
             }
-
-            Console.WriteLine("Hello World!");
         }
     }
+
+
     public class T_Test
     {
         public long Id { get; set; }

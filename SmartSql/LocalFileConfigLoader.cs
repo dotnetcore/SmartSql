@@ -9,6 +9,7 @@ using System.Xml.Serialization;
 using System.Xml;
 using System.IO;
 using Microsoft.Extensions.Logging;
+using System.Threading;
 
 namespace SmartSql
 {
@@ -18,6 +19,7 @@ namespace SmartSql
     public class LocalFileConfigLoader : ConfigLoader
     {
         private readonly ILogger _logger;
+        private const int DELAYED_LOAD_FILE = 500;
         public LocalFileConfigLoader(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<LocalFileConfigLoader>();
@@ -99,11 +101,19 @@ namespace SmartSql
             var cofigFileInfo = FileLoader.GetInfo(config.Path);
             FileWatcherLoader.Instance.Watch(cofigFileInfo, () =>
             {
+                Thread.Sleep(DELAYED_LOAD_FILE);
                 lock (this)
                 {
-                    _logger.LogDebug($"LocalFileConfigLoader Changed ReloadConfig: {config.Path} Starting");
-                    var newConfig = Load(config.Path, smartSqlMapper);
-                    _logger.LogDebug($"LocalFileConfigLoader Changed ReloadConfig: {config.Path} End");
+                    try
+                    {
+                        _logger.LogDebug($"LocalFileConfigLoader Changed ReloadConfig: {config.Path} Starting");
+                        var newConfig = Load(config.Path, smartSqlMapper);
+                        _logger.LogDebug($"LocalFileConfigLoader Changed ReloadConfig: {config.Path} End");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(new EventId(ex.HResult), ex, ex.Message);
+                    }
                 }
             });
             #endregion
@@ -115,17 +125,25 @@ namespace SmartSql
                 var sqlMapFileInfo = FileLoader.GetInfo(sqlmap.Path);
                 FileWatcherLoader.Instance.Watch(sqlMapFileInfo, () =>
                 {
+                    Thread.Sleep(DELAYED_LOAD_FILE);
                     lock (this)
                     {
-                        _logger.LogDebug($"LocalFileConfigLoader Changed Reload SmartSqlMap: {sqlmap.Path} Starting");
-                        var sqlmapStream = LoadConfigStream(sqlmap.Path);
-                        var newSqlmap = LoadSmartSqlMap(sqlmapStream, config);
-                        sqlmap.Scope = newSqlmap.Scope;
-                        sqlmap.Statements = newSqlmap.Statements;
-                        sqlmap.Caches = newSqlmap.Caches;
-                        config.ResetMappedStatements();
-                        smartSqlMapper.CacheManager.ResetMappedCaches();
-                        _logger.LogDebug($"LocalFileConfigLoader Changed Reload SmartSqlMap: {sqlmap.Path} End");
+                        try
+                        {
+                            _logger.LogDebug($"LocalFileConfigLoader Changed Reload SmartSqlMap: {sqlmap.Path} Starting");
+                            var sqlmapStream = LoadConfigStream(sqlmap.Path);
+                            var newSqlmap = LoadSmartSqlMap(sqlmapStream, config);
+                            sqlmap.Scope = newSqlmap.Scope;
+                            sqlmap.Statements = newSqlmap.Statements;
+                            sqlmap.Caches = newSqlmap.Caches;
+                            config.ResetMappedStatements();
+                            smartSqlMapper.CacheManager.ResetMappedCaches();
+                            _logger.LogDebug($"LocalFileConfigLoader Changed Reload SmartSqlMap: {sqlmap.Path} End");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(new EventId(ex.HResult), ex, ex.Message);
+                        }
                     }
                 });
                 #endregion
