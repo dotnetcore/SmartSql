@@ -391,6 +391,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
       </xs:choice>
@@ -415,6 +416,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
       </xs:choice>
@@ -464,6 +466,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
       </xs:choice>
@@ -486,6 +489,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
       </xs:choice>
@@ -509,6 +513,7 @@
         <xs:element ref="Switch" />
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
       </xs:choice>
