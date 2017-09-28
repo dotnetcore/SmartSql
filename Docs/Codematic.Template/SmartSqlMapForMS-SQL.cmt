@@ -14,7 +14,9 @@
 <SmartSqlMap Scope="<#= host.GetModelClass(host.TableName) #>"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
      <Statement Id="QueryParams">
-      
+      <Where>
+
+      </Where>
      </Statement>
     <!--新增-->
      <Statement Id="Insert">

@@ -14,7 +14,9 @@
 <SmartSqlMap Scope="<#= host.GetModelClass(host.TableName) #>"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
      <Statement Id="QueryParams">
+      <Where>
 
+      </Where>
      </Statement>
 
      
@@ -47,7 +49,7 @@
 	     </IsProperty>
 	  <# }#>
       </Dynamic>    
-      Where <#= host.Keys[0].ColumnName #>=@<#= host.Keys[0].ColumnName #>
+      Where <#= host.Keys[0].ColumnName #>=?<#= host.Keys[0].ColumnName #>
     </Statement>
     
     <!--获取数据列-->
@@ -84,7 +86,7 @@
     
     <!--是否存在该记录-->
     <Statement Id="IsExist">
-      Select Count(1) From <#= host.GetModelClass(host.TableName) #> T
+      Select Count(*) From <#= host.GetModelClass(host.TableName) #> T
       <Include RefId="QueryParams"/>
     </Statement>
     
