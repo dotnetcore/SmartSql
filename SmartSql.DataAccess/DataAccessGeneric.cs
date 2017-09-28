@@ -4,6 +4,7 @@ using System.Text;
 using SmartSql.Abstractions;
 using SmartSql.DataAccess.Abstractions;
 using Microsoft.Extensions.Logging;
+using Dapper;
 
 namespace SmartSql.DataAccess
 {
@@ -27,16 +28,18 @@ namespace SmartSql.DataAccess
         {
             Scope = typeof(TEntity).Name;
         }
+        protected String PrimaryKey { get; set; } = "Id";
         #region Read
 
         public virtual TEntity GetEntity<TPrimary>(TPrimary Id, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
-
+            var parameters = new DynamicParameters();
+            parameters.Add(PrimaryKey, Id);
             return SqlMapper.QuerySingle<TEntity>(new RequestContext
             {
                 Scope = this.Scope,
                 SqlId = DefaultSqlId.GetEntity,
-                Request = new { Id = Id }
+                Request = parameters
             }, sourceChoice);
         }
 
@@ -84,38 +87,45 @@ namespace SmartSql.DataAccess
         #region Write
         public virtual TPrimary Insert<TPrimary>(TEntity entity)
         {
+            var paramObj = new RequestContext
+            {
+                Scope = this.Scope,
+                SqlId = DefaultSqlId.Insert,
+                Request = entity
+            };
             bool isNoneIdentity = typeof(TPrimary) == typeof(NoneIdentity);
             if (!isNoneIdentity)
             {
-                return SqlMapper.ExecuteScalar<TPrimary>(new RequestContext
-                {
-                    Scope = this.Scope,
-                    SqlId = DefaultSqlId.Insert,
-                    Request = entity
-                });
+                return SqlMapper.ExecuteScalar<TPrimary>(paramObj);
             }
             else
             {
-                SqlMapper.Execute(new RequestContext
-                {
-                    Scope = this.Scope,
-                    SqlId = DefaultSqlId.Insert,
-                    Request = entity
-                });
+                SqlMapper.Execute(paramObj);
                 return default(TPrimary);
             }
         }
+        public virtual void Insert(TEntity entity)
+        {
+            Insert<NoneIdentity>(entity);
+        }
         public virtual int Delete<TPrimary>(TPrimary Id)
         {
+            var parameters = new DynamicParameters();
+            parameters.Add(PrimaryKey, Id);
             return SqlMapper.Execute(new RequestContext
             {
                 Scope = this.Scope,
                 SqlId = DefaultSqlId.Delete,
-                Request = new { Id = Id }
+                Request = parameters
             });
         }
 
         public virtual int Update(TEntity entity)
+        {
+            return DynamicUpdate(entity);
+        }
+
+        public virtual int DynamicUpdate(object entity)
         {
             return SqlMapper.Execute(new RequestContext
             {

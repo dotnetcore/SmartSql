@@ -27,6 +27,7 @@ namespace SmartSql.DataAccess.Abstractions
         /// <param name="entity"></param>
         /// <returns></returns>
         TPrimary Insert<TPrimary>(TEntity entity);
+        void Insert(TEntity entity);
     }
     /// <summary>
     /// 删除
@@ -53,6 +54,7 @@ namespace SmartSql.DataAccess.Abstractions
         /// <param name="entity"></param>
         /// <returns></returns>
         int Update(TEntity entity);
+        int DynamicUpdate(object entity);
     }
 
     /// <summary>
