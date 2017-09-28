@@ -40,9 +40,9 @@
       SET 
       <Dynamic>
       <# for (int i = 1; i < host.Fieldlist.Count; ++i) { #>
-	     <IsNotEmpty Prepend="," Property="<#= host.Fieldlist[i].ColumnName.ToString()#>">
+	     <IsProperty Prepend="," Property="<#= host.Fieldlist[i].ColumnName.ToString()#>">
 	        <#= host.Fieldlist[i].ColumnName.ToString() #> = @<#= host.Fieldlist[i].ColumnName.ToString() #>
-	     </IsNotEmpty>
+	     </IsProperty>
 	  <# }#>
       </Dynamic>    
       Where <#= host.Keys[0].ColumnName #>=@<#= host.Keys[0].ColumnName #>
