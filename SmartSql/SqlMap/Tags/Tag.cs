@@ -15,6 +15,7 @@ namespace SmartSql.SqlMap.Tags
         [XmlIgnore]
         public abstract TagType Type { get; }
         public IList<ITag> ChildTags { get; set; }
+        [Obsolete("Removed In Tag")]
         public bool In { get; set; }
         public abstract bool IsCondition(object paramObj);
         public virtual String BuildSql(RequestContext context, String parameterPrefix)

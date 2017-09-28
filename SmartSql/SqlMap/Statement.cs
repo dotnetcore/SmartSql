@@ -224,6 +224,17 @@ namespace SmartSql.SqlMap
                         };
                         break;
                     }
+                case "IsProperty":
+                    {
+                        tag = new IsProperty
+                        {
+                            In = isIn,
+                            Prepend = prepend,
+                            Property = property,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
                 case "Switch":
                     {
                         tag = new Switch
