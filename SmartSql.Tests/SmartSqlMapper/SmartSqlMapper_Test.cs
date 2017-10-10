@@ -89,8 +89,8 @@ namespace SmartSql.Tests
                     OrderBy = "4",
                     Id = 1,
                     Yes = true,
-                    No = false
-                    //Name="Hi"
+                    No = false,
+                    Name= new int[] { }
                 }
             });
             var list_c = SqlMapper.Query<T_Test>(new RequestContext

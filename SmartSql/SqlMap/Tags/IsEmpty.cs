@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using SmartSql.Common;
+using System.Collections;
+
 namespace SmartSql.SqlMap.Tags
 {
     public class IsEmpty : Tag
@@ -12,7 +14,20 @@ namespace SmartSql.SqlMap.Tags
         public override bool IsCondition(object paramObj)
         {
             Object reqVal = paramObj.GetValue(Property);
-            return !((reqVal != null) && (reqVal.ToString().Length > 0));
+
+            if (reqVal == null)
+            {
+                return true;
+            }
+            if (reqVal is string)
+            {
+                return String.IsNullOrEmpty(reqVal as string);
+            }
+            if (reqVal is IEnumerable)
+            {
+                return !(reqVal as IEnumerable).GetEnumerator().MoveNext();
+            }
+            return reqVal.ToString().Length == 0;
         }
     }
 }
