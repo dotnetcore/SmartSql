@@ -9,7 +9,14 @@ namespace SmartSql.Common
     {
         public static Object GetValue(this Object obj, String propertyName)
         {
-            return obj?.GetType().GetProperty(propertyName)?.GetValue(obj);
+            if (obj is Dapper.DynamicParameters)
+            {
+                return (obj as Dapper.DynamicParameters).Get<Object>(propertyName);
+            }
+            else
+            {
+                return obj?.GetType().GetProperty(propertyName)?.GetValue(obj);
+            }
         }
     }
 }
