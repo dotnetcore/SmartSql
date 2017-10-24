@@ -115,7 +115,7 @@
     </Statement>
 
     <!--获取表映射实体-->
-    <Statement Id="GetEntity">
+    <Statement Id="GetEntity" Cache="T_Test.LruCache">
       Select Top 1 T.* From T_Test T With(NoLock)
       <Where>
         <IsNotEmpty Prepend="And" Property="Id">

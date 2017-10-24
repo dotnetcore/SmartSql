@@ -10,11 +10,11 @@
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>2.0.18.6</Version>
-    <AssemblyVersion>2.0.18.6</AssemblyVersion>
-    <FileVersion>2.0.18.6</FileVersion>
+    <Version>2.0.18.8</Version>
+    <AssemblyVersion>2.0.18.8</AssemblyVersion>
+    <FileVersion>2.0.18.8</FileVersion>
     <PackageTags>orm dapper sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
-    <PackageReleaseNotes>1. support DynamicParameters for RequestContext.Request .</PackageReleaseNotes>
+    <PackageReleaseNotes>1. fixed cache invalidation problem after used DynamicParameters for RequestContext.Request .</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
     <PackageReference Include="Dapper" Version="1.50.2" />
