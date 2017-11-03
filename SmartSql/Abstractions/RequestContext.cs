@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace SmartSql
+namespace SmartSql.Abstractions
 {
     /// <summary>
     /// Sql 请求上下文

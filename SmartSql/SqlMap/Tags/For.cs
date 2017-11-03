@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
+using SmartSql.Abstractions;
+
 namespace SmartSql.SqlMap.Tags
 {
     public class For : Tag
