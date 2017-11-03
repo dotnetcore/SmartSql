@@ -18,6 +18,7 @@
         <xs:element name="Settings">
           <xs:complexType>
             <xs:attribute name="IsWatchConfigFile" type="xs:boolean" use="required" />
+            <xs:attribute name="ParameterPrefix" type="xs:string" default="$"/>
           </xs:complexType>
         </xs:element>
         <xs:element name="Database">

@@ -18,35 +18,35 @@ namespace SmartSql.SqlMap.Tags
         public string Close { get; set; }
         public string Key { get; set; }
 
-        public override bool IsCondition(object paramObj)
+        public override bool IsCondition(RequestContext context)
         {
-            var reqVal = paramObj.GetValue(Property);
+            var reqVal = GetValue(context);
             if (reqVal == null) { return false; }
             if (reqVal is IEnumerable) { return true; }
             return false;
         }
 
-        public override string BuildSql(RequestContext context, string parameterPrefix)
+        public override string BuildSql(RequestContext context)
         {
-            if (IsCondition(context.RequestParameters))
+            if (IsCondition(context))
             {
-                return BuildChildSql(context, parameterPrefix).ToString();
+                return BuildChildSql(context).ToString();
             }
             return String.Empty;
         }
-        public override StringBuilder BuildChildSql(RequestContext context, string parameterPrefix)
+        public override StringBuilder BuildChildSql(RequestContext context)
         {
             StringBuilder strBuilder = new StringBuilder();
             strBuilder.AppendFormat(" {0}", Prepend);
             strBuilder.Append(Open);
             int item_index = 0;
-
+            string dbPrefix = GetDbProviderPrefix(context);
             var reqVal = context.RequestParameters.Get<IEnumerable>(Property);
             //** 目前仅支持子标签为SqlText **
             var bodyText = (ChildTags[0] as SqlText).BodyText;
             foreach (var itemVal in reqVal)
             {
-                string key_name = $"{parameterPrefix}{Key}{FOR_KEY_SUFFIX}{item_index}";
+                string key_name = $"{dbPrefix}{Key}{FOR_KEY_SUFFIX}{item_index}";
                 context.RequestParameters.Add(key_name, itemVal);
                 if (item_index > 0)
                 {

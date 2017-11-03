@@ -1,4 +1,5 @@
-﻿using SmartSql.Common;
+﻿using SmartSql.Abstractions;
+using SmartSql.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,9 +10,9 @@ namespace SmartSql.SqlMap.Tags
     {
         public override TagType Type => TagType.IsGreaterEqual;
 
-        public override bool IsCondition(object paramObj)
+        public override bool IsCondition(RequestContext context)
         {
-            Object reqVal = paramObj.GetValue(Property);
+            Object reqVal = GetValue(context);
             Decimal reqValNum = 0M;
             Decimal comVal = 0M;
             if (reqVal is Enum)

@@ -7,18 +7,18 @@ namespace SmartSql.SqlMap.Tags
 {
     public class Dynamic : Tag
     {
-        public override TagType Type => throw new NotImplementedException();
+        public override TagType Type => TagType.Dynamic;
 
-        public override bool IsCondition(object paramObj)
+        public override bool IsCondition(RequestContext context)
         {
             return true;
         }
-        public override string BuildSql(RequestContext context, string parameterPrefix)
+        public override string BuildSql(RequestContext context)
         {
-            return BuildChildSql(context, parameterPrefix).ToString();
+            return BuildChildSql(context).ToString();
         }
 
-        public override StringBuilder BuildChildSql(RequestContext context, string parameterPrefix)
+        public override StringBuilder BuildChildSql(RequestContext context)
         {
             StringBuilder strBuilder = new StringBuilder();
             if (ChildTags != null && ChildTags.Count > 0)
@@ -26,7 +26,7 @@ namespace SmartSql.SqlMap.Tags
                 bool isFirstChild = true;
                 foreach (var childTag in ChildTags)
                 {
-                    string strSql = childTag.BuildSql(context, parameterPrefix);
+                    string strSql = childTag.BuildSql(context);
                     if (String.IsNullOrWhiteSpace(strSql))
                     {
                         continue;

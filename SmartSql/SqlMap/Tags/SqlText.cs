@@ -9,7 +9,7 @@ namespace SmartSql.SqlMap.Tags
     {
         public TagType Type => TagType.SqlText;
         public string BodyText { get; set; }
-        public string BuildSql(RequestContext context, String parameterPrefix)
+        public string BuildSql(RequestContext context)
         {
             return BodyText;
         }

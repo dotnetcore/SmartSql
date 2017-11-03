@@ -11,9 +11,9 @@ namespace SmartSql.SqlMap.Tags
         public override TagType Type => TagType.Where;
         public override string Prepend { get { return "Where"; } }
 
-        public override string BuildSql(RequestContext context, string parameterPrefix)
+        public override string BuildSql(RequestContext context)
         {
-            string strSql = BuildChildSql(context, parameterPrefix).ToString();
+            string strSql = BuildChildSql(context).ToString();
             if (strSql.Trim() != Prepend)
             {
                 return strSql;

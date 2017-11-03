@@ -10,12 +10,12 @@ namespace SmartSql.SqlMap.Tags
         public override TagType Type => TagType.Include;
         public String RefId { get; set; }
         public Statement Ref { get; set; }
-        public override string BuildSql(RequestContext context, string parameterPrefix)
+        public override string BuildSql(RequestContext context)
         {
             return Ref.BuildSql(context);
         }
 
-        public override bool IsCondition(object paramObj)
+        public override bool IsCondition(RequestContext context)
         {
             return true;
         }

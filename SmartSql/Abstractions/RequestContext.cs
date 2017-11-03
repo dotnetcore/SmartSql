@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using SmartSql.SqlMap;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,7 +16,8 @@ namespace SmartSql.Abstractions
         public String Scope { get; set; }
         public String SqlId { get; set; }
         public String FullSqlId => $"{Scope}.{SqlId}";
-        internal DynamicParameters RequestParameters { get; set; }
+        internal SmartSqlMap SmartSqlMap { get; set; }
+        public DynamicParameters RequestParameters { get; set; }
         private object requestObj;
         public Object Request
         {

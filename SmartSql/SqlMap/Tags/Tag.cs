@@ -1,6 +1,7 @@
 ﻿using SmartSql.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -17,30 +18,31 @@ namespace SmartSql.SqlMap.Tags
         public IList<ITag> ChildTags { get; set; }
         [Obsolete("Removed In Tag")]
         public bool In { get; set; }
-        public abstract bool IsCondition(object paramObj);
-        public virtual String BuildSql(RequestContext context, String parameterPrefix)
+        public abstract bool IsCondition(RequestContext context);
+        public virtual String BuildSql(RequestContext context)
         {
-            if (IsCondition(context.RequestParameters))
+            if (IsCondition(context))
             {
+                string dbPrefix = GetDbProviderPrefix(context);
                 if (In)
                 {
-                    return $" {Prepend} In {parameterPrefix}{Property} ";
+                    return $" {Prepend} In {dbPrefix}{Property} ";
                 }
 
-                StringBuilder strBuilder = BuildChildSql(context, parameterPrefix);
+                StringBuilder strBuilder = BuildChildSql(context);
                 return $" {Prepend}{strBuilder.ToString()}";
             }
             return String.Empty;
         }
 
-        public virtual StringBuilder BuildChildSql(RequestContext context, string parameterPrefix)
+        public virtual StringBuilder BuildChildSql(RequestContext context)
         {
             StringBuilder strBuilder = new StringBuilder();
             if (ChildTags != null && ChildTags.Count > 0)
             {
                 foreach (var childTag in ChildTags)
                 {
-                    string strSql = childTag.BuildSql(context, parameterPrefix);
+                    string strSql = childTag.BuildSql(context);
                     if (String.IsNullOrWhiteSpace(strSql))
                     {
                         continue;
@@ -50,6 +52,20 @@ namespace SmartSql.SqlMap.Tags
             }
 
             return strBuilder;
+        }
+        protected virtual String GetDbProviderPrefix(RequestContext context)
+        {
+            return context.SmartSqlMap.SmartSqlMapConfig.Database.DbProvider.ParameterPrefix;
+        }
+
+        protected virtual Object GetValue(RequestContext context)
+        {
+            var dyParams = context.RequestParameters;
+            if (dyParams.ParameterNames.Contains(Property))
+            {
+                return dyParams.Get<Object>(Property);
+            }
+            return null;
         }
     }
 }

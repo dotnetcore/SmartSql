@@ -307,6 +307,17 @@ namespace SmartSql.SqlMap
                         };
                         break;
                     }
+                case "Env":
+                    {
+                        var dbProvider = xmlNode.Attributes?["DbProvider"]?.Value.Trim();
+                        tag = new Env
+                        {
+                            Prepend = prepend,
+                            DbProvider = dbProvider,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
                 case "#comment": { break; }
                 default:
                     {
@@ -360,13 +371,15 @@ namespace SmartSql.SqlMap
         }
         public String BuildSql(RequestContext context)
         {
-            String prefix = SmartSqlMap.SmartSqlMapConfig.Database.DbProvider.ParameterPrefix;
+            context.SmartSqlMap = SmartSqlMap;
+            string smartPrefix = SmartSqlMap.SmartSqlMapConfig.Settings.ParameterPrefix;
+            String dbPrefix = SmartSqlMap.SmartSqlMapConfig.Database.DbProvider.ParameterPrefix;
             StringBuilder sqlStrBuilder = new StringBuilder();
             foreach (ITag tag in SqlTags)
             {
-                sqlStrBuilder.Append(tag.BuildSql(context, prefix));
+                sqlStrBuilder.Append(tag.BuildSql(context));
             }
-            return sqlStrBuilder.ToString();
+            return sqlStrBuilder.Replace(smartPrefix, dbPrefix).ToString();
         }
     }
 }

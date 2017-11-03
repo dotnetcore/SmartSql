@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using SmartSql.Common;
 using System.Collections;
+using SmartSql.Abstractions;
 
 namespace SmartSql.SqlMap.Tags
 {
@@ -11,10 +12,9 @@ namespace SmartSql.SqlMap.Tags
     {
         public override TagType Type => TagType.IsEmpty;
 
-        public override bool IsCondition(object paramObj)
+        public override bool IsCondition(RequestContext context)
         {
-            Object reqVal = paramObj.GetValue(Property);
-
+            Object reqVal = GetValue(context);
             if (reqVal == null)
             {
                 return true;

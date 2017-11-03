@@ -78,6 +78,8 @@ namespace SmartSql.SqlMap
     {
         [XmlAttribute]
         public bool IsWatchConfigFile { get; set; }
+        [XmlAttribute]
+        public string ParameterPrefix { get; set; } = "$";
     }
 
     public class Database

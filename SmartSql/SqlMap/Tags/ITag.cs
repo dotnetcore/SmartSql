@@ -8,7 +8,7 @@ namespace SmartSql.SqlMap.Tags
     public interface ITag
     {
         TagType Type { get; }
-        String BuildSql(RequestContext context, String parameterPrefix);
+        String BuildSql(RequestContext context);
     }
 
     public enum TagType
@@ -33,6 +33,7 @@ namespace SmartSql.SqlMap.Tags
         SwitchDefault,
         Where,
         Dynamic,
-        For
+        For,
+        Env
     }
 }
