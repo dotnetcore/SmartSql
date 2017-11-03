@@ -79,6 +79,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="CompareValue" type="xs:string" use="required" />
     </xs:complexType>
@@ -103,6 +104,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -136,6 +138,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -161,6 +164,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -187,6 +191,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -213,6 +218,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -239,6 +245,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -265,6 +272,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -291,6 +299,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -317,6 +326,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -343,6 +353,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -369,6 +380,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -394,6 +406,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -419,6 +432,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -444,6 +458,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -469,6 +484,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -492,6 +508,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
     </xs:complexType>
@@ -526,6 +543,7 @@
         <xs:element ref="IsProperty" />
         <xs:element ref="Where" />
         <xs:element ref="Dynamic" />
+        <xs:element ref="For" />
       </xs:choice>
       <xs:attribute name="Id" type="xs:string" use="required" />
       <xs:attribute name="Cache" type="xs:string" use="optional" />
