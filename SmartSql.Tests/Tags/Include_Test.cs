@@ -9,7 +9,7 @@ namespace SmartSql.Tests.Tags
         [Fact]
         public void QueryVEnquiryByPage_Test()
         {
-            SqlMapper.Query<object>(new Abstractions.RequestContext
+            SqlMapper.Query<object>(new RequestContext
             {
                 Scope = "Business",
                 SqlId = "QueryVEnquiryByPage",

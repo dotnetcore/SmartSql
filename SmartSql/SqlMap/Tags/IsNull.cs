@@ -13,7 +13,6 @@ namespace SmartSql.SqlMap.Tags
         {
             Object reqVal = paramObj.GetValue(Property);
             return reqVal == null;
-
         }
     }
 }

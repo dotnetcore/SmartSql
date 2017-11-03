@@ -22,7 +22,7 @@ namespace SmartSql.Tests.Cache
         [Fact]
         public void Set()
         {
-            CacheKey cacheKey = new CacheKey(new Abstractions.RequestContext
+            CacheKey cacheKey = new CacheKey(new RequestContext
             {
                 Scope = "T_Test",
                 SqlId = "GetListByCache",
@@ -34,7 +34,7 @@ namespace SmartSql.Tests.Cache
         [Fact]
         public void Get()
         {
-            CacheKey cacheKey = new CacheKey(new Abstractions.RequestContext
+            CacheKey cacheKey = new CacheKey(new RequestContext
             {
                 Scope = "T_Test",
                 SqlId = "GetListByCache",

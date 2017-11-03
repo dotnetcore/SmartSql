@@ -23,7 +23,7 @@ namespace SmartSql.SqlMap.Tags
                 if (tag.Type == TagType.SwitchCase)
                 {
                     var caseTag = tag as Case;
-                    return caseTag.IsCondition(context.Request);
+                    return caseTag.IsCondition(context.RequestParameters);
                 }
                 return false;
             });

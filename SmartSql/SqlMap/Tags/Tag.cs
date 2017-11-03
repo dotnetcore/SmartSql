@@ -20,7 +20,7 @@ namespace SmartSql.SqlMap.Tags
         public abstract bool IsCondition(object paramObj);
         public virtual String BuildSql(RequestContext context, String parameterPrefix)
         {
-            if (IsCondition(context.Request))
+            if (IsCondition(context.RequestParameters))
             {
                 if (In)
                 {

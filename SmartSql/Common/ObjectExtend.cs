@@ -2,21 +2,19 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-
+using System.Linq;
 namespace SmartSql.Common
 {
     public static class ObjectExtension
     {
         public static Object GetValue(this Object obj, String propertyName)
         {
-            if (obj is Dapper.DynamicParameters)
+            var dyParams = (obj as Dapper.DynamicParameters);
+            if (dyParams.ParameterNames.Contains(propertyName))
             {
-                return (obj as Dapper.DynamicParameters).Get<Object>(propertyName);
+                return dyParams.Get<Object>(propertyName);
             }
-            else
-            {
-                return obj?.GetType().GetProperty(propertyName)?.GetValue(obj);
-            }
+            return null;
         }
     }
 }

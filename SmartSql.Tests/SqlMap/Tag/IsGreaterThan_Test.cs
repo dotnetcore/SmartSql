@@ -19,7 +19,7 @@ namespace SmartSql.Tests.SqlMap.Tag
                 CompareValue = "0",
 
             };
-            string sql = tag.BuildSql(new Abstractions.RequestContext
+            string sql = tag.BuildSql(new RequestContext
             {
                 Request = new { Status = OrderStatus.Done }
             }, "@");

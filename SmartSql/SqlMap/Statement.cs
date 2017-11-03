@@ -289,6 +289,24 @@ namespace SmartSql.SqlMap
                         };
                         break;
                     }
+                case "For":
+                    {
+                        var open = xmlNode.Attributes?["Open"]?.Value.Trim();
+                        var separator = xmlNode.Attributes?["Separator"]?.Value.Trim();
+                        var close = xmlNode.Attributes?["Close"]?.Value.Trim();
+                        var key = xmlNode.Attributes?["Key"]?.Value.Trim();
+                        tag = new For
+                        {
+                            Prepend = prepend,
+                            Property = property,
+                            Open = open,
+                            Close = close,
+                            Separator = separator,
+                            Key = key,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
                 case "#comment": { break; }
                 default:
                     {

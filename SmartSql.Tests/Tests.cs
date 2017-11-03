@@ -5,10 +5,11 @@ using Xunit;
 using System.Reflection;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace SmartSql.Tests
 {
-    public  class Tests
+    public class Tests
     {
         [Fact]
         public void Dy()
@@ -61,6 +62,19 @@ namespace SmartSql.Tests
         {
             var str = true.ToString();
             Assert.NotEmpty(str);
+        }
+        [Fact]
+        public void RegTest()
+        {
+            var valStr = Regex.Replace("@CategoryIds,"
+                , @"([?@:]CategoryIds)(?!\w)(\s+(?i)unknown(?-i))?",
+                 match =>
+                {
+                    return match.Value;
+                }, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant
+                );
+
+            Assert.NotEmpty(valStr);
         }
 
         public enum OrderStatus

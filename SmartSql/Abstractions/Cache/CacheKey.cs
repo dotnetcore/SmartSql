@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Linq;
 using System.Collections;
 using Dapper;
+using SmartSql.SqlMap.Tags;
 
 namespace SmartSql.Abstractions.Cache
 {
@@ -19,26 +20,14 @@ namespace SmartSql.Abstractions.Cache
         {
             get
             {
-                if (RequestContext.Request == null) { return "Null"; }
+                if (RequestContext.RequestParameters == null) { return "Null"; }
                 StringBuilder strBuilder = new StringBuilder();
-                if (RequestContext.Request is DynamicParameters)
+                var reqParams = RequestContext.RequestParameters;
+                var paramNames = reqParams.ParameterNames.Where(p => !p.Contains(For.FOR_KEY_SUFFIX)).ToList().OrderBy(p => p);
+                foreach (var paramName in paramNames)
                 {
-                    var reqParams = RequestContext.Request as DynamicParameters;
-                    var paramNames = reqParams.ParameterNames.ToList().OrderBy(p => p);
-                    foreach (var paramName in paramNames)
-                    {
-                        var val = reqParams.Get<object>(paramName);
-                        BuildSqlQueryString(strBuilder, paramName, val);
-                    }
-                }
-                else
-                {
-                    var properties = RequestContext.Request.GetType().GetProperties().ToList().OrderBy(p => p.Name);
-                    foreach (var property in properties)
-                    {
-                        var val = property.GetValue(RequestContext.Request);
-                        BuildSqlQueryString(strBuilder, property.Name, val);
-                    }
+                    var val = reqParams.Get<object>(paramName);
+                    BuildSqlQueryString(strBuilder, paramName, val);
                 }
                 return strBuilder.ToString().Trim('&');
             }

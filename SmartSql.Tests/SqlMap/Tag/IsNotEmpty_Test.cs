@@ -18,7 +18,7 @@ namespace SmartSql.Tests.SqlMap.Tag
                 Property = "Ids",
                 In = true
             };
-            string sql = isNotEmpty.BuildSql(new Abstractions.RequestContext
+            string sql = isNotEmpty.BuildSql(new RequestContext
             {
                  
             },"@");

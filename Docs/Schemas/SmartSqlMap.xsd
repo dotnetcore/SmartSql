@@ -496,6 +496,16 @@
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
     </xs:complexType>
   </xs:element>
+  <xs:element name="For">
+    <xs:complexType mixed="true">
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Open" type="xs:string" use="required" />
+      <xs:attribute name="Separator" type="xs:string" use="required" />
+      <xs:attribute name="Close" type="xs:string" use="required" />
+      <xs:attribute name="Key" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
   <xs:element name="Statement">
     <xs:complexType mixed="true">
       <xs:choice  minOccurs="0" maxOccurs="unbounded">

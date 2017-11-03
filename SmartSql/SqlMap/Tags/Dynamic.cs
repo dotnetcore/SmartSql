@@ -40,7 +40,7 @@ namespace SmartSql.SqlMap.Tags
                             if (!String.IsNullOrWhiteSpace(tag.Prepend))
                             {
                                 string prepend = tag.Prepend.TrimStart();
-                                strSql = strSql.Substring(prepend.Length);
+                                strSql = strSql.TrimStart(prepend.ToCharArray());
                             }
                         }
                         strSql = $" {Prepend} {strSql}";
