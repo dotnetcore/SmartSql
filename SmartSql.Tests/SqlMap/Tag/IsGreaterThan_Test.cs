@@ -1,4 +1,5 @@
-﻿using SmartSql.SqlMap.Tags;
+﻿using SmartSql.Abstractions;
+using SmartSql.SqlMap.Tags;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,7 +23,7 @@ namespace SmartSql.Tests.SqlMap.Tag
             string sql = tag.BuildSql(new RequestContext
             {
                 Request = new { Status = OrderStatus.Done }
-            }, "@");
+            });
             Assert.NotNull(sql);
         }
 

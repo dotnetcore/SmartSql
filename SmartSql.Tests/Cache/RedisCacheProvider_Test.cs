@@ -4,6 +4,7 @@ using System.Text;
 using SmartSql.Cache.Redis;
 using Xunit;
 using SmartSql.Abstractions.Cache;
+using SmartSql.Abstractions;
 
 namespace SmartSql.Tests.Cache
 {
