@@ -79,8 +79,7 @@ namespace SmartSql.SqlMap
                         var refId = xmlNode.Attributes?["RefId"]?.Value;
                         var include_tag = new Include
                         {
-                            RefId = refId,
-                            Prepend = prepend
+                            RefId = refId
                         };
                         includes.Add(include_tag);
                         tag = include_tag;
@@ -118,6 +117,7 @@ namespace SmartSql.SqlMap
                             Prepend = prepend,
                             Property = property,
                             CompareValue = compareValue,
+                            ChildTags = new List<ITag>()
                         };
                         break;
                     }
