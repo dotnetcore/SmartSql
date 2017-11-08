@@ -20,7 +20,7 @@ namespace SmartSql.SqlMap.Tags
 
         public override bool IsCondition(RequestContext context)
         {
-            var reqVal = GetValue(context);
+            var reqVal = GetPropertyValue(context);
             if (reqVal == null) { return false; }
             if (reqVal is IEnumerable) { return true; }
             return false;
@@ -41,13 +41,13 @@ namespace SmartSql.SqlMap.Tags
             strBuilder.Append(Open);
             int item_index = 0;
             string dbPrefix = GetDbProviderPrefix(context);
-            var reqVal = context.RequestParameters.Get<IEnumerable>(Property);
+            var reqVal = GetPropertyValue(context) as IEnumerable;
             //** 目前仅支持子标签为SqlText **
             var bodyText = (ChildTags[0] as SqlText).BodyText;
             foreach (var itemVal in reqVal)
             {
                 string key_name = $"{dbPrefix}{Key}{FOR_KEY_SUFFIX}{item_index}";
-                context.RequestParameters.Add(key_name, itemVal);
+                context.DapperParameters.Add(key_name, itemVal);
                 if (item_index > 0)
                 {
                     strBuilder.AppendFormat(" {0} ", Separator);

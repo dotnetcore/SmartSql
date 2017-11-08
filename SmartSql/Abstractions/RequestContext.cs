@@ -17,7 +17,8 @@ namespace SmartSql.Abstractions
         public String SqlId { get; set; }
         public String FullSqlId => $"{Scope}.{SqlId}";
         internal SmartSqlMap SmartSqlMap { get; set; }
-        internal DynamicParameters RequestParameters { get; set; }
+        internal DynamicParameters DapperParameters { get; set; }
+        internal IDictionary<string, Object> RequestParameters { get; set; }
         private object requestObj;
         public Object Request
         {
@@ -25,22 +26,28 @@ namespace SmartSql.Abstractions
             set
             {
                 requestObj = value;
-                if (requestObj == null) { return; }
-                RequestParameters = new DynamicParameters(requestObj);
-
-                //if ((requestObj is DynamicParameters) || (requestObj is IEnumerable<KeyValuePair<string, object>>))
-                //{
-                //    RequestParameters.AddDynamicParams(requestObj);
-                //}
-                //else
-                //{
-                //    var properties = requestObj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                //    foreach (var property in properties)
-                //    {
-                //        var propertyVal = property.GetValue(requestObj);
-                //        RequestParameters.Add(property.Name, propertyVal);
-                //    }
-                //}
+                if (requestObj == null)
+                {
+                    DapperParameters = null;
+                    RequestParameters = null;
+                    return;
+                }
+                DapperParameters = new DynamicParameters(requestObj);
+                RequestParameters = new SortedDictionary<string, Object>();
+                if (requestObj is IEnumerable<KeyValuePair<string, object>> reqDic)
+                {
+                    foreach (var kv in reqDic)
+                    {
+                        RequestParameters.Add(kv.Key, kv.Value);
+                    }
+                    return;
+                }
+                var properties = requestObj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                foreach (var property in properties)
+                {
+                    var propertyVal = property.GetValue(requestObj);
+                    RequestParameters.Add(property.Name, propertyVal);
+                }
             }
         }
     }

@@ -16,7 +16,7 @@ namespace SmartSql.SqlMap.Tags
         public String Property { get; set; }
         [XmlIgnore]
         public abstract TagType Type { get; }
-        public IList<ITag> ChildTags { get; set; } 
+        public IList<ITag> ChildTags { get; set; }
         [Obsolete("Removed In Tag")]
         public bool In { get; set; }
         public abstract bool IsCondition(RequestContext context);
@@ -59,14 +59,15 @@ namespace SmartSql.SqlMap.Tags
             return context.SmartSqlMap.SmartSqlMapConfig.Database.DbProvider.ParameterPrefix;
         }
 
-        protected virtual Object GetValue(RequestContext context)
+        protected virtual Object GetPropertyValue(RequestContext context)
         {
-            var dyParams = context.RequestParameters;
-            if (dyParams.ParameterNames.Contains(Property))
+            var reqParams = context.RequestParameters;
+            if (reqParams == null) { return null; }
+            if (reqParams.ContainsKey(Property))
             {
-                return dyParams.Get<Object>(Property);
+                return reqParams[Property];
             }
-            return context.Request?.GetType().GetProperty(Property)?.GetValue(context.Request);
+            return null;
         }
     }
 }

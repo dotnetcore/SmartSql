@@ -98,7 +98,7 @@ namespace SmartSql
         {
             int result = _sqlRuner.Run<int>(context, DataSourceChoice.Write, (sqlStr, session) =>
             {
-                return session.Connection.Execute(sqlStr, context.RequestParameters, session.Transaction);
+                return session.Connection.Execute(sqlStr, context.DapperParameters, session.Transaction);
             });
             CacheManager.TriggerFlush(context);
             return result;
@@ -107,7 +107,7 @@ namespace SmartSql
         {
             T result = _sqlRuner.Run<T>(context, DataSourceChoice.Write, (sqlStr, session) =>
              {
-                 return session.Connection.ExecuteScalar<T>(sqlStr, context.RequestParameters, session.Transaction);
+                 return session.Connection.ExecuteScalar<T>(sqlStr, context.DapperParameters, session.Transaction);
              });
             CacheManager.TriggerFlush(context);
             return result;
@@ -133,7 +133,7 @@ namespace SmartSql
             string sqlStr = SqlBuilder.BuildSql(context);
             try
             {
-                var result = session.Connection.Query<T>(sqlStr, context.RequestParameters, session.Transaction);
+                var result = session.Connection.Query<T>(sqlStr, context.DapperParameters, session.Transaction);
                 CacheManager[context, typeof(IEnumerable<T>)] = result;
                 return result;
             }
@@ -162,7 +162,7 @@ namespace SmartSql
             }
             var result = _sqlRuner.Run<T>(context, sourceChoice, (sqlStr, session) =>
              {
-                 return session.Connection.QuerySingleOrDefault<T>(sqlStr, context.RequestParameters, session.Transaction);
+                 return session.Connection.QuerySingleOrDefault<T>(sqlStr, context.DapperParameters, session.Transaction);
              });
             CacheManager[context, typeof(T)] = result;
             return result;
@@ -173,7 +173,7 @@ namespace SmartSql
         {
             int result = await _sqlRuner.RunAsync<int>(context, DataSourceChoice.Write, (sqlStr, _session) =>
             {
-                return _session.Connection.ExecuteAsync(sqlStr, context.RequestParameters, _session.Transaction);
+                return _session.Connection.ExecuteAsync(sqlStr, context.DapperParameters, _session.Transaction);
             });
             CacheManager.TriggerFlush(context);
             return result;
@@ -182,7 +182,7 @@ namespace SmartSql
         {
             T result = await _sqlRuner.RunAsync<T>(context, DataSourceChoice.Write, (sqlStr, _session) =>
            {
-               return _session.Connection.ExecuteScalarAsync<T>(sqlStr, context.RequestParameters, _session.Transaction);
+               return _session.Connection.ExecuteScalarAsync<T>(sqlStr, context.DapperParameters, _session.Transaction);
            });
             CacheManager.TriggerFlush(context);
             return result;
@@ -206,7 +206,7 @@ namespace SmartSql
             string sqlStr = SqlBuilder.BuildSql(context);
             try
             {
-                var result = await session.Connection.QueryAsync<T>(sqlStr, context.RequestParameters, session.Transaction);
+                var result = await session.Connection.QueryAsync<T>(sqlStr, context.DapperParameters, session.Transaction);
                 CacheManager[context, typeof(IEnumerable<T>)] = result;
                 return result;
             }
@@ -235,7 +235,7 @@ namespace SmartSql
             }
             var result = await _sqlRuner.RunAsync<T>(context, sourceChoice, (sqlStr, _session) =>
             {
-                return _session.Connection.QuerySingleOrDefaultAsync<T>(sqlStr, context.RequestParameters, _session.Transaction);
+                return _session.Connection.QuerySingleOrDefaultAsync<T>(sqlStr, context.DapperParameters, _session.Transaction);
             });
             CacheManager[context, typeof(T)] = result;
             return result;

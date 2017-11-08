@@ -23,11 +23,9 @@ namespace SmartSql.Abstractions.Cache
                 if (RequestContext.RequestParameters == null) { return "Null"; }
                 StringBuilder strBuilder = new StringBuilder();
                 var reqParams = RequestContext.RequestParameters;
-                var paramNames = reqParams.ParameterNames.Where(p => !p.Contains(For.FOR_KEY_SUFFIX)).ToList().OrderBy(p => p);
-                foreach (var paramName in paramNames)
+                foreach (var reqParam in reqParams)
                 {
-                    var val = reqParams.Get<object>(paramName);
-                    BuildSqlQueryString(strBuilder, paramName, val);
+                    BuildSqlQueryString(strBuilder, reqParam.Key, reqParam.Value);
                 }
                 return strBuilder.ToString().Trim('&');
             }

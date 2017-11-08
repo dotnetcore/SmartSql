@@ -12,7 +12,8 @@ namespace SmartSql.SqlMap.Tags
 
         public override bool IsCondition(RequestContext context)
         {
-            return !context.RequestParameters.ParameterNames.Contains(Property);
+            if (context.RequestParameters == null) { return false; }
+            return context.RequestParameters.ContainsKey(Property);
         }
     }
 }

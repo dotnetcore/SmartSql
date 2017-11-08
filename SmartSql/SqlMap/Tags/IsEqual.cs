@@ -12,7 +12,7 @@ namespace SmartSql.SqlMap.Tags
 
         public override bool IsCondition(RequestContext context)
         {
-            var reqVal = GetValue(context);
+            var reqVal = GetPropertyValue(context);
             if (reqVal == null) { return false; }
             string reqValStr = string.Empty;
             if (reqVal is Enum)
