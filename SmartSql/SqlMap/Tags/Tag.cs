@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -65,7 +66,7 @@ namespace SmartSql.SqlMap.Tags
             {
                 return dyParams.Get<Object>(Property);
             }
-            return null;
+            return context.Request?.GetType().GetProperty(Property)?.GetValue(context.Request);
         }
     }
 }

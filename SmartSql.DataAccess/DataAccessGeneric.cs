@@ -4,7 +4,6 @@ using System.Text;
 using SmartSql.Abstractions;
 using SmartSql.DataAccess.Abstractions;
 using Microsoft.Extensions.Logging;
-using Dapper;
 
 namespace SmartSql.DataAccess
 {
@@ -33,8 +32,10 @@ namespace SmartSql.DataAccess
 
         public virtual TEntity GetEntity<TPrimary>(TPrimary Id, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
-            var parameters = new DynamicParameters();
-            parameters.Add(PrimaryKey, Id);
+            var parameters = new Dictionary<string, object>
+            {
+                { PrimaryKey, Id }
+            };
             return SqlMapper.QuerySingle<TEntity>(new RequestContext
             {
                 Scope = this.Scope,
@@ -110,8 +111,10 @@ namespace SmartSql.DataAccess
         }
         public virtual int Delete<TPrimary>(TPrimary Id)
         {
-            var parameters = new DynamicParameters();
-            parameters.Add(PrimaryKey, Id);
+            var parameters = new Dictionary<string, object>
+            {
+                { PrimaryKey, Id }
+            };
             return SqlMapper.Execute(new RequestContext
             {
                 Scope = this.Scope,

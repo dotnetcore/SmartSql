@@ -10,15 +10,11 @@
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>2.2.0.0</Version>
-    <AssemblyVersion>2.2.0.0</AssemblyVersion>
-    <FileVersion>2.2.0.0</FileVersion>
+    <Version>2.2.0.1</Version>
+    <AssemblyVersion>2.2.0.1</AssemblyVersion>
+    <FileVersion>2.2.0.1</FileVersion>
     <PackageTags>orm dapper sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
-    <PackageReleaseNotes>0. add [For Tag] to support iterate.
-1. add support global parameter prefix (defalut=$).
-2. add [Env Tag]  to support different DBProvider.
-3. fixed [IsGreaterEqual Tag] has childTag throw error
-3. update Schemas to support above features.</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
     <PackageReference Include="Dapper" Version="1.50.2" />
