@@ -79,7 +79,7 @@ namespace SmartSql.DataAccess
             return SqlMapper.QuerySingle<int>(new RequestContext
             {
                 Scope = this.Scope,
-                SqlId = DefaultSqlId.GetRecord,
+                SqlId = DefaultSqlId.IsExist,
                 Request = paramObj
             }, sourceChoice) > 0;
         }
