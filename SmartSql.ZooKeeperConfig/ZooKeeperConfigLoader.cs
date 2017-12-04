@@ -62,9 +62,31 @@ namespace SmartSql.ZooKeeperConfig
 
             foreach (var sqlmapSource in config.SmartSqlMapSources)
             {
+                switch (sqlmapSource.Type)
+                {
+                    case SmartSqlMapSource.ResourceType.File:
+                        {
+                            var sqlmap = await LoadSmartSqlMapAsync(sqlmapSource.Path, config);
+                            config.SmartSqlMaps.Add(sqlmap);
+                            break;
+                        }
+                    case SmartSqlMapSource.ResourceType.Directory:
+                        {
+                            var sqlmapChildren = await ZooClient.getChildrenAsync(sqlmapSource.Path);
+                            foreach (var sqlmapChild in sqlmapChildren.Children)
+                            {
+                                var sqlmapPath = $"{sqlmapSource.Path}/{sqlmapChild}";
+                                var sqlmap = await LoadSmartSqlMapAsync(sqlmapPath, config);
+                                config.SmartSqlMaps.Add(sqlmap);
+                            }
+                            break;
+                        }
+                    default:
+                        {
+                            throw new ArgumentException("unknow SmartSqlMap.Type!");
+                        }
+                }
 
-                var sqlmap = await LoadSmartSqlMapAsync(sqlmapSource.Path, config);
-                config.SmartSqlMaps.Add(sqlmap);
             }
             _logger.LogDebug($"SmartSql.ZooKeeperConfigLoader Load: {path} End");
 

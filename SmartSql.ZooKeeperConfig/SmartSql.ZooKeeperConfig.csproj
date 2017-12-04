@@ -8,12 +8,13 @@
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageTags>SmartSql Dapper MyBatis  ORM ZooKeeper Config</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <AssemblyVersion>1.1.8.0</AssemblyVersion>
-    <FileVersion>1.1.8.0</FileVersion>
-    <Version>1.1.8</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
+    <Version>1.2.0</Version>
     <Authors>Ahoo Wang</Authors>
     <Company>Ahoo Wang</Company>
     <Product>SmartSql.ZooKeeperConfig</Product>
+    <PackageReleaseNotes>1. add support SmartSqlMapSource.ResourceType.Directory</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
