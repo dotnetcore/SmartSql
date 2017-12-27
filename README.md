@@ -1,14 +1,14 @@
 # SmartSql - [Documentation](https://doc.smartsql.net/)
-## 0. Why ?
- - Embrace the cross platform. DotNet Core, it's time！
- - Based on Dapper, no more wheels are repeated. Dapper performance you know!
+## 0. Why ? 
+ - Embrace the cross platform. DotNet Core, it's time！ 
+ - Based on Dapper, no more wheels are repeated. Dapper performance you know! 
  ----
 ## 1. So SmartSql
- - TargetFramework: .NETStandard,Version=v1.3
- - SmartSql = Dapper + MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting + ......
+ - TargetFramework: .NETStandard,Version=v1.3 
+ - SmartSql = Dapper + MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting + ...... 
 ----
-## 2. Feature
-- 1 ORM 
+## 2. Feature 
+- 1 ORM
   - 1.1 Sync
   - 1.2 Async
 - 2 XmlConfig & XmlStatement -> Sql
@@ -27,8 +27,8 @@
     - 5.2.2 Generate Tool
 - 6 Query Cache
   - 6.1 SmartSql.Cache.Memory
-      - 6.1.1 Fifo
-      - 6.1.2 Lru
+      - 6.1.1 Fifo 
+      - 6.1.2 Lru 
   - 6.2 SmartSql.Cache.Redis
   - 6.3 Cache transaction consistency
 - 7 Distributed configuration plugin 
@@ -38,8 +38,8 @@
       - 7.3.1 Load SmartSqlMapSource Directory √
   - 7.3 SmartSql.ZooKeeperConfig √ (Distributed configuration file loader by ZooKeeper)
 ----
-## 3. Performance
-### Query Times:1000000
+## 3. Performance 
+### Query Times:1000000 
 
 | ORM | Total\(ms\) |
 | --- | :---: |
@@ -55,28 +55,29 @@
 | Dapper | 5931 |
 | MyBaits | 6574 |
 ----
-## 4. Configuration
+## 4. Configuration 
 
-### 4.1 SmartSqlMapConfig
+### 4.1 SmartSqlMapConfig 
 ``` xml
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
   <Settings
     IsWatchConfigFile="true"
+
   />
   <Database>
+    <!--<DbProvider Name="MySqlClientFactory" ParameterPrefix="?" Type="MySql.Data.MySqlClient.MySqlClientFactory,MySql.Data"/>-->
     <DbProvider Name="SqlClientFactory" ParameterPrefix="@" Type="System.Data.SqlClient.SqlClientFactory,System.Data.SqlClient"/>
     <Write Name="WriteDB" ConnectionString="Data Source=.;database=TestDB;uid=sa;pwd=SmartSql.net"/>
     <Read Name="ReadDB-0" ConnectionString="Data Source=.;database=TestDB;uid=sa;pwd=SmartSql.net" Weight="80"/>
     <Read Name="ReadDB-1" ConnectionString="Data Source=.;database=TestDB;uid=sa;pwd=SmartSql.net" Weight="20"/>
   </Database>
   <SmartSqlMaps>
-    <SmartSqlMap Path="Maps/T_Test.xml"></SmartSqlMap>
+    <SmartSqlMap Path="Maps" Type="Directory"></SmartSqlMap>
   </SmartSqlMaps>
 </SmartSqlMapConfig>
-``` 
-
-### 4.2 SmartSqlMap
+```
+### 4.2 SmartSqlMap 
 ``` xml
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMap Scope="T_Test"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
@@ -154,30 +155,31 @@ Install-Package SmartSql
                 Request = new { Ids = new long[] { 1, 2, 3, 4 } }
             });
 ```
-### Transaction
+### Transaction 
 ``` CSharp
             try
             {
-                sqlMap.BeginTransaction();
-                sqlMap.Execute(new RequestContext
+                ISmartSqlMapper SqlMapper = MapperContainer.Instance.GetSqlMapper();
+                SqlMapper.BeginTransaction();
+                SqlMapper.Execute(new RequestContext
                 {
                     Scope = "T_Test",
                     SqlId = "Add",
                     Request = new T_Test { }
                 });
-                sqlMap.Execute(new RequestContext
+                SqlMapper.Execute(new RequestContext
                 {
                     Scope = "T_Test",
                     SqlId = "Update",
                     Request = new T_Test { }
                 });
-                sqlMap.CommitTransaction();
+                SqlMapper.CommitTransaction();
             }
             catch (Exception ex)
             {
-                sqlMap.RollbackTransaction();
+                SqlMapper.RollbackTransaction();
                 throw ex;
             }
 ```
-##  Technology exchange group
-- QQ group Id : 604762592
+##  Technology exchange group 
+- QQ group Id : 604762592 
