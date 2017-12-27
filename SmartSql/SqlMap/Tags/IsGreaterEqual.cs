@@ -13,6 +13,7 @@ namespace SmartSql.SqlMap.Tags
         public override bool IsCondition(RequestContext context)
         {
             Object reqVal = GetPropertyValue(context);
+            if (reqVal == null) { return false; }
             Decimal reqValNum = 0M;
             Decimal comVal = 0M;
             if (reqVal is Enum)
