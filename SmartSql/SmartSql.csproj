@@ -14,8 +14,7 @@
     <AssemblyVersion>2.2.0.2</AssemblyVersion>
     <FileVersion>2.2.0.2</FileVersion>
     <PackageTags>orm dapper sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
-    <PackageReleaseNotes>1. fixed [IsGreaterEqual/IsLessEqual/IsLessThan  tag] null reference bug
-</PackageReleaseNotes>
+    <PackageReleaseNotes>1. fixed [IsGreaterEqual/IsLessEqual/IsLessThan  tag] null reference bug.</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
     <PackageReference Include="Dapper" Version="1.50.2" />
