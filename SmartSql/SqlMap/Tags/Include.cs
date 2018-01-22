@@ -5,16 +5,20 @@ using System.Text;
 
 namespace SmartSql.SqlMap.Tags
 {
-    public class Include : ITag
+    public class Include : Tag
     {
-        public TagType Type => TagType.Include;
+        public override TagType Type => TagType.Include;
+
         public String RefId { get; set; }
         public Statement Ref { get; set; }
-        public string BuildSql(RequestContext context)
+        public override string BuildSql(RequestContext context)
         {
-            return Ref.BuildSql(context);
+            String sqlStr = Ref.BuildSql(context);
+            return $" {Prepend} {sqlStr}";
         }
-
-
+        public override bool IsCondition(RequestContext context)
+        {
+            return true;
+        }
     }
 }

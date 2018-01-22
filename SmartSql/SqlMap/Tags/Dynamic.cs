@@ -33,7 +33,7 @@ namespace SmartSql.SqlMap.Tags
                     }
                     if (isFirstChild)
                     {
-                        if (!(childTag is SqlText))
+                        if (childTag is Tag)
                         {
                             Tag tag = childTag as Tag;
                             strSql = strSql.TrimStart();
