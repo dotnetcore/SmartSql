@@ -52,9 +52,15 @@
     
     <!--获取数据列-->
     <Statement Id="GetList">
-      SELECT T.* From <#= host.GetModelClass(host.TableName) #> T With(NoLock)
+      SELECT 
+      <IsNotEmpty Prepend="Top" Property="Taken">(@Taken)</IsNotEmpty>
+      T.* From <#= host.GetModelClass(host.TableName) #> T With(NoLock)
       <Include RefId="QueryParams"/>
-      Order By T.<#= host.Keys[0].ColumnName #> Desc
+      <Switch Prepend="Order By" Property="OrderBy">
+        <Default>
+      		Order By T.<#= host.Keys[0].ColumnName #> Desc    
+        </Default>
+      </Switch>
     </Statement>
 
 	<!--获取分页数据-->

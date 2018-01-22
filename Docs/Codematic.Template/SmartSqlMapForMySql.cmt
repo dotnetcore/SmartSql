@@ -56,7 +56,12 @@
     <Statement Id="GetList">
       SELECT T.* From <#= host.GetModelClass(host.TableName) #> T
       <Include RefId="QueryParams"/>
-      Order By T.<#= host.Keys[0].ColumnName #> Desc
+      <Switch Prepend="Order By" Property="OrderBy">
+        <Default>
+      		Order By T.<#= host.Keys[0].ColumnName #> Desc    
+        </Default>
+      </Switch>
+      <IsNotEmpty Prepend="Limit" Property="Taken">?Taken</IsNotEmpty>
     </Statement>
 
 	<!--获取分页数据-->

@@ -112,8 +112,8 @@
   </xs:element>
   <xs:element name="Switch">
     <xs:complexType mixed="true">
-      <xs:sequence>
-        <xs:element ref="Case"  minOccurs="1" maxOccurs="unbounded"/>
+      <xs:sequence minOccurs="1">
+        <xs:element ref="Case"  minOccurs="0" maxOccurs="unbounded"/>
         <xs:element ref="Default"  minOccurs="0" maxOccurs="1"/>
       </xs:sequence>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
@@ -312,7 +312,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
-      <xs:attribute name="In" type="xs:boolean" use="optional" default="false"/>
+      <!--<xs:attribute name="In" type="xs:boolean" use="optional" default="false"/>-->
     </xs:complexType>
   </xs:element>
   <xs:element name="IsNotEqual">
@@ -368,7 +368,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
-      <xs:attribute name="In" type="xs:boolean" use="optional" default="false"/>
+      <!--<xs:attribute name="In" type="xs:boolean" use="optional" default="false"/>-->
     </xs:complexType>
   </xs:element>
   <xs:element name="IsNull">
