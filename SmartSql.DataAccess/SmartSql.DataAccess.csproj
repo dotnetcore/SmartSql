@@ -10,10 +10,10 @@
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageTags>SmartSql Dapper MyBatis  ORM DataAccess</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>2.2.0.2</Version>
-    <AssemblyVersion>2.2.0.2</AssemblyVersion>
-    <FileVersion>2.2.0.2</FileVersion>
-    <PackageReleaseNotes>fixed IsExist bug</PackageReleaseNotes>
+    <Version>2.2.1.0</Version>
+    <AssemblyVersion>2.2.1.0</AssemblyVersion>
+    <FileVersion>2.2.1.0</FileVersion>
+    <PackageReleaseNotes>disambiguate</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

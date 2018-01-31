@@ -37,10 +37,9 @@ namespace SmartSql.DataAccess.Abstractions
         /// <summary>
         /// 主键类型
         /// </summary>
-        /// <typeparam name="TPrimary"></typeparam>
-        /// <param name="Id"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        int Delete<TPrimary>(TPrimary Id);
+        int Delete(object id);
     }
     /// <summary>
     /// 更新

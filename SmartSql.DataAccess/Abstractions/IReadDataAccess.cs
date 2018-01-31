@@ -9,7 +9,7 @@ namespace SmartSql.DataAccess.Abstractions
     /// 数据查询接口
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public interface IReadDataAccess<TEntity> : IIsExist, IGetEntity<TEntity>, IGetList, IGetListByPage, IGetRecord
+    public interface IReadDataAccess<TEntity> : IIsExist, IGetEntity<TEntity>, IGetList<TEntity>, IGetListByPage<TEntity>, IGetRecord
          where TEntity : class
     {
     }
@@ -27,21 +27,21 @@ namespace SmartSql.DataAccess.Abstractions
     /// <typeparam name="TEntity"></typeparam>
     public interface IGetEntity<TEntity> where TEntity : class
     {
-        TEntity GetEntity<TPrimary>(TPrimary Id, DataSourceChoice sourceChoice = DataSourceChoice.Read);
+        TEntity GetEntity(object id, DataSourceChoice sourceChoice = DataSourceChoice.Read);
     }
     /// <summary>
     /// 获取列表
     /// </summary>
-    public interface IGetList
+    public interface IGetList<TEntity> where TEntity : class
     {
-        IEnumerable<TResponse> GetList<TResponse>(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read);
+        IEnumerable<TEntity> GetList(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read);
     }
     /// <summary>
     /// 分页
     /// </summary>
-    public interface IGetListByPage
+    public interface IGetListByPage<TEntity> where TEntity : class
     {
-        IEnumerable<TResponse> GetListByPage<TResponse>(object paramObj,  DataSourceChoice sourceChoice = DataSourceChoice.Read);
+        IEnumerable<TEntity> GetListByPage(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read);
     }
     /// <summary>
     /// 获取记录数

@@ -30,11 +30,11 @@ namespace SmartSql.DataAccess
         protected String PrimaryKey { get; set; } = "Id";
         #region Read
 
-        public virtual TEntity GetEntity<TPrimary>(TPrimary Id, DataSourceChoice sourceChoice = DataSourceChoice.Read)
+        public virtual TEntity GetEntity(object id, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
             var parameters = new Dictionary<string, object>
             {
-                { PrimaryKey, Id }
+                { PrimaryKey, id }
             };
             return SqlMapper.QuerySingle<TEntity>(new RequestContext
             {
@@ -44,9 +44,9 @@ namespace SmartSql.DataAccess
             }, sourceChoice);
         }
 
-        public virtual IEnumerable<TResponse> GetList<TResponse>(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
+        public virtual IEnumerable<TEntity> GetList(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
-            return SqlMapper.Query<TResponse>(new RequestContext
+            return SqlMapper.Query<TEntity>(new RequestContext
             {
                 Scope = this.Scope,
                 SqlId = DefaultSqlId.GetList,
@@ -54,9 +54,9 @@ namespace SmartSql.DataAccess
             }, sourceChoice);
         }
 
-        public virtual IEnumerable<TResponse> GetListByPage<TResponse>(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
+        public virtual IEnumerable<TEntity> GetListByPage(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
-            return SqlMapper.Query<TResponse>(new RequestContext
+            return SqlMapper.Query<TEntity>(new RequestContext
             {
                 Scope = this.Scope,
                 SqlId = DefaultSqlId.GetListByPage,
@@ -109,11 +109,11 @@ namespace SmartSql.DataAccess
         {
             Insert<NoneIdentity>(entity);
         }
-        public virtual int Delete<TPrimary>(TPrimary Id)
+        public virtual int Delete(object id)
         {
             var parameters = new Dictionary<string, object>
             {
-                { PrimaryKey, Id }
+                { PrimaryKey, id }
             };
             return SqlMapper.Execute(new RequestContext
             {

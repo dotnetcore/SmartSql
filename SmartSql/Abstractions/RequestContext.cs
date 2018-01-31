@@ -33,7 +33,7 @@ namespace SmartSql.Abstractions
                     return;
                 }
                 DapperParameters = new DynamicParameters(requestObj);
-                RequestParameters = new SortedDictionary<string, Object>();
+                RequestParameters = new Dictionary<string, Object>();
                 if (requestObj is IEnumerable<KeyValuePair<string, object>> reqDic)
                 {
                     foreach (var kv in reqDic)
