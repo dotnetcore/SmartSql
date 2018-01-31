@@ -11,11 +11,16 @@ namespace SmartSql.CodeGenerator.Controllers
 {
     public class TemplateController : Controller
     {
+        public IActionResult Index()
+        {
+            return View();
+        }
+
 
         public async Task<IActionResult> Tables()
         {
             var sqlMapper = MapperContainer.Instance.GetSqlMapper();
-            
+
             sqlMapper.BeginTransaction();
             var tables = await sqlMapper.QueryAsync<Table>(new RequestContext
             {

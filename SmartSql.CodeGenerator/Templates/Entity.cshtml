@@ -1,0 +1,29 @@
+﻿@using SmartSql.CodeGenerator
+@using SmartSql.CodeGenerator.Models
+@model Table
+@{ Layout = null;
+    this.Context.Response.ContentType = "application/cs";
+}
+    //*******************************
+    // Create @Model.Author.Name
+    // Date @DateTime.Now.ToString("yyyy-MM-dd HH:mm")
+    //*******************************
+
+    using System;
+
+    namespace @(Model.Database.Namespace).Entity
+    {
+    @(Html.Raw("///<summary>"))
+    @(Html.Raw("///")) @Html.Raw(Model.Description)
+    @(Html.Raw("///</summary>"))
+    public class @Model.Name
+    {
+    @foreach (var column in Model.Columns)
+    {
+        @(Html.Raw("///<summary>"))
+        @(Html.Raw("///")) @Html.Raw(column.Description)
+        @(Html.Raw("///</summary>"))
+        <text>public virtual </text> @column.Name <text> {get; set;} </text>
+    }
+    }
+    }
