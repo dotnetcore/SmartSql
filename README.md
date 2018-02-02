@@ -1,13 +1,36 @@
-# SmartSql - [Documentation](https://doc.smartsql.net/)
-## 0. Why ? 
- - Embrace the cross platform. DotNet Core, it's time！ 
- - Based on Dapper, no more wheels are repeated. Dapper performance you know! 
+# SmartSql
+
+## Document
+
+### Document-CN
+
+- [中文文档托管地址-GitHub](https://github.com/Ahoo-Wang/SmartSql-Doc-CN)
+- [中文文档托管地址-码云](https://gitee.com/AhooWang/SmartSql-Doc-CN)
+- [在线阅读地址](https://doc.smartsql.net/)
+- [PDF](https://www.gitbook.com/download/pdf/book/ahoo-wang/smartsql-doc-cn)
+- [Mobi](https://www.gitbook.com/download/mobi/book/ahoo-wang/smartsql-doc-cn)
+- [ePub](https://www.gitbook.com/download/epub/book/ahoo-wang/smartsql-doc-cn)
+
+### Document-EN
+
+- [Doc-GitHub](https://github.com/Ahoo-Wang/SmartSql-Doc)
+
+## 0. Why
+
+- Embrace the cross platform. DotNet Core, it's time！
+- Based on Dapper, no more wheels are repeated. Dapper performance you know!
+
  ----
+
 ## 1. So SmartSql
- - TargetFramework: .NETStandard,Version=v1.3 
- - SmartSql = Dapper + MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting + ...... 
+
+- TargetFrameworks: .NETFramework 4.6 & .NETStandard 1.3 & .NETStandard 2.0
+- SmartSql = Dapper + MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting + ......
+
 ----
-## 2. Feature 
+
+## 2. Feature
+
 - 1 ORM
   - 1.1 Sync
   - 1.2 Async
@@ -17,7 +40,6 @@
 - 3 Read-write separation
   - 3.1 Read-write separation
   - 3.2 Election of the read database by weight
-  - 3.3 ~~读库故障检测,剔除~~
 - 4 Logging √
   - 4.1 Base on Microsoft.Extensions.Logging.Abstractions  (When you need to track the debugging when everything is so clear at a glance)
 - 5 DAO
@@ -27,21 +49,24 @@
     - 5.2.2 Generate Tool
 - 6 Query Cache
   - 6.1 SmartSql.Cache.Memory
-      - 6.1.1 Fifo 
-      - 6.1.2 Lru 
+    - 6.1.1 Fifo
+    - 6.1.2 Lru
   - 6.2 SmartSql.Cache.Redis
   - 6.3 Cache transaction consistency
-- 7 Distributed configuration plugin 
+- 7 Distributed configuration plugin
   - 7.1 IConfigLoader
   - 7.2 LocalFileConfigLoader  √ (Local file configuration loader)
-      - 7.2.1 Load SmartSqlMapSource Xml  √
-      - 7.3.1 Load SmartSqlMapSource Directory √
+    - 7.2.1 Load SmartSqlMapSource Xml  √
+    - 7.3.1 Load SmartSqlMapSource Directory √
   - 7.3 SmartSql.ZooKeeperConfig √ (Distributed configuration file loader by ZooKeeper)
-----
-## 3. Performance 
-### Query Times:1000000 
 
-| ORM | Total\(ms\) |
+----
+
+## 3. Performance
+
+### Query Times:1000000
+
+| ORM | Total(ms) |
 | --- | :---: |
 | SmartSql | 63568 |
 | Dapper | 60023 |
@@ -49,21 +74,22 @@
 
 ### Query Times:100000
 
-| ORM | Total\(ms\) |
+| ORM | Total(ms) |
 | --- | :---: |
 | SmartSql | 6075 |
 | Dapper | 5931 |
 | MyBaits | 6574 |
 ----
-## 4. Configuration 
 
-### 4.1 SmartSqlMapConfig 
+## 4. Configuration
+
+### 4.1 SmartSqlMapConfig
+
 ``` xml
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
   <Settings
     IsWatchConfigFile="true"
-
   />
   <Database>
     <!--<DbProvider Name="MySqlClientFactory" ParameterPrefix="?" Type="MySql.Data.MySqlClient.MySqlClientFactory,MySql.Data"/>-->
@@ -77,13 +103,14 @@
   </SmartSqlMaps>
 </SmartSqlMapConfig>
 ```
-### 4.2 SmartSqlMap 
+
+### 4.2 SmartSqlMap
+
 ``` xml
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMap Scope="T_Test"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
     <Statement Id="QueryParams">
-      
     </Statement>
     <!--Insert-->
     <Statement Id="Insert">
@@ -140,12 +167,17 @@
   </Statements>
 </SmartSqlMap>
 ```
+
 ## Install (NuGet)
-```
+
+``` CSharp
 Install-Package SmartSql
 ```
+
 ## Codes
+
 ### Query
+
 ``` CSharp
             ISmartSqlMapper SqlMapper = MapperContainer.Instance.GetSqlMapper();
             SqlMapper.Query<T_Test>(new RequestContext
@@ -155,24 +187,15 @@ Install-Package SmartSql
                 Request = new { Ids = new long[] { 1, 2, 3, 4 } }
             });
 ```
-### Transaction 
+
+### Transaction
+
 ``` CSharp
             try
             {
                 ISmartSqlMapper SqlMapper = MapperContainer.Instance.GetSqlMapper();
                 SqlMapper.BeginTransaction();
-                SqlMapper.Execute(new RequestContext
-                {
-                    Scope = "T_Test",
-                    SqlId = "Add",
-                    Request = new T_Test { }
-                });
-                SqlMapper.Execute(new RequestContext
-                {
-                    Scope = "T_Test",
-                    SqlId = "Update",
-                    Request = new T_Test { }
-                });
+                // BizCode
                 SqlMapper.CommitTransaction();
             }
             catch (Exception ex)
@@ -181,5 +204,7 @@ Install-Package SmartSql
                 throw ex;
             }
 ```
-##  Technology exchange group 
-- QQ group Id : 604762592 
+
+## Technology exchange group
+
+- QQ group Id : [604762592](https://jq.qq.com/?_wv=1027&k=5Sy8Ahw)
