@@ -273,6 +273,15 @@ namespace SmartSql.SqlMap
                         };
                         break;
                     }
+                case "Dynamic":
+                    {
+                        tag = new Dynamic
+                        {
+                            Prepend = prepend,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
                 case "Where":
                     {
                         tag = new Where
@@ -281,11 +290,10 @@ namespace SmartSql.SqlMap
                         };
                         break;
                     }
-                case "Dynamic":
+                case "Set":
                     {
-                        tag = new Dynamic
+                        tag = new Set
                         {
-                            Prepend = prepend,
                             ChildTags = new List<ITag>()
                         };
                         break;

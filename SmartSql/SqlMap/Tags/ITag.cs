@@ -31,8 +31,9 @@ namespace SmartSql.SqlMap.Tags
         Switch,
         SwitchCase,
         SwitchDefault,
-        Where,
         Dynamic,
+        Where,
+        Set,
         For,
         Env
     }
