@@ -41,14 +41,13 @@
     <!--更新-->
     <Statement Id="Update">
       UPDATE <#= host.GetModelClass(host.TableName) #>
-      SET 
-      <Dynamic>
+      <Set>
       <# for (int i = 1; i < host.Fieldlist.Count; ++i) { #>
 	     <IsProperty Prepend="," Property="<#= host.Fieldlist[i].ColumnName.ToString()#>">
 	        <#= host.Fieldlist[i].ColumnName.ToString() #> = ?<#= host.Fieldlist[i].ColumnName.ToString() #>
 	     </IsProperty>
 	  <# }#>
-      </Dynamic>    
+      </Set>    
       Where <#= host.Keys[0].ColumnName #>=?<#= host.Keys[0].ColumnName #>
     </Statement>
     
