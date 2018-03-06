@@ -25,7 +25,7 @@ namespace SmartSql.Tests.DataAccess
         [Fact]
         public void Delete()
         {
-            var exeNum = dao.Delete<long>(230151);
+            var exeNum = dao.Delete(230151);
 
         }
 
@@ -42,14 +42,14 @@ namespace SmartSql.Tests.DataAccess
         [Fact]
         public void GetList()
         {
-            var list = dao.GetList<T_Test>(null);
+            var list = dao.GetList(null);
             Assert.NotNull(list);
         }
 
         [Fact]
         public void GetListByPage()
         {
-            var list = dao.GetListByPage<T_Test>(new { PageIndex = 1, PageSize = 10 });
+            var list = dao.GetListByPage(new { PageIndex = 1, PageSize = 10 });
             Assert.NotNull(list);
         }
         [Fact]
@@ -62,7 +62,7 @@ namespace SmartSql.Tests.DataAccess
         [Fact]
         public void GetEntity()
         {
-            var entity = dao.GetEntity<long>(240162);
+            var entity = dao.GetEntity(240162);
             // Assert.NotNull(entity);
         }
     }

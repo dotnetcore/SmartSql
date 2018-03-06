@@ -27,6 +27,7 @@ namespace SmartSql.SqlMap.Tags
         IsTrue,
         IsFalse,
         IsProperty,
+        Placeholder,
         Include,
         Switch,
         SwitchCase,

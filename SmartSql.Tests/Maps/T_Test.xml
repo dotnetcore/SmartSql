@@ -63,14 +63,11 @@
     </Statement>
     <!--新增-->
     <Statement Id="Insert">
-      INSERT INTO T_Test
+      INSERT INTO <Placeholder Property="TableName"/>
       (Name)
       VALUES
       (@Name)
       ;Select Scope_Identity();
-      <Dynamic>
-        
-      </Dynamic>
     </Statement>
 
     <!--删除-->

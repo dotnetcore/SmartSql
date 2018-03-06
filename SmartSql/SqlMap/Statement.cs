@@ -236,6 +236,16 @@ namespace SmartSql.SqlMap
                         };
                         break;
                     }
+                case "Placeholder":
+                    {
+                        tag = new Placeholder
+                        {
+                            Prepend = prepend,
+                            Property = property,
+                            ChildTags = new List<ITag>()
+                        };
+                        break;
+                    }
                 case "Switch":
                     {
                         tag = new Switch

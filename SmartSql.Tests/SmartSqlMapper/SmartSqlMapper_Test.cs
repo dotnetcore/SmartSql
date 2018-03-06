@@ -26,7 +26,7 @@ namespace SmartSql.Tests
                 {
                     Scope = "T_Test",
                     SqlId = "Insert",
-                    Request = new T_Test { Name = $"Name-{preId}" }
+                    Request = new { Name = $"Name-{preId}", TableName = "T_Test1" }
                 });
             }
             Assert.Equal<int>(i, insertNum);

@@ -78,6 +78,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
@@ -104,6 +105,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
@@ -139,6 +141,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
@@ -166,6 +169,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
@@ -194,6 +198,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
@@ -222,6 +227,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
@@ -250,6 +256,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
@@ -278,6 +285,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
@@ -306,6 +314,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
@@ -334,6 +343,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
@@ -362,6 +372,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
@@ -390,6 +401,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
@@ -417,6 +429,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
@@ -444,6 +457,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />      
         <xs:element ref="For" />
@@ -471,11 +485,18 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
       </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Placeholder">
+    <xs:complexType mixed="true">
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
     </xs:complexType>
@@ -498,6 +519,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="Set" />
@@ -525,6 +547,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="For" />
@@ -550,6 +573,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
       </xs:choice>
@@ -583,6 +607,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="Set" />
@@ -611,6 +636,7 @@
         <xs:element ref="IsTrue" />
         <xs:element ref="IsFalse" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
         <xs:element ref="Set" />
