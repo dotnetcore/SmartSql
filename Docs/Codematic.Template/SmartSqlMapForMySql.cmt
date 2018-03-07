@@ -57,7 +57,7 @@
       <Include RefId="QueryParams"/>
       <Switch Prepend="Order By" Property="OrderBy">
         <Default>
-      		Order By T.<#= host.Keys[0].ColumnName #> Desc    
+      		T.<#= host.Keys[0].ColumnName #> Desc    
         </Default>
       </Switch>
       <IsNotEmpty Prepend="Limit" Property="Taken">?Taken</IsNotEmpty>
