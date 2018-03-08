@@ -69,7 +69,15 @@
       (@Name)
       ;Select Scope_Identity();
     </Statement>
-
+    <Statement Id="InsertRange">
+      INSERT INTO T_Test
+      (Name)
+      VALUES
+      <For Prepend="" Property="Values" Open="" Separator="," Close="">
+        (@Name,@Status)
+      </For>
+    </Statement>
+    
     <!--删除-->
     <Statement Id="Delete">
       Delete T_Test

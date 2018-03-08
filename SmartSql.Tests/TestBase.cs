@@ -25,5 +25,6 @@ namespace SmartSql.Tests
     {
         public long Id { get; set; }
         public String Name { get; set; }
+        public int Status { get; set; }
     }
 }

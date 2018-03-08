@@ -6,6 +6,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
 using SmartSql.Abstractions;
+using System.Reflection;
+using SmartSql.Exceptions;
 
 namespace SmartSql.SqlMap.Tags
 {
@@ -22,7 +24,10 @@ namespace SmartSql.SqlMap.Tags
         {
             var reqVal = GetPropertyValue(context);
             if (reqVal == null) { return false; }
-            if (reqVal is IEnumerable) { return true; }
+            if (reqVal is IEnumerable)
+            {
+                return (reqVal as IEnumerable).GetEnumerator().MoveNext();
+            }
             return false;
         }
 
@@ -39,29 +44,91 @@ namespace SmartSql.SqlMap.Tags
             StringBuilder strBuilder = new StringBuilder();
             strBuilder.AppendFormat(" {0}", Prepend);
             strBuilder.Append(Open);
-            int item_index = 0;
+            var reqVal = (GetPropertyValue(context) as IEnumerable).GetEnumerator();
+            reqVal.MoveNext();
+            bool isDirectValue = IsDirectValue(reqVal.Current);
+            if (isDirectValue)
+            {
+                BuildItemSql_DirectValue(strBuilder, context);
+            }
+            else
+            {
+                BuildItemSql_NotDirectValue(strBuilder, context);
+            }
+            strBuilder.Append(Close);
+            return strBuilder;
+        }
+
+        private void BuildItemSql_DirectValue(StringBuilder sqlStrBuilder, RequestContext context)
+        {
+            if (string.IsNullOrEmpty(Key))
+            {
+                throw new SmartSqlException("[For] tag [Key] is required!");
+            }
+
+            var itemSqlStr = base.BuildChildSql(context).ToString();
             string dbPrefix = GetDbProviderPrefix(context);
             var reqVal = GetPropertyValue(context) as IEnumerable;
-            //** 目前仅支持子标签为SqlText **
-            var bodyText = (ChildTags[0] as SqlText).BodyText;
+            int item_index = 0;
             foreach (var itemVal in reqVal)
             {
-                string key_name = $"{dbPrefix}{Key}{FOR_KEY_SUFFIX}{item_index}";
-                context.DapperParameters.Add(key_name, itemVal);
                 if (item_index > 0)
                 {
-                    strBuilder.AppendFormat(" {0} ", Separator);
+                    sqlStrBuilder.AppendFormat(" {0} ", Separator);
                 }
-                string item_sql = Regex.Replace(bodyText
+                string key_name = $"{dbPrefix}{Key}{FOR_KEY_SUFFIX}{item_index}";
+                context.DapperParameters.Add(key_name, itemVal);
+                string item_sql = Regex.Replace(itemSqlStr
                                   , ("([?@:]" + Regex.Escape(Key) + @")(?!\w)(\s+(?i)unknown(?-i))?")
                                   , key_name
                                   , RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant);
 
-                strBuilder.AppendFormat("{0}", item_sql);
+                sqlStrBuilder.AppendFormat("{0}", item_sql);
                 item_index++;
             }
-            strBuilder.Append(Close);
-            return strBuilder;
+        }
+        private void BuildItemSql_NotDirectValue(StringBuilder sqlStrBuilder, RequestContext context)
+        {
+            var itemSqlStr = base.BuildChildSql(context).ToString();
+            string dbPrefix = GetDbProviderPrefix(context);
+            var reqVal = GetPropertyValue(context) as IEnumerable;
+            int item_index = 0;
+            foreach (var itemVal in reqVal)
+            {
+                if (item_index > 0)
+                {
+                    sqlStrBuilder.AppendFormat(" {0} ", Separator);
+                }
+                string item_sql = itemSqlStr;
+
+                var properties = itemVal.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                foreach (var property in properties)
+                {
+                    string patternStr = "([?@:]" + Regex.Escape(property.Name) + @")(?!\w)(\s+(?i)unknown(?-i))?";
+                    bool isHasParam = Regex.IsMatch(item_sql, patternStr);
+                    if (!isHasParam) { continue; }
+
+                    var propertyVal = property.GetValue(itemVal);
+                    string key_name = $"{dbPrefix}{property.Name}{FOR_KEY_SUFFIX}{item_index}";
+                    context.DapperParameters.Add(key_name, propertyVal);
+
+                    item_sql = Regex.Replace(item_sql
+                                      , (patternStr)
+                                      , key_name
+                                      , RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant);
+                }
+
+                sqlStrBuilder.AppendFormat("{0}", item_sql);
+                item_index++;
+            }
+        }
+        private bool IsDirectValue(object obj)
+        {
+            bool isString = obj is String;
+            if (isString) { return true; }
+            bool isValueType = obj is ValueType;
+            if (isValueType) { return true; }
+            return false;
         }
     }
 }

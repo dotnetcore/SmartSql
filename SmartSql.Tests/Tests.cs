@@ -77,6 +77,7 @@ namespace SmartSql.Tests
             Assert.NotEmpty(valStr);
         }
 
+
         public enum OrderStatus
         {
             Created = 1 << 0,

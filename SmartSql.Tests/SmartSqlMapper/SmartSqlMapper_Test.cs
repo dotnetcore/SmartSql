@@ -31,6 +31,24 @@ namespace SmartSql.Tests
             }
             Assert.Equal<int>(i, insertNum);
         }
+
+        [Fact]
+        public void InsertRange()
+        {
+            IList<T_Test> test_list = new List<T_Test> {
+                 new T_Test{  Name="1", Status=1},
+                 new T_Test{  Name="2", Status=2}
+            };
+            int insertNum = SqlMapper.Execute(new RequestContext
+            {
+                Scope = "T_Test",
+                SqlId = "InsertRange",
+                Request = new { Values = test_list }
+            });
+
+            Assert.Equal(insertNum, test_list.Count);
+        }
+
         [Fact]
         public void Delete()
         {

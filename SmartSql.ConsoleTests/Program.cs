@@ -5,6 +5,8 @@ using System.Threading;
 using System.Linq;
 using SmartSql.Abstractions.Logging;
 using Microsoft.Extensions.Logging;
+using System.Text.RegularExpressions;
+
 namespace SmartSql.ConsoleTests
 {
     class Program
@@ -67,5 +69,10 @@ namespace SmartSql.ConsoleTests
     {
         public long Id { get; set; }
         public String Name { get; set; }
+    }
+
+    public enum TestStatus
+    {
+        Ok = 1
     }
 }
