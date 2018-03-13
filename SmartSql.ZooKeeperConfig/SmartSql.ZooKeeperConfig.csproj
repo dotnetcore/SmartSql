@@ -8,17 +8,21 @@
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageTags>SmartSql Dapper MyBatis  ORM ZooKeeper Config</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <AssemblyVersion>1.2.0.0</AssemblyVersion>
-    <FileVersion>1.2.0.0</FileVersion>
-    <Version>1.2.0</Version>
+    <AssemblyVersion>1.2.8.0</AssemblyVersion>
+    <FileVersion>1.2.8.0</FileVersion>
+    <Version>1.2.8</Version>
     <Authors>Ahoo Wang</Authors>
     <Company>Ahoo Wang</Company>
     <Product>SmartSql.ZooKeeperConfig</Product>
-    <PackageReleaseNotes>1. add support SmartSqlMapSource.ResourceType.Directory</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      - 1.  add zookeeper auth
+      - 2.  add custom watch Func
+      - 3.  add custom sessionTimeout
+    </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ZooKeeperNetEx" Version="3.4.9.4" />
+    <PackageReference Include="ZooKeeperNetEx" Version="3.4.10.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -22,25 +22,36 @@ namespace SmartSql.ZooKeeperConfig
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger _logger;
-
+        private readonly ZooKeeperManager zooKeeperManager;
         public String ConnectString { get; private set; }
         public ZooKeeper ZooClient
         {
             get
             {
-                return ZooKeeperManager.Instance.Get(ConnectString).Result;
+                return zooKeeperManager.Instance;
             }
         }
         public ZooKeeperConfigLoader(String connStr) : this(NullLoggerFactory.Instance, connStr)
         {
 
         }
-        public ZooKeeperConfigLoader(ILoggerFactory loggerFactory, String connStr)
+        public ZooKeeperConfigLoader(ILoggerFactory loggerFactory
+            , String connStr
+            ) : this(loggerFactory, new CreateOptions
+            {
+                ConnectionString = connStr
+            })
+        {
+
+        }
+        public ZooKeeperConfigLoader(ILoggerFactory loggerFactory, CreateOptions options)
         {
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<ZooKeeperConfigLoader>();
-            ConnectString = connStr;
+            zooKeeperManager = new ZooKeeperManager(loggerFactory, options);
         }
+
+
         public override SmartSqlMapConfig Load(string path, ISmartSqlMapper smartSqlMapper)
         {
             var loadTask = LoadAsync(path, smartSqlMapper);
@@ -109,89 +120,8 @@ namespace SmartSql.ZooKeeperConfig
 
         public override void Dispose()
         {
-            ZooKeeperManager.Instance.Dispose();
+            zooKeeperManager.Dispose();
         }
     }
-    /// <summary>
-    /// SmartSqlMapConfig 监控
-    /// </summary>
-    public class SmartSqlMapConfigWatcher : Watcher
-    {
-        private readonly ILogger _logger;
 
-        public ISmartSqlMapper SmartSqlMapper { get; private set; }
-        public ZooKeeperConfigLoader ConfigLoader { get; set; }
-        public SmartSqlMapConfigWatcher(ILoggerFactory loggerFactory, ISmartSqlMapper smartSqlMapper, ZooKeeperConfigLoader configLoader)
-        {
-            _logger = loggerFactory.CreateLogger<SmartSqlMapConfigWatcher>();
-            SmartSqlMapper = smartSqlMapper;
-            ConfigLoader = configLoader;
-        }
-        public override async Task process(WatchedEvent @event)
-        {
-            string path = @event.getPath();
-            _logger.LogDebug($"ZooKeeperConfigLoader.SmartSqlMapConfigWatcher process : {path} .");
-            var eventType = @event.get_Type();
-            if (eventType == Event.EventType.NodeDataChanged)
-            {
-                var config = SmartSqlMapper.SqlMapConfig;
-                if (!config.Settings.IsWatchConfigFile)
-                {
-                    _logger.LogDebug($"ZooKeeperConfigLoader.SmartSqlMapConfigWatcher Changed ,dot not watch: {path} .");
-                }
-                else
-                {
-                    #region SmartSqlMapConfig File Watch
-
-                    _logger.LogDebug($"ZooKeeperConfigLoader.SmartSqlMapConfigWatcher Changed ReloadConfig: {path} Starting");
-                    var newConfig = await ConfigLoader.LoadAsync(path, SmartSqlMapper);
-                    _logger.LogDebug($"ZooKeeperConfigLoader.SmartSqlMapConfigWatcher Changed ReloadConfig: {path} End");
-
-                    #endregion
-                }
-            }
-        }
-    }
-    /// <summary>
-    /// SmartSqlMap 监控
-    /// </summary>
-    public class SmartSqlMapWatcher : Watcher
-    {
-        private readonly ILogger _logger;
-
-        public SmartSqlMapConfig SmartSqlMapConfig { get; private set; }
-        public ZooKeeperConfigLoader ConfigLoader { get; set; }
-        public SmartSqlMapWatcher(ILoggerFactory loggerFactory, SmartSqlMapConfig smartSqlMapConfig, ZooKeeperConfigLoader configLoader)
-        {
-            _logger = loggerFactory.CreateLogger<SmartSqlMapWatcher>();
-            SmartSqlMapConfig = smartSqlMapConfig;
-            ConfigLoader = configLoader;
-        }
-        public override async Task process(WatchedEvent @event)
-        {
-            string path = @event.getPath();
-            _logger.LogDebug($"ZooKeeperConfigLoader.SmartSqlMapWatcher process : {path} .");
-            var eventType = @event.get_Type();
-            if (eventType == Event.EventType.NodeDataChanged)
-            {
-                if (!SmartSqlMapConfig.Settings.IsWatchConfigFile)
-                {
-                    _logger.LogDebug($"ZooKeeperConfigLoader.SmartSqlMapWatcher Changed Reload SmartSqlMap,dot not watch: {path} .");
-                }
-                else
-                {
-                    _logger.LogDebug($"ZooKeeperConfigLoader.SmartSqlMapWatcher Changed Reload SmartSqlMap: {path} Starting");
-                    var sqlmap = SmartSqlMapConfig.SmartSqlMaps.FirstOrDefault(m => m.Path == path);
-                    var newSqlmap = await ConfigLoader.LoadSmartSqlMapAsync(path, SmartSqlMapConfig);
-                    sqlmap.Scope = newSqlmap.Scope;
-                    sqlmap.Statements = newSqlmap.Statements;
-                    sqlmap.Caches = newSqlmap.Caches;
-                    SmartSqlMapConfig.ResetMappedStatements();
-                    SmartSqlMapConfig.SmartSqlMapper.CacheManager.ResetMappedCaches();
-                    _logger.LogDebug($"ZooKeeperConfigLoader.SmartSqlMapWatcher Changed Reload SmartSqlMap: {path} End");
-                }
-            }
-
-        }
-    }
 }

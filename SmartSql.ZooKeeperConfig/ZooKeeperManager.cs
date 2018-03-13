@@ -1,4 +1,5 @@
-﻿using org.apache.zookeeper;
+﻿using Microsoft.Extensions.Logging;
+using org.apache.zookeeper;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,64 +10,92 @@ namespace SmartSql.ZooKeeperConfig
     public class ZooKeeperManager : IDisposable
     {
         private ZooKeeperManager() { }
-        public static readonly ZooKeeperManager Instance = new ZooKeeperManager();
-        const int sessionTimeout = 4000;
-
-        public Dictionary<String, ZooKeeper> MappedZooKeepers { get; set; } = new Dictionary<string, ZooKeeper>();
-
-        public async Task<ZooKeeper> Get(String connStr)
+        private static object syncObj = new object();
+        private static ZooKeeper instance;
+        private readonly ILogger<ZooKeeperManager> logger;
+        private readonly ILoggerFactory loggerFactory;
+        private readonly CreateOptions options;
+        public ZooKeeperManager(
+            ILoggerFactory loggerFactory
+            , CreateOptions options)
         {
-            ZooKeeper zk = null;
-            bool isExists = MappedZooKeepers.ContainsKey(connStr);
-            if (isExists)
+            this.logger = loggerFactory.CreateLogger<ZooKeeperManager>();
+            this.loggerFactory = loggerFactory;
+            this.options = options;
+        }
+
+        public ZooKeeper Instance
+        {
+            get
             {
-                zk = MappedZooKeepers[connStr];
-                var zkState = zk.getState();
-                if (zkState == ZooKeeper.States.CLOSED
-                    ||
-                    zkState == ZooKeeper.States.NOT_CONNECTED
-                    )
+                if (instance == null)
                 {
-                    await Remove(connStr);
-                    zk = new ZooKeeper(connStr, sessionTimeout, NoneWatcher.Instance);
-                    MappedZooKeepers.Add(connStr, zk);
+                    lock (syncObj)
+                    {
+                        if (instance == null)
+                        {
+                            ZooKeeperWatcher zooKeeperWatcher = new ZooKeeperWatcher(loggerFactory, options.OnWatch);
+                            instance = new ZooKeeper(options.ConnectionString, options.SessionTimeout, zooKeeperWatcher);
+
+                            if (options.AuthInfos != null)
+                            {
+                                foreach (var authInfo in options.AuthInfos)
+                                {
+                                    instance.addAuthInfo(authInfo.Scheme, authInfo.Data);
+                                }
+                            }
+                            logger.LogDebug($"ZooKeeper Initialized,ConnectString:{options.ConnectionString}!");
+                            WaitConnected();
+                        }
+                    }
                 }
-                return zk;
+                if (!IsAlive())
+                {
+                    instance = null;
+                    logger.LogError($"ZooKeeper ConnectString:{options.ConnectionString} is not alive!");
+                    throw new Exception($"ZooKeeper ConnectString:{ options.ConnectionString } is not alive!");
+                }
+                return instance;
             }
-            zk = new ZooKeeper(connStr, sessionTimeout, NoneWatcher.Instance);
-            MappedZooKeepers.Add(connStr, zk);
-            return zk;
         }
 
-        public async Task<bool> Remove(String connStr)
+
+        private void WaitConnected()
         {
-            bool isExists = MappedZooKeepers.ContainsKey(connStr);
-            if (!isExists)
+            int initTryTimes = 0;
+            while (!IsAlive())
             {
-                return true;
+                ++initTryTimes;
+                if (options.Delay > 0)
+                {
+                    System.Threading.Thread.Sleep(options.Delay);
+                }
+                if (initTryTimes > options.MaxTryTimes)
+                {
+                    instance = null;
+                    logger.LogDebug($"ZooKeeper connect time out!:{options.ConnectionString}!");
+                    throw new Exception("ZooKeeper connect time out!");
+                }
             }
-            var zk = MappedZooKeepers[connStr];
-            await zk.closeAsync();
-            return MappedZooKeepers.Remove(connStr);
         }
 
-        public async void Dispose()
+        private bool IsAlive()
         {
-            foreach (var zk in MappedZooKeepers.Values)
+            if (instance != null)
             {
-                await zk.closeAsync();
+                var zkState = instance.getState();
+                bool isAlive = (zkState != ZooKeeper.States.CLOSED && zkState != ZooKeeper.States.AUTH_FAILED);
+                logger.LogDebug($"ZooKeeper.States is not OK!");
+                return isAlive;
             }
-            MappedZooKeepers.Clear();
+            return false;
+        }
+
+        public void Dispose()
+        {
+            instance.closeAsync().Wait();
         }
     }
 
-    public class NoneWatcher : Watcher
-    {
-        public static readonly NoneWatcher Instance = new NoneWatcher();
-        private NoneWatcher() { }
-        public override Task process(WatchedEvent @event)
-        {
-            return Task.CompletedTask;
-        }
-    }
+
 }
