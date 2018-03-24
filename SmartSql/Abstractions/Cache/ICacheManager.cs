@@ -10,7 +10,6 @@ namespace SmartSql.Abstractions.Cache
         object this[RequestContext context, Type type] { get; set; }
         void ResetMappedCaches();
         void TriggerFlush(RequestContext context);
-        Queue<RequestContext> RequestQueue { get; }
         void FlushQueue();
         void ClearQueue();
     }

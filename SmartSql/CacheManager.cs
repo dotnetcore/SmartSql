@@ -16,7 +16,8 @@ namespace SmartSql
         public ISmartSqlMapper SmartSqlMapper { get; set; }
         public IDictionary<String, Statement> MappedStatements => SmartSqlMapper.SqlMapConfig.MappedStatements;
         public IDictionary<String, DateTime> MappedLastFlushTimes { get; } = new Dictionary<String, DateTime>();
-        public Queue<RequestContext> RequestQueue { get; set; } = new Queue<RequestContext>();
+        public IDictionary<Guid, Queue<RequestContext>> SessionMappedRequestQueue { get; } = new Dictionary<Guid, Queue<RequestContext>>();
+
         private IDictionary<String, IList<Statement>> _mappedTriggerFlushs;
         public IDictionary<String, IList<Statement>> MappedTriggerFlushs
         {
@@ -64,30 +65,47 @@ namespace SmartSql
             _logger = loggerFactory.CreateLogger<CacheManager>();
             SmartSqlMapper = smartSqlMapper;
         }
-        private void Enqueue(RequestContext context)
-        {
-            RequestQueue.Enqueue(context);
-        }
+
         public void FlushQueue()
         {
-            while (RequestQueue.Count > 0)
+            var session = SmartSqlMapper.SessionStore.LocalSession;
+            if (SessionMappedRequestQueue.ContainsKey(session.Id))
             {
-                var reqContext = RequestQueue.Dequeue();
-                Flush(reqContext);
+                var currentQueue = SessionMappedRequestQueue[session.Id];
+                while (currentQueue.Count > 0)
+                {
+                    var reqContext = currentQueue.Dequeue();
+                    Flush(reqContext);
+                }
+                SessionMappedRequestQueue.Remove(session.Id);
             }
         }
         public void ClearQueue()
         {
-            RequestQueue.Clear();
+            var session = SmartSqlMapper.SessionStore.LocalSession;
+            if (SessionMappedRequestQueue.ContainsKey(session.Id))
+            {
+                SessionMappedRequestQueue.Remove(session.Id);
+            }
         }
 
         public void TriggerFlush(RequestContext context)
         {
             var session = SmartSqlMapper.SessionStore.LocalSession;
-            if (session != null
-                && session.Transaction != null)
+            bool isTransaction = session != null && session.Transaction != null;
+            if (isTransaction)
             {
-                Enqueue(context);
+                Queue<RequestContext> currentQueue;
+                if (SessionMappedRequestQueue.ContainsKey(session.Id))
+                {
+                    currentQueue = SessionMappedRequestQueue[session.Id];
+                }
+                else
+                {
+                    currentQueue = new Queue<RequestContext>();
+                    SessionMappedRequestQueue.Add(session.Id, currentQueue);
+                }
+                currentQueue.Enqueue(context);
             }
             else
             {
@@ -100,15 +118,12 @@ namespace SmartSql
             String exeFullSqlId = context.FullSqlId;
             if (MappedTriggerFlushs.ContainsKey(exeFullSqlId))
             {
-                lock (this)
+                IList<Statement> triggerStatements = MappedTriggerFlushs[exeFullSqlId];
+                foreach (var statement in triggerStatements)
                 {
-                    IList<Statement> triggerStatements = MappedTriggerFlushs[exeFullSqlId];
-                    foreach (var statement in triggerStatements)
-                    {
-                        _logger.LogDebug($"CacheManager FlushCache.OnInterval FullSqlId:{statement.FullSqlId},ExeFullSqlId:{exeFullSqlId}");
-                        MappedLastFlushTimes[statement.FullSqlId] = DateTime.Now;
-                        statement.CacheProvider.Flush();
-                    }
+                    _logger.LogDebug($"CacheManager FlushCache.OnInterval FullSqlId:{statement.FullSqlId},ExeFullSqlId:{exeFullSqlId}");
+                    MappedLastFlushTimes[statement.FullSqlId] = DateTime.Now;
+                    statement.CacheProvider.Flush();
                 }
             }
         }

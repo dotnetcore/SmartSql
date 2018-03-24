@@ -266,8 +266,8 @@ namespace SmartSql
             try
             {
                 _logger.LogDebug($"CommitTransaction DbSession.Id:{session.Id}");
-                session.CommitTransaction();
                 CacheManager.FlushQueue();
+                session.CommitTransaction();
             }
             finally
             {
@@ -285,8 +285,8 @@ namespace SmartSql
             try
             {
                 _logger.LogDebug($"RollbackTransaction DbSession.Id:{session.Id}");
-                session.RollbackTransaction();
                 CacheManager.ClearQueue();
+                session.RollbackTransaction();
             }
             finally
             {
@@ -326,7 +326,6 @@ namespace SmartSql
         {
             IDataSource dataSource = DataSourceManager.GetDataSource(sourceChoice);
             IDbConnectionSession session = new DbConnectionSession(_loggerFactory, DbProviderFactory, dataSource);
-
             session.CreateConnection();
             return session;
         }
@@ -339,9 +338,6 @@ namespace SmartSql
             }
             SessionStore.Dispose();
             _logger.LogWarning($"SmartSqlMapper Dispose.");
-
         }
-
-
     }
 }

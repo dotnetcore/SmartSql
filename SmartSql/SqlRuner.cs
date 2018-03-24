@@ -55,7 +55,6 @@ namespace SmartSql
 
         public async Task<T> RunAsync<T>(RequestContext context, DataSourceChoice sourceChoice, Func<String, IDbConnectionSession, Task<T>> runSql)
         {
-
             IDbConnectionSession session = SmartSqlMapper.SessionStore.LocalSession;
             if (session == null)
             {
