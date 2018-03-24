@@ -18,6 +18,12 @@ namespace SmartSql.DbSession
         protected string sessionName = string.Empty;
         private static AsyncLocal<IDictionary<string, IDbConnectionSession>> staticSessions
             = new AsyncLocal<IDictionary<string, IDbConnectionSession>>();
+        public DbConnectionSessionStore(ILoggerFactory loggerFactory, String smartSqlMapperId)
+        {
+            _logger = loggerFactory.CreateLogger<DbConnectionSessionStore>();
+            sessionName = KEY + smartSqlMapperId;
+        }
+
         public IDbConnectionSession LocalSession
         {
             get
@@ -29,11 +35,6 @@ namespace SmartSql.DbSession
                 staticSessions.Value.TryGetValue(sessionName, out IDbConnectionSession session);
                 return session;
             }
-        }
-        public DbConnectionSessionStore(ILoggerFactory loggerFactory, String smartSqlMapperId)
-        {
-            _logger = loggerFactory.CreateLogger<DbConnectionSessionStore>();
-            sessionName = KEY + smartSqlMapperId;
         }
         public void Dispose()
         {

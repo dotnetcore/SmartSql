@@ -338,6 +338,8 @@ namespace SmartSql
                 SessionStore.LocalSession.Dispose();
             }
             SessionStore.Dispose();
+            _logger.LogWarning($"SmartSqlMapper Dispose.");
+
         }
 
 

@@ -71,7 +71,7 @@ namespace SmartSql.DbSession
 
         public void Dispose()
         {
-            _logger.LogDebug("Dispose.");
+            _logger.LogWarning("Dispose.");
 
             if (Transaction != null)
             {
