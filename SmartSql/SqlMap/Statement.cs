@@ -58,7 +58,6 @@ namespace SmartSql.SqlMap
         public static ITag LoadTag(XmlNode xmlNode, IList<Include> includes)
         {
             ITag tag = null;
-            bool isIn = xmlNode.Attributes?["In"] != null;
             var prepend = xmlNode.Attributes?["Prepend"]?.Value.Trim();
             var property = xmlNode.Attributes?["Property"]?.Value.Trim();
             var compareValue = xmlNode.Attributes?["CompareValue"]?.Value.Trim();
@@ -90,7 +89,6 @@ namespace SmartSql.SqlMap
                     {
                         tag = new IsEmpty
                         {
-                            In = isIn,
                             Prepend = prepend,
                             Property = property,
                             ChildTags = new List<ITag>()
@@ -102,7 +100,6 @@ namespace SmartSql.SqlMap
                     {
                         tag = new IsEqual
                         {
-                            In = isIn,
                             Prepend = prepend,
                             Property = property,
                             CompareValue = compareValue,
@@ -114,7 +111,6 @@ namespace SmartSql.SqlMap
                     {
                         tag = new IsGreaterEqual
                         {
-                            In = isIn,
                             Prepend = prepend,
                             Property = property,
                             CompareValue = compareValue,
@@ -126,7 +122,6 @@ namespace SmartSql.SqlMap
                     {
                         tag = new IsGreaterThan
                         {
-                            In = isIn,
                             Prepend = prepend,
                             Property = property,
                             CompareValue = compareValue,
@@ -138,7 +133,6 @@ namespace SmartSql.SqlMap
                     {
                         tag = new IsLessEqual
                         {
-                            In = isIn,
                             Prepend = prepend,
                             Property = property,
                             CompareValue = compareValue,
@@ -150,7 +144,6 @@ namespace SmartSql.SqlMap
                     {
                         tag = new IsLessThan
                         {
-                            In = isIn,
                             Prepend = prepend,
                             Property = property,
                             CompareValue = compareValue,
@@ -162,7 +155,6 @@ namespace SmartSql.SqlMap
                     {
                         tag = new IsNotEmpty
                         {
-                            In = isIn,
                             Prepend = prepend,
                             Property = property,
                             ChildTags = new List<ITag>()
@@ -173,7 +165,6 @@ namespace SmartSql.SqlMap
                     {
                         tag = new IsNotEqual
                         {
-                            In = isIn,
                             Prepend = prepend,
                             Property = property,
                             CompareValue = compareValue,
@@ -185,7 +176,6 @@ namespace SmartSql.SqlMap
                     {
                         tag = new IsNotNull
                         {
-                            In = isIn,
                             Prepend = prepend,
                             Property = property,
                             ChildTags = new List<ITag>()
@@ -196,7 +186,6 @@ namespace SmartSql.SqlMap
                     {
                         tag = new IsNull
                         {
-                            In = isIn,
                             Prepend = prepend,
                             Property = property,
                             ChildTags = new List<ITag>()
@@ -207,7 +196,6 @@ namespace SmartSql.SqlMap
                     {
                         tag = new IsTrue
                         {
-                            In = isIn,
                             Prepend = prepend,
                             Property = property,
                             ChildTags = new List<ITag>()
@@ -218,7 +206,6 @@ namespace SmartSql.SqlMap
                     {
                         tag = new IsFalse
                         {
-                            In = isIn,
                             Prepend = prepend,
                             Property = property,
                             ChildTags = new List<ITag>()
@@ -229,7 +216,6 @@ namespace SmartSql.SqlMap
                     {
                         tag = new IsProperty
                         {
-                            In = isIn,
                             Prepend = prepend,
                             Property = property,
                             ChildTags = new List<ITag>()

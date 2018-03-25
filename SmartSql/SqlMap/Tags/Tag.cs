@@ -17,19 +17,12 @@ namespace SmartSql.SqlMap.Tags
         [XmlIgnore]
         public abstract TagType Type { get; }
         public IList<ITag> ChildTags { get; set; }
-        [Obsolete("Removed In Tag")]
-        public bool In { get; set; }
         public abstract bool IsCondition(RequestContext context);
         public virtual String BuildSql(RequestContext context)
         {
             if (IsCondition(context))
             {
                 string dbPrefix = GetDbProviderPrefix(context);
-                if (In)
-                {
-                    return $" {Prepend} In {dbPrefix}{Property} ";
-                }
-
                 StringBuilder strBuilder = BuildChildSql(context);
                 return $" {Prepend}{strBuilder.ToString()}";
             }
