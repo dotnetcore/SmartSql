@@ -1,4 +1,5 @@
-﻿using SmartSql.Exceptions;
+﻿using SmartSql.Cache;
+using SmartSql.Exceptions;
 using SmartSql.SqlMap.Tags;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,8 @@ namespace SmartSql.SqlMap
             {
                 Id = statementNode.Attributes["Id"].Value,
                 SqlTags = new List<ITag> { },
-                SmartSqlMap = smartSqlMap
+                SmartSqlMap = smartSqlMap,
+                CacheProvider = new NoneCacheProvider()
             };
             string cacheId = statementNode.Attributes["Cache"]?.Value;
             if (!String.IsNullOrEmpty(cacheId))
