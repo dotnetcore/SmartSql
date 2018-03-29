@@ -14,10 +14,10 @@ namespace SmartSql.ZooKeeperConfig
         private static ZooKeeper instance;
         private readonly ILogger<ZooKeeperManager> logger;
         private readonly ILoggerFactory loggerFactory;
-        private readonly CreateOptions options;
+        private readonly ZooKeeperOptions options;
         public ZooKeeperManager(
             ILoggerFactory loggerFactory
-            , CreateOptions options)
+            , ZooKeeperOptions options)
         {
             this.logger = loggerFactory.CreateLogger<ZooKeeperManager>();
             this.loggerFactory = loggerFactory;

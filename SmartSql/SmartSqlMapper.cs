@@ -43,27 +43,33 @@ namespace SmartSql
         {
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<SmartSqlMapper>();
-            ConfigLoader = new LocalFileConfigLoader(loggerFactory);
-            ConfigLoader.Load(sqlMapConfigFilePath, this);
+            ConfigLoader = new LocalFileConfigLoader(sqlMapConfigFilePath, loggerFactory);
+            SqlMapConfig = ConfigLoader.Load();
             DbProviderFactory = SqlMapConfig.Database.DbProvider.DbProviderFactory;
             SessionStore = new DbConnectionSessionStore(loggerFactory, this.GetHashCode().ToString());
             SqlBuilder = new SqlBuilder(loggerFactory, this);
             DataSourceManager = new DataSourceManager(loggerFactory, this);
             CacheManager = new CacheManager(loggerFactory, this);
             _sqlRuner = new SqlRuner(loggerFactory, SqlBuilder, this);
+
+            ConfigLoader.OnChanged = SqlConfigOnChanged;
+            SqlMapConfig.SetLogger(_loggerFactory.CreateLogger<SmartSqlMapConfig>());
         }
         public SmartSqlMapper(ILoggerFactory loggerFactory, String sqlMapConfigFilePath, IConfigLoader configLoader)
         {
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<SmartSqlMapper>();
             ConfigLoader = configLoader;
-            ConfigLoader.Load(sqlMapConfigFilePath, this);
+            SqlMapConfig = ConfigLoader.Load();
             DbProviderFactory = SqlMapConfig.Database.DbProvider.DbProviderFactory;
             SessionStore = new DbConnectionSessionStore(loggerFactory, this.GetHashCode().ToString());
             SqlBuilder = new SqlBuilder(loggerFactory, this);
             DataSourceManager = new DataSourceManager(loggerFactory, this);
             CacheManager = new CacheManager(loggerFactory, this);
             _sqlRuner = new SqlRuner(loggerFactory, SqlBuilder, this);
+
+            ConfigLoader.OnChanged = SqlConfigOnChanged;
+            SqlMapConfig.SetLogger(_loggerFactory.CreateLogger<SmartSqlMapConfig>());
         }
 
         public SmartSqlMapper(
@@ -78,7 +84,7 @@ namespace SmartSql
         {
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<SmartSqlMapper>();
-            configLoader.Load(sqlMapConfigFilePath, this);
+            SqlMapConfig = ConfigLoader.Load();
             DbProviderFactory = SqlMapConfig.Database.DbProvider.DbProviderFactory;
             SessionStore = sessionStore;
             SqlBuilder = sqlBuilder;
@@ -86,12 +92,15 @@ namespace SmartSql
             CacheManager = cacheManager;
             CacheManager.SmartSqlMapper = this;
             _sqlRuner = new SqlRuner(loggerFactory, SqlBuilder, this);
+
+            ConfigLoader.OnChanged = SqlConfigOnChanged;
+            SqlMapConfig.SetLogger(_loggerFactory.CreateLogger<SmartSqlMapConfig>());
         }
 
-        public void LoadConfig(SmartSqlMapConfig smartSqlMapConfig)
+        public void SqlConfigOnChanged(ConfigChangedEvent configChangedEvent)
         {
-            SqlMapConfig = smartSqlMapConfig;
-            SqlMapConfig.SetLogger(_loggerFactory.CreateLogger<SmartSqlMapConfig>());
+            SqlMapConfig = configChangedEvent.SqlMapConfig;
+            CacheManager.ResetMappedCaches();
         }
         #region Sync
         public int Execute(RequestContext context)

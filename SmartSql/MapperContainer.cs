@@ -25,7 +25,7 @@ namespace SmartSql
         }
         public ISmartSqlMapper GetSqlMapper(ILoggerFactory loggerFactory, String smartSqlMapConfigPath = "SmartSqlMapConfig.xml")
         {
-            return GetSqlMapper(loggerFactory, smartSqlMapConfigPath, new LocalFileConfigLoader(loggerFactory));
+            return GetSqlMapper(loggerFactory, smartSqlMapConfigPath, new LocalFileConfigLoader(smartSqlMapConfigPath, loggerFactory));
         }
         public ISmartSqlMapper GetSqlMapper(ILoggerFactory loggerFactory, String smartSqlMapConfigPath, IConfigLoader configLoader)
         {

@@ -16,8 +16,7 @@ namespace SmartSql.SqlMap
     public class SmartSqlMapConfig
     {
         private ILogger<SmartSqlMapConfig> _logger = NullLoggerFactory.Instance.CreateLogger<SmartSqlMapConfig>();
-        [XmlIgnore]
-        public ISmartSqlMapper SmartSqlMapper { get; set; }
+
         [XmlIgnore]
         public String Path { get; set; }
         public Settings Settings { get; set; }
@@ -70,7 +69,10 @@ namespace SmartSql.SqlMap
         }
         public void ResetMappedStatements()
         {
-            _mappedStatements = null;
+            lock (this)
+            {
+                _mappedStatements = null;
+            }
         }
     }
 
@@ -147,7 +149,10 @@ namespace SmartSql.SqlMap
                 {
                     lock (this)
                     {
-                        LoadFactory();
+                        if (_dbProviderFactory == null)
+                        {
+                            LoadFactory();
+                        }
                     }
                 }
                 return _dbProviderFactory;
