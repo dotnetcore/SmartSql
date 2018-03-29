@@ -21,7 +21,7 @@ namespace SmartSql
         private readonly ILogger _logger;
         private readonly string sqlMapConfigFilePath;
         private const int DELAYED_LOAD_FILE = 500;
-
+        private FileWatcherLoader fileWatcherLoader;
         public override Action<ConfigChangedEvent> OnChanged { get; set; }
         public override SmartSqlMapConfig SqlMapConfig { get; protected set; }
 
@@ -29,6 +29,7 @@ namespace SmartSql
         {
             _logger = loggerFactory.CreateLogger<LocalFileConfigLoader>();
             this.sqlMapConfigFilePath = sqlMapConfigFilePath;
+            fileWatcherLoader = new FileWatcherLoader();
         }
 
         public override SmartSqlMapConfig Load()
@@ -100,7 +101,7 @@ namespace SmartSql
             #region SmartSqlMapConfig File Watch
             _logger.LogDebug($"LocalFileConfigLoader Watch SmartSqlMapConfig: {sqlMapConfigFilePath} .");
             var cofigFileInfo = FileLoader.GetInfo(sqlMapConfigFilePath);
-            FileWatcherLoader.Instance.Watch(cofigFileInfo, () =>
+            fileWatcherLoader.Watch(cofigFileInfo, () =>
             {
                 Thread.Sleep(DELAYED_LOAD_FILE);
                 lock (this)
@@ -129,7 +130,7 @@ namespace SmartSql
                 #region SqlMap File Watch
                 _logger.LogDebug($"LocalFileConfigLoader Watch SmartSqlMap: {sqlmap.Path} .");
                 var sqlMapFileInfo = FileLoader.GetInfo(sqlmap.Path);
-                FileWatcherLoader.Instance.Watch(sqlMapFileInfo, () =>
+                fileWatcherLoader.Watch(sqlMapFileInfo, () =>
                 {
                     Thread.Sleep(DELAYED_LOAD_FILE);
                     lock (this)
@@ -163,7 +164,7 @@ namespace SmartSql
 
         public override void Dispose()
         {
-            FileWatcherLoader.Instance.Clear();
+            fileWatcherLoader.Clear();
         }
     }
 }
