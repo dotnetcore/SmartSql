@@ -22,33 +22,9 @@ namespace SmartSql.SqlMap
         public String FullSqlId => $"{SmartSqlMap.Scope}.{Id}";
         public List<ITag> SqlTags { get; set; }
         public Cache Cache { get; set; }
-        private ICacheProvider _cacheProvider;
-        public ICacheProvider CacheProvider
-        {
-            get
-            {
-                #region Init CacheProvider
-                if (_cacheProvider == null)
-                {
-                    lock (this)
-                    {
-                        if (_cacheProvider == null)
-                        {
-                            if (Cache == null)
-                            {
-                                _cacheProvider = new NoneCacheProvider();
-                            }
-                            else
-                            {
-                                _cacheProvider = Cache.CreateCacheProvider(this);
-                            }
-                        }
-                    }
-                }
-                #endregion
-                return _cacheProvider;
-            }
-        }
+
+        public ICacheProvider CacheProvider { get; internal set; }
+
         public String BuildSql(RequestContext context)
         {
             context.SmartSqlMap = SmartSqlMap;

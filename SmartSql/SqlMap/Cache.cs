@@ -70,10 +70,9 @@ namespace SmartSql.SqlMap
         public IDictionary Parameters { get; set; }
         public IList<FlushOnExecute> FlushOnExecutes { get; set; }
         public FlushInterval FlushInterval { get; set; }
-        public ICacheProvider CreateCacheProvider(Statement statement)
+        public ICacheProvider CreateCacheProvider()
         {
             ICacheProvider _cacheProvider = null;
-            Parameters["Prefix"] = statement.FullSqlId;
             switch (Type)
             {
                 case "Lru":
