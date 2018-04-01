@@ -10,12 +10,11 @@
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>2.3.2</Version>
-    <AssemblyVersion>2.3.2</AssemblyVersion>
-    <FileVersion>2.3.2</FileVersion>
+    <Version>2.3.6</Version>
+    <AssemblyVersion>2.3.6</AssemblyVersion>
+    <FileVersion>2.3.6</FileVersion>
     <PackageTags>orm dapper sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
-    <PackageReleaseNotes>1. remove In Tag Attribute
-2. add TransactionWrap Extend</PackageReleaseNotes>
+    <PackageReleaseNotes>1. u IConfigLoader</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
     <PackageReference Include="Dapper" Version="1.50.2" />

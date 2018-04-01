@@ -16,8 +16,7 @@ namespace SmartSql.Tests.SqlMap.Tag
             {
                 //BodyText = "",
                 Prepend = "And Id",
-                Property = "Ids",
-                In = true
+                Property = "Ids"
             };
             string sql = isNotEmpty.BuildSql(new RequestContext
             {

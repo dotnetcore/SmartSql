@@ -39,17 +39,13 @@ namespace SmartSql.ZooKeeperConfig
     public class SmartSqlMapConfigWatcher : ZooKeeperWatcher
     {
         private readonly ILogger _logger;
-
-        public ISmartSqlMapper SmartSqlMapper { get; private set; }
         public ZooKeeperConfigLoader ConfigLoader { get; set; }
         public SmartSqlMapConfigWatcher(ILoggerFactory loggerFactory
-            , ISmartSqlMapper smartSqlMapper
             , ZooKeeperConfigLoader configLoader
             , Func<WatchedEvent, Task> onWatch = null
             ) : base(loggerFactory, onWatch)
         {
             _logger = loggerFactory.CreateLogger<SmartSqlMapConfigWatcher>();
-            SmartSqlMapper = smartSqlMapper;
             ConfigLoader = configLoader;
         }
         public override async Task process(WatchedEvent @event)
@@ -60,7 +56,7 @@ namespace SmartSql.ZooKeeperConfig
             var eventType = @event.get_Type();
             if (eventType == Event.EventType.NodeDataChanged)
             {
-                var config = SmartSqlMapper.SqlMapConfig;
+                var config = ConfigLoader.SqlMapConfig;
                 if (!config.Settings.IsWatchConfigFile)
                 {
                     _logger.LogDebug($"ZooKeeperConfigLoader.SmartSqlMapConfigWatcher Changed ,dot not watch: {path} .");
@@ -70,7 +66,12 @@ namespace SmartSql.ZooKeeperConfig
                     #region SmartSqlMapConfig File Watch
 
                     _logger.LogDebug($"ZooKeeperConfigLoader.SmartSqlMapConfigWatcher Changed ReloadConfig: {path} Starting");
-                    var newConfig = await ConfigLoader.LoadAsync(path, SmartSqlMapper);
+                    var newConfig = await ConfigLoader.LoadAsync();
+                    ConfigLoader.OnChanged?.Invoke(new Abstractions.Config.ConfigChangedEvent
+                    {
+                        SqlMapConfig = newConfig,
+                        EventType = Abstractions.Config.EventType.ConfigChanged
+                    });
                     _logger.LogDebug($"ZooKeeperConfigLoader.SmartSqlMapConfigWatcher Changed ReloadConfig: {path} End");
 
                     #endregion
@@ -118,7 +119,11 @@ namespace SmartSql.ZooKeeperConfig
                     sqlmap.Statements = newSqlmap.Statements;
                     sqlmap.Caches = newSqlmap.Caches;
                     SmartSqlMapConfig.ResetMappedStatements();
-                    SmartSqlMapConfig.SmartSqlMapper.CacheManager.ResetMappedCaches();
+                    ConfigLoader?.OnChanged(new Abstractions.Config.ConfigChangedEvent
+                    {
+                        EventType = Abstractions.Config.EventType.SqlMapChangeed,
+                        SqlMap = sqlmap
+                    });
                     _logger.LogDebug($"ZooKeeperConfigLoader.SmartSqlMapWatcher Changed Reload SmartSqlMap: {path} End");
                 }
             }

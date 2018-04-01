@@ -9,12 +9,24 @@ namespace SmartSql.Abstractions.Config
     /// </summary>
     public interface IConfigLoader : IDisposable
     {
+        Action<ConfigChangedEvent> OnChanged { get; set; }
+        SmartSqlMapConfig SqlMapConfig { get; }
         /// <summary>
         /// 加载配置文件
         /// </summary>
-        /// <param name="path">路径</param>
-        /// <param name="smartSqlMapper">smartSqlMapper</param>
         /// <returns></returns>
-        SmartSqlMapConfig Load(String path, ISmartSqlMapper smartSqlMapper);
+        SmartSqlMapConfig Load();
+    }
+
+    public class ConfigChangedEvent
+    {
+        public SmartSqlMapConfig SqlMapConfig { get; set; }
+        public SmartSqlMap SqlMap { get; set; }
+        public EventType EventType { get; set; }
+    }
+    public enum EventType
+    {
+        SqlMapChangeed = 1,
+        ConfigChanged = 2
     }
 }

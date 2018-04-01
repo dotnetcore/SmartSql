@@ -19,17 +19,24 @@ namespace SmartSql
     public class LocalFileConfigLoader : ConfigLoader
     {
         private readonly ILogger _logger;
+        private readonly string sqlMapConfigFilePath;
         private const int DELAYED_LOAD_FILE = 500;
-        public LocalFileConfigLoader(ILoggerFactory loggerFactory)
+        private FileWatcherLoader fileWatcherLoader;
+        public override Action<ConfigChangedEvent> OnChanged { get; set; }
+        public override SmartSqlMapConfig SqlMapConfig { get; protected set; }
+
+        public LocalFileConfigLoader(String sqlMapConfigFilePath, ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<LocalFileConfigLoader>();
+            this.sqlMapConfigFilePath = sqlMapConfigFilePath;
+            fileWatcherLoader = new FileWatcherLoader();
         }
 
-        public override SmartSqlMapConfig Load(String path, ISmartSqlMapper smartSqlMapper)
+        public override SmartSqlMapConfig Load()
         {
-            _logger.LogDebug($"LocalFileConfigLoader Load: {path} Starting");
-            var configStream = LoadConfigStream(path);
-            var config = LoadConfig(configStream, smartSqlMapper);
+            _logger.LogDebug($"LocalFileConfigLoader Load: {sqlMapConfigFilePath} Starting");
+            var configStream = LoadConfigStream(sqlMapConfigFilePath);
+            var config = LoadConfig(configStream);
 
             foreach (var sqlmapSource in config.SmartSqlMapSources)
             {
@@ -37,7 +44,7 @@ namespace SmartSql
                 {
                     case SmartSqlMapSource.ResourceType.File:
                         {
-                            LoadSmartSqlMap(config, sqlmapSource.Path);
+                            LoadSmartSqlMap(sqlmapSource.Path);
                             break;
                         }
                     case SmartSqlMapSource.ResourceType.Directory:
@@ -45,7 +52,7 @@ namespace SmartSql
                             var childSqlmapSources = Directory.EnumerateFiles(sqlmapSource.Path, "*.xml");
                             foreach (var childSqlmapSource in childSqlmapSources)
                             {
-                                LoadSmartSqlMap(config, childSqlmapSource);
+                                LoadSmartSqlMap(childSqlmapSource);
                             }
                             break;
                         }
@@ -56,25 +63,23 @@ namespace SmartSql
                         }
                 }
             }
-            _logger.LogDebug($"LocalFileConfigLoader Load: {path} End");
-
-            smartSqlMapper.LoadConfig(config);
+            _logger.LogDebug($"LocalFileConfigLoader Load: {sqlMapConfigFilePath} End");
 
             if (config.Settings.IsWatchConfigFile)
             {
-                _logger.LogDebug($"LocalFileConfigLoader Load Add WatchConfig: {path} Starting.");
-                WatchConfig(smartSqlMapper);
-                _logger.LogDebug($"LocalFileConfigLoader Load Add WatchConfig: {path} End.");
+                _logger.LogDebug($"LocalFileConfigLoader Load Add WatchConfig: {sqlMapConfigFilePath} Starting.");
+                WatchConfig();
+                _logger.LogDebug($"LocalFileConfigLoader Load Add WatchConfig: {sqlMapConfigFilePath} End.");
             }
             return config;
         }
 
-        private void LoadSmartSqlMap(SmartSqlMapConfig config, String sqlmapSourcePath)
+        private void LoadSmartSqlMap(String sqlmapSourcePath)
         {
             _logger.LogDebug($"LoadSmartSqlMap Load: {sqlmapSourcePath}");
             var sqlmapStream = LoadConfigStream(sqlmapSourcePath);
-            var sqlmap = LoadSmartSqlMap(sqlmapStream, config);
-            config.SmartSqlMaps.Add(sqlmap);
+            var sqlmap = LoadSmartSqlMap(sqlmapStream);
+            SqlMapConfig.SmartSqlMaps.Add(sqlmap);
         }
 
         public ConfigStream LoadConfigStream(string path)
@@ -91,24 +96,26 @@ namespace SmartSql
         /// <summary>
         /// 监控配置文件-热更新
         /// </summary>
-        /// <param name="smartSqlMapper"></param>
-        /// <param name="config"></param>
-        private void WatchConfig(ISmartSqlMapper smartSqlMapper)
+        private void WatchConfig()
         {
-            var config = smartSqlMapper.SqlMapConfig;
             #region SmartSqlMapConfig File Watch
-            _logger.LogDebug($"LocalFileConfigLoader Watch SmartSqlMapConfig: {config.Path} .");
-            var cofigFileInfo = FileLoader.GetInfo(config.Path);
-            FileWatcherLoader.Instance.Watch(cofigFileInfo, () =>
+            _logger.LogDebug($"LocalFileConfigLoader Watch SmartSqlMapConfig: {sqlMapConfigFilePath} .");
+            var cofigFileInfo = FileLoader.GetInfo(sqlMapConfigFilePath);
+            fileWatcherLoader.Watch(cofigFileInfo, () =>
             {
                 Thread.Sleep(DELAYED_LOAD_FILE);
                 lock (this)
                 {
                     try
                     {
-                        _logger.LogDebug($"LocalFileConfigLoader Changed ReloadConfig: {config.Path} Starting");
-                        var newConfig = Load(config.Path, smartSqlMapper);
-                        _logger.LogDebug($"LocalFileConfigLoader Changed ReloadConfig: {config.Path} End");
+                        _logger.LogDebug($"LocalFileConfigLoader Changed ReloadConfig: {sqlMapConfigFilePath} Starting");
+                        var newConfig = Load();
+                        OnChanged?.Invoke(new ConfigChangedEvent
+                        {
+                            SqlMapConfig = newConfig,
+                            EventType = EventType.ConfigChanged
+                        });
+                        _logger.LogDebug($"LocalFileConfigLoader Changed ReloadConfig: {sqlMapConfigFilePath} End");
                     }
                     catch (Exception ex)
                     {
@@ -118,12 +125,12 @@ namespace SmartSql
             });
             #endregion
             #region SmartSqlMaps File Watch
-            foreach (var sqlmap in config.SmartSqlMaps)
+            foreach (var sqlmap in SqlMapConfig.SmartSqlMaps)
             {
                 #region SqlMap File Watch
                 _logger.LogDebug($"LocalFileConfigLoader Watch SmartSqlMap: {sqlmap.Path} .");
                 var sqlMapFileInfo = FileLoader.GetInfo(sqlmap.Path);
-                FileWatcherLoader.Instance.Watch(sqlMapFileInfo, () =>
+                fileWatcherLoader.Watch(sqlMapFileInfo, () =>
                 {
                     Thread.Sleep(DELAYED_LOAD_FILE);
                     lock (this)
@@ -132,12 +139,16 @@ namespace SmartSql
                         {
                             _logger.LogDebug($"LocalFileConfigLoader Changed Reload SmartSqlMap: {sqlmap.Path} Starting");
                             var sqlmapStream = LoadConfigStream(sqlmap.Path);
-                            var newSqlmap = LoadSmartSqlMap(sqlmapStream, config);
+                            var newSqlmap = LoadSmartSqlMap(sqlmapStream);
                             sqlmap.Scope = newSqlmap.Scope;
                             sqlmap.Statements = newSqlmap.Statements;
                             sqlmap.Caches = newSqlmap.Caches;
-                            config.ResetMappedStatements();
-                            smartSqlMapper.CacheManager.ResetMappedCaches();
+                            SqlMapConfig.ResetMappedStatements();
+                            OnChanged?.Invoke(new ConfigChangedEvent
+                            {
+                                SqlMap = sqlmap,
+                                EventType = EventType.SqlMapChangeed
+                            });
                             _logger.LogDebug($"LocalFileConfigLoader Changed Reload SmartSqlMap: {sqlmap.Path} End");
                         }
                         catch (Exception ex)
@@ -153,8 +164,7 @@ namespace SmartSql
 
         public override void Dispose()
         {
-            FileWatcherLoader.Instance.Clear();
+            fileWatcherLoader.Clear();
         }
-
     }
 }

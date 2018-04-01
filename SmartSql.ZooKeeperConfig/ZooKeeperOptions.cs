@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SmartSql.ZooKeeperConfig
 {
-    public class CreateOptions
+    public class ZooKeeperOptions
     {
         public string ConnectionString { get; set; }
         public int SessionTimeout { get; set; } = 4000;
@@ -14,5 +14,6 @@ namespace SmartSql.ZooKeeperConfig
         public Func<WatchedEvent, Task> OnWatch { get; set; }
         public int MaxTryTimes { get; set; } = 3;
         public int Delay { get; set; } = 50;
+        public string SqlMapConfigPath { get; set; }
     }
 }

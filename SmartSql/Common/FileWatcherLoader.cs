@@ -11,8 +11,7 @@ namespace SmartSql.Common
     public class FileWatcherLoader
     {
         private IList<FileSystemWatcher> _fileWatchers = new List<FileSystemWatcher>();
-        private FileWatcherLoader() { }
-        public static FileWatcherLoader Instance = new FileWatcherLoader();
+
         public void Watch(FileInfo fileInfo, Action onFileChanged)
         {
             if (onFileChanged != null)

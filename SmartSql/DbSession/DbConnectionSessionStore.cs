@@ -40,6 +40,7 @@ namespace SmartSql.DbSession
         {
             if (staticSessions.Value != null)
             {
+                staticSessions.Value[sessionName].Dispose();
                 staticSessions.Value[sessionName] = null;
             }
         }

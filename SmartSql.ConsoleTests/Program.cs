@@ -45,8 +45,9 @@ namespace SmartSql.ConsoleTests
         static void ZooKeeperConfigLoader_Test()
         {
             string connStr = "192.168.31.103:2181";//192.168.31.103:2181 192.168.1.5:2181,192.168.1.5:2182,192.168.1.5:2183
-            var configLoader = new ZooKeeperConfigLoader(connStr);
+
             string configPath = "/Config/App1/SmartSqlMapConfig.xml";
+            var configLoader = new ZooKeeperConfigLoader(configPath, connStr);
             var SqlMapper = new SmartSqlMapper(loggerFactory, configPath, configLoader);
 
             int i = 0;

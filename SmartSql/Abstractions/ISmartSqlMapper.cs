@@ -27,8 +27,6 @@ namespace SmartSql.Abstractions
          IConfigLoader ConfigLoader { get; }
         IDbConnectionSession CreateDbSession(DataSourceChoice commandMethod);
 
-        void LoadConfig(SmartSqlMapConfig smartSqlMapConfig);
-
         int Execute(RequestContext context);
         T ExecuteScalar<T>(RequestContext context);
         IEnumerable<T> Query<T>(RequestContext context);
