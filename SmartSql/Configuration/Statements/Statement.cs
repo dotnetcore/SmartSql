@@ -13,8 +13,18 @@ using System.Xml.Serialization;
 
 namespace SmartSql.Configuration.Statements
 {
+    public enum StatementType
+    {
+        Statement,
+        Insert,
+        Update,
+        Delete,
+        Select
+    }
+
     public class Statement
     {
+        public virtual StatementType Type { get { return StatementType.Statement; } }
         [XmlIgnore]
         public SmartSqlMap SmartSqlMap { get; internal set; }
         [XmlAttribute]

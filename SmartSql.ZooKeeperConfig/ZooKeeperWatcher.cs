@@ -2,7 +2,6 @@
 using org.apache.zookeeper;
 using SmartSql.Abstractions;
 using SmartSql.Configuration;
-using SmartSql.SqlMap;
 using System;
 using System.Collections.Generic;
 using System.Linq;

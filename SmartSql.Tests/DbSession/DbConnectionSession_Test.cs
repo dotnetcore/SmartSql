@@ -4,9 +4,9 @@ using System.Text;
 using Xunit;
 using SmartSql.DbSession;
 using System.Data.SqlClient;
-using SmartSql.SqlMap;
 using Dapper;
 using SmartSql.Abstractions.Logging;
+using SmartSql.Configuration;
 
 namespace SmartSql.Tests.DbSession
 {

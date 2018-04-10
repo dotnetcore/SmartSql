@@ -4,8 +4,8 @@ using System.Text;
 
 namespace SmartSql.Configuration.Statements
 {
-    public class Insert : Statement
+    public class Delete : Statement
     {
-        public override StatementType Type => StatementType.Insert;
+        public override StatementType Type => StatementType.Delete;
     }
 }

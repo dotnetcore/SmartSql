@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using SmartSql.SqlMap;
 using Xunit;
 using System.Xml;
 using System.Xml.Serialization;
