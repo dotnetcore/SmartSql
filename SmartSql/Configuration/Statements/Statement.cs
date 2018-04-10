@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -32,8 +33,21 @@ namespace SmartSql.Configuration.Statements
         public String FullSqlId => $"{SmartSqlMap.Scope}.{Id}";
         public List<ITag> SqlTags { get; set; }
         public Cache Cache { get; set; }
-
         public ICacheProvider CacheProvider { get; internal set; }
+        const string SMART_DB_PREFIX = "$";
+
+        private Regex replaceDbPrefixReg;
+        private Regex GetReplaceDbPrefixReg()
+        {
+            String dbPrefix = SmartSqlMap.SmartSqlMapConfig.Database.DbProvider.ParameterPrefix;
+
+            replaceDbPrefixReg = new Regex(@"([\p{L}\p{N}_]+)=([\"+ SMART_DB_PREFIX + @"])([\p{L}\p{N}_]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+            return replaceDbPrefixReg;
+        }
+
+
+
 
         public String BuildSql(RequestContext context)
         {
