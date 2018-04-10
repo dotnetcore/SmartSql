@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
-using SmartSql.SqlMap;
 using SmartSql.Common;
 namespace SmartSql.Tests.SqlMap
 {

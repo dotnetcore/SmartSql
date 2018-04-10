@@ -1,5 +1,5 @@
 ﻿using SmartSql.Abstractions;
-using SmartSql.SqlMap.Tags;
+using SmartSql.Configuration.Tags;
 using System;
 using System.Collections.Generic;
 using System.Text;

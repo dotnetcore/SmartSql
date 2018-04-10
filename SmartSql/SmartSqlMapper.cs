@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using SmartSql.SqlMap;
 using System.Data.Common;
 using System.Threading.Tasks;
 using System.Data;
@@ -16,6 +15,7 @@ using SmartSql.Abstractions.Cache;
 using SmartSql.Abstractions.Config;
 using Microsoft.Extensions.Logging;
 using SmartSql.Abstractions.Logging;
+using SmartSql.Configuration;
 
 namespace SmartSql
 {

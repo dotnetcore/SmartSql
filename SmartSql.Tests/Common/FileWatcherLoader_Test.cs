@@ -15,7 +15,7 @@ namespace SmartSql.Tests.Common
         {
             int changeTimes = 1;
             Trace.WriteLine("Watch");
-            FileWatcherLoader.Instance.Watch(new System.IO.FileInfo(@"E:\Loader.xml"), () =>
+            new FileWatcherLoader().Watch(new System.IO.FileInfo(@"E:\Loader.xml"), () =>
             {
                 Trace.WriteLine("FileChanged-" + changeTimes);
                 ++changeTimes;

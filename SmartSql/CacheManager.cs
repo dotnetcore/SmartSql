@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SmartSql.Abstractions;
-using SmartSql.SqlMap;
+
 using SmartSql.Exceptions;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using SmartSql.Configuration.Statements;
 
 namespace SmartSql
 {

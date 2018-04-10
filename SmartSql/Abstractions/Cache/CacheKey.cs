@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Linq;
 using System.Collections;
 using Dapper;
-using SmartSql.SqlMap.Tags;
+
 
 namespace SmartSql.Abstractions.Cache
 {

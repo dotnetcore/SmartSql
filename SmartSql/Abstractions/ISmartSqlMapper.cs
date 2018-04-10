@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data;
 using System.Collections;
-using SmartSql.SqlMap;
 using System.Data.Common;
 using System.Threading.Tasks;
 using SmartSql.Abstractions.DbSession;
 using SmartSql.Abstractions.DataSource;
 using SmartSql.Abstractions.Cache;
 using SmartSql.Abstractions.Config;
+using SmartSql.Configuration;
 
 namespace SmartSql.Abstractions
 {
@@ -24,7 +24,7 @@ namespace SmartSql.Abstractions
         ISqlBuilder SqlBuilder { get; }
         DbProviderFactory DbProviderFactory { get; }
         IDbConnectionSessionStore SessionStore { get; }
-         IConfigLoader ConfigLoader { get; }
+        IConfigLoader ConfigLoader { get; }
         IDbConnectionSession CreateDbSession(DataSourceChoice commandMethod);
 
         int Execute(RequestContext context);

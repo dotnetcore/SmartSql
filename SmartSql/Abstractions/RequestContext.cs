@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using SmartSql.SqlMap;
+using SmartSql.Configuration;
 using System;
 using System.Collections;
 using System.Collections.Generic;

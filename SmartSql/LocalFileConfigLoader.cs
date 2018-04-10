@@ -3,13 +3,13 @@ using SmartSql.Abstractions.Config;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using SmartSql.SqlMap;
 using SmartSql.Common;
 using System.Xml.Serialization;
 using System.Xml;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using System.Threading;
+using SmartSql.Configuration;
 
 namespace SmartSql
 {

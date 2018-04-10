@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using SmartSql.SqlMap;
 using org.apache.zookeeper;
 using System.Threading.Tasks;
 using System.IO;
@@ -12,6 +11,7 @@ using SmartSql.Abstractions.Logging;
 using SmartSql.Abstractions.Config;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using SmartSql.Configuration;
 
 namespace SmartSql.ZooKeeperConfig
 {

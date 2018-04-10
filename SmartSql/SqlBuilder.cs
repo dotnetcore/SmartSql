@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SmartSql.Abstractions;
+using SmartSql.Configuration.Statements;
 using SmartSql.Exceptions;
-using SmartSql.SqlMap;
 using System;
 using System.Collections.Generic;
 using System.Text;

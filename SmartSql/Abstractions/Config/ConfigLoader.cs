@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using SmartSql.SqlMap;
+
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
+using SmartSql.Configuration;
+using SmartSql.Configuration.Statements;
 
 namespace SmartSql.Abstractions.Config
 {
@@ -37,7 +39,7 @@ namespace SmartSql.Abstractions.Config
                     SmartSqlMapConfig = SqlMapConfig,
                     Path = configStream.Path,
                     Statements = new List<Statement> { },
-                    Caches = new List<SqlMap.Cache> { }
+                    Caches = new List<Configuration.Cache> { }
                 };
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(configStream.Stream);
@@ -49,7 +51,7 @@ namespace SmartSql.Abstractions.Config
                 var cacheNodes = xmlDoc.SelectNodes("//ns:Cache", xmlNsM);
                 foreach (XmlElement cacheNode in cacheNodes)
                 {
-                    var cache = SqlMap.Cache.Load(cacheNode);
+                    var cache = Configuration.Cache.Load(cacheNode);
                     sqlMap.Caches.Add(cache);
                 }
                 #endregion

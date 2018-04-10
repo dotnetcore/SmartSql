@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using SmartSql.Abstractions.DbSession;
-using SmartSql.SqlMap;
 
 namespace SmartSql.Abstractions.DataSource
 {
