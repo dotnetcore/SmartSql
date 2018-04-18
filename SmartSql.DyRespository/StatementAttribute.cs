@@ -1,0 +1,20 @@
+﻿using System;
+using System.Data;
+
+namespace SmartSql.DyRespository
+{
+    public class StatementAttribute : Attribute
+    {
+        public string Id { get; set; }
+        public ExecuteBehavior Execute { get; set; }
+    }
+
+    public enum ExecuteBehavior
+    {
+        Auto = 0,
+        Execute = 1,
+        ExecuteScalar = 2,
+        Query = 3,
+        QuerySingle = 4
+    }
+}
