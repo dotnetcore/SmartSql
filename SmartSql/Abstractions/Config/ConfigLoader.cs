@@ -51,7 +51,7 @@ namespace SmartSql.Abstractions.Config
                 var cacheNodes = xmlDoc.SelectNodes("//ns:Cache", xmlNsM);
                 foreach (XmlElement cacheNode in cacheNodes)
                 {
-                    var cache = Configuration.Cache.Load(cacheNode);
+                    var cache = CacheFactory.Load(cacheNode);
                     sqlMap.Caches.Add(cache);
                 }
                 #endregion
