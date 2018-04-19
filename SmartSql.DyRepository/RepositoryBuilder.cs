@@ -7,17 +7,17 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace SmartSql.DyRespository
+namespace SmartSql.DyRepository
 {
-    public class RespositoryBuilder : IRespositoryBuilder
+    public class RepositoryBuilder : IRepositoryBuilder
     {
-        private const string DEFAULT_SCOPE_TEMPLATE = "I{Scope}Respository";
+        private const string DEFAULT_SCOPE_TEMPLATE = "I{Scope}Repository";
 
-        private Regex respositoryScope;
+        private Regex RepositoryScope;
 
         private AssemblyBuilder assemblyBuilder;
         private ModuleBuilder moduleBuilder;
-        public RespositoryBuilder(string scope_template = "")
+        public RepositoryBuilder(string scope_template = "")
         {
             InitScopeTemlate(scope_template);
             InitAssembly();
@@ -32,18 +32,18 @@ namespace SmartSql.DyRespository
             template = template.Replace("{Scope}", @"([\p{L}\p{N}_]+)");
             template = template.Insert(0, "^");
             template = template + "$";
-            respositoryScope = new Regex(template, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            RepositoryScope = new Regex(template, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
         }
 
-        private String GetScope(string respositoryName)
+        private String GetScope(string RepositoryName)
         {
-            var matchScope = respositoryScope.Match(respositoryName);
+            var matchScope = RepositoryScope.Match(RepositoryName);
             return matchScope.Groups[1].Value;
         }
 
         private void InitAssembly()
         {
-            string assemblyName = "SmartSql.RespositoryImpl" + this.GetHashCode();
+            string assemblyName = "SmartSql.RepositoryImpl" + this.GetHashCode();
             assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName
             {
                 Name = assemblyName
@@ -56,7 +56,7 @@ namespace SmartSql.DyRespository
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public Type BuildRespositoryImpl(Type interfaceType)
+        public Type BuildRepositoryImpl(Type interfaceType)
         {
             string implName = interfaceType.Name.TrimStart('I') + "_Impl";
             var typeBuilder = moduleBuilder.DefineType(implName, TypeAttributes.Public);

@@ -6,24 +6,24 @@ using System.Reflection.Emit;
 using SmartSql.Abstractions;
 using System.Collections;
 
-namespace SmartSql.DyRespository
+namespace SmartSql.DyRepository
 {
-    public class RespositoryFactory : IRespositoryFactory
+    public class RepositoryFactory : IRepositoryFactory
     {
-        private IDictionary<Type, object> cachedRespository = new Dictionary<Type, object>();
+        private IDictionary<Type, object> cachedRepository = new Dictionary<Type, object>();
 
         private AssemblyBuilder assemblyBuilder;
         private ModuleBuilder moduleBuilder;
-        private readonly IRespositoryBuilder respositoryBuilder;
+        private readonly IRepositoryBuilder RepositoryBuilder;
 
-        public RespositoryFactory(IRespositoryBuilder respositoryBuilder)
+        public RepositoryFactory(IRepositoryBuilder RepositoryBuilder)
         {
             Init();
-            this.respositoryBuilder = respositoryBuilder;
+            this.RepositoryBuilder = RepositoryBuilder;
         }
         private void Init()
         {
-            string assemblyName = "SmartSql.RespositoryImpl" + this.GetHashCode();
+            string assemblyName = "SmartSql.RepositoryImpl" + this.GetHashCode();
             assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName
             {
                 Name = assemblyName
@@ -33,18 +33,18 @@ namespace SmartSql.DyRespository
 
         public object CreateInstance(Type interfaceType, ISmartSqlMapper smartSqlMapper)
         {
-            if (!cachedRespository.ContainsKey(interfaceType))
+            if (!cachedRepository.ContainsKey(interfaceType))
             {
                 lock (this)
                 {
-                    var implType = respositoryBuilder.BuildRespositoryImpl(interfaceType);
+                    var implType = RepositoryBuilder.BuildRepositoryImpl(interfaceType);
                     var paramTypes = new Type[] { typeof(ISmartSqlMapper) };
                     var ctorInfo = implType.GetConstructor(paramTypes);
                     var obj = ctorInfo.Invoke(new object[] { smartSqlMapper });
-                    cachedRespository.Add(interfaceType, obj);
+                    cachedRepository.Add(interfaceType, obj);
                 }
             }
-            return cachedRespository[interfaceType];
+            return cachedRepository[interfaceType];
         }
 
 

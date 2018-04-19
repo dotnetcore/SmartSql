@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 
-namespace SmartSql.DyRespository
+namespace SmartSql.DyRepository
 {
     public class StatementAttribute : Attribute
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SmartSql.DyRespository
+namespace SmartSql.DyRepository
 {
     public class SqlMapAttribute : Attribute
     {

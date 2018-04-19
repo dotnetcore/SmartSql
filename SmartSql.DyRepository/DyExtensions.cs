@@ -5,25 +5,25 @@ using System.Reflection;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using SmartSql.Abstractions;
-using SmartSql.DyRespository;
+using SmartSql.DyRepository;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class DyExtensions
     {
-        public static void AddRespositoryFactory(this IServiceCollection services, string scope_template = "")
+        public static void AddRepositoryFactory(this IServiceCollection services, string scope_template = "")
         {
-            services.AddSingleton<IRespositoryBuilder>((sp) =>
+            services.AddSingleton<IRepositoryBuilder>((sp) =>
             {
-                return new RespositoryBuilder(scope_template);
+                return new RepositoryBuilder(scope_template);
             });
-            services.AddSingleton<IRespositoryFactory>((sp) =>
+            services.AddSingleton<IRepositoryFactory>((sp) =>
             {
-                var respositoryBuilder = sp.GetRequiredService<IRespositoryBuilder>();
-                return new RespositoryFactory(respositoryBuilder);
+                var RepositoryBuilder = sp.GetRequiredService<IRepositoryBuilder>();
+                return new RepositoryFactory(RepositoryBuilder);
             });
         }
-        public static void AddRespository<T>(this IServiceCollection services) where T : class
+        public static void AddRepository<T>(this IServiceCollection services) where T : class
         {
             services.AddSingleton<T>(sp =>
             {
@@ -32,13 +32,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     throw new ArgumentNullException($"can not find ISmartSqlMapper impl");
                 }
-                var factory = sp.GetRequiredService<IRespositoryFactory>();
+                var factory = sp.GetRequiredService<IRepositoryFactory>();
 
                 return factory.CreateInstance<T>(sqlMapper);
             });
         }
 
-        public static void AddRespositoryFromAssembly(this IServiceCollection services, Action<AssemblyAutoRegisterOptions> setupOptions)
+        public static void AddRepositoryFromAssembly(this IServiceCollection services, Action<AssemblyAutoRegisterOptions> setupOptions)
         {
             var options = new AssemblyAutoRegisterOptions
             {
@@ -56,7 +56,7 @@ namespace Microsoft.Extensions.DependencyInjection
                      {
                          throw new ArgumentNullException($"can not find ISmartSqlMapper impl");
                      }
-                     var factory = sp.GetRequiredService<IRespositoryFactory>();
+                     var factory = sp.GetRequiredService<IRepositoryFactory>();
                      return factory.CreateInstance(type, sqlMapper);
                  });
             }
