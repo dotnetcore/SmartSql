@@ -8,7 +8,7 @@
     <Version>1.0.1</Version>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
-    <PackageReleaseNotes>Add generic method support</PackageReleaseNotes>
+    <PackageReleaseNotes>Add generic method support.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
