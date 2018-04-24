@@ -98,6 +98,7 @@ namespace SmartSql.DbSession
                 }
                 catch (Exception ex)
                 {
+                    
                     _logger.LogError($"OpenConnection Unable to open connection to { DataSource.Name }.");
                     throw new SmartSqlException($"OpenConnection Unable to open connection to { DataSource.Name }.", ex);
                 }

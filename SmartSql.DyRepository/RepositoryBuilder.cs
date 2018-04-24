@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
@@ -113,6 +114,18 @@ namespace SmartSql.DyRepository
                 , MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Final
                 , returnType, new Type[] { paramType });
 
+            if (methodInfo.IsGenericMethod)
+            {
+                var genericArgs = methodInfo.GetGenericArguments();
+                var gArgNames = genericArgs.Select(gArg => gArg.Name).ToArray();
+                var defineGenericArgs = implMehtod.DefineGenericParameters(gArgNames);
+                for (int i = 0; i < gArgNames.Length; i++)
+                {
+                    var genericArg = genericArgs[i];
+                    var defineGenericArg = defineGenericArgs[i];
+                    defineGenericArg.SetGenericParameterAttributes(genericArg.GenericParameterAttributes);
+                }
+            }
             StatementAttribute statementAttr = PreStatement(methodInfo, returnType);
             var ilGenerator = implMehtod.GetILGenerator();
             ilGenerator.Emit(OpCodes.Ldarg_0);

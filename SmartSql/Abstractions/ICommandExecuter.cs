@@ -13,10 +13,10 @@ namespace SmartSql.Abstractions
     /// </summary>
     public interface ICommandExecuter
     {
-        int ExecuteNonQuery();
-        IDataReader ExecuteReader();
-        IDataReader ExecuteReader(CommandBehavior behavior);
-        object ExecuteScalar();
+        int ExecuteNonQuery(RequestContext context);
+        IDataReader ExecuteReader(RequestContext context);
+        IDataReader ExecuteReader(RequestContext context, CommandBehavior behavior);
+        object ExecuteScalar(RequestContext context);
     }
 
     public interface ICommandExecuterAsync
@@ -31,6 +31,6 @@ namespace SmartSql.Abstractions
 
         Task<object> ExecuteScalarAsync();
         Task<object> ExecuteScalarAsync(CancellationToken cancellationToken);
-        
+
     }
 }

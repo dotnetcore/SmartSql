@@ -10,35 +10,35 @@ namespace SmartSql
     public class CommandExecuter : ICommandExecuter
     {
         private IDbConnectionSessionStore sessionStore;
-        private IDbCommand dbCommand;
-        public CommandExecuter(IDbConnectionSessionStore sessionStore)
+        private readonly IPreparedCommand preparedCommand;
+        public CommandExecuter(IDbConnectionSessionStore sessionStore, IPreparedCommand  preparedCommand)
         {
             this.sessionStore = sessionStore;
-            dbCommand = sessionStore.LocalSession.Connection.CreateCommand();
-            dbCommand.Transaction = sessionStore.LocalSession.Transaction;
+            this.preparedCommand = preparedCommand;
         }
 
-
-
-        public int ExecuteNonQuery()
+        public int ExecuteNonQuery(RequestContext context)
         {
-
-            throw new NotImplementedException();
+            var dbCommand = preparedCommand.Prepare(sessionStore, context);
+            return dbCommand.ExecuteNonQuery();
         }
 
-        public IDataReader ExecuteReader()
+        public IDataReader ExecuteReader(RequestContext context)
         {
-            throw new NotImplementedException();
+            var dbCommand = preparedCommand.Prepare(sessionStore, context);
+            return dbCommand.ExecuteReader();
         }
 
-        public IDataReader ExecuteReader(CommandBehavior behavior)
+        public IDataReader ExecuteReader(RequestContext context, CommandBehavior behavior)
         {
-            throw new NotImplementedException();
+            var dbCommand = preparedCommand.Prepare(sessionStore, context);
+            return dbCommand.ExecuteReader(behavior);
         }
 
-        public object ExecuteScalar()
+        public object ExecuteScalar(RequestContext context)
         {
-            throw new NotImplementedException();
+            var dbCommand = preparedCommand.Prepare(sessionStore, context);
+            return dbCommand.ExecuteScalar();
         }
     }
 }
