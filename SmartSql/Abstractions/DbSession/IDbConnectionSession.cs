@@ -13,7 +13,6 @@ namespace SmartSql.Abstractions.DbSession
     public interface IDbConnectionSession : IDisposable
     {
         Guid Id { get; }
-        DbProviderFactory DbProviderFactory { get; }
         IDataSource DataSource { get; }
         IDbConnection Connection { get; }
         IDbTransaction Transaction { get; }

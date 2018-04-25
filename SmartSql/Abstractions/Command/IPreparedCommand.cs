@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace SmartSql.Abstractions
+namespace SmartSql.Abstractions.Command
 {
     public interface IPreparedCommand
     {
-        IDbCommand Prepare(IDbConnectionSessionStore sessionStore, RequestContext context);
+        IDbCommand Prepare(RequestContext context);
     }
 }

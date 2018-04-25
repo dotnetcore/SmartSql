@@ -19,9 +19,9 @@ namespace SmartSql.DbSession
         public IDbConnection Connection { get; private set; }
         public IDbTransaction Transaction { get; private set; }
         public DbSessionLifeCycle LifeCycle { get; set; }
-        public DbConnectionSession(ILoggerFactory loggerFactory, DbProviderFactory dbProviderFactory, IDataSource dataSource)
+        public DbConnectionSession(ILogger<DbConnectionSession> logger, DbProviderFactory dbProviderFactory, IDataSource dataSource)
         {
-            _logger = loggerFactory.CreateLogger<DbConnectionSession>();
+            _logger = logger;
             Id = Guid.NewGuid();
             LifeCycle = DbSessionLifeCycle.Transient;
             DbProviderFactory = dbProviderFactory;
@@ -98,7 +98,7 @@ namespace SmartSql.DbSession
                 }
                 catch (Exception ex)
                 {
-                    
+
                     _logger.LogError($"OpenConnection Unable to open connection to { DataSource.Name }.");
                     throw new SmartSqlException($"OpenConnection Unable to open connection to { DataSource.Name }.", ex);
                 }

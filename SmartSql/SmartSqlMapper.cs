@@ -46,7 +46,7 @@ namespace SmartSql
             ConfigLoader = new LocalFileConfigLoader(sqlMapConfigFilePath, loggerFactory);
             SqlMapConfig = ConfigLoader.Load();
             DbProviderFactory = SqlMapConfig.Database.DbProvider.DbProviderFactory;
-            SessionStore = new DbConnectionSessionStore(loggerFactory, this.GetHashCode().ToString());
+            SessionStore = new DbConnectionSessionStore(loggerFactory, DbProviderFactory, this.GetHashCode().ToString());
             SqlBuilder = new SqlBuilder(loggerFactory, this);
             DataSourceManager = new DataSourceManager(loggerFactory, this);
             CacheManager = new CacheManager(loggerFactory, this);
@@ -62,7 +62,7 @@ namespace SmartSql
             ConfigLoader = configLoader;
             SqlMapConfig = ConfigLoader.Load();
             DbProviderFactory = SqlMapConfig.Database.DbProvider.DbProviderFactory;
-            SessionStore = new DbConnectionSessionStore(loggerFactory, this.GetHashCode().ToString());
+            SessionStore = new DbConnectionSessionStore(loggerFactory, DbProviderFactory, this.GetHashCode().ToString());
             SqlBuilder = new SqlBuilder(loggerFactory, this);
             DataSourceManager = new DataSourceManager(loggerFactory, this);
             CacheManager = new CacheManager(loggerFactory, this);
@@ -330,14 +330,6 @@ namespace SmartSql
             SessionStore.Dispose();
         }
         #endregion
-
-        public IDbConnectionSession CreateDbSession(DataSourceChoice sourceChoice)
-        {
-            IDataSource dataSource = DataSourceManager.GetDataSource(sourceChoice);
-            IDbConnectionSession session = new DbConnectionSession(_loggerFactory, DbProviderFactory, dataSource);
-            session.CreateConnection();
-            return session;
-        }
         public void Dispose()
         {
             ConfigLoader.Dispose();
@@ -347,6 +339,12 @@ namespace SmartSql
             }
             SessionStore.Dispose();
             _logger.LogWarning($"SmartSqlMapper Dispose.");
+        }
+
+        public IDbConnectionSession CreateDbSession(DataSourceChoice commandMethod)
+        {
+
+            throw new NotImplementedException();
         }
     }
 }

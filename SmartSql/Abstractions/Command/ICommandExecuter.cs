@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SmartSql.Abstractions
+namespace SmartSql.Abstractions.Command
 {
     /// <summary>
     /// SQL 命令执行器
