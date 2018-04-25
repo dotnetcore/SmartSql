@@ -18,32 +18,7 @@ namespace SmartSql.Configuration
         public IDictionary Parameters { get; set; }
         public IList<FlushOnExecute> FlushOnExecutes { get; set; }
         public FlushInterval FlushInterval { get; set; }
-        public ICacheProvider CreateCacheProvider()
-        {
-            ICacheProvider _cacheProvider = null;
-            switch (Type)
-            {
-                case "Lru":
-                    {
-                        _cacheProvider = new LruCacheProvider();
-                        break;
-                    }
-                case "Fifo":
-                    {
-                        _cacheProvider = new FifoCacheProvider();
-                        break;
-                    }
-                default:
-                    {
-                        var assName = new AssemblyName { Name = AssemblyName };
-                        Type _cacheProviderType = Assembly.Load(assName).GetType(TypeName);
-                        _cacheProvider = Activator.CreateInstance(_cacheProviderType) as ICacheProvider;
-                        break;
-                    }
-            }
-            _cacheProvider.Initialize(Parameters);
-            return _cacheProvider;
-        }
+
     }
     public class FlushInterval
     {

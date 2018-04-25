@@ -1,5 +1,8 @@
-﻿using System;
+﻿using SmartSql.Abstractions.Cache;
+using SmartSql.Cache;
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 
@@ -58,6 +61,32 @@ namespace SmartSql.Configuration
                 }
             }
             return cache;
+        }
+        public static ICacheProvider CreateCacheProvider(Cache cache)
+        {
+            ICacheProvider _cacheProvider = null;
+            switch (cache.Type)
+            {
+                case "Lru":
+                    {
+                        _cacheProvider = new LruCacheProvider();
+                        break;
+                    }
+                case "Fifo":
+                    {
+                        _cacheProvider = new FifoCacheProvider();
+                        break;
+                    }
+                default:
+                    {
+                        var assName = new AssemblyName { Name = cache.AssemblyName };
+                        Type _cacheProviderType = Assembly.Load(assName).GetType(cache.TypeName);
+                        _cacheProvider = Activator.CreateInstance(_cacheProviderType) as ICacheProvider;
+                        break;
+                    }
+            }
+            _cacheProvider.Initialize(cache.Parameters);
+            return _cacheProvider;
         }
     }
 }

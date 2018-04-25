@@ -26,7 +26,7 @@ namespace SmartSql.Configuration
             {
                 var cache = smartSqlMap.Caches.FirstOrDefault(m => m.Id == cacheId);
                 statement.Cache = cache ?? throw new SmartSqlException($"Statement.Id:{statement.Id} can not find Cache.Id:{cacheId}");
-                statement.CacheProvider = statement.Cache.CreateCacheProvider();
+                statement.CacheProvider = CacheFactory.CreateCacheProvider(statement.Cache);
             }
             var tagNodes = statementNode.ChildNodes;
             IList<Include> includes = new List<Include>();
