@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql", "SmartSql\SmartSql.csproj", "{A579D5D5-1311-4DD9-AE62-3EFE43BB87A1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Tests", "SmartSql.Tests\SmartSql.Tests.csproj", "{6A0B2F6A-2018-47B0-A506-787DDC83B189}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Cache.Redis", "SmartSql.Cache.Redis\SmartSql.Cache.Redis.csproj", "{93C6C660-D8A8-4548-8921-AF2D9B7D847A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DataAccess", "SmartSql.DataAccess\SmartSql.DataAccess.csproj", "{DEB48DC2-AFA5-4463-A675-18EB754CA16E}"
@@ -31,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{0F671EB0-B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DyRepository", "SmartSql.DyRepository\SmartSql.DyRepository.csproj", "{B627989A-6428-4EDF-AFDE-1AA1C6C77B04}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.UTests", "SmartSql.UTests\SmartSql.UTests.csproj", "{842BB849-5D9D-4FCB-9DD3-152717CE8C94}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,10 +41,6 @@ Global
 		{A579D5D5-1311-4DD9-AE62-3EFE43BB87A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A579D5D5-1311-4DD9-AE62-3EFE43BB87A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A579D5D5-1311-4DD9-AE62-3EFE43BB87A1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6A0B2F6A-2018-47B0-A506-787DDC83B189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6A0B2F6A-2018-47B0-A506-787DDC83B189}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6A0B2F6A-2018-47B0-A506-787DDC83B189}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6A0B2F6A-2018-47B0-A506-787DDC83B189}.Release|Any CPU.Build.0 = Release|Any CPU
 		{93C6C660-D8A8-4548-8921-AF2D9B7D847A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{93C6C660-D8A8-4548-8921-AF2D9B7D847A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93C6C660-D8A8-4548-8921-AF2D9B7D847A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,14 +65,18 @@ Global
 		{B627989A-6428-4EDF-AFDE-1AA1C6C77B04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B627989A-6428-4EDF-AFDE-1AA1C6C77B04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B627989A-6428-4EDF-AFDE-1AA1C6C77B04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{842BB849-5D9D-4FCB-9DD3-152717CE8C94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{842BB849-5D9D-4FCB-9DD3-152717CE8C94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{842BB849-5D9D-4FCB-9DD3-152717CE8C94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{842BB849-5D9D-4FCB-9DD3-152717CE8C94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{6A0B2F6A-2018-47B0-A506-787DDC83B189} = {8EF12533-817B-464A-A5B3-FEAE6E7541B7}
 		{ADA3E170-5DFC-47E1-8041-F3404A8667AF} = {15701446-0FB4-40EB-9A91-3A9002BCEE6D}
 		{4FFABF3E-6443-4BFF-976D-1949197096AE} = {8EF12533-817B-464A-A5B3-FEAE6E7541B7}
+		{842BB849-5D9D-4FCB-9DD3-152717CE8C94} = {8EF12533-817B-464A-A5B3-FEAE6E7541B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BDD65F0C-A7A1-4326-85E6-BC4B0CB8A313}

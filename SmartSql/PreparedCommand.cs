@@ -16,15 +16,18 @@ namespace SmartSql
         Regex _sqlParamsTokens = new Regex(@"([\p{L}\p{N}_]+)=[?@:\$]([\p{L}\p{N}_]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         private readonly IDbConnectionSessionStore _sessionStore;
+        private readonly ISqlBuilder _sqlBuilder;
 
-        public PreparedCommand(IDbConnectionSessionStore sessionStore)
+        public PreparedCommand(IDbConnectionSessionStore sessionStore, ISqlBuilder sqlBuilder)
         {
             _sessionStore = sessionStore;
+            _sqlBuilder = sqlBuilder;
         }
         public IDbCommand Prepare(RequestContext context)
         {
-            var dbCommand = _sessionStore.LocalSession.Connection.CreateCommand();
-            string sql = string.Empty;
+            var dbSession = _sessionStore.GetOrAddDbSession(context.DataSource);
+            var dbCommand = dbSession.Connection.CreateCommand();
+            string sql = _sqlBuilder.BuildSql(context);
             var matches = _sqlParamsTokens.Matches(sql);
             foreach (Match match in matches)
             {

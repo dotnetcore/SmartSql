@@ -30,6 +30,9 @@ namespace SmartSql
         public IDataSourceManager DataSourceManager { get; }
         public ICacheManager CacheManager { get; }
         public IConfigLoader ConfigLoader { get; }
+
+        public StatementMap StatementMap { get; }
+
         private SqlRuner _sqlRuner;
 
         public SmartSqlMapper(String sqlMapConfigFilePath = "SmartSqlMapConfig.xml") : this(NullLoggerFactory.Instance, sqlMapConfigFilePath)
@@ -43,15 +46,20 @@ namespace SmartSql
         {
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<SmartSqlMapper>();
+
             ConfigLoader = new LocalFileConfigLoader(sqlMapConfigFilePath, loggerFactory);
             SqlMapConfig = ConfigLoader.Load();
+
             DbProviderFactory = SqlMapConfig.Database.DbProvider.DbProviderFactory;
+
             SessionStore = new DbConnectionSessionStore(loggerFactory, DbProviderFactory, this.GetHashCode().ToString());
-            SqlBuilder = new SqlBuilder(loggerFactory, this);
+            StatementMap = new StatementMap(loggerFactory.CreateLogger<StatementMap>());
+            StatementMap.Load(SqlMapConfig);
+            SqlBuilder = new SqlBuilder(loggerFactory.CreateLogger<SqlBuilder>(), StatementMap);
+
             DataSourceManager = new DataSourceManager(loggerFactory, this);
             CacheManager = new CacheManager(loggerFactory, this);
             _sqlRuner = new SqlRuner(loggerFactory, SqlBuilder, this);
-
             ConfigLoader.OnChanged = SqlConfigOnChanged;
             SqlMapConfig.SetLogger(_loggerFactory.CreateLogger<SmartSqlMapConfig>());
         }
@@ -60,10 +68,10 @@ namespace SmartSql
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<SmartSqlMapper>();
             ConfigLoader = configLoader;
-            SqlMapConfig = ConfigLoader.Load();
+            SqlMapConfig = configLoader.Load();
             DbProviderFactory = SqlMapConfig.Database.DbProvider.DbProviderFactory;
             SessionStore = new DbConnectionSessionStore(loggerFactory, DbProviderFactory, this.GetHashCode().ToString());
-            SqlBuilder = new SqlBuilder(loggerFactory, this);
+            SqlBuilder = new SqlBuilder(loggerFactory.CreateLogger<SqlBuilder>(), StatementMap);
             DataSourceManager = new DataSourceManager(loggerFactory, this);
             CacheManager = new CacheManager(loggerFactory, this);
             _sqlRuner = new SqlRuner(loggerFactory, SqlBuilder, this);

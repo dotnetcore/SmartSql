@@ -10,33 +10,33 @@ namespace SmartSql
 {
     public class CommandExecuter : ICommandExecuter
     {
-        private readonly IPreparedCommand preparedCommand;
+        private readonly IPreparedCommand _preparedCommand;
         public CommandExecuter(IPreparedCommand preparedCommand)
         {
-            this.preparedCommand = preparedCommand;
+            _preparedCommand = preparedCommand;
         }
 
         public int ExecuteNonQuery(RequestContext context)
         {
-            var dbCommand = preparedCommand.Prepare(context);
+            var dbCommand = _preparedCommand.Prepare(context);
             return dbCommand.ExecuteNonQuery();
         }
 
         public IDataReader ExecuteReader(RequestContext context)
         {
-            var dbCommand = preparedCommand.Prepare(context);
+            var dbCommand = _preparedCommand.Prepare(context);
             return dbCommand.ExecuteReader();
         }
 
         public IDataReader ExecuteReader(RequestContext context, CommandBehavior behavior)
         {
-            var dbCommand = preparedCommand.Prepare(context);
+            var dbCommand = _preparedCommand.Prepare(context);
             return dbCommand.ExecuteReader(behavior);
         }
 
         public object ExecuteScalar(RequestContext context)
         {
-            var dbCommand = preparedCommand.Prepare(context);
+            var dbCommand = _preparedCommand.Prepare(context);
             return dbCommand.ExecuteScalar();
         }
     }
