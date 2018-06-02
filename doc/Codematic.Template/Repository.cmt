@@ -1,0 +1,26 @@
+﻿<#@ template language="c#" HostSpecific="True" #>
+<#@ output extension= ".cs" #>
+<#
+	TableHost host = (TableHost)(Host);
+	host.Fieldlist.Sort(CodeCommon.CompareByintOrder);
+#>
+//*******************************
+// Create By Ahoo Wang 
+// Date <#= DateTime.Now.ToString("yyyy-MM-dd HH:mm") #>
+//*******************************
+
+using System; 
+
+namespace <#= host.NameSpace #>.Repository<# if( host.Folder.Length > 0) {#>.<#= host.Folder #><# } #>
+{
+	<# if( host.TableDescription.Length > 0) {#>
+	/// <summary>
+ 	///<#= host.TableDescription #>
+ 	/// </summary>	
+	<# } #>
+	public class I<#= host.GetModelClass(host.TableName) #>Repository
+	{
+
+   
+	}
+}

@@ -6,4 +6,3 @@ bin
 /SmartSql/Properties/PublishProfiles
 /.vs
 *.pubxml
-/src/packages
