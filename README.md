@@ -5,7 +5,7 @@
 ## 0. Why
 
 - 拥抱 跨平台 DotNet Core，是时候了。
-- 把你的双手从数据访问层解放出来，少加点班吧。
+- 高性能、高生产力，超轻量级的ORM。**107kb**
 
 ---
 
@@ -30,8 +30,8 @@
 - 4 日志 √
   - 4.1 基于 Microsoft.Extensions.Logging.Abstractions  (当你需要跟踪调试的时候一切都是那么一目了然)
 - 5 Dynamic Repository
-  - 5.1 SmartSql.DyRepository  √
-- 6 查询缓存  √
+  - 5.1 SmartSql.DyRepository  √ （解放你的双手，你来定义仓储接口，我来实现数据库访问）
+- 6 查询缓存  √ （热数据缓存，一个配置轻松搞定）
   - 6.1 SmartSql.Cache.Memory  √
     - 6.1.1 Fifo  √
     - 6.1.2 Lru  √
@@ -46,31 +46,31 @@
 
 ---
 
-## 3. 性能
+## 3. 性能评测
 
 ``` ini
 
-BenchmarkDotNet=v0.10.14, OS=Windows 10.0.16299.431 (1709/FallCreatorsUpdate/Redstone3)
-Intel Core i7-4710MQ CPU 2.50GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
-Frequency=2435768 Hz, Resolution=410.5481 ns, Timer=TSC
+BenchmarkDotNet=v0.10.14, OS=Windows 10.0.17134
+Intel Core i7-6700K CPU 4.00GHz (Skylake), 1 CPU, 8 logical and 4 physical cores
 .NET Core SDK=2.1.201
   [Host]     : .NET Core 2.0.7 (CoreCLR 4.6.26328.01, CoreFX 4.6.26403.03), 64bit RyuJIT
   DefaultJob : .NET Core 2.0.7 (CoreCLR 4.6.26328.01, CoreFX 4.6.26403.03), 64bit RyuJIT
 
-```
 
-|            ORM |                     Type |                  Method |     Mean |     Error |    StdDev | Rank |      Gen 0 |     Gen 1 |     Gen 2 | Allocated |
-|--------------- |------------------------- |------------------------ |---------:|----------:|----------:|-----:|-----------:|----------:|----------:|----------:|
-|       SmartSql |       SmartSqlBenchmarks |                   Query | 101.6 ms | 0.2226 ms | 0.1738 ms |    1 |  2437.5000 | 1062.5000 |  375.0000 |  13.37 MB |
-|         Native |         NativeBenchmarks | Query_IsDBNull_GetValue | 101.7 ms | 0.4101 ms | 0.3635 ms |    1 |  2437.5000 | 1062.5000 |  375.0000 |  13.37 MB |
-|         Dapper |         DapperBenchmarks |                   Query | 104.4 ms | 1.3195 ms | 1.2342 ms |    2 |  3375.0000 | 1375.0000 |  625.0000 |  17.64 MB |
-| SmartSqlDapper | SmartSqlDapperBenchmarks |                   Query | 105.7 ms | 1.1697 ms | 1.0941 ms |    3 |  3750.0000 | 1437.5000 |  625.0000 |  19.47 MB |
-|         Native |         NativeBenchmarks |   Query_GetValue_DbNull | 107.4 ms | 1.0710 ms | 1.0018 ms |    4 |  3062.5000 | 1187.5000 |  500.0000 |  16.42 MB |
-|       SqlSugar |       SqlSugarBenchmarks |                   Query | 108.9 ms | 0.4048 ms | 0.3787 ms |    5 |  2375.0000 | 1000.0000 |  312.5000 |  13.09 MB |
-|             EF |             EFBenchmarks |                SqlQuery | 110.9 ms | 0.6922 ms | 0.6475 ms |    6 | 11062.5000 |         - |         - |  34.13 MB |
-|          Chloe |          ChloeBenchmarks |                   Query | 14.5 ms  | 2.2600 ms | 5.3711 ms |    7 |  2375.0000 | 1000.0000 |  312.5000 |  13.07 MB |
-|             EF |             EFBenchmarks |        Query_NoTracking | 126.4 ms | 1.3197 ms | 1.2344 ms |    8 |  5937.5000 | 2250.0000 | 1062.5000 |  30.16 MB |
-|             EF |             EFBenchmarks |     SqlQuery_NoTracking | 148.6 ms | 0.8290 ms | 0.7755 ms |    9 |  7437.5000 | 2937.5000 | 1250.0000 |  37.79 MB |
+```
+|            ORM |                     Type |                  Method |        Return |      Mean |     Error |    StdDev | Rank |     Gen 0 |     Gen 1 |     Gen 2 | Allocated |
+|--------------- |------------------------- |------------------------ |-------------- |----------:|----------:|----------:|-----:|----------:|----------:|----------:|----------:|
+|         Native |         NativeBenchmarks |   Query_GetValue_DbNull | IEnumerable`1 |  78.39 ms | 0.8935 ms | 0.7921 ms |    1 | 3000.0000 | 1125.0000 |  500.0000 |  15.97 MB |
+|       SmartSql |       SmartSqlBenchmarks |                   Query | IEnumerable`1 |  78.46 ms | 0.2402 ms | 0.1875 ms |    1 | 2312.5000 | 1000.0000 |  312.5000 |  12.92 MB |
+| SmartSqlDapper | SmartSqlDapperBenchmarks |                   Query | IEnumerable`1 |  78.65 ms | 1.2094 ms | 1.1312 ms |    1 | 3687.5000 | 1437.5000 |  687.5000 |  19.03 MB |
+|         Native |         NativeBenchmarks | Query_IsDBNull_GetValue | IEnumerable`1 |  78.84 ms | 0.8984 ms | 0.7502 ms |    1 | 2312.5000 | 1000.0000 |  312.5000 |  12.92 MB |
+|         Dapper |         DapperBenchmarks |                   Query | IEnumerable`1 |  79.00 ms | 1.0949 ms | 0.9706 ms |    1 | 3312.5000 | 1312.5000 |  625.0000 |  17.19 MB |
+|             EF |             EFBenchmarks |                   Query | IEnumerable`1 |  79.44 ms | 1.6880 ms | 1.5789 ms |    1 | 6250.0000 |         - |         - |  26.05 MB |
+|       SqlSugar |       SqlSugarBenchmarks |                   Query | IEnumerable`1 |  81.09 ms | 0.8718 ms | 0.7728 ms |    2 | 2187.5000 |  875.0000 |  250.0000 |  12.64 MB |
+|          Chloe |          ChloeBenchmarks |                   Query | IEnumerable`1 |  83.86 ms | 1.2714 ms | 1.1893 ms |    3 | 2250.0000 |  937.5000 |  312.5000 |  12.62 MB |
+|             EF |             EFBenchmarks |                SqlQuery | IEnumerable`1 |  89.11 ms | 0.7562 ms | 0.6314 ms |    4 | 8187.5000 |  125.0000 |         - |  33.68 MB |
+|             EF |             EFBenchmarks |        Query_NoTracking | IEnumerable`1 |  93.13 ms | 0.8458 ms | 0.7912 ms |    5 | 5875.0000 | 2250.0000 | 1062.5000 |  29.71 MB |
+|             EF |             EFBenchmarks |     SqlQuery_NoTracking | IEnumerable`1 | 106.89 ms | 1.0998 ms | 1.0288 ms |    6 | 7437.5000 | 2875.0000 | 1312.5000 |  37.34 MB |
 
 ---
 
