@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://doc.smartsql.net/" target="_blank"><img width="100"src="https://github.com/Ahoo-Wang/SmartSql/blob/master/doc/SmartSql.png"></a>
+  <a href="https://doc.smartsql.net/" target="_blank"><img width="100"src="https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/doc/SmartSql.png"></a>
 </p>
 
 # 简介
