@@ -84,7 +84,7 @@ namespace SmartSql.UTests.DyRepository
         [Fact]
         public void Update()
         {
-            var exc = _repository.Update(new
+            var exc = _repository.DyUpdate(new
             {
                 FLong = 2,
                 FNullBool = true,
