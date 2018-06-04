@@ -29,17 +29,8 @@ namespace SmartSql.Configuration.Tags
             }
             return false;
         }
-
-        public override void BuildSql(RequestContext context)
-        {
-            if (IsCondition(context))
-            {
-                BuildChildSql(context);
-            }
-        }
         public override void BuildChildSql(RequestContext context)
         {
-            context.Sql.AppendFormat(" {0} ", Prepend);
             context.Sql.Append(Open);
             var reqVal = (GetPropertyValue(context) as IEnumerable).GetEnumerator();
             reqVal.MoveNext();
@@ -72,6 +63,7 @@ namespace SmartSql.Configuration.Tags
         {
             string dbPrefix = GetDbProviderPrefix(context);
             string dbPrefixs = $"{context.SmartSqlContext.DbPrefix}{context.SmartSqlContext.SmartDbPrefix}";
+
             var reqVal = GetPropertyValue(context) as IEnumerable;
             int item_index = 0;
             foreach (var itemVal in reqVal)
@@ -81,11 +73,12 @@ namespace SmartSql.Configuration.Tags
                     context.Sql.AppendFormat(" {0} ", Separator);
                 }
                 string patternStr = $"([{dbPrefixs}]{Regex.Escape(Key)})";
-                string key_name = $"{dbPrefix}{Key}{FOR_KEY_SUFFIX}{item_index}";
+                string key_name = $"{Key}{FOR_KEY_SUFFIX}{item_index}";
                 context.RequestParameters.Add(key_name, itemVal);
+                string key_name_dbPrefix = $"{dbPrefix}{key_name}";
                 string item_sql = Regex.Replace(itemSqlStr
                                   , patternStr
-                                  , key_name
+                                  , key_name_dbPrefix
                                   , RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant);
 
                 context.Sql.AppendFormat("{0}", item_sql);
@@ -114,12 +107,15 @@ namespace SmartSql.Configuration.Tags
                     if (!isHasParam) { continue; }
 
                     var propertyVal = property.GetValue(itemVal);
-                    string key_name = $"{dbPrefix}{property.Name}{FOR_KEY_SUFFIX}{item_index}";
+                    string key_name = $"{Key}{FOR_KEY_SUFFIX}{item_index}";
+                    context.RequestParameters.Add(key_name, itemVal);
+                    string key_name_dbPrefix = $"{dbPrefix}{key_name}";
+
                     context.RequestParameters.Add(key_name, propertyVal);
 
                     item_sql = Regex.Replace(item_sql
                                       , (patternStr)
-                                      , key_name
+                                      , key_name_dbPrefix
                                       , RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant);
                 }
 

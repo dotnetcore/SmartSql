@@ -100,7 +100,11 @@ namespace SmartSql.UTests
             {
                 Scope = Scope,
                 SqlId = "Query",
-                Request = new { Taken = 10 }
+                Request = new
+                {
+                    Taken = 10,
+                    Ids = new long[] { 1, 2, 4 }
+                }
             };
             var list = _sqlMapper.Query<T_Entity>(context);
         }

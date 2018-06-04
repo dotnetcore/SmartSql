@@ -39,7 +39,7 @@
             </Default>
           </Switch>
         </IsNotEmpty>
-        <For Prepend="And T.FLong In"  Key="Key" Open="(" Close=")" Property="Ids" Separator=",">
+        <For Prepend="And" Key="Key" Open="T.FLong In (" Close=")" Property="Ids" Separator=",">
           @Key
         </For>
       </Where>
@@ -130,7 +130,7 @@
         (10)
       </IsNull>-->
       T.* From T_Entity T With(NoLock)
-      <!--<Include RefId="QueryParams"/>-->
+      <Include RefId="QueryParams"/>
 
     </Statement>
 
