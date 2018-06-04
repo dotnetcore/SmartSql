@@ -38,50 +38,55 @@ namespace SmartSql.DataAccess
             };
             return SqlMapper.QuerySingle<TEntity>(new RequestContext
             {
+                DataSourceChoice = sourceChoice,
                 Scope = this.Scope,
                 SqlId = DefaultSqlId.GetEntity,
                 Request = parameters
-            }, sourceChoice);
+            });
         }
 
         public virtual IEnumerable<TEntity> GetList(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
             return SqlMapper.Query<TEntity>(new RequestContext
             {
+                DataSourceChoice = sourceChoice,
                 Scope = this.Scope,
                 SqlId = DefaultSqlId.GetList,
                 Request = paramObj
-            }, sourceChoice);
+            });
         }
 
         public virtual IEnumerable<TEntity> GetListByPage(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
             return SqlMapper.Query<TEntity>(new RequestContext
             {
+                DataSourceChoice = sourceChoice,
                 Scope = this.Scope,
                 SqlId = DefaultSqlId.GetListByPage,
                 Request = paramObj
-            }, sourceChoice);
+            });
         }
 
         public virtual int GetRecord(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
             return SqlMapper.QuerySingle<int>(new RequestContext
             {
+                DataSourceChoice = sourceChoice,
                 Scope = this.Scope,
                 SqlId = DefaultSqlId.GetRecord,
                 Request = paramObj
-            }, sourceChoice);
+            });
         }
 
         public virtual bool IsExist(object paramObj, DataSourceChoice sourceChoice = DataSourceChoice.Read)
         {
             return SqlMapper.QuerySingle<int>(new RequestContext
             {
+                DataSourceChoice = sourceChoice,
                 Scope = this.Scope,
                 SqlId = DefaultSqlId.IsExist,
                 Request = paramObj
-            }, sourceChoice) > 0;
+            }) > 0;
         }
 
         #endregion

@@ -18,7 +18,11 @@ namespace SmartSql.DataAccess
         }
         public DataAccess(ILoggerFactory loggerFactory, String smartSqlMapConfigPath = "SmartSqlMapConfig.xml")
         {
-            SqlMapper = MapperContainer.Instance.GetSqlMapper(loggerFactory, smartSqlMapConfigPath);
+            SqlMapper = MapperContainer.Instance.GetSqlMapper(new SmartSqlOptions
+            {
+                ConfigPath = smartSqlMapConfigPath,
+                LoggerFactory = loggerFactory
+            });
             InitScope();
         }
         public DataAccess(ISmartSqlMapper sqlMapper)
