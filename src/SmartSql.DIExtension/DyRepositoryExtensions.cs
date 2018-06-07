@@ -18,8 +18,8 @@ namespace Microsoft.Extensions.DependencyInjection
             });
             services.AddSingleton<IRepositoryFactory>((sp) =>
             {
-                var RepositoryBuilder = sp.GetRequiredService<IRepositoryBuilder>();
-                return new RepositoryFactory(RepositoryBuilder);
+                var repositoryBuilder = sp.GetRequiredService<IRepositoryBuilder>();
+                return new RepositoryFactory(repositoryBuilder);
             });
         }
         public static void AddRepository<T>(this IServiceCollection services) where T : class
@@ -27,12 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<T>(sp =>
             {
                 var sqlMapper = sp.GetRequiredService<ISmartSqlMapper>();
-                if (sqlMapper == null)
-                {
-                    throw new ArgumentNullException($"can not find ISmartSqlMapper impl");
-                }
                 var factory = sp.GetRequiredService<IRepositoryFactory>();
-
                 return factory.CreateInstance<T>(sqlMapper);
             });
         }
@@ -51,10 +46,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 services.AddSingleton(type, sp =>
                 {
                     var sqlMapper = sp.GetRequiredService<ISmartSqlMapper>();
-                    if (sqlMapper == null)
-                    {
-                        throw new ArgumentNullException($"can not find ISmartSqlMapper impl");
-                    }
                     var factory = sp.GetRequiredService<IRepositoryFactory>();
                     return factory.CreateInstance(type, sqlMapper);
                 });
