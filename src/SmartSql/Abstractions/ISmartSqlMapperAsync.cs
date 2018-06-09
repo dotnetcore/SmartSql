@@ -1,6 +1,7 @@
 ﻿using SmartSql.Abstractions.DbSession;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,5 +13,8 @@ namespace SmartSql.Abstractions
         Task<T> ExecuteScalarAsync<T>(RequestContext context);
         Task<IEnumerable<T>> QueryAsync<T>(RequestContext context);
         Task<T> QuerySingleAsync<T>(RequestContext context);
+
+        Task<DataTable> GetDataTableAsync(RequestContext context);
+        Task<DataSet> GetDataSetAsync(RequestContext context);
     }
 }

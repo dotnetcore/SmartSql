@@ -15,6 +15,8 @@ namespace SmartSql.DyRepository
         Execute = 1,
         ExecuteScalar = 2,
         Query = 3,
-        QuerySingle = 4
+        QuerySingle = 4,
+        GetDataTable = 5,
+        GetDataSet = 6
     }
 }

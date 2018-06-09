@@ -28,7 +28,17 @@ namespace SmartSql.UTests.DyRepository
         public void GetEntity()
         {
             var enttiy = _repository.GetEntity(3);
+        }
 
+        [Fact]
+        public void QueryDataTable()
+        {
+            var dataTable = _repository.QueryDataTable();
+        }
+        [Fact]
+        public void QueryDataSet()
+        {
+            var dataSet = _repository.QueryDataSet();
         }
         [Fact]
         public void Insert()

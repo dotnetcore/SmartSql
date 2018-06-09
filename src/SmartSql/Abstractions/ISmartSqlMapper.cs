@@ -22,6 +22,10 @@ namespace SmartSql.Abstractions
         T ExecuteScalar<T>(RequestContext context);
         IEnumerable<T> Query<T>(RequestContext context);
         T QuerySingle<T>(RequestContext context);
+
+        DataTable GetDataTable(RequestContext context);
+        DataSet GetDataSet(RequestContext context);
+
         #region Transaction
         IDbConnectionSession BeginTransaction();
         IDbConnectionSession BeginTransaction(RequestContext context);

@@ -2,6 +2,7 @@
 using SmartSql.UTests.Entity;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace SmartSql.UTests.DyRepository
@@ -16,5 +17,9 @@ namespace SmartSql.UTests.DyRepository
         int Update(T_Entity entity);
         IEnumerable<T_Entity> Query(String FString);
         T_Entity GetEntity(long Id);
+        [Statement(Id = "MultiQuery")]
+        DataTable QueryDataTable();
+        [Statement(Id = "MultiQuery")]
+        DataSet QueryDataSet();
     }
 }

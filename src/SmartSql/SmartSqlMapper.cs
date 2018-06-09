@@ -13,6 +13,8 @@ using SmartSql.Abstractions.DataReaderDeserializer;
 using SmartSql.Exceptions;
 using System.Linq;
 using SmartSql.Abstractions.Cache;
+using System.Data.Common;
+using SmartSql.Utils;
 
 namespace SmartSql
 {
@@ -116,6 +118,47 @@ namespace SmartSql
                 return deser.ToSingle<T>(context, dataReader);
             }, context);
         }
+
+        public DataTable GetDataTable(RequestContext context)
+        {
+            return ExecuteWrap((dbSession) =>
+            {
+                IDataReader dataReader = null;
+                try
+                {
+                    dataReader = CommandExecuter.ExecuteReader(dbSession, context);
+                    return DataReaderConvert.ToDataTable(dataReader);
+                }
+                finally
+                {
+                    if (dataReader != null)
+                    {
+                        dataReader.Dispose();
+                    }
+                }
+
+            }, context);
+        }
+
+        public DataSet GetDataSet(RequestContext context)
+        {
+            return ExecuteWrap((dbSession) =>
+            {
+                IDataReader dataReader = null;
+                try
+                {
+                    dataReader = CommandExecuter.ExecuteReader(dbSession, context);
+                    return DataReaderConvert.ToDataSet(dataReader);
+                }
+                finally
+                {
+                    if (dataReader != null)
+                    {
+                        dataReader.Dispose();
+                    }
+                }
+            }, context);
+        }
         #endregion
         #region Async
         public async Task<T> ExecuteWrapAsync<T>(Func<IDbConnectionSession, Task<T>> execute, RequestContext context)
@@ -179,6 +222,47 @@ namespace SmartSql
                 var dataReader = await CommandExecuter.ExecuteReaderAsync(dbSession, context);
                 var deser = DeserializerFactory.Create();
                 return await deser.ToSingleAsync<T>(context, dataReader);
+            }, context);
+        }
+
+        public async Task<DataTable> GetDataTableAsync(RequestContext context)
+        {
+            return await ExecuteWrapAsync(async (dbSession) =>
+            {
+                DbDataReader dataReader = null;
+                try
+                {
+                    dataReader = await CommandExecuter.ExecuteReaderAsync(dbSession, context);
+                    return await DataReaderConvert.ToDataTableAsync(dataReader);
+                }
+                finally
+                {
+                    if (dataReader != null)
+                    {
+                        dataReader.Dispose();
+                    }
+                }
+
+            }, context);
+        }
+
+        public async Task<DataSet> GetDataSetAsync(RequestContext context)
+        {
+            return await ExecuteWrapAsync(async (dbSession) =>
+            {
+                DbDataReader dataReader = null;
+                try
+                {
+                    dataReader = await CommandExecuter.ExecuteReaderAsync(dbSession, context);
+                    return await DataReaderConvert.ToDataSetAsync(dataReader);
+                }
+                finally
+                {
+                    if (dataReader != null)
+                    {
+                        dataReader.Dispose();
+                    }
+                }
             }, context);
         }
         #endregion
@@ -292,5 +376,9 @@ namespace SmartSql
                 _logger.LogWarning($"SmartSqlMapper Dispose.");
             }
         }
+
+
+
+
     }
 }

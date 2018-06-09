@@ -131,7 +131,6 @@
       </IsNull>-->
       T.* From T_Entity T With(NoLock)
       <Include RefId="QueryParams"/>
-
     </Statement>
 
     <!--获取分页数据-->
@@ -164,5 +163,11 @@
       <Include RefId="QueryParams"/>
     </Statement>
 
+
+    <Statement Id="MultiQuery">
+      Select Top 6 T.* From T_Entity T With(NoLock);
+      Select Top 8 T.* From T_Entity T With(NoLock);
+
+    </Statement>
   </Statements>
 </SmartSqlMap>

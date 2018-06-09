@@ -259,6 +259,16 @@ namespace SmartSql.DyRepository
                     Id = methodInfo.Name
                 };
             }
+            if (returnType == typeof(DataTable))
+            {
+                statementAttr.Execute = ExecuteBehavior.GetDataTable;
+                return statementAttr;
+            }
+            if (returnType == typeof(DataSet))
+            {
+                statementAttr.Execute = ExecuteBehavior.GetDataSet;
+                return statementAttr;
+            }
             if (statementAttr.Execute == ExecuteBehavior.Auto)
             {
                 if (returnType == typeof(int) || returnType == _voidType)
@@ -313,6 +323,16 @@ namespace SmartSql.DyRepository
                         var method = typeof(ISmartSqlMapper).GetMethod("Query", new Type[] { typeof(RequestContext) });
                         var enumerableType = returnType.GenericTypeArguments[0];
                         executeMethod = method.MakeGenericMethod(new Type[] { enumerableType });
+                        break;
+                    }
+                case ExecuteBehavior.GetDataTable:
+                    {
+                        executeMethod = typeof(ISmartSqlMapper).GetMethod("GetDataTable", new Type[] { typeof(RequestContext) });
+                        break;
+                    }
+                case ExecuteBehavior.GetDataSet:
+                    {
+                        executeMethod = typeof(ISmartSqlMapper).GetMethod("GetDataSet", new Type[] { typeof(RequestContext) });
                         break;
                     }
                 default: { throw new ArgumentException(); }
