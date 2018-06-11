@@ -29,7 +29,7 @@ namespace SmartSql
         public IDataReaderDeserializerFactory DeserializerFactory { get { return _smartSqlOptions.DataReaderDeserializerFactory; } }
         public ILoggerFactory LoggerFactory { get { return _smartSqlOptions.LoggerFactory; } }
         public ICacheManager CacheManager { get { return _smartSqlOptions.CacheManager; } }
-
+        public ISqlBuilder SqlBuilder { get { return _smartSqlOptions.SqlBuilder; } }
         public SmartSqlMapper(String sqlMapConfigFilePath = "SmartSqlMapConfig.xml") : this(NoneLoggerFactory.Instance, sqlMapConfigFilePath)
         {
 
@@ -51,12 +51,14 @@ namespace SmartSql
             _smartSqlOptions.Setup();
             _logger = LoggerFactory.CreateLogger<SmartSqlMapper>();
         }
-
+        private void SetupRequestContext(RequestContext context)
+        {
+            context.Setup(_smartSqlOptions.SmartSqlContext, SqlBuilder);
+        }
         #region Sync
         public T ExecuteWrap<T>(Func<IDbConnectionSession, T> execute, RequestContext context)
         {
-            context.SmartSqlContext = _smartSqlOptions.SmartSqlContext;
-            context.SetupParameters();
+            SetupRequestContext(context);
             if (CacheManager.TryGet<T>(context, out T cachedResult))
             {
                 return cachedResult;
@@ -163,8 +165,7 @@ namespace SmartSql
         #region Async
         public async Task<T> ExecuteWrapAsync<T>(Func<IDbConnectionSession, Task<T>> execute, RequestContext context)
         {
-            context.SmartSqlContext = _smartSqlOptions.SmartSqlContext;
-            context.SetupParameters();
+            SetupRequestContext(context);
             if (CacheManager.TryGet<T>(context, out T cachedResult))
             {
                 return cachedResult;

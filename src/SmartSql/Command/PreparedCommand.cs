@@ -18,15 +18,12 @@ namespace SmartSql.Command
     public class PreparedCommand : IPreparedCommand
     {
         Regex _sqlParamsTokens;
-        private readonly ISqlBuilder _sqlBuilder;
         private readonly SmartSqlContext _smartSqlContext;
 
         public event OnPreparedHandler OnPrepared;
 
-        public PreparedCommand(ISqlBuilder sqlBuilder
-            , SmartSqlContext smartSqlContext)
+        public PreparedCommand(SmartSqlContext smartSqlContext)
         {
-            _sqlBuilder = sqlBuilder;
             _smartSqlContext = smartSqlContext;
             string dbPrefixs = $"{smartSqlContext.DbPrefix}{smartSqlContext.SmartDbPrefix}";
             var regOptions = RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled;
@@ -45,16 +42,18 @@ namespace SmartSql.Command
             {
                 case CommandType.Text:
                     {
-                        string sql = _sqlBuilder.BuildSql(context);
+                        string sql = context.RealSql;
                         if (_sqlParamsTokens.IsMatch(sql))
                         {
                             sql = _sqlParamsTokens.Replace(sql, match =>
                               {
                                   string paramName = match.Groups[1].Value;
-                                  var paramMap = context.Statement.ParameterMap?.Parameters?.FirstOrDefault(p => p.Name == paramName);
+                                  var paramMap = context.Statement?.ParameterMap?.Parameters?.FirstOrDefault(p => p.Name == paramName);
                                   var propertyName = paramMap != null ? paramMap.Property : paramName;
 
-                                  if (!context.RequestParameters.TryGetValue(propertyName, out object paramVal))
+                                  if (context.RequestParameters == null
+                                    ||
+                                    !context.RequestParameters.TryGetValue(propertyName, out object paramVal))
                                   {
                                       //throw new SmartSqlException($"can not find Parameter,Name:{paramName}!");
                                       return match.Value;

@@ -21,13 +21,22 @@ namespace SmartSql.Abstractions
         public CommandType CommandType { get; set; } = CommandType.Text;
         public Statement Statement { get; internal set; }
         public StringBuilder Sql { get; internal set; }
-        public String RealSql { get; internal set; }
+        public bool IsStatementSql { get; internal set; }
+        public String RealSql { get; set; }
         public String Scope { get; set; }
         public String SqlId { get; set; }
         public String FullSqlId => $"{Scope}.{SqlId}";
         public bool IsFirstDyChild { get; internal set; }
         public IDictionary<string, object> RequestParameters { get; internal set; }
         public object Request { get; set; }
+
+        [Obsolete("Internal call")]
+        public void Setup(SmartSqlContext smartSqlContext, ISqlBuilder sqlBuilder)
+        {
+            SmartSqlContext = smartSqlContext;
+            SetupParameters();
+            SetupSql(sqlBuilder);
+        }
         internal void SetupParameters()
         {
             if (CommandType == CommandType.StoredProcedure || Request == null)
@@ -60,6 +69,12 @@ namespace SmartSql.Abstractions
             }
             RequestParameters = ObjectUtils.ToDictionary(Request, ignoreParameterCase);
         }
+
+        internal void SetupSql(ISqlBuilder sqlBuilder)
+        {
+            sqlBuilder.BuildSql(this);
+        }
+
 
         public String Key { get { return $"{FullSqlId}:{RequestString}"; } }
 
@@ -97,7 +112,7 @@ namespace SmartSql.Abstractions
 
         public ITypeHandler GetResultTypeHandler(string property)
         {
-            return Statement.ResultMap?.Results?.FirstOrDefault(r => r.Property == property)?.Handler;
+            return Statement?.ResultMap?.Results?.FirstOrDefault(r => r.Property == property)?.Handler;
         }
     }
 }

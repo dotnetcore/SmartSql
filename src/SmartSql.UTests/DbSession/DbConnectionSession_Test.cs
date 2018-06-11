@@ -22,12 +22,14 @@ namespace SmartSql.UTests.DbSession
         public void BeginTransaction()
         {
             _connectionSession.BeginTransaction();
+            _connectionSession.RollbackTransaction();
         }
         [Fact]
         public void BeginTransactionAndIL()
         {
             IsolationLevel isolationLevel = IsolationLevel.Unspecified;
             _connectionSession.BeginTransaction(isolationLevel);
+            _connectionSession.RollbackTransaction();
         }
         [Fact]
         public void CloseConnection()

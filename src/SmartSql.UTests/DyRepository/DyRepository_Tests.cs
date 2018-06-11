@@ -29,7 +29,11 @@ namespace SmartSql.UTests.DyRepository
         {
             var enttiy = _repository.GetEntity(3);
         }
-
+        [Fact]
+        public void QueryBySql()
+        {
+            var list = _repository.QueryBySql();
+        }
         [Fact]
         public void QueryDataTable()
         {

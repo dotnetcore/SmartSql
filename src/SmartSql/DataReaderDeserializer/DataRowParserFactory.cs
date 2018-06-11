@@ -144,7 +144,7 @@ namespace SmartSql.DataReaderDeserializer
             foreach (var colName in columnNames)
             {
                 colIndex++;
-                var result = context.Statement.ResultMap?.Results?.FirstOrDefault(r => r.Column == colName);
+                var result = context.Statement?.ResultMap?.Results?.FirstOrDefault(r => r.Column == colName);
                 bool hasTypeHandler = result?.Handler != null;
                 string propertyName = result != null ? result.Property : colName;
                 var property = targetType.GetProperty(propertyName);

@@ -7,6 +7,7 @@ namespace SmartSql.DyRepository
     {
         public string Id { get; set; }
         public ExecuteBehavior Execute { get; set; }
+        public string Sql { get; set; }
     }
 
     public enum ExecuteBehavior

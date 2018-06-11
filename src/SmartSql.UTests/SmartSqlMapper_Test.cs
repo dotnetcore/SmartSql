@@ -114,9 +114,10 @@ namespace SmartSql.UTests
             RequestContext context = new RequestContext
             {
                 Scope = Scope,
-                SqlId = "Query"
+                SqlId = "GetEntity",
+                Request = new { Id = 2 }
             };
-            var list = _sqlMapper.QuerySingle<T_Entity>(context);
+            var entity = _sqlMapper.QuerySingle<T_Entity>(context);
         }
         [Fact]
         public void GetDataTable()
@@ -175,7 +176,8 @@ namespace SmartSql.UTests
             RequestContext context = new RequestContext
             {
                 Scope = Scope,
-                SqlId = "Query"
+                SqlId = "Query",
+                Request = new { Taken = 10 }
             };
             var users = await _sqlMapper.QueryAsync<T_Entity>(context);
         }
@@ -186,7 +188,8 @@ namespace SmartSql.UTests
             RequestContext context = new RequestContext
             {
                 Scope = Scope,
-                SqlId = "Query"
+                SqlId = "GetEntity",
+                Request = new { Id = 2 }
             };
             var user = await _sqlMapper.QuerySingleAsync<T_Entity>(context);
         }
@@ -196,13 +199,9 @@ namespace SmartSql.UTests
             RequestContext context = new RequestContext
             {
                 Scope = Scope,
-                SqlId = "MultiQuery",
-                Request = new
-                {
-                    Taken = 10
-                }
+                SqlId = "MultiQuery"
             };
-            var dataTable =await _sqlMapper.GetDataTableAsync(context);
+            var dataTable = await _sqlMapper.GetDataTableAsync(context);
         }
 
         [Fact]
@@ -211,11 +210,7 @@ namespace SmartSql.UTests
             RequestContext context = new RequestContext
             {
                 Scope = Scope,
-                SqlId = "MultiQuery",
-                Request = new
-                {
-                    Taken = 10
-                }
+                SqlId = "MultiQuery"
             };
             var dataSet = await _sqlMapper.GetDataSetAsync(context);
         }

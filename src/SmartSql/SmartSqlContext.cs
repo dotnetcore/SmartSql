@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using SmartSql.Abstractions;
 using SmartSql.Configuration;
 using SmartSql.Configuration.Maps;
 using SmartSql.Configuration.Statements;
@@ -13,7 +14,8 @@ namespace SmartSql
         private readonly ILogger<SmartSqlContext> _logger;
         public SmartSqlContext(
             ILogger<SmartSqlContext> logger
-            , SmartSqlMapConfig sqlMapConfig)
+            , SmartSqlMapConfig sqlMapConfig
+            )
         {
             _logger = logger;
             SqlMapConfig = sqlMapConfig;

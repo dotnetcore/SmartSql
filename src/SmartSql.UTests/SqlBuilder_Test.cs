@@ -22,7 +22,7 @@ namespace SmartSql.UTests
 
             RequestContext context = new RequestContext
             {
-                Scope = "T_Entity",
+                Scope = Scope,
                 SqlId = "Query",
                 Request = new
                 {
@@ -31,7 +31,7 @@ namespace SmartSql.UTests
                     Ids = new long[] { 1, 23, 4, 5, 6 }
                 }
             };
-            string rightSql = "SELECT T.* From T_Entity T With(NoLock) Order By  T.FLong Desc";
+            string rightSql = "Select T.* From T_Entity T With(NoLock)";
             string sql = _sqlBuilder.BuildSql(context);
             Assert.Equal<string>(rightSql, sql);
         }
