@@ -227,7 +227,51 @@ namespace SmartSql.UTests
             };
             var dataSet = await _sqlMapper.GetDataSetAsync(context);
         }
+        [Fact]
+        public async Task TransactionAsync()
+        {
+            try
+            {
+                _sqlMapper.BeginTransaction();
+                var entity = await _sqlMapper.QuerySingleAsync<T_Entity>(new RequestContext
+                {
+                    Scope = Scope,
+                    SqlId = "GetEntity",
+                    Request = new { Id = 8 }
+                });
+                await InsertAsync();
+                await InsertAsync();
+                await InsertAsync();
+                _sqlMapper.CommitTransaction();
+            }
+            catch (Exception ex)
+            {
+                _sqlMapper.RollbackTransaction();
+                throw ex;
+            }
+        }
 
+        [Fact]
+        public async Task InsertAsync()
+        {
+            await _sqlMapper.ExecuteAsync(new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "Insert",
+                Request = new T_Entity
+                {
+                    CreationTime = DateTime.Now,
+                    FBool = true,
+                    FDecimal = 1,
+                    FLong = 1,
+                    FNullBool = false,
+                    FString = Guid.NewGuid().ToString("N"),
+                    FNullDecimal = 1.1M,
+                    LastUpdateTime = DateTime.Now,
+                    Status = EntityStatus.Ok
+                }
+            });
+        }
         #endregion
     }
 }
