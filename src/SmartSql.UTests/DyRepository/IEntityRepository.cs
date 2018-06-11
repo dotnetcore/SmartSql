@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SmartSql.UTests.DyRepository
 {
@@ -22,7 +23,18 @@ namespace SmartSql.UTests.DyRepository
         [Statement(Id = "MultiQuery")]
         DataSet QueryDataSet();
 
-        [Statement(Sql = "Select Top(@Taken) T.* From T_Entity T With(NoLock);")]
-        IEnumerable<T_Entity> QueryBySql(int Taken);
+        [Statement(Sql = "Select Top(@taken) T.* From T_Entity T With(NoLock);")]
+        IEnumerable<T_Entity> QueryBySql(int taken);
+
+        Task DeleteAsync(long Id);
+        Task<int> UpdateAsync(T_Entity entity);
+        Task<IEnumerable<T_Entity>> QueryAsync(int Taken);
+        Task<T_Entity> GetEntityAsync(long Id);
+        [Statement(Id = "MultiQuery")]
+        Task<DataTable> QueryDataTableAsync();
+        [Statement(Id = "MultiQuery")]
+        Task<DataSet> QueryDataSetAsync();
+        [Statement(Sql = "Select Top(@taken) T.* From T_Entity T With(NoLock);")]
+        Task<IEnumerable<T_Entity>> QueryBySqlAsync(int taken);
     }
 }

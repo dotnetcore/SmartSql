@@ -2,7 +2,9 @@
 using SmartSql.UTests.Entity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SmartSql.UTests.DyRepository
@@ -104,6 +106,42 @@ namespace SmartSql.UTests.DyRepository
                 FNullBool = true,
                 LastUpdateTime = DateTime.Now
             });
+        }
+
+
+
+        [Fact]
+        public async Task DeleteAsync()
+        {
+            await _repository.DeleteAsync(6);
+        }
+        [Fact]
+        public async Task GetEntityAsync()
+        {
+            var enttiy = await _repository.GetEntityAsync(5);
+        }
+        [Fact]
+        public async Task QueryBySqlAsync()
+        {
+            var list = await _repository.QueryBySqlAsync(10);
+            var count = list.Count();
+            Assert.NotNull(list);
+        }
+        [Fact]
+        public async Task QueryDataTableAsync()
+        {
+            var dataTable = await _repository.QueryDataTableAsync();
+        }
+        [Fact]
+        public async Task QueryDataSetAsync()
+        {
+            var dataSet = await _repository.QueryDataSetAsync();
+        }
+        [Fact]
+        public async Task QueryAsync()
+        {
+            var list = await _repository.QueryAsync(10);
+
         }
 
         public void Dispose()

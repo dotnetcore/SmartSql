@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SmartSql.DyRepository
 {
@@ -118,6 +119,7 @@ namespace SmartSql.DyRepository
             return scope;
         }
         private readonly static Type _reqContextType = typeof(RequestContext);
+        private readonly static Type _taskType = typeof(Task);
         private readonly static Type _voidType = typeof(void);
         private readonly static Type _reqParamsDicType = typeof(Dictionary<string, object>);
 
@@ -137,9 +139,12 @@ namespace SmartSql.DyRepository
             var methodParams = methodInfo.GetParameters();
             var paramTypes = methodParams.Select(m => m.ParameterType).ToArray();
             var returnType = methodInfo.ReturnType;
+
             var implMehtod = typeBuilder.DefineMethod(methodInfo.Name
                 , MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Final
                 , returnType, paramTypes);
+
+            var isTaskReturnType = _taskType.IsAssignableFrom(returnType);
 
             if (methodInfo.IsGenericMethod)
             {
@@ -154,7 +159,7 @@ namespace SmartSql.DyRepository
                 }
             }
 
-            StatementAttribute statementAttr = PreStatement(methodInfo, returnType);
+            StatementAttribute statementAttr = PreStatement(methodInfo, returnType, isTaskReturnType);
             var ilGenerator = implMehtod.GetILGenerator();
             ilGenerator.DeclareLocal(_reqContextType);
             ilGenerator.DeclareLocal(_reqParamsDicType);
@@ -220,7 +225,7 @@ namespace SmartSql.DyRepository
             }
 
             MethodInfo executeMethod = null;
-            executeMethod = PreExecuteMethod(statementAttr, returnType);
+            executeMethod = PreExecuteMethod(statementAttr, returnType, isTaskReturnType);
             ilGenerator.Emit(OpCodes.Ldarg_0);// [this]
             ilGenerator.Emit(OpCodes.Ldfld, sqlMapperField);//[this][sqlMapper]
             ilGenerator.Emit(OpCodes.Ldloc_0);//[sqlMapper][requestContext]
@@ -259,18 +264,26 @@ namespace SmartSql.DyRepository
             ilGenerator.Emit(OpCodes.Call, _set_ScopeMethod);
         }
 
-        private StatementAttribute PreStatement(MethodInfo methodInfo, Type returnType)
+        private StatementAttribute PreStatement(MethodInfo methodInfo, Type returnType, bool isTaskReturnType)
         {
+            returnType = isTaskReturnType ? returnType.GetGenericArguments().FirstOrDefault() : returnType;
             var statementAttr = methodInfo.GetCustomAttribute<StatementAttribute>();
+            var methodName = methodInfo.Name;
+            if (isTaskReturnType && methodInfo.Name.EndsWith("Async"))
+            {
+                methodName = methodName.Substring(0, methodName.Length - 5);
+            }
+
             if (statementAttr != null)
             {
-                statementAttr.Id = !String.IsNullOrEmpty(statementAttr.Id) ? statementAttr.Id : methodInfo.Name;
+                statementAttr.Id = !String.IsNullOrEmpty(statementAttr.Id) ? statementAttr.Id
+                    : methodName;
             }
             else
             {
                 statementAttr = new StatementAttribute
                 {
-                    Id = methodInfo.Name
+                    Id = methodName
                 };
             }
             if (returnType == typeof(DataTable))
@@ -285,7 +298,7 @@ namespace SmartSql.DyRepository
             }
             if (statementAttr.Execute == ExecuteBehavior.Auto)
             {
-                if (returnType == typeof(int) || returnType == _voidType)
+                if (returnType == typeof(int) || returnType == _voidType || returnType == null)
                 {
                     statementAttr.Execute = ExecuteBehavior.Execute;
                 }
@@ -309,48 +322,94 @@ namespace SmartSql.DyRepository
             return statementAttr;
         }
 
-        private MethodInfo PreExecuteMethod(StatementAttribute statementAttr, Type returnType)
+        private MethodInfo PreExecuteMethod(StatementAttribute statementAttr, Type returnType, bool isTaskReturnType)
         {
             MethodInfo executeMethod;
-
-            switch (statementAttr.Execute)
+            if (isTaskReturnType)
             {
-                case ExecuteBehavior.Execute:
-                    {
-                        executeMethod = typeof(ISmartSqlMapper).GetMethod("Execute", new Type[] { typeof(RequestContext) });
-                        break;
-                    }
-                case ExecuteBehavior.ExecuteScalar:
-                    {
-                        var method = typeof(ISmartSqlMapper).GetMethod("ExecuteScalar", new Type[] { typeof(RequestContext) });
-                        executeMethod = method.MakeGenericMethod(new Type[] { returnType });
-                        break;
-                    }
-                case ExecuteBehavior.QuerySingle:
-                    {
-                        var method = typeof(ISmartSqlMapper).GetMethod("QuerySingle", new Type[] { typeof(RequestContext) });
-                        executeMethod = method.MakeGenericMethod(new Type[] { returnType });
-                        break;
-                    }
-                case ExecuteBehavior.Query:
-                    {
-                        var method = typeof(ISmartSqlMapper).GetMethod("Query", new Type[] { typeof(RequestContext) });
-                        var enumerableType = returnType.GenericTypeArguments[0];
-                        executeMethod = method.MakeGenericMethod(new Type[] { enumerableType });
-                        break;
-                    }
-                case ExecuteBehavior.GetDataTable:
-                    {
-                        executeMethod = typeof(ISmartSqlMapper).GetMethod("GetDataTable", new Type[] { typeof(RequestContext) });
-                        break;
-                    }
-                case ExecuteBehavior.GetDataSet:
-                    {
-                        executeMethod = typeof(ISmartSqlMapper).GetMethod("GetDataSet", new Type[] { typeof(RequestContext) });
-                        break;
-                    }
-                default: { throw new ArgumentException(); }
+                var realReturnType = returnType.GenericTypeArguments.FirstOrDefault();
+                switch (statementAttr.Execute)
+                {
+                    case ExecuteBehavior.Execute:
+                        {
+                            executeMethod = typeof(ISmartSqlMapperAsync).GetMethod("ExecuteAsync", new Type[] { typeof(RequestContext) });
+                            break;
+                        }
+                    case ExecuteBehavior.ExecuteScalar:
+                        {
+                            var method = typeof(ISmartSqlMapperAsync).GetMethod("ExecuteScalarAsync", new Type[] { typeof(RequestContext) });
+
+                            executeMethod = method.MakeGenericMethod(new Type[] { realReturnType });
+                            break;
+                        }
+                    case ExecuteBehavior.QuerySingle:
+                        {
+                            var method = typeof(ISmartSqlMapperAsync).GetMethod("QuerySingleAsync", new Type[] { typeof(RequestContext) });
+                            executeMethod = method.MakeGenericMethod(new Type[] { realReturnType });
+                            break;
+                        }
+                    case ExecuteBehavior.Query:
+                        {
+                            var method = typeof(ISmartSqlMapperAsync).GetMethod("QueryAsync", new Type[] { typeof(RequestContext) });
+                            var enumerableType = realReturnType.GenericTypeArguments[0];
+                            executeMethod = method.MakeGenericMethod(new Type[] { enumerableType });
+                            break;
+                        }
+                    case ExecuteBehavior.GetDataTable:
+                        {
+                            executeMethod = typeof(ISmartSqlMapperAsync).GetMethod("GetDataTableAsync", new Type[] { typeof(RequestContext) });
+                            break;
+                        }
+                    case ExecuteBehavior.GetDataSet:
+                        {
+                            executeMethod = typeof(ISmartSqlMapperAsync).GetMethod("GetDataSetAsync", new Type[] { typeof(RequestContext) });
+                            break;
+                        }
+                    default: { throw new ArgumentException(); }
+                }
             }
+            else
+            {
+                switch (statementAttr.Execute)
+                {
+                    case ExecuteBehavior.Execute:
+                        {
+                            executeMethod = typeof(ISmartSqlMapper).GetMethod("Execute", new Type[] { typeof(RequestContext) });
+                            break;
+                        }
+                    case ExecuteBehavior.ExecuteScalar:
+                        {
+                            var method = typeof(ISmartSqlMapper).GetMethod("ExecuteScalar", new Type[] { typeof(RequestContext) });
+                            executeMethod = method.MakeGenericMethod(new Type[] { returnType });
+                            break;
+                        }
+                    case ExecuteBehavior.QuerySingle:
+                        {
+                            var method = typeof(ISmartSqlMapper).GetMethod("QuerySingle", new Type[] { typeof(RequestContext) });
+                            executeMethod = method.MakeGenericMethod(new Type[] { returnType });
+                            break;
+                        }
+                    case ExecuteBehavior.Query:
+                        {
+                            var method = typeof(ISmartSqlMapper).GetMethod("Query", new Type[] { typeof(RequestContext) });
+                            var enumerableType = returnType.GenericTypeArguments[0];
+                            executeMethod = method.MakeGenericMethod(new Type[] { enumerableType });
+                            break;
+                        }
+                    case ExecuteBehavior.GetDataTable:
+                        {
+                            executeMethod = typeof(ISmartSqlMapper).GetMethod("GetDataTable", new Type[] { typeof(RequestContext) });
+                            break;
+                        }
+                    case ExecuteBehavior.GetDataSet:
+                        {
+                            executeMethod = typeof(ISmartSqlMapper).GetMethod("GetDataSet", new Type[] { typeof(RequestContext) });
+                            break;
+                        }
+                    default: { throw new ArgumentException(); }
+                }
+            }
+
             return executeMethod;
         }
 
