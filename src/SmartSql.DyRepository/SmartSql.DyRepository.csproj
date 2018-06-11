@@ -5,11 +5,11 @@
     <Authors>Ahoo Wang</Authors>
     <Company>Ahoo Wang</Company>
     <Description>SmartSql 动态代理仓储</Description>
-    <Version>3.2.0</Version>
+    <Version>3.3.0</Version>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageReleaseNotes>
-      1. add support SmartSql.DyRepository Sql Attribute For StatementAttribute.Sql
+      1. SmartSql.DyRepository add support asynchronous function
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <Copyright>Ahoo Wang</Copyright>
