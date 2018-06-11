@@ -20,14 +20,15 @@ namespace SmartSql.UTests.DataReaderDeserializer
         IDbConnectionSessionStore _sessionStore;
         ICommandExecuter _commandExecuter;
         SmartSqlContext _smartSqlContext;
+        ISqlBuilder _sqlBuilder;
         public EmitDataReaderDeserializer_Test()
         {
             _sessionStore = new DbConnectionSessionStore(LoggerFactory, DbProviderFactory);
             var _configLoader = new LocalFileConfigLoader(SqlMapConfigFilePath, LoggerFactory);
             var config = _configLoader.Load();
             _smartSqlContext = new SmartSqlContext(LoggerFactory.CreateLogger<SmartSqlContext>(), config);
-            var _sqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>(), _smartSqlContext);
-            var _preparedCommand = new PreparedCommand(_sqlBuilder,  _smartSqlContext);
+            _sqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>(), _smartSqlContext);
+            var _preparedCommand = new PreparedCommand(_smartSqlContext);
             _commandExecuter = new CommandExecuter(LoggerFactory.CreateLogger<CommandExecuter>(), _preparedCommand);
 
 
@@ -41,11 +42,13 @@ namespace SmartSql.UTests.DataReaderDeserializer
             {
                 Scope = Scope,
                 SqlId = "Query",
+                Request = new { Taken = 10 }
             };
+            context.Setup(_smartSqlContext, _sqlBuilder);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteReader(dbSession, context);
             var deser = _deserializerFactory.Create();
-            var list = deser.ToEnumerable<T_Entity>(context,result).ToList();
+            var list = deser.ToEnumerable<T_Entity>(context, result).ToList();
             result.Close();
             result.Dispose();
         }
@@ -57,10 +60,11 @@ namespace SmartSql.UTests.DataReaderDeserializer
                 Scope = Scope,
                 SqlId = "QueryStatus",
             };
+            context.Setup(_smartSqlContext, _sqlBuilder);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteReader(dbSession, context);
             var deser = _deserializerFactory.Create();
-            var userIds = deser.ToEnumerable<EntityStatus>(context, result).ToList() ;
+            var userIds = deser.ToEnumerable<EntityStatus>(context, result).ToList();
             result.Close();
             result.Dispose();
         }
@@ -72,6 +76,7 @@ namespace SmartSql.UTests.DataReaderDeserializer
                 Scope = Scope,
                 SqlId = "QueryNullStatus",
             };
+            context.Setup(_smartSqlContext, _sqlBuilder);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteReader(dbSession, context);
             var deser = _deserializerFactory.Create();

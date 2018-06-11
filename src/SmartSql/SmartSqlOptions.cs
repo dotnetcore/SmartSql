@@ -62,9 +62,10 @@ namespace SmartSql
             {
                 SqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>(), SmartSqlContext);
             }
+
             if (PreparedCommand == null)
             {
-                PreparedCommand = new PreparedCommand(SqlBuilder,  SmartSqlContext);
+                PreparedCommand = new PreparedCommand(SmartSqlContext);
             }
             if (CommandExecuter == null)
             {

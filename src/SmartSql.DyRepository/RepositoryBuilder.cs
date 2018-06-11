@@ -127,6 +127,7 @@ namespace SmartSql.DyRepository
         private readonly static MethodInfo _set_ScopeMethod = _reqContextType.GetMethod("set_Scope");
         private readonly static MethodInfo _set_SqlIdMethod = _reqContextType.GetMethod("set_SqlId");
         private readonly static MethodInfo _set_RequestMethod = _reqContextType.GetMethod("set_Request");
+        private readonly static MethodInfo _set_RealSqlMethod = _reqContextType.GetMethod("set_RealSql");
 
         private readonly static ConstructorInfo _reqParamsDicCtor = _reqParamsDicType.GetConstructor(Type.EmptyTypes);
         private readonly static MethodInfo _addReqParamMehtod = _reqParamsDicType.GetMethod("Add");
@@ -166,8 +167,15 @@ namespace SmartSql.DyRepository
             else
             {
                 EmitNewRequestContext(ilGenerator);
-                EmitSetScope(ilGenerator, scopeField);
-                EmitSetSqlId(ilGenerator, statementAttr);
+                if (String.IsNullOrEmpty(statementAttr.Sql))
+                {
+                    EmitSetScope(ilGenerator, scopeField);
+                    EmitSetSqlId(ilGenerator, statementAttr);
+                }
+                else
+                {
+                    EmitSetRealSql(ilGenerator, statementAttr);
+                }
                 if (paramTypes.Length == 1 && !IsSimpleParam(paramTypes.First()))
                 {
                     ilGenerator.Emit(OpCodes.Ldloc_0);
@@ -230,6 +238,12 @@ namespace SmartSql.DyRepository
             ilGenerator.Emit(OpCodes.Stloc_0);
         }
 
+        private void EmitSetRealSql(ILGenerator ilGenerator, StatementAttribute statementAttr)
+        {
+            ilGenerator.Emit(OpCodes.Ldloc_0);
+            ilGenerator.Emit(OpCodes.Ldstr, statementAttr.Sql);
+            ilGenerator.Emit(OpCodes.Call, _set_RealSqlMethod);
+        }
         private void EmitSetSqlId(ILGenerator ilGenerator, StatementAttribute statementAttr)
         {
             ilGenerator.Emit(OpCodes.Ldloc_0);

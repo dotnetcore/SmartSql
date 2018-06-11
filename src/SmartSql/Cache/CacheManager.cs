@@ -147,9 +147,10 @@ namespace SmartSql.Cahce
         public bool TryGet<T>(RequestContext context, out T cachedResult)
         {
             cachedResult = default(T);
+            if (context.Statement == null) { return false; }
             var cachedType = typeof(T);
             string fullSqlId = context.FullSqlId;
-            var statement = _smartSqlContext.GetStatement(fullSqlId);
+            var statement = context.Statement;
             if (statement.Cache == null) { return false; }
             var cacheKey = new CacheKey(context);
             var cache = statement.Cache.Provider[cacheKey, cachedType];
@@ -164,9 +165,10 @@ namespace SmartSql.Cahce
 
         public void TryAdd<T>(RequestContext context, T cacheItem)
         {
+            if (context.Statement == null) { return; }
             var cachedType = typeof(T);
             string fullSqlId = context.FullSqlId;
-            var statement = _smartSqlContext.GetStatement(fullSqlId);
+            var statement = context.Statement;
             if (statement.Cache == null) { return; }
             var cacheKey = new CacheKey(context);
             statement.Cache.Provider[cacheKey, cachedType] = cacheItem;

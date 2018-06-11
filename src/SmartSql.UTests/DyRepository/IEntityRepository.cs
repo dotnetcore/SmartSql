@@ -21,5 +21,8 @@ namespace SmartSql.UTests.DyRepository
         DataTable QueryDataTable();
         [Statement(Id = "MultiQuery")]
         DataSet QueryDataSet();
+
+        [Statement(Sql = "Select Top(@Taken) T.* From T_Entity T With(NoLock);")]
+        IEnumerable<T_Entity> QueryBySql(int Taken);
     }
 }
