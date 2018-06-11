@@ -92,6 +92,19 @@ namespace SmartSql.UTests
             var total = _sqlMapper.ExecuteScalar<long>(context);
         }
 
+        [Fact]
+        public void QueryBySql()
+        {
+            RequestContext context = new RequestContext
+            {
+                RealSql = "Select Top(@Taken) T.* From T_Entity T With(NoLock);",
+                Request = new
+                {
+                    Taken = 10
+                }
+            };
+            var list = _sqlMapper.Query<T_Entity>(context);
+        }
 
         [Fact]
         public void Query()

@@ -32,7 +32,7 @@ namespace SmartSql.UTests.DyRepository
         [Fact]
         public void QueryBySql()
         {
-            var list = _repository.QueryBySql();
+            var list = _repository.QueryBySql(10);
         }
         [Fact]
         public void QueryDataTable()
