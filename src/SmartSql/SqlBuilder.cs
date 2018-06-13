@@ -45,10 +45,6 @@ namespace SmartSql
                 }
             }
 
-            if (_logger.IsEnabled(LogLevel.Debug))
-            {
-                _logger.LogDebug($"SqlBuilder BuildSql Statement.Id: {context.FullSqlId},Sql:[{context.RealSql}]");
-            }
             return context.RealSql;
         }
 

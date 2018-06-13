@@ -7,6 +7,9 @@ using System.Reflection;
 using Xunit;
 using System.Collections;
 using System.Collections.Generic;
+using SmartSql.UTests.Entity;
+using System;
+
 namespace SmartSql.UTests
 {
     public class TestBase
@@ -37,17 +40,5 @@ namespace SmartSql.UTests
                               .GetValue(null) as DbProviderFactory;
         }
 
-        [Fact]
-        public void TEst()
-        {
-            int[] ids = new int[] { 1, 2, 3, 4 };
-            var idsType = ids.GetType();
-        }
-
-
-        public int Te(string[] OrderIds)
-        {
-            return OrderIds.Length;
-        }
     }
 }

@@ -28,7 +28,7 @@ namespace SmartSql.UTests.Command
 
             _sqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>(), _smartSqlContext);
 
-            _preparedCommand = new PreparedCommand(_smartSqlContext);
+            _preparedCommand = new PreparedCommand(LoggerFactory.CreateLogger<PreparedCommand>(),_smartSqlContext);
         }
         [Fact]
         public void Prepare()

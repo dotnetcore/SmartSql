@@ -12,18 +12,23 @@ using System.Data.Common;
 using SmartSql.Abstractions.TypeHandler;
 using SmartSql.Exceptions;
 using SmartSql.Configuration.Statements;
+using Microsoft.Extensions.Logging;
 
 namespace SmartSql.Command
 {
     public class PreparedCommand : IPreparedCommand
     {
         Regex _sqlParamsTokens;
+        private readonly ILogger<PreparedCommand> _logger;
         private readonly SmartSqlContext _smartSqlContext;
 
         public event OnPreparedHandler OnPrepared;
 
-        public PreparedCommand(SmartSqlContext smartSqlContext)
+        public PreparedCommand(
+            ILogger<PreparedCommand> logger
+            , SmartSqlContext smartSqlContext)
         {
+            _logger = logger;
             _smartSqlContext = smartSqlContext;
             string dbPrefixs = $"{smartSqlContext.DbPrefix}{smartSqlContext.SmartDbPrefix}";
             var regOptions = RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled;
@@ -55,7 +60,6 @@ namespace SmartSql.Command
                                     ||
                                     !context.RequestParameters.TryGetValue(propertyName, out object paramVal))
                                   {
-                                      //throw new SmartSqlException($"can not find Parameter,Name:{paramName}!");
                                       return match.Value;
                                   }
 
@@ -112,6 +116,15 @@ namespace SmartSql.Command
                 DbSession = dbSession,
                 DbCommand = dbCommand
             });
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                StringBuilder dbParameterStr = new StringBuilder();
+                foreach (IDbDataParameter dbParameter in dbCommand.Parameters)
+                {
+                    dbParameterStr.AppendFormat("{0}={1},", dbParameter.ParameterName, dbParameter.Value);
+                }
+                _logger.LogDebug($"PreparedCommand.Prepare->Statement.Id:[{context.FullSqlId}],Sql:[{dbCommand.CommandText}],Parameters:[{dbParameterStr}]");
+            }
             return dbCommand;
         }
 
@@ -133,6 +146,10 @@ namespace SmartSql.Command
                     }
                     else
                     {
+                        if (paramVal is Enum)
+                        {
+                            paramVal = paramVal.GetHashCode();
+                        }
                         cmdParameter.Value = paramVal;
                     }
                 }

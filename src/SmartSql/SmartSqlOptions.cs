@@ -65,7 +65,7 @@ namespace SmartSql
 
             if (PreparedCommand == null)
             {
-                PreparedCommand = new PreparedCommand(SmartSqlContext);
+                PreparedCommand = new PreparedCommand(LoggerFactory.CreateLogger<PreparedCommand>(), SmartSqlContext);
             }
             if (CommandExecuter == null)
             {
