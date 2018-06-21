@@ -6,17 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-
+using Microsoft.Extensions.Logging;
 namespace SmartSql.UTests.DyRepository
 {
-    public class DyRepository_Tests : IDisposable
+    public class DyRepository_Tests : TestBase
     {
         IEntityRepository _repository;
         public DyRepository_Tests()
         {
             string scope_template = "I{Scope}Repository";
-            var builder = new RepositoryBuilder(scope_template);
-            var factory = new RepositoryFactory(builder);
+            var builder = new RepositoryBuilder(scope_template, LoggerFactory.CreateLogger<RepositoryBuilder>());
+            var factory = new RepositoryFactory(builder, LoggerFactory.CreateLogger<RepositoryFactory>());
             var sqlMapper = MapperContainer.Instance.GetSqlMapper();
             _repository = factory.CreateInstance<IEntityRepository>(sqlMapper);
         }

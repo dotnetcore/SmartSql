@@ -1,4 +1,6 @@
-﻿using SmartSql.Abstractions;
+﻿using Microsoft.Extensions.Logging;
+using SmartSql.Abstractions;
+using SmartSql.Exceptions;
 using SmartSql.Utils;
 using System;
 using System.Collections;
@@ -22,10 +24,14 @@ namespace SmartSql.DyRepository
         private AssemblyBuilder _assemblyBuilder;
         private ModuleBuilder _moduleBuilder;
 
-        public RepositoryBuilder(string scope_template = "")
+        public RepositoryBuilder(
+             string scope_template
+            , ILogger<RepositoryBuilder> logger
+            )
         {
             InitScopeTemlate(scope_template);
             InitAssembly();
+            _logger = logger;
         }
 
         private void InitScopeTemlate(string template = "")
@@ -68,7 +74,8 @@ namespace SmartSql.DyRepository
             typeBuilder.AddInterfaceImplementation(interfaceType);
             var sqlMapperField = typeBuilder.DefineField("sqlMapper", typeof(ISmartSqlMapper), FieldAttributes.Family);
             var scopeField = typeBuilder.DefineField("scope", typeof(string), FieldAttributes.Family);
-            EmitBuildCtor(interfaceType, typeBuilder, sqlMapperField, scopeField);
+            string scope = PreScoe(interfaceType);
+            EmitBuildCtor(scope, typeBuilder, sqlMapperField, scopeField);
             var interfaceMethods = new List<MethodInfo>();
 
             var currentMethodInfos = interfaceType.GetMethods(BindingFlags.Instance | BindingFlags.Public);
@@ -81,11 +88,11 @@ namespace SmartSql.DyRepository
             }
             foreach (var methodInfo in interfaceMethods)
             {
-                BuildMethod(typeBuilder, methodInfo, sqlMapperField, scopeField);
+                BuildMethod(typeBuilder, methodInfo, sqlMapperField, scope);
             }
             return typeBuilder.CreateTypeInfo();
         }
-        private void EmitBuildCtor(Type interfaceType, TypeBuilder typeBuilder, FieldBuilder sqlMapperField, FieldBuilder scopeField)
+        private void EmitBuildCtor(string scope, TypeBuilder typeBuilder, FieldBuilder sqlMapperField, FieldBuilder scopeField)
         {
             var paramTypes = new Type[] { typeof(ISmartSqlMapper) };
             var ctorBuilder = typeBuilder.DefineConstructor(
@@ -97,7 +104,6 @@ namespace SmartSql.DyRepository
             ctorIL.Emit(OpCodes.Ldarg_0);
             ctorIL.Emit(OpCodes.Ldarg_1);
             ctorIL.Emit(OpCodes.Stfld, sqlMapperField);
-            string scope = PreScoe(interfaceType);
             ctorIL.Emit(OpCodes.Ldarg_0);
             ctorIL.Emit(OpCodes.Ldstr, scope);
             ctorIL.Emit(OpCodes.Stfld, scopeField);
@@ -133,11 +139,17 @@ namespace SmartSql.DyRepository
 
         private readonly static ConstructorInfo _reqParamsDicCtor = _reqParamsDicType.GetConstructor(Type.EmptyTypes);
         private readonly static MethodInfo _addReqParamMehtod = _reqParamsDicType.GetMethod("Add");
+        private readonly ILogger<RepositoryBuilder> _logger;
 
-        private void BuildMethod(TypeBuilder typeBuilder, MethodInfo methodInfo, FieldBuilder sqlMapperField, FieldBuilder scopeField)
+        private void BuildMethod(TypeBuilder typeBuilder, MethodInfo methodInfo, FieldBuilder sqlMapperField, string scope)
         {
             var methodParams = methodInfo.GetParameters();
             var paramTypes = methodParams.Select(m => m.ParameterType).ToArray();
+            if (paramTypes.Any(p => p.IsGenericParameter))
+            {
+                _logger.LogError("SmartSql.DyRepository method parameters do not support generic parameters for the time being!");
+                throw new SmartSqlException("SmartSql.DyRepository method parameters do not support generic parameters for the time being!");
+            }
             var returnType = methodInfo.ReturnType;
 
             var implMehtod = typeBuilder.DefineMethod(methodInfo.Name
@@ -174,7 +186,7 @@ namespace SmartSql.DyRepository
                 EmitNewRequestContext(ilGenerator);
                 if (String.IsNullOrEmpty(statementAttr.Sql))
                 {
-                    EmitSetScope(ilGenerator, scopeField);
+                    EmitSetScope(ilGenerator, scope);
                     EmitSetSqlId(ilGenerator, statementAttr);
                 }
                 else
@@ -235,6 +247,11 @@ namespace SmartSql.DyRepository
                 ilGenerator.Emit(OpCodes.Pop);
             }
             ilGenerator.Emit(OpCodes.Ret);
+
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug($"RepositoryBuilder.BuildMethod:{methodInfo.Name}->Statement:[Scope:{scope},Id:{statementAttr.Id},Execute:{statementAttr.Execute},Sql:{statementAttr.Sql},IsAsync:{isTaskReturnType}]");
+            }
         }
 
         private void EmitNewRequestContext(ILGenerator ilGenerator)
@@ -256,11 +273,10 @@ namespace SmartSql.DyRepository
             ilGenerator.Emit(OpCodes.Call, _set_SqlIdMethod);
         }
 
-        private void EmitSetScope(ILGenerator ilGenerator, FieldBuilder scopeField)
+        private void EmitSetScope(ILGenerator ilGenerator, string scope)
         {
             ilGenerator.Emit(OpCodes.Ldloc_0);
-            ilGenerator.Emit(OpCodes.Ldarg_0);
-            ilGenerator.Emit(OpCodes.Ldfld, scopeField);
+            ilGenerator.Emit(OpCodes.Ldstr, scope);
             ilGenerator.Emit(OpCodes.Call, _set_ScopeMethod);
         }
 
@@ -425,6 +441,7 @@ namespace SmartSql.DyRepository
             }
             if (paramType.IsValueType) { return true; }
             if (paramType == typeof(string)) { return true; }
+            if (paramType.IsGenericParameter) { return true; }
             return typeof(IEnumerable).IsAssignableFrom(paramType);
         }
     }

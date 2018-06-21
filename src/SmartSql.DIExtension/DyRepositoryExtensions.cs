@@ -1,4 +1,5 @@
-﻿using SmartSql.Abstractions;
+﻿using Microsoft.Extensions.Logging;
+using SmartSql.Abstractions;
 using SmartSql.DyRepository;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,16 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddSingleton<IRepositoryBuilder>((sp) =>
             {
-                return new RepositoryBuilder(scope_template);
+                var loggerFactory = sp.GetService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger<RepositoryBuilder>();
+                return new RepositoryBuilder(scope_template, logger);
             });
             services.AddSingleton<IRepositoryFactory>((sp) =>
             {
                 var repositoryBuilder = sp.GetRequiredService<IRepositoryBuilder>();
-                return new RepositoryFactory(repositoryBuilder);
+                var loggerFactory = sp.GetService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger<RepositoryFactory>();
+                return new RepositoryFactory(repositoryBuilder, logger);
             });
         }
         public static void AddRepository<T>(this IServiceCollection services) where T : class

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SmartSql.UTests.DyRepository
 {
-    public interface IEntityRepository : IRepository<T_Entity>
+    public interface IEntityRepository : IRepository<T_Entity, long>
     {
         IEnumerable<long> QueryId();
         IEnumerable<EntityStatus> QueryStatus();

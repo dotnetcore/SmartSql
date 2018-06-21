@@ -8,12 +8,12 @@ namespace SmartSql.DyRepository
     {
     }
 
-    public interface IRepository<TEntity> : IRepository
+    public interface IRepository<TEntity, TPrimary> : IRepository
     {
         int Insert(TEntity entity);
         int Delete(object reqParams);
         [Statement(Id = "Delete")]
-        int DeleteById(string Id);
+        int DeleteById(TPrimary Id);
         int Update(TEntity entity);
         [Statement(Id = "Update")]
         int DyUpdate(object dyObj);
@@ -23,8 +23,8 @@ namespace SmartSql.DyRepository
         int GetRecord(object reqParams);
         TEntity GetEntity(object reqParams);
         [Statement(Id = "GetEntity")]
-        TEntity GetById(string Id);
+        TEntity GetById(TPrimary Id);
         [Statement(Execute = ExecuteBehavior.ExecuteScalar)]
-        int IsExist(object reqParams);
+        bool IsExist(object reqParams);
     }
 }
