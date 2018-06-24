@@ -124,6 +124,10 @@ namespace SmartSql.DataReaderDeserializer
             return (dr, ctx) =>
             {
                 var val = dr.GetValue(valIndex);
+                if (val != null && val.GetType() != realType)
+                {
+                    return Convert.ChangeType(val, realType);
+                }
                 return val is DBNull ? null : val;
             };
         }
