@@ -36,6 +36,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar", "ExternalORM\Sql
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DataAccess", "SmartSql.DataAccess\SmartSql.DataAccess.csproj", "{AFFE077F-7BA0-4E4B-8258-64F94AFFD906}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Options", "SmartSql.Options\SmartSql.Options.csproj", "{A40C7B3F-F2DA-47B4-908D-E7BB8BD9129C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,10 @@ Global
 		{AFFE077F-7BA0-4E4B-8258-64F94AFFD906}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFFE077F-7BA0-4E4B-8258-64F94AFFD906}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFFE077F-7BA0-4E4B-8258-64F94AFFD906}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A40C7B3F-F2DA-47B4-908D-E7BB8BD9129C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A40C7B3F-F2DA-47B4-908D-E7BB8BD9129C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A40C7B3F-F2DA-47B4-908D-E7BB8BD9129C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A40C7B3F-F2DA-47B4-908D-E7BB8BD9129C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
