@@ -13,11 +13,11 @@
   </Caches>
 
   <ResultMaps>
-    <ResultMap Id="ResultMap">
+    <ResultMap Id="ResultMap_CustomerConstructor">
       <Constructor>
-        <Arg  Column="" Type="DateTime" />
+        <Arg Column="FLong" Type="Int64" />
+        <Arg Column="FDecimal" Type="Decimal" />
       </Constructor>
-      <Result Property="" Column="" TypeHandler="Json"/>
     </ResultMap>
   </ResultMaps>
 
@@ -47,8 +47,11 @@
         </For>
       </Where>
     </Statement>
-    <Statement Id="QueryId"  ResultMap="ResultMap" ParameterMap="ParameterMap">
+    <Statement Id="QueryId">
       SELECT Top(10) T.FLong From T_Entity T With(NoLock)
+    </Statement>
+    <Statement Id="QueryCustomConstructorEntity"  ResultMap="ResultMap_CustomerConstructor">
+      SELECT Top(10) T.* From T_Entity T With(NoLock)
     </Statement>
     <Statement Id="QueryStatus">
       SELECT Top(10) T.Status From T_Entity T With(NoLock)

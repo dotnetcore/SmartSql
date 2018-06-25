@@ -4,24 +4,18 @@ using System.Text;
 
 namespace SmartSql.UTests.Entity
 {
-    public class T_CustomConstructorEntity
+    public class T_PrivateEntity
     {
-        private T_CustomConstructorEntity() { }
-        private T_CustomConstructorEntity(long fLong, decimal fDecimal)
-        {
-            FLong = fLong;
-            FDecimal = fDecimal;
-        }
-
+        private T_PrivateEntity() { }
         /// <summary>
         /// FLong
         /// </summary>		
-        public virtual long FLong { get; }
+        public virtual long FLong { get;private set; }
 
         /// <summary>
         /// FDecimal
         /// </summary>		
-        public virtual decimal FDecimal { get; }
+        public virtual decimal FDecimal { get; set; }
         /// <summary>
         /// FNullDecimal
         /// </summary>		

@@ -147,15 +147,15 @@ namespace SmartSql.DataReaderDeserializer
             ConstructorInfo targetCtor = null;
             if (constructorMap == null)
             {
-                targetCtor = targetType.GetConstructor(Type.EmptyTypes);
+                targetCtor = targetType.GetConstructor(
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
             }
             else
             {
                 var ctorArgTypes = constructorMap.Args.Select(arg => arg.ArgType).ToArray();
-                targetCtor = targetType.GetConstructor(ctorArgTypes);
-
+                targetCtor = targetType.GetConstructor(
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, ctorArgTypes, null);
                 //load arg value
-
                 foreach (var arg in constructorMap.Args)
                 {
                     var col = columns[arg.Column];
@@ -179,7 +179,6 @@ namespace SmartSql.DataReaderDeserializer
                 EmitLoadColVal(iLGenerator, dataReader, colIndex, result?.TypeHandler, propertyType, isDbNullLabel);
                 iLGenerator.Emit(OpCodes.Call, property.SetMethod);// stack is empty
                 iLGenerator.MarkLabel(isDbNullLabel);
-                //iLGenerator.Emit(OpCodes.Pop);
             }
 
             iLGenerator.Emit(OpCodes.Ldloc_0);// stack is [rval]
@@ -191,7 +190,6 @@ namespace SmartSql.DataReaderDeserializer
 
         private void EmitLoadColVal(ILGenerator iLGenerator, IDataReader dataReader, int colIndex, string typeHandler, Type toType, Label? isDbNullLabel)
         {
-            //iLGenerator.Emit(OpCodes.Ldloc_0);// [target]
             var fieldType = dataReader.GetFieldType(colIndex);
             if (!String.IsNullOrEmpty(typeHandler))
             {

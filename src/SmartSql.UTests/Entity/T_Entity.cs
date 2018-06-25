@@ -10,6 +10,7 @@ namespace SmartSql.UTests.Entity
     public class T_Entity: EntityBase
     {
 
+
         private long PrivatePro { get; set; } = 88888;
         /// <summary>
         /// FLong

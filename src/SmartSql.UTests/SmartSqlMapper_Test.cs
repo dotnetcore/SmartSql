@@ -107,6 +107,31 @@ namespace SmartSql.UTests
         }
 
         [Fact]
+        public void QueryCustomConstructorEntity()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "QueryCustomConstructorEntity"
+            };
+            var list = _sqlMapper.Query<T_CustomConstructorEntity>(context);
+        }
+        [Fact]
+        public void QueryPrivateEntity()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "Query",
+                Request = new
+                {
+                    Taken = 10
+                }
+            };
+            var list = _sqlMapper.Query<T_PrivateEntity>(context);
+        }
+
+        [Fact]
         public void Query()
         {
             RequestContext context = new RequestContext

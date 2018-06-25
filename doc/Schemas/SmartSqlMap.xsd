@@ -89,7 +89,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="Constructor" maxOccurs="1" minOccurs="0"></xs:element>
-        <xs:element ref="Result" maxOccurs="unbounded" />
+        <xs:element ref="Result" maxOccurs="unbounded"  minOccurs="0"/>
       </xs:sequence>
       <xs:attribute name="Id" type="xs:string" use="required" />
     </xs:complexType>
