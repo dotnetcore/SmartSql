@@ -15,7 +15,7 @@
   <ResultMaps>
     <ResultMap Id="ResultMap">
       <Constructor>
-        <Parameter Name="" Column="" Type="" Default="" />
+        <Arg  Column="" Type="DateTime" />
       </Constructor>
       <Result Property="" Column="" TypeHandler="Json"/>
     </ResultMap>

@@ -73,7 +73,7 @@ namespace SmartSql.Abstractions.Config
                 var resultMapsNodes = xmlDoc.SelectNodes("//ns:ResultMap", xmlNsM);
                 foreach (XmlElement xmlNode in resultMapsNodes)
                 {
-                    var resultMap = MapFactory.LoadResultMap(xmlNode, SqlMapConfig);
+                    var resultMap = MapFactory.LoadResultMap(xmlNode, SqlMapConfig, xmlNsM);
                     sqlMap.ResultMaps.Add(resultMap);
                 }
                 #endregion

@@ -110,9 +110,10 @@ namespace SmartSql.Abstractions
             }
         }
 
-        public ITypeHandler GetResultTypeHandler(string property)
+        public ITypeHandler GetTypeHandler(string typeHandlerName)
         {
-            return Statement?.ResultMap?.Results?.FirstOrDefault(r => r.Property == property)?.Handler;
+            return SmartSqlContext.SqlMapConfig.TypeHandlers.FirstOrDefault(th => th.Name == typeHandlerName)?.Handler;
         }
+
     }
 }

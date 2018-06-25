@@ -2,6 +2,7 @@
 using SmartSql.ZooKeeperConfig;
 using System;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace SmartSql.ConsoleTests
 {
@@ -10,6 +11,7 @@ namespace SmartSql.ConsoleTests
         static ILoggerFactory loggerFactory = new LoggerFactory();
         static void Main(string[] args)
         {
+            
             loggerFactory.AddConsole(LogLevel.Trace);
             loggerFactory.AddDebug(LogLevel.Trace);
 
@@ -17,6 +19,7 @@ namespace SmartSql.ConsoleTests
 
             Console.WriteLine("Hello World!");
             Console.ReadLine();
+
         }
 
 
@@ -44,20 +47,25 @@ namespace SmartSql.ConsoleTests
 
             string configPath = "/Config/App1/SmartSqlMapConfig.xml";
             var configLoader = new ZooKeeperConfigLoader(configPath, connStr);
-            //var SqlMapper = new SmartSqlMapper(loggerFactory, configPath, configLoader);
 
-            //int i = 0;
-            //for (i = 0; i < 10; i++)
-            //{
-            //    Console.ReadLine();
-            //    var list = SqlMapper.Query<T_Test>(new RequestContext
-            //    {
-            //        Scope = "T_Test",
-            //        SqlId = "GetList",
-            //        Request = new { Ids = new long[] { 1, 2, 3, 4 } }
-            //    });
-            //    Console.WriteLine($"{list.Count()}");
-            //}
+            var SqlMapper = new SmartSqlMapper(new SmartSqlOptions
+            {
+                ConfigPath = configPath,
+                ConfigLoader = configLoader
+            });
+
+            int i = 0;
+            for (i = 0; i < 10; i++)
+            {
+                Console.ReadLine();
+                var list = SqlMapper.Query<T_Test>(new RequestContext
+                {
+                    Scope = "T_Test",
+                    SqlId = "GetList",
+                    Request = new { Ids = new long[] { 1, 2, 3, 4 } }
+                });
+                Console.WriteLine($"{list.Count()}");
+            }
         }
     }
 

@@ -134,104 +134,52 @@ namespace SmartSql.DataReaderDeserializer
 
         private Func<IDataReader, RequestContext, object> CreateParserImpl(IDataReader dataReader, RequestContext context, Type targetType)
         {
+            var resultMap = context.Statement?.ResultMap;
+            var constructorMap = resultMap?.Constructor;
+
+            var columns = Enumerable.Range(0, dataReader.FieldCount)
+                            .Select(i => new { Index = i, Name = dataReader.GetName(i) })
+                            .ToDictionary((col) => col.Name);
+
             var dynamicMethod = new DynamicMethod("Deserialize" + Guid.NewGuid().ToString("N"), targetType, new[] { TypeUtils.DataReaderType, TypeUtils.RequestContextType }, targetType, true);
             var iLGenerator = dynamicMethod.GetILGenerator();
             iLGenerator.DeclareLocal(targetType);
+            ConstructorInfo targetCtor = null;
+            if (constructorMap == null)
+            {
+                targetCtor = targetType.GetConstructor(Type.EmptyTypes);
+            }
+            else
+            {
+                var ctorArgTypes = constructorMap.Args.Select(arg => arg.ArgType).ToArray();
+                targetCtor = targetType.GetConstructor(ctorArgTypes);
 
-            var targetCtor = targetType.GetConstructor(Type.EmptyTypes);
+                //load arg value
+
+                foreach (var arg in constructorMap.Args)
+                {
+                    var col = columns[arg.Column];
+                    EmitLoadColVal(iLGenerator, dataReader, col.Index, arg.TypeHandler, arg.ArgType, null);
+                }
+            }
             iLGenerator.Emit(OpCodes.Newobj, targetCtor); // [target]
             iLGenerator.Emit(OpCodes.Stloc_0);
 
-            var columnNames = Enumerable.Range(0, dataReader.FieldCount).Select(i => dataReader.GetName(i)).ToArray();
-
-            int colIndex = -1;
-            foreach (var colName in columnNames)
+            foreach (var col in columns)
             {
-                colIndex++;
-                var result = context.Statement?.ResultMap?.Results?.FirstOrDefault(r => r.Column == colName);
-                bool hasTypeHandler = result?.Handler != null;
+                var colName = col.Key;
+                var colIndex = col.Value.Index;
+                var result = resultMap?.Results?.FirstOrDefault(r => r.Column == colName);
                 string propertyName = result != null ? result.Property : colName;
                 var property = targetType.GetProperty(propertyName);
-
                 if (property == null) { continue; }
                 if (!property.CanWrite) { continue; }
-
-                var fieldType = dataReader.GetFieldType(colIndex);
                 Type propertyType = property.PropertyType;
-
                 Label isDbNullLabel = iLGenerator.DefineLabel();
-
-
-                if (hasTypeHandler)
-                {
-                    iLGenerator.Emit(OpCodes.Ldloc_0);// [target]
-                    EmitGetTypeHanderValue(iLGenerator, colIndex, propertyName, propertyType);
-                    if (propertyType.IsValueType)
-                    {
-                        iLGenerator.Emit(OpCodes.Unbox_Any, propertyType);
-                    }
-                    //else
-                    //{
-                    //    iLGenerator.Emit(OpCodes.Castclass, propertyType);
-                    //}
-                }
-                else
-                {
-                    var nullUnderType = Nullable.GetUnderlyingType(propertyType);
-                    var realType = nullUnderType ?? propertyType;
-
-                    if (nullUnderType != null || realType == TypeUtils.StringType)
-                    {
-                        iLGenerator.Emit(OpCodes.Ldarg_0);// [dataReader]
-                        EmitUtils.LoadInt32(iLGenerator, colIndex);// [dataReader][index]
-                        iLGenerator.Emit(OpCodes.Call, TypeUtils.IsDBNullMethod);//[isDbNull-value]
-                        iLGenerator.Emit(OpCodes.Brtrue, isDbNullLabel);//[empty]
-                    }
-
-                    var getRealValueMethod = GetRealValueMethod(fieldType);
-
-                    iLGenerator.Emit(OpCodes.Ldloc_0);// [target]
-
-                    if (realType.IsEnum)
-                    {
-                        EmitUtils.TypeOf(iLGenerator, realType);//[target][enumType]
-                    }
-                    #region GetValue
-                    iLGenerator.Emit(OpCodes.Ldarg_0);// [dataReader]
-                    EmitUtils.LoadInt32(iLGenerator, colIndex);// [dataReader][index]
-                    if (getRealValueMethod != null)
-                    {
-                        iLGenerator.Emit(OpCodes.Call, getRealValueMethod);//[prop-value]
-                    }
-                    else
-                    {
-                        iLGenerator.Emit(OpCodes.Call, TypeUtils.GetValueMethod_DataRecord);//[prop-value]
-                        if (fieldType.IsValueType)
-                        {
-                            iLGenerator.Emit(OpCodes.Unbox_Any, fieldType);
-                        }
-                    }
-                    #endregion
-                    //[target][property-Value]
-                    if (realType.IsEnum)
-                    {
-                        //[target][propertyType-enumType][property-Value]
-                        EmitConvertEnum(iLGenerator, fieldType);
-                        iLGenerator.Emit(OpCodes.Unbox_Any, realType);
-                        //[target][property-Value(enum-value)]
-                    }
-                    else if (fieldType != realType)
-                    {
-                        EmitUtils.ChangeType(iLGenerator, fieldType, realType);
-                    }
-                    if (nullUnderType != null)
-                    {
-                        iLGenerator.Emit(OpCodes.Newobj, propertyType.GetConstructor(new[] { nullUnderType }));
-                    }
-                }
-
+                EmitLoadColVal(iLGenerator, dataReader, colIndex, result?.TypeHandler, propertyType, isDbNullLabel);
                 iLGenerator.Emit(OpCodes.Call, property.SetMethod);// stack is empty
                 iLGenerator.MarkLabel(isDbNullLabel);
+                //iLGenerator.Emit(OpCodes.Pop);
             }
 
             iLGenerator.Emit(OpCodes.Ldloc_0);// stack is [rval]
@@ -241,12 +189,90 @@ namespace SmartSql.DataReaderDeserializer
             return (Func<IDataReader, RequestContext, object>)dynamicMethod.CreateDelegate(funcType);
         }
 
-        private static readonly MethodInfo _getResultTypeHandlerMethod = TypeUtils.RequestContextType.GetMethod("GetResultTypeHandler");
-        private void EmitGetTypeHanderValue(ILGenerator iLGenerator, int colIndex, string propertyName, Type propertyType)
+        private void EmitLoadColVal(ILGenerator iLGenerator, IDataReader dataReader, int colIndex, string typeHandler, Type toType, Label? isDbNullLabel)
+        {
+            //iLGenerator.Emit(OpCodes.Ldloc_0);// [target]
+            var fieldType = dataReader.GetFieldType(colIndex);
+            if (!String.IsNullOrEmpty(typeHandler))
+            {
+                if (isDbNullLabel != null)
+                {
+                    iLGenerator.Emit(OpCodes.Ldloc_0);// [target]
+                }
+                EmitGetTypeHanderValue(iLGenerator, colIndex, typeHandler, toType);
+                if (toType.IsValueType)
+                {
+                    iLGenerator.Emit(OpCodes.Unbox_Any, toType);
+                }
+            }
+            else
+            {
+                var nullUnderType = Nullable.GetUnderlyingType(toType);
+                var realType = nullUnderType ?? toType;
+                if (nullUnderType != null || realType == TypeUtils.StringType)
+                {
+                    iLGenerator.Emit(OpCodes.Ldarg_0);// [dataReader]
+                    EmitUtils.LoadInt32(iLGenerator, colIndex);// [dataReader][index]
+                    iLGenerator.Emit(OpCodes.Call, TypeUtils.IsDBNullMethod);//[isDbNull-value]
+                    if (isDbNullLabel != null)
+                    {
+                        iLGenerator.Emit(OpCodes.Brtrue, isDbNullLabel.Value);//[empty]
+                    }
+                    else
+                    {
+                        iLGenerator.Emit(OpCodes.Ldnull);
+                    }
+                }
+                var getRealValueMethod = GetRealValueMethod(fieldType);
+                if (isDbNullLabel != null)
+                {
+                    iLGenerator.Emit(OpCodes.Ldloc_0);// [target]
+                }
+                if (realType.IsEnum)
+                {
+                    EmitUtils.TypeOf(iLGenerator, realType);//[target][enumType]
+                }
+                #region GetValue
+                iLGenerator.Emit(OpCodes.Ldarg_0);// [dataReader]
+                EmitUtils.LoadInt32(iLGenerator, colIndex);// [dataReader][index]
+                if (getRealValueMethod != null)
+                {
+                    iLGenerator.Emit(OpCodes.Call, getRealValueMethod);//[prop-value]
+                }
+                else
+                {
+                    iLGenerator.Emit(OpCodes.Call, TypeUtils.GetValueMethod_DataRecord);//[prop-value]
+                    if (fieldType.IsValueType)
+                    {
+                        iLGenerator.Emit(OpCodes.Unbox_Any, fieldType);
+                    }
+                }
+                #endregion
+                //[target][property-Value]
+                if (realType.IsEnum)
+                {
+                    //[target][propertyType-enumType][property-Value]
+                    EmitConvertEnum(iLGenerator, fieldType);
+                    iLGenerator.Emit(OpCodes.Unbox_Any, realType);
+                    //[target][property-Value(enum-value)]
+                }
+                else if (fieldType != realType)
+                {
+                    EmitUtils.ChangeType(iLGenerator, fieldType, realType);
+                }
+                if (nullUnderType != null)
+                {
+                    iLGenerator.Emit(OpCodes.Newobj, toType.GetConstructor(new[] { nullUnderType }));
+                }
+            }
+        }
+
+        private static readonly MethodInfo _getTypeHandlerMethod = TypeUtils.RequestContextType.GetMethod("GetTypeHandler");
+        private void EmitGetTypeHanderValue(ILGenerator iLGenerator, int colIndex, string typeHandlerName, Type propertyType)
         {
             iLGenerator.Emit(OpCodes.Ldarg_1);// [RequestContext]
-            iLGenerator.Emit(OpCodes.Ldstr, propertyName);// [RequestContext][propertyName]
-            iLGenerator.Emit(OpCodes.Call, _getResultTypeHandlerMethod);//[ITypeHandler]
+            iLGenerator.Emit(OpCodes.Ldstr, typeHandlerName);// [RequestContext][typeHandlerName]
+            iLGenerator.Emit(OpCodes.Call, _getTypeHandlerMethod);//[ITypeHandler]
             iLGenerator.Emit(OpCodes.Ldarg_0);//[typeHandler][dataReader]
             EmitUtils.LoadInt32(iLGenerator, colIndex);// [typeHandler][dataReader][index]
             EmitUtils.TypeOf(iLGenerator, propertyType);//[typeHandler][dataReader][index][propertyType]

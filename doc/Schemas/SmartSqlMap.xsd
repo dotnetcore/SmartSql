@@ -88,6 +88,7 @@
   <xs:element name="ResultMap">
     <xs:complexType>
       <xs:sequence>
+        <xs:element ref="Constructor" maxOccurs="1" minOccurs="0"></xs:element>
         <xs:element ref="Result" maxOccurs="unbounded" />
       </xs:sequence>
       <xs:attribute name="Id" type="xs:string" use="required" />
@@ -100,10 +101,39 @@
       <xs:attribute name="TypeHandler" type="xs:string" />
     </xs:complexType>
   </xs:element>
-
-
-
-
+  <xs:element name="Constructor">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Arg" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="Column" type="xs:string" use="required" />
+            <xs:attribute name="Type" type="CSharpType" use="required"/>
+            <xs:attribute name="TypeHandler" type="xs:string"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="CSharpType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Boolean"/>
+      <xs:enumeration value="Char"/>
+      <xs:enumeration value="SByte"/>
+      <xs:enumeration value="Byte"/>
+      <xs:enumeration value="Int16"/>
+      <xs:enumeration value="UInt16"/>
+      <xs:enumeration value="Int32"/>
+      <xs:enumeration value="UInt32"/>
+      <xs:enumeration value="Int64"/>
+      <xs:enumeration value="UInt64"/>
+      <xs:enumeration value="Single"/>
+      <xs:enumeration value="Double"/>
+      <xs:enumeration value="Decimal"/>
+      <xs:enumeration value="DateTime"/>
+      <xs:enumeration value="String"/>
+      <xs:enumeration value="Guid"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:element name="Include">
     <xs:complexType mixed="true">
       <xs:attribute name="RefId" type="xs:string" use="required" />

@@ -40,5 +40,9 @@ namespace SmartSql.UTests
                               .GetValue(null) as DbProviderFactory;
         }
 
+        public void ENull()
+        {
+            T_Entity entity = null;
+        }
     }
 }
