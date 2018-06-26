@@ -5,8 +5,9 @@ namespace SmartSql.DyRepository
 {
     public class StatementAttribute : Attribute
     {
+        public string Scope { get; set; }
         public string Id { get; set; }
-        public ExecuteBehavior Execute { get; set; }
+        public ExecuteBehavior Execute { get; set; } = ExecuteBehavior.Auto;
         public string Sql { get; set; }
     }
 

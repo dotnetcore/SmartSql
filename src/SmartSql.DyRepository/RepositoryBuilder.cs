@@ -171,7 +171,7 @@ namespace SmartSql.DyRepository
                 }
             }
 
-            StatementAttribute statementAttr = PreStatement(methodInfo, returnType, isTaskReturnType);
+            StatementAttribute statementAttr = PreStatement(scope, methodInfo, returnType, isTaskReturnType);
             var ilGenerator = implMehtod.GetILGenerator();
             ilGenerator.DeclareLocal(_reqContextType);
             ilGenerator.DeclareLocal(_reqParamsDicType);
@@ -186,7 +186,7 @@ namespace SmartSql.DyRepository
                 EmitNewRequestContext(ilGenerator);
                 if (String.IsNullOrEmpty(statementAttr.Sql))
                 {
-                    EmitSetScope(ilGenerator, scope);
+                    EmitSetScope(ilGenerator, statementAttr.Scope);
                     EmitSetSqlId(ilGenerator, statementAttr);
                 }
                 else
@@ -250,7 +250,7 @@ namespace SmartSql.DyRepository
 
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug($"RepositoryBuilder.BuildMethod:{methodInfo.Name}->Statement:[Scope:{scope},Id:{statementAttr.Id},Execute:{statementAttr.Execute},Sql:{statementAttr.Sql},IsAsync:{isTaskReturnType}]");
+                _logger.LogDebug($"RepositoryBuilder.BuildMethod:{methodInfo.Name}->Statement:[Scope:{statementAttr.Scope},Id:{statementAttr.Id},Execute:{statementAttr.Execute},Sql:{statementAttr.Sql},IsAsync:{isTaskReturnType}]");
             }
         }
 
@@ -280,7 +280,7 @@ namespace SmartSql.DyRepository
             ilGenerator.Emit(OpCodes.Call, _set_ScopeMethod);
         }
 
-        private StatementAttribute PreStatement(MethodInfo methodInfo, Type returnType, bool isTaskReturnType)
+        private StatementAttribute PreStatement(string scope, MethodInfo methodInfo, Type returnType, bool isTaskReturnType)
         {
             returnType = isTaskReturnType ? returnType.GetGenericArguments().FirstOrDefault() : returnType;
             var statementAttr = methodInfo.GetCustomAttribute<StatementAttribute>();
@@ -289,16 +289,16 @@ namespace SmartSql.DyRepository
             {
                 methodName = methodName.Substring(0, methodName.Length - 5);
             }
-
             if (statementAttr != null)
             {
-                statementAttr.Id = !String.IsNullOrEmpty(statementAttr.Id) ? statementAttr.Id
-                    : methodName;
+                statementAttr.Id = !String.IsNullOrEmpty(statementAttr.Id) ? statementAttr.Id : methodName;
+                statementAttr.Scope = !String.IsNullOrEmpty(statementAttr.Scope) ? statementAttr.Scope : scope;
             }
             else
             {
                 statementAttr = new StatementAttribute
                 {
+                    Scope = scope,
                     Id = methodName
                 };
             }

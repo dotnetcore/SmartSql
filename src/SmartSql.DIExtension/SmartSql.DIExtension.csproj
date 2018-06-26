@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>3.3.4</Version>
+    <Version>3.3.5</Version>
+    <Title>SmartSql.DIExtension</Title>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
@@ -14,7 +15,7 @@
     <Product>Ahoo Wang</Product>
     <Company>Ahoo Wang</Company>
     <Authors>Ahoo Wang</Authors>
-
+    <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
