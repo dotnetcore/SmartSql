@@ -18,8 +18,8 @@ namespace SmartSql.TypeHandler
 
         public object GetValue(IDataReader dataReader, int columnIndex, Type targetType)
         {
+            if (dataReader.IsDBNull(columnIndex)) { return null; }
             var xmlStr = dataReader.GetString(columnIndex);
-            if (String.IsNullOrEmpty(xmlStr)) { return null; }
             return XmlSerializeUtil.Deserialize(xmlStr, targetType);
         }
 

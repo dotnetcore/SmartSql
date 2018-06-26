@@ -15,8 +15,8 @@ namespace SmartSql.TypeHandler
 
         public virtual object GetValue(IDataReader dataReader, int columnIndex, Type targetType)
         {
+            if (dataReader.IsDBNull(columnIndex)) { return null; }
             var jsonStr = dataReader.GetString(columnIndex);
-            if (String.IsNullOrEmpty(jsonStr)) { return null; }
             return JsonConvert.DeserializeObject(jsonStr, targetType);
         }
 
