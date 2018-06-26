@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.0" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
@@ -17,11 +20,15 @@
   <ItemGroup>
     <ProjectReference Include="..\SmartSql.DapperDeserializer\SmartSql.DapperDeserializer.csproj" />
     <ProjectReference Include="..\SmartSql.DyRepository\SmartSql.DyRepository.csproj" />
+    <ProjectReference Include="..\SmartSql.Options\SmartSql.Options.csproj" />
     <ProjectReference Include="..\SmartSql.TypeHandler\SmartSql.TypeHandler.csproj" />
     <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Maps\T_Entity.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -29,5 +36,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>

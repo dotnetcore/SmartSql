@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using SmartSql.Configuration;
 
-namespace SmartSql.Configuration.Options
+namespace SmartSql.Options
 {
     public class Database
     {
