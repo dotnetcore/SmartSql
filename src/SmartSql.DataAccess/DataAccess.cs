@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace SmartSql.DataAccess
 {
-    public abstract class DataAccess : ITransaction
+    public abstract class DataAccess : Abstractions.ITransaction
     {
         public DataAccess(String smartSqlMapConfigPath = "SmartSqlMapConfig.xml")
         {
