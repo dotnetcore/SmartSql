@@ -31,14 +31,18 @@ namespace SmartSql.Configuration.Tags
                     }
                     if (isFirstChild)
                     {
-                        context.IsFirstDyChild = isFirstChild;
                         isFirstChild = false;
+                        context.Sql.Append(" ");
+                        context.Sql.Append(Prepend);
+                        context.Sql.Append(" ");
+                        context.IgnorePrepend = true;
+                        childTag.BuildSql(context);
+                        context.IgnorePrepend = false;
                     }
                     else
                     {
-                        context.IsFirstDyChild = false;
+                        childTag.BuildSql(context);
                     }
-                    childTag.BuildSql(context);
                 }
             }
         }

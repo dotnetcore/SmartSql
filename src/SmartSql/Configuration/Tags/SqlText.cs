@@ -13,12 +13,6 @@ namespace SmartSql.Configuration.Tags
 
         public void BuildSql(RequestContext context)
         {
-            if (context.IsFirstDyChild)
-            {
-                var dyParent = Parent as Dynamic;
-                context.Sql.Append($" {dyParent.Prepend} ");
-                context.IsFirstDyChild = false;
-            }
             context.Sql.Append(BodyText);
         }
 

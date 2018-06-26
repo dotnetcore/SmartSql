@@ -21,13 +21,7 @@ namespace SmartSql.Configuration.Tags
             if (IsCondition(context))
             {
                 context.Sql.Append(" ");
-                if (context.IsFirstDyChild)
-                {
-                    var dyParent = Parent as Dynamic;
-                    context.Sql.Append(dyParent.Prepend);
-                    context.IsFirstDyChild = false;
-                }
-                else
+                if (!context.IgnorePrepend)
                 {
                     context.Sql.Append(Prepend);
                 }

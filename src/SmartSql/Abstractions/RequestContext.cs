@@ -22,11 +22,11 @@ namespace SmartSql.Abstractions
         public Statement Statement { get; internal set; }
         public StringBuilder Sql { get; internal set; }
         public bool IsStatementSql { get; internal set; }
+        internal bool IgnorePrepend { get; set; } = false;
         public String RealSql { get; set; }
         public String Scope { get; set; }
         public String SqlId { get; set; }
         public String FullSqlId => $"{Scope}.{SqlId}";
-        public bool IsFirstDyChild { get; internal set; }
         public IDictionary<string, object> RequestParameters { get; internal set; }
         public object Request { get; set; }
 
