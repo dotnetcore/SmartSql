@@ -17,15 +17,32 @@ namespace Microsoft.Extensions.DependencyInjection
                 };
                 return MapperContainer.Instance.GetSqlMapper(options);
             });
+            AddOthers(services);
         }
 
         public static void AddSmartSql(this IServiceCollection services, Func<IServiceProvider, SmartSqlOptions> setupOptions)
         {
             services.AddSingleton<ISmartSqlMapper>((sp =>
+           {
+               var options = setupOptions(sp);
+               return MapperContainer.Instance.GetSqlMapper(options);
+           }));
+            AddOthers(services);
+        }
+        private static void AddOthers(IServiceCollection services)
+        {
+            services.AddSingleton<ISmartSqlMapperAsync>(sp =>
             {
-                var options = setupOptions(sp);
-                return MapperContainer.Instance.GetSqlMapper(options);
-            }));
+                return sp.GetRequiredService<ISmartSqlMapper>();
+            });
+            services.AddSingleton<ITransaction>(sp =>
+            {
+                return sp.GetRequiredService<ISmartSqlMapper>();
+            });
+            services.AddSingleton<ISession>(sp =>
+            {
+                return sp.GetRequiredService<ISmartSqlMapper>();
+            });
         }
     }
 }

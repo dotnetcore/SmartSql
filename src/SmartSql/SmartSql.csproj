@@ -4,16 +4,18 @@
     <TargetFrameworks>netstandard2.0;net46;</TargetFrameworks>
     <Authors>Ahoo Wang</Authors>
     <Company>Ahoo Wang</Company>
+    <Title>SmartSql</Title>
     <Description>SmartSql = MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting + ......</Description>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Copyright>Ahoo Wang</Copyright>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>3.3.5</Version>
+    <Version>3.3.6</Version>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <PackageReleaseNotes>
-      1. add ITransaction
+      1. add ISession
+      2. add ITransaction
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>
