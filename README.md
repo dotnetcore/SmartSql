@@ -4,6 +4,8 @@
 
 # 简介
 
+[![Join the chat at https://gitter.im/SmartSql-DotNet/Lobby](https://badges.gitter.im/SmartSql-DotNet/Lobby.svg)](https://gitter.im/SmartSql-DotNet/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 >[SmartSql-Starter](https://github.com/Ahoo-Wang/SmartSql-Starter)
 
 ## Nuget Packages
@@ -31,33 +33,33 @@
 
 ---
 
-## 2. 主要特性 (√ 为已完成，未打 √ 为计划特性)
+## 2. 主要特性
 
 - 1 ORM
   - 1.1 Sync
   - 1.2 Async
 - 2 XmlConfig & XmlStatement -> Sql
-  - 2.1 SmartSqlMapConfig & SmartSqlMap √  (是的，你猜对了，和MyBatis一样，通过XML配置分离SQL。)
+  - 2.1 SmartSqlMapConfig & SmartSqlMap (是的，你猜对了，和MyBatis一样，通过XML配置分离SQL。)
   - 2.2 Config Hot Update ->ConfigWatcher & Reload (配置文件热更新：当你需要修改Sql的时候，直接修改SqlMap配置文件，保存即可。)
-- 3 读写分离 √
-  - 3.1 读写分离 √
-  - 3.2 多读库 权重筛选 √ （配置多读库，根据读库权重选举读库）
-- 4 日志 √
+- 3 读写分离
+  - 3.1 读写分离
+  - 3.2 多读库 权重筛选 （配置多读库，根据读库权重选举读库）
+- 4 日志
   - 4.1 基于 Microsoft.Extensions.Logging.Abstractions  (当你需要跟踪调试的时候一切都是那么一目了然)
 - 5 Dynamic Repository
-  - 5.1 SmartSql.DyRepository  √ （解放你的双手，你来定义仓储接口，我来实现数据库访问）
-- 6 查询缓存  √ （热数据缓存，一个配置轻松搞定）
-  - 6.1 SmartSql.Cache.Memory  √
-    - 6.1.1 Fifo  √
-    - 6.1.2 Lru  √
-  - 6.2 SmartSql.Cache.Redis  √
+  - 5.1 SmartSql.DyRepository  （解放你的双手，你来定义仓储接口，我来实现数据库访问）
+- 6 查询缓存  （热数据缓存，一个配置轻松搞定）
+  - 6.1 SmartSql.Cache.Memory
+    - 6.1.1 Fifo
+    - 6.1.2 Lru
+  - 6.2 SmartSql.Cache.Redis
   - 6.3 缓存事务一致性
 - 7 分布式配置插件
-  - 7.1 IConfigLoader √ (配置文件加载器)
-  - 7.2 LocalFileConfigLoader  √ √ (本地文件配置加载器)
-    - 7.2.1 Load SmartSqlMapSource Xml  √
-    - 7.3.1 Load SmartSqlMapSource Directory √
-  - 7.3 SmartSql.ZooKeeperConfig √ (ZooKeeper 分布式配置文件加载器)
+  - 7.1 IConfigLoader (配置文件加载器)
+  - 7.2 LocalFileConfigLoader  (本地文件配置加载器)
+    - 7.2.1 Load SmartSqlMapSource Xml
+    - 7.3.1 Load SmartSqlMapSource Directory
+  - 7.3 SmartSql.ZooKeeperConfig (ZooKeeper 分布式配置文件加载器)
 
 ---
 
