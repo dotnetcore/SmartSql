@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SmartSql.Abstractions;
+using SmartSql.DIExtension;
 using SmartSql.DyRepository;
 using System;
 using System.Collections.Generic;
@@ -57,17 +58,5 @@ namespace Microsoft.Extensions.DependencyInjection
             }
         }
     }
-    public class AssemblyAutoRegisterOptions
-    {
-        public string AssemblyString { get; set; }
-        public Func<Type, bool> Filter { get; set; }
 
-        public void UseTypeFilter<T>()
-        {
-            Filter = (type) =>
-            {
-                return typeof(T).IsAssignableFrom(type);
-            };
-        }
-    }
 }
