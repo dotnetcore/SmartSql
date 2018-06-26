@@ -16,7 +16,7 @@ namespace SmartSql.Abstractions
     /// <summary>
     /// SmartSql 映射器
     /// </summary>
-    public interface ISmartSqlMapper : ISmartSqlMapperAsync, IDisposable
+    public interface ISmartSqlMapper : ISmartSqlMapperAsync, ITransaction, IDisposable
     {
         int Execute(RequestContext context);
         T ExecuteScalar<T>(RequestContext context);
@@ -26,14 +26,6 @@ namespace SmartSql.Abstractions
         DataTable GetDataTable(RequestContext context);
         DataSet GetDataSet(RequestContext context);
 
-        #region Transaction
-        IDbConnectionSession BeginTransaction();
-        IDbConnectionSession BeginTransaction(RequestContext context);
-        IDbConnectionSession BeginTransaction(IsolationLevel isolationLevel);
-        IDbConnectionSession BeginTransaction(RequestContext context, IsolationLevel isolationLevel);
-        void CommitTransaction();
-        void RollbackTransaction();
-        #endregion
         #region Scoped Session
         IDbConnectionSession BeginSession(RequestContext context);
         void EndSession();
