@@ -52,7 +52,7 @@
     </Statement>
     
     <!--获取数据列-->
-    <Statement Id="Quyer">
+    <Statement Id="Query">
       SELECT T.* From <#= host.GetModelClass(host.TableName) #> T
       <Include RefId="QueryParams"/>
       <Switch Prepend="Order By" Property="OrderBy">
