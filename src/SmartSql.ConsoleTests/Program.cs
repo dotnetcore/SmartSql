@@ -3,6 +3,11 @@ using SmartSql.ZooKeeperConfig;
 using System;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using Microsoft.Extensions.DependencyInjection;
+using SmartSql.Options;
+using Microsoft.Extensions.Options;
 
 namespace SmartSql.ConsoleTests
 {
@@ -11,10 +16,11 @@ namespace SmartSql.ConsoleTests
         static ILoggerFactory loggerFactory = new LoggerFactory();
         static void Main(string[] args)
         {
-            
+
             loggerFactory.AddConsole(LogLevel.Trace);
             loggerFactory.AddDebug(LogLevel.Trace);
-
+            OptionsConfig_Test();
+            Console.WriteLine("---------------------");
             LocalFileConfigLoader_Test();
 
             Console.WriteLine("Hello World!");
@@ -22,6 +28,35 @@ namespace SmartSql.ConsoleTests
 
         }
 
+        private static void OptionsConfig_Test()
+        {
+            var builder = new ConfigurationBuilder()
+                            .SetBasePath(Directory.GetCurrentDirectory())
+                             .AddJsonFile("SmartSqlConfig.json", false, true);
+
+            var configuration = builder.Build();
+            var services = new ServiceCollection();
+            services.AddOptions();
+            services.Configure<SmartSqlConfigOptions>(configuration);
+            var provider = services.BuildServiceProvider();
+            var options = provider.GetService<IOptionsSnapshot<SmartSqlConfigOptions>>();
+
+            var _configLoader = new OptionConfigLoader(options.Value, loggerFactory);
+            SmartSqlOptions smartSqlOptions = new SmartSqlOptions
+            {
+                ConfigLoader = _configLoader,
+                LoggerFactory = loggerFactory
+            };
+            var _smartSqlMapper = MapperContainer.Instance.GetSqlMapper(smartSqlOptions);
+
+            var reloadToken = configuration.GetReloadToken();
+            reloadToken.RegisterChangeCallback((obj) =>
+            {
+                Console.WriteLine("reloadToken.RegisterChangeCallback");
+                var __options = provider.GetService<IOptionsSnapshot<SmartSqlConfigOptions>>();
+                _configLoader.TriggerChanged(__options.Value);
+            }, provider);
+        }
 
         static void LocalFileConfigLoader_Test()
         {

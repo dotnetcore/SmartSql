@@ -15,36 +15,45 @@ namespace SmartSql.Options
     public class OptionConfigLoader : ConfigLoader
     {
         private readonly ILogger _logger;
-        private readonly SmartSqlConfigOptions options;
+        private SmartSqlConfigOptions _options;
         private const int DELAYED_LOAD_FILE = 500;
         private FileWatcherLoader _fileWatcherLoader;
 
         public override event OnChangedHandler OnChanged;
 
-        public OptionConfigLoader(IOptionsSnapshot<SmartSqlConfigOptions> options, ILoggerFactory loggerFactory)
+        public OptionConfigLoader(SmartSqlConfigOptions options, ILoggerFactory loggerFactory)
         {
-            this.options = options.Value;
-            this._logger = loggerFactory.CreateLogger<OptionConfigLoader>();
+            _options = options;
+            _logger = loggerFactory.CreateLogger<OptionConfigLoader>();
         }
 
         public override void Dispose()
         {
         }
-
+        public void TriggerChanged(SmartSqlConfigOptions options)
+        {
+            _options = options;
+            var newConfig = Load();
+            OnChanged?.Invoke(this, new OnChangedEventArgs
+            {
+                EventType = EventType.ConfigChanged,
+                SqlMapConfig = newConfig
+            });
+        }
         public override SmartSqlMapConfig Load()
         {
             SqlMapConfig = new SmartSqlMapConfig()
             {
                 SmartSqlMaps = new List<SmartSqlMap>(),
-                SmartSqlMapSources = options.SmartSqlMaps,
+                SmartSqlMapSources = _options.SmartSqlMaps,
                 Database = new Configuration.Database()
                 {
-                    DbProvider = options.Database.DbProvider,
-                    WriteDataSource = options.Database.Write,
-                    ReadDataSources = options.Database.Read
+                    DbProvider = _options.Database.DbProvider,
+                    WriteDataSource = _options.Database.Write,
+                    ReadDataSources = _options.Database.Read
                 },
-                Settings = options.Settings,
-                TypeHandlers = options.TypeHandlers,
+                Settings = _options.Settings,
+                TypeHandlers = _options.TypeHandlers,
             };
 
             foreach (var sqlMapSource in SqlMapConfig.SmartSqlMapSources)

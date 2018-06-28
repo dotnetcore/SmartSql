@@ -13,7 +13,7 @@
     },
     "Write": {
       "Name": "WriteDB",
-      "ConnectionString": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SmartSqlStarterDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+      "ConnectionString": "Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True"
     }
   },
   "SmartSqlMaps": [
