@@ -21,7 +21,7 @@ namespace SmartSql.Abstractions
         public CommandType CommandType { get; set; } = CommandType.Text;
         public Statement Statement { get; internal set; }
         public StringBuilder Sql { get; internal set; }
-        public bool IsStatementSql { get; internal set; }
+        public bool IsStatementSql { get; internal set; } = true;
         internal bool IgnorePrepend { get; set; } = false;
         public String RealSql { get; set; }
         public String Scope { get; set; }
