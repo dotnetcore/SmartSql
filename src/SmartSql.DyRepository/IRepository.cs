@@ -13,7 +13,7 @@ namespace SmartSql.DyRepository
         int Insert(TEntity entity);
         int Delete(object reqParams);
         [Statement(Id = "Delete")]
-        int DeleteById(TPrimary Id);
+        int DeleteById([Param("Id")]TPrimary id);
         int Update(TEntity entity);
         [Statement(Id = "Update")]
         int DyUpdate(object dyObj);
@@ -23,7 +23,7 @@ namespace SmartSql.DyRepository
         int GetRecord(object reqParams);
         TEntity GetEntity(object reqParams);
         [Statement(Id = "GetEntity")]
-        TEntity GetById(TPrimary Id);
+        TEntity GetById([Param("Id")]TPrimary id);
         [Statement(Execute = ExecuteBehavior.ExecuteScalar)]
         bool IsExist(object reqParams);
     }

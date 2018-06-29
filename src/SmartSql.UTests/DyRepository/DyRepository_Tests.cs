@@ -22,14 +22,15 @@ namespace SmartSql.UTests.DyRepository
         }
 
         [Fact]
-        public void Delete()
+        public void DeleteById()
         {
-            var exc = _repository.Delete(1);
+            var exc = _repository.DeleteById(1);
         }
+
         [Fact]
-        public void GetEntity()
+        public void GetById()
         {
-            var enttiy = _repository.GetEntity(3);
+            var enttiy = _repository.GetById(3);
         }
         [Fact]
         public void QueryBySql()

@@ -1,7 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Ahoo Wang , ElderJames</Authors>
+    <Company>SmartSq</Company>
+    <Product>SmartSq</Product>
+    <Copyright>SmartSq</Copyright>
+    <Title>SmartSql.Options</Title>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
+    <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
+    <Description />
   </PropertyGroup>
 
   <ItemGroup>

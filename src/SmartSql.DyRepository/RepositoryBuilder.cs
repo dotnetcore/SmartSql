@@ -221,8 +221,14 @@ namespace SmartSql.DyRepository
                             ilGenerator.Emit(OpCodes.Call, _set_CommandTypeMethod);
                             continue;
                         }
+                        string reqParamName = reqParam.Name;
+                        var paramAttr = reqParam.GetCustomAttribute<ParamAttribute>();
+                        if (paramAttr != null && !String.IsNullOrEmpty(paramAttr.Name))
+                        {
+                            reqParamName = paramAttr.Name;
+                        }
                         ilGenerator.Emit(OpCodes.Ldloc_1); //[dic]
-                        ilGenerator.Emit(OpCodes.Ldstr, reqParam.Name);//[dic][param-name]
+                        ilGenerator.Emit(OpCodes.Ldstr, reqParamName);//[dic][param-name]
                         EmitUtils.LoadArg(ilGenerator, argIndex);
                         if (reqParam.ParameterType.IsValueType)
                         {
