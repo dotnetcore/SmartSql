@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SmartSql.Abstractions;
 using SmartSql.Abstractions.Command;
+using SmartSql.Abstractions.Config;
 using SmartSql.Abstractions.DataReaderDeserializer;
 using SmartSql.Abstractions.DbSession;
 using SmartSql.Command;
@@ -19,31 +20,26 @@ namespace SmartSql.UTests
 {
     public class OptionConfig_Test : TestBase
     {
-        private static IConfiguration Configuration;
         private ISmartSqlMapper _smartSqlMapper;
 
         public OptionConfig_Test()
         {
-            string configPath = "SmartSqlConfig.json";
             var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                 .AddJsonFile(configPath);
+                            .SetBasePath(Directory.GetCurrentDirectory())
+                             .AddJsonFile("SmartSqlConfig.json", false, true);
 
-            Configuration = builder.Build();
-
+            var configuration = builder.Build();
             var services = new ServiceCollection();
             services.AddOptions();
-            services.Configure<SmartSqlConfigOptions>(Configuration);
-            var provider = services.BuildServiceProvider();
-            var options = provider.GetService<IOptionsSnapshot<SmartSqlConfigOptions>>();
 
-            var _configLoader = new OptionConfigLoader(options.Value, LoggerFactory);
-            SmartSqlOptions smartSqlOptions = new SmartSqlOptions
-            {
-                ConfigPath = configPath,
-                ConfigLoader = _configLoader
-            };
-            _smartSqlMapper = MapperContainer.Instance.GetSqlMapper(smartSqlOptions);
+            services.Configure<SmartSqlConfigOptions>(configuration);
+
+            services.AddSingleton<ILoggerFactory>(LoggerFactory);
+
+            services.AddSmartSqlOption();
+
+            var serviceProvider = services.BuildServiceProvider();
+            _smartSqlMapper = serviceProvider.GetRequiredService<ISmartSqlMapper>();
         }
 
         [Fact]

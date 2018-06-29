@@ -8,6 +8,7 @@ using System.IO;
 using Microsoft.Extensions.DependencyInjection;
 using SmartSql.Options;
 using Microsoft.Extensions.Options;
+using SmartSql.Abstractions.Config;
 
 namespace SmartSql.ConsoleTests
 {
@@ -38,24 +39,11 @@ namespace SmartSql.ConsoleTests
             var services = new ServiceCollection();
             services.AddOptions();
             services.Configure<SmartSqlConfigOptions>(configuration);
-            var provider = services.BuildServiceProvider();
-            var options = provider.GetService<IOptionsSnapshot<SmartSqlConfigOptions>>();
+            services.AddSingleton<ILoggerFactory>(loggerFactory);
+            services.AddSmartSqlOption();
 
-            var _configLoader = new OptionConfigLoader(options.Value, loggerFactory);
-            SmartSqlOptions smartSqlOptions = new SmartSqlOptions
-            {
-                ConfigLoader = _configLoader,
-                LoggerFactory = loggerFactory
-            };
-            var _smartSqlMapper = MapperContainer.Instance.GetSqlMapper(smartSqlOptions);
-
-            var reloadToken = configuration.GetReloadToken();
-            reloadToken.RegisterChangeCallback((obj) =>
-            {
-                Console.WriteLine("reloadToken.RegisterChangeCallback");
-                var __options = provider.GetService<IOptionsSnapshot<SmartSqlConfigOptions>>();
-                _configLoader.TriggerChanged(__options.Value);
-            }, provider);
+            var serviceProvider = services.BuildServiceProvider();
+            var _smartSqlMapper = serviceProvider.GetRequiredService<ISmartSqlMapper>();
         }
 
         static void LocalFileConfigLoader_Test()

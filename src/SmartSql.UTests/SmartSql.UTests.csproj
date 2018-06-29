@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SmartSql.DapperDeserializer\SmartSql.DapperDeserializer.csproj" />
+    <ProjectReference Include="..\SmartSql.DIExtension\SmartSql.DIExtension.csproj" />
     <ProjectReference Include="..\SmartSql.DyRepository\SmartSql.DyRepository.csproj" />
     <ProjectReference Include="..\SmartSql.Options\SmartSql.Options.csproj" />
     <ProjectReference Include="..\SmartSql.TypeHandler\SmartSql.TypeHandler.csproj" />

@@ -25,6 +25,7 @@ namespace SmartSql.Options
         {
             _options = options;
             _logger = loggerFactory.CreateLogger<OptionConfigLoader>();
+            _fileWatcherLoader = new FileWatcherLoader();
         }
 
         public override void Dispose()
