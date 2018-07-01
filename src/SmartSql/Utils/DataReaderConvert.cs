@@ -58,7 +58,7 @@ namespace SmartSql.Utils
                 DataTable dataTable = await ToDataTableAsync(dataReader);
                 dataSet.Tables.Add(dataTable);
             }
-            while (dataReader.NextResult());
+            while (await dataReader.NextResultAsync());
             return dataSet;
         }
         private static void InitDataTableColumns(IDataReader dataReader, DataTable dataTable)
