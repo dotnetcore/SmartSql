@@ -3,40 +3,40 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql", "SmartSql\SmartSql.csproj", "{A579D5D5-1311-4DD9-AE62-3EFE43BB87A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql", "src\SmartSql\SmartSql.csproj", "{A579D5D5-1311-4DD9-AE62-3EFE43BB87A1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Cache.Redis", "SmartSql.Cache.Redis\SmartSql.Cache.Redis.csproj", "{93C6C660-D8A8-4548-8921-AF2D9B7D847A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Cache.Redis", "src\SmartSql.Cache.Redis\SmartSql.Cache.Redis.csproj", "{93C6C660-D8A8-4548-8921-AF2D9B7D847A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.ZooKeeperConfig", "SmartSql.ZooKeeperConfig\SmartSql.ZooKeeperConfig.csproj", "{E793B9C1-23DD-4D12-9257-48177ED2AF6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.ZooKeeperConfig", "src\SmartSql.ZooKeeperConfig\SmartSql.ZooKeeperConfig.csproj", "{E793B9C1-23DD-4D12-9257-48177ED2AF6F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8EF12533-817B-464A-A5B3-FEAE6E7541B7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "src\Tests", "{8EF12533-817B-464A-A5B3-FEAE6E7541B7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.ConsoleTests", "SmartSql.ConsoleTests\SmartSql.ConsoleTests.csproj", "{4FFABF3E-6443-4BFF-976D-1949197096AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.ConsoleTests", "src\SmartSql.ConsoleTests\SmartSql.ConsoleTests.csproj", "{4FFABF3E-6443-4BFF-976D-1949197096AE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DyRepository", "SmartSql.DyRepository\SmartSql.DyRepository.csproj", "{B627989A-6428-4EDF-AFDE-1AA1C6C77B04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DyRepository", "src\SmartSql.DyRepository\SmartSql.DyRepository.csproj", "{B627989A-6428-4EDF-AFDE-1AA1C6C77B04}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.UTests", "SmartSql.UTests\SmartSql.UTests.csproj", "{842BB849-5D9D-4FCB-9DD3-152717CE8C94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.UTests", "src\SmartSql.UTests\SmartSql.UTests.csproj", "{842BB849-5D9D-4FCB-9DD3-152717CE8C94}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.PerformanceTests", "SmartSql.PerformanceTests\SmartSql.PerformanceTests.csproj", "{ADB05E37-A528-4120-993A-1C351CC96BA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.PerformanceTests", "src\SmartSql.PerformanceTests\SmartSql.PerformanceTests.csproj", "{ADB05E37-A528-4120-993A-1C351CC96BA1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DapperDeserializer", "SmartSql.DapperDeserializer\SmartSql.DapperDeserializer.csproj", "{F2169B5F-B215-42AA-8F62-DEEE596A6404}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DapperDeserializer", "src\SmartSql.DapperDeserializer\SmartSql.DapperDeserializer.csproj", "{F2169B5F-B215-42AA-8F62-DEEE596A6404}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{56A313A6-578F-42C7-9E39-7847C38F2EFE}"
 	ProjectSection(SolutionItems) = preProject
 		Performance1.psess = Performance1.psess
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DIExtension", "SmartSql.DIExtension\SmartSql.DIExtension.csproj", "{4481026A-DFA6-4D4C-9D56-9777F1235AF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DIExtension", "src\SmartSql.DIExtension\SmartSql.DIExtension.csproj", "{4481026A-DFA6-4D4C-9D56-9777F1235AF3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.TypeHandler", "SmartSql.TypeHandler\SmartSql.TypeHandler.csproj", "{9634AE6E-FCEF-4208-BE31-A7F3D5F86E0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.TypeHandler", "src\SmartSql.TypeHandler\SmartSql.TypeHandler.csproj", "{9634AE6E-FCEF-4208-BE31-A7F3D5F86E0B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalORM", "ExternalORM", "{8EC342B0-BDF1-442A-AC3D-2244C8E1D26D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalORM", "src\ExternalORM", "{8EC342B0-BDF1-442A-AC3D-2244C8E1D26D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar", "ExternalORM\SqlSugar.csproj", "{7BA4008F-2454-4479-B425-56D117BF5AE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar", "src\ExternalORM\SqlSugar.csproj", "{7BA4008F-2454-4479-B425-56D117BF5AE8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DataAccess", "SmartSql.DataAccess\SmartSql.DataAccess.csproj", "{AFFE077F-7BA0-4E4B-8258-64F94AFFD906}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DataAccess", "src\SmartSql.DataAccess\SmartSql.DataAccess.csproj", "{AFFE077F-7BA0-4E4B-8258-64F94AFFD906}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Options", "SmartSql.Options\SmartSql.Options.csproj", "{A40C7B3F-F2DA-47B4-908D-E7BB8BD9129C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Options", "src\SmartSql.Options\SmartSql.Options.csproj", "{A40C7B3F-F2DA-47B4-908D-E7BB8BD9129C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
