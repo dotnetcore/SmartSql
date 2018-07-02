@@ -153,7 +153,7 @@ Install-Package SmartSql.DIExtension
     /// <summary>
     /// 属性可选： [SqlMap(Scope = "User")] ,不设置 则默认 Scope 模板：I{Scope}Repository
     /// 可传入自定义模板
-    /// RepositoryBuilder builder=new RepositoryBuilder("I{Scope}DAL");
+    /// RepositoryBuilder builder=new RepositoryBuilder("I{Scope}Repository");
     /// </summary>
     public interface IUserRepository
     {
@@ -165,11 +165,14 @@ Install-Package SmartSql.DIExtension
         /// <param name="reqParams"></param>
         /// <returns></returns>
         IEnumerable<User> Query(object reqParams);
-        long GetRecord(object reqParams);
-        User Get(object reqParams);
+        int GetRecord(object reqParams);
+        User GetById([Param("Id")]long id);
         long Insert(User entity);
         int Update(User entity);
         int Delete(User enttiy);
+        [Statement(Sql = "Select Top(@taken) T.* From T_User T With(NoLock);")]
+        Task<IEnumerable<User>> QueryBySqlAsync(int taken);
+        bool IsExist(object reqParams);
     }
 ```
 
@@ -178,14 +181,14 @@ Install-Package SmartSql.DIExtension
 ``` csharp
     public class UserService
     {
-        private readonly ISmartSqlMapper _smartSqlMapper;
+        private readonly ITransaction _transaction;
         private readonly IUserRepository _userRepository;
 
         public UserService(
-             ISmartSqlMapper smartSqlMapper
+             ITransaction transaction
             , IUserRepository userRepository)
         {
-            _smartSqlMapper = smartSqlMapper;
+            _transaction = transaction;
             _userRepository = userRepository;
         }
 
@@ -196,7 +199,7 @@ Install-Package SmartSql.DIExtension
             {
                 throw new ArgumentException($"{nameof(request.UserName)} has already existed!");
             }
-            return _userRepository.Add(new Entitiy.User
+            return _userRepository.Insert(new Entitiy.User
             {
                 UserName = request.UserName,
                 Password = request.Password,
@@ -209,13 +212,13 @@ Install-Package SmartSql.DIExtension
         {
             try
             {
-                _smartSqlMapper.BeginTransaction();
+                _transaction.BeginTransaction();
                 //Biz();
-                _smartSqlMapper.CommitTransaction();
+                _transaction.CommitTransaction();
             }
             catch (Exception ex)
             {
-                _smartSqlMapper.RollbackTransaction();
+                _transaction.RollbackTransaction();
                 throw ex;
             }
         }
