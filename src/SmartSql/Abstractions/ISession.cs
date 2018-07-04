@@ -7,6 +7,7 @@ namespace SmartSql.Abstractions
 {
     public interface ISession
     {
+        IDbConnectionSession BeginSession();
         IDbConnectionSession BeginSession(RequestContext context);
         void EndSession();
     }

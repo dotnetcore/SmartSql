@@ -344,6 +344,21 @@ namespace SmartSql
 
         #endregion
         #region Scoped Session
+        public IDbConnectionSession BeginSession()
+        {
+            if (SessionStore.LocalSession != null)
+            {
+                throw new SmartSqlException("SmartSqlMapper could not invoke BeginSession(). A LocalSession is already existed.");
+            }
+            var reqContext = new RequestContext
+            {
+                DataSourceChoice = DataSourceChoice.Read
+            };
+            var dataSource = DataSourceFilter.Elect(reqContext);
+            var dbSession = SessionStore.CreateDbSession(dataSource);
+            dbSession.Begin();
+            return dbSession;
+        }
         public IDbConnectionSession BeginSession(RequestContext context)
         {
             if (SessionStore.LocalSession != null)
