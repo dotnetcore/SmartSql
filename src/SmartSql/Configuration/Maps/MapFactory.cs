@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartSql.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,7 +44,8 @@ namespace SmartSql.Configuration.Maps
                         arg.ArgType = ArgTypeConvert(arg.Type);
                         if (!String.IsNullOrEmpty(arg.TypeHandler))
                         {
-                            arg.Handler = sqlMapConfig.TypeHandlers.First(th => th.Name == arg.TypeHandler).Handler;
+                            TypeHandler typeHandler = TypeHanderNotNull(sqlMapConfig, arg.TypeHandler);
+                            arg.Handler = typeHandler.Handler;
                         }
                         ctorMap.Args.Add(arg);
                     }
@@ -89,7 +91,8 @@ namespace SmartSql.Configuration.Maps
                 };
                 if (!String.IsNullOrEmpty(result.TypeHandler))
                 {
-                    result.Handler = sqlMapConfig.TypeHandlers.First(th => th.Name == result.TypeHandler).Handler;
+                    TypeHandler typeHandler = TypeHanderNotNull(sqlMapConfig, result.TypeHandler);
+                    result.Handler = typeHandler.Handler;
                 }
                 resultMap.Results.Add(result);
             }
@@ -111,11 +114,26 @@ namespace SmartSql.Configuration.Maps
                     Name = (childNode.Attributes["Name"] ?? childNode.Attributes["Property"]).Value,
                     TypeHandler = childNode.Attributes["TypeHandler"].Value
                 };
-                parameter.Handler = sqlMapConfig.TypeHandlers.First(th => th.Name == parameter.TypeHandler).Handler;
+
+                if (!String.IsNullOrEmpty(parameter.TypeHandler))
+                {
+                    TypeHandler typeHandler = TypeHanderNotNull(sqlMapConfig, parameter.TypeHandler);
+                    parameter.Handler = typeHandler.Handler;
+                }
                 parameterMap.Parameters.Add(parameter);
             }
 
             return parameterMap;
+        }
+
+        private static TypeHandler TypeHanderNotNull(SmartSqlMapConfig sqlMapConfig, string typeHandlerName)
+        {
+            var typeHandler = sqlMapConfig.TypeHandlers.FirstOrDefault(th => th.Name == typeHandlerName);
+            if (typeHandler == null)
+            {
+                throw new SmartSqlException($"Can not find TypeHandler.Name:{typeHandlerName}");
+            }
+            return typeHandler;
         }
     }
 }
