@@ -13,8 +13,8 @@ namespace SmartSql.UTests
         {
             _configLoader = new LocalFileConfigLoader(SqlMapConfigFilePath, LoggerFactory);
             var smartSqlContext = new SmartSqlContext(LoggerFactory.CreateLogger<SmartSqlContext>(), _configLoader.Load());
-            _sqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>(), smartSqlContext);
-           
+            _sqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>(), smartSqlContext, _configLoader);
+
         }
         [Fact]
         public void BuildSql()

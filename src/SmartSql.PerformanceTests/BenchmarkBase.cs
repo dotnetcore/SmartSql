@@ -24,7 +24,7 @@ namespace SmartSql.PerformanceTests
     public abstract class BenchmarkBase
     {
         public const int ITERATIONS = 100;
-        public const int QUERY_TAKEN = 40000;
+        public const int QUERY_TAKEN = 10000;
         protected SqlConnection _connection;
         public static string ConnectionString { get; } = "Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True";
         public static string QueryString { get; } = $"SELECT TOP({QUERY_TAKEN}) T.* From T_Entity T With(NoLock)";

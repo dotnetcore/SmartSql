@@ -60,7 +60,7 @@ namespace SmartSql
             }
             if (SqlBuilder == null)
             {
-                SqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>(), SmartSqlContext);
+                SqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>(), SmartSqlContext, ConfigLoader);
             }
 
             if (PreparedCommand == null)

@@ -27,7 +27,7 @@ namespace SmartSql.UTests.DataReaderDeserializer
             var _configLoader = new LocalFileConfigLoader(SqlMapConfigFilePath, LoggerFactory);
             var config = _configLoader.Load();
             _smartSqlContext = new SmartSqlContext(LoggerFactory.CreateLogger<SmartSqlContext>(), config);
-            _sqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>(), _smartSqlContext);
+            _sqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>(), _smartSqlContext, _configLoader);
             var _preparedCommand = new PreparedCommand(LoggerFactory.CreateLogger<PreparedCommand>(), _smartSqlContext);
             _commandExecuter = new CommandExecuter(LoggerFactory.CreateLogger<CommandExecuter>(), _preparedCommand);
 
