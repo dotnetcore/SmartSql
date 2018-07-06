@@ -7,7 +7,11 @@ namespace SmartSql.DyRepository
     public interface IRepository
     {
     }
-
+    /// <summary>
+    /// 泛型仓储接口
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TPrimary"></typeparam>
     public interface IRepository<TEntity, TPrimary> : IRepository
     {
         int Insert(TEntity entity);

@@ -9,6 +9,7 @@
   
   <TypeHandlers>
     <TypeHandler Name="Json" Type="SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"/>
+    <TypeHandler Name="Xml" Type="SmartSql.TypeHandler.XmlTypeHandler,SmartSql.TypeHandler"/>
   </TypeHandlers>
   
   <SmartSqlMaps>

@@ -2,6 +2,9 @@
 
 namespace SmartSql.DyRepository
 {
+    /// <summary>
+    /// 函数参数特性
+    /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
     public class ParamAttribute : Attribute
     {
@@ -9,6 +12,9 @@ namespace SmartSql.DyRepository
         {
             Name = name;
         }
+        /// <summary>
+        /// DbDataParameter.Name
+        /// </summary>
         public String Name { get; set; }
     }
 }
