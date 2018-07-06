@@ -3,6 +3,10 @@ using System.Data;
 
 namespace SmartSql.DyRepository
 {
+    /// <summary>
+    /// SqlMap.Statement 映射
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class StatementAttribute : Attribute
     {
         /// <summary>
