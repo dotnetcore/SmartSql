@@ -49,7 +49,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="SmartSqlMaps">
+        <xs:element name="SmartSqlMaps" minOccurs="0">
           <xs:complexType>
             <xs:choice>
               <xs:element maxOccurs="unbounded" name="SmartSqlMap">

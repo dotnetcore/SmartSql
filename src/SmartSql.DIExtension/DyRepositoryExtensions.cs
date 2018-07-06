@@ -16,23 +16,23 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddSingleton<IRepositoryBuilder>((sp) =>
             {
-                var loggerFactory = sp.GetService<ILoggerFactory>();
+                var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
                 var logger = loggerFactory.CreateLogger<RepositoryBuilder>();
                 return new RepositoryBuilder(scope_template, logger);
             });
             services.AddSingleton<IRepositoryFactory>((sp) =>
             {
                 var repositoryBuilder = sp.GetRequiredService<IRepositoryBuilder>();
-                var loggerFactory = sp.GetService<ILoggerFactory>();
+                var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
                 var logger = loggerFactory.CreateLogger<RepositoryFactory>();
                 return new RepositoryFactory(repositoryBuilder, logger);
             });
         }
-        public static void AddRepository<T>(this IServiceCollection services) where T : class
+        public static void AddRepository<T>(this IServiceCollection services, ISmartSqlMapper smartSqlMapper = null) where T : class
         {
             services.AddSingleton<T>(sp =>
             {
-                var sqlMapper = sp.GetRequiredService<ISmartSqlMapper>();
+                var sqlMapper = smartSqlMapper ?? sp.GetRequiredService<ISmartSqlMapper>();
                 var factory = sp.GetRequiredService<IRepositoryFactory>();
                 return factory.CreateInstance<T>(sqlMapper);
             });
@@ -51,7 +51,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 services.AddSingleton(type, sp =>
                 {
-                    var sqlMapper = sp.GetRequiredService<ISmartSqlMapper>();
+                    var sqlMapper = options.SmartSqlMapper ?? sp.GetRequiredService<ISmartSqlMapper>();
                     var factory = sp.GetRequiredService<IRepositoryFactory>();
                     return factory.CreateInstance(type, sqlMapper);
                 });
