@@ -27,12 +27,33 @@ namespace SmartSql.DyRepository
     /// </summary>
     public enum ExecuteBehavior
     {
+        /// <summary>
+        /// 自动判断执行类型
+        /// </summary>
         Auto = 0,
+        /// <summary>
+        /// 返回受影响行数
+        /// </summary>
         Execute = 1,
+        /// <summary>
+        /// 返回结果的第一行第一列的值，主要用于返回主键
+        /// </summary>
         ExecuteScalar = 2,
+        /// <summary>
+        /// 查询枚举对象，List
+        /// </summary>
         Query = 3,
+        /// <summary>
+        /// 查询单个对象
+        /// </summary>
         QuerySingle = 4,
+        /// <summary>
+        /// 返回DataTable
+        /// </summary>
         GetDataTable = 5,
+        /// <summary>
+        /// 返回DataSet
+        /// </summary>
         GetDataSet = 6
     }
 }
