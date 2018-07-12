@@ -105,7 +105,17 @@ namespace SmartSql.UTests
             };
             var list = _sqlMapper.Query<T_Entity>(context);
         }
-
+        [Fact]
+        public void QueryForPlaceholder()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "QueryForPlaceholder",
+                Request = new { TableName = "T_Entity" }
+            };
+            var list = _sqlMapper.Query<T_Entity>(context);
+        }
         [Fact]
         public void QueryCustomConstructorEntity()
         {

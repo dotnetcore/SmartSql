@@ -13,7 +13,7 @@ namespace SmartSql.Configuration.Tags
             if (IsCondition(context))
             {
                 Object reqVal = GetPropertyValue(context);
-                context.Sql.Append($" {Prepend} {reqVal.ToString()}");
+                context.Sql.Append($"{Prepend}{reqVal.ToString()}");
             }
         }
 

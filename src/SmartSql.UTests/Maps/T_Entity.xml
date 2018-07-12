@@ -29,7 +29,9 @@
 
 
   <Statements>
-
+    <Statement Id="QueryForPlaceholder">
+      SELECT Top(10) T.* From <Placeholder Property="TableName"></Placeholder> T With(NoLock)
+    </Statement>
     <Statement Id="QueryParams">
       <Where>
         <IsNotEmpty Prepend="And" Property="FString">

@@ -77,7 +77,17 @@ namespace SmartSql.Configuration
                 case "#text":
                 case "#cdata-section":
                     {
-                        var bodyText = " " + xmlNode.InnerText.Replace("\n", "").Trim();
+                        var bodyText = String.Empty;
+                        var innerText = xmlNode.InnerText;
+                        if (innerText.StartsWith(" "))
+                        {
+                            bodyText += " ";
+                        }
+                        bodyText += xmlNode.InnerText.Trim().Replace("\r\n", " ");
+                        if (innerText.EndsWith(" "))
+                        {
+                            bodyText += " ";
+                        }
                         return new SqlText
                         {
                             BodyText = bodyText
