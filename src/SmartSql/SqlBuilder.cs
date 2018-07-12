@@ -54,7 +54,7 @@ namespace SmartSql
                     var statement = _smartSqlContext.GetStatement(context.FullSqlId);
                     context.Statement = statement;
                     statement.BuildSql(context);
-                    context.RealSql = context.Sql.ToString().Trim().Replace("\r", " ").Replace(_smartSqlContext.SmartDbPrefix, _smartSqlContext.DbPrefix);
+                    context.RealSql = context.Sql.ToString().Trim().Replace(_smartSqlContext.SmartDbPrefix, _smartSqlContext.DbPrefix);
                     _cachedRequest.TryAdd(context.Key, context);
                 }
             }
