@@ -5,17 +5,16 @@
     <Authors>Ahoo Wang</Authors>
     <Company>Ahoo Wang</Company>
     <Title>SmartSql</Title>
-    <Description>SmartSql = MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting + ......</Description>
+    <Description>SmartSql = MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting +Dynamic Repository ....</Description>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Copyright>Ahoo Wang</Copyright>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>3.3.12</Version>
+    <Version>3.3.16</Version>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <PackageReleaseNotes>
-      1. fix Tag.Placeholder Space problem
-      2. optimize SQL output
+      1. Support for returning generic type nesting
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>

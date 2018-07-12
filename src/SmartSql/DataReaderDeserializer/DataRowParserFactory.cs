@@ -22,7 +22,7 @@ namespace SmartSql.DataReaderDeserializer
 
         public Func<IDataReader, RequestContext, object> GetParser(IDataReader dataReader, RequestContext requestContext, Type targetType)
         {
-            string key = $"{requestContext.FullSqlId}_{targetType.GUID.ToString("N")}";
+            string key = $"{requestContext.FullSqlId}_{targetType.FullName}";
             if (!_cachedDeserializer.ContainsKey(key))
             {
                 lock (this)
