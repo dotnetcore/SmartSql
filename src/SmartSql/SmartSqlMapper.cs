@@ -53,7 +53,8 @@ namespace SmartSql
         }
         private void SetupRequestContext(RequestContext context)
         {
-            context.Setup(_smartSqlOptions.SmartSqlContext, SqlBuilder);
+            context.Setup(_smartSqlOptions.SmartSqlContext);
+            SqlBuilder.BuildSql(context);
         }
         #region Sync
         public T ExecuteWrap<T>(Func<IDbConnectionSession, T> execute, RequestContext context)

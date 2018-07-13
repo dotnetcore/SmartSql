@@ -27,6 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Maps\SqlBuilder.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="SmartSqlConfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

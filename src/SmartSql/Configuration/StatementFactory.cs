@@ -83,7 +83,7 @@ namespace SmartSql.Configuration
                         {
                             bodyText += " ";
                         }
-                        bodyText += xmlNode.InnerText.Trim().Replace("\r\n", " ");
+                        bodyText += innerText.Trim().Replace("\r\n", " ");
                         if (innerText.EndsWith(" "))
                         {
                             bodyText += " ";
@@ -99,7 +99,7 @@ namespace SmartSql.Configuration
                         var include_tag = new Include
                         {
                             RefId = refId,
-                            Prepend = prepend
+                            Prepend = xmlNode.Attributes?["Prepend"]?.Value
                         };
                         includes.Add(include_tag);
                         tag = include_tag;
@@ -246,7 +246,7 @@ namespace SmartSql.Configuration
                     {
                         tag = new Placeholder
                         {
-                            Prepend = prepend,
+                            Prepend = xmlNode.Attributes?["Prepend"]?.Value,
                             Property = property,
                             ChildTags = new List<ITag>()
                         };

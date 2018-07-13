@@ -14,9 +14,7 @@ namespace SmartSql.Configuration.Tags
         public Statement Ref { get; set; }
         public override void BuildSql(RequestContext context)
         {
-            context.Sql.Append("");
             context.Sql.Append(Prepend);
-            context.Sql.Append("");
             Ref.BuildSql(context);
         }
         public override bool IsCondition(RequestContext context)

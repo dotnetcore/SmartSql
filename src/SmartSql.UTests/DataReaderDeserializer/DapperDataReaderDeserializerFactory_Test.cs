@@ -43,7 +43,8 @@ namespace SmartSql.UTests.DataReaderDeserializer
                 SqlId = "Query",
                 Request = new { Taken = 10 }
             };
-            context.Setup(_smartSqlContext, _sqlBuilder);
+            context.Setup(_smartSqlContext);
+            _sqlBuilder.BuildSql(context);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteReader(dbSession, context);
             var deser = _deserializerFactory.Create();

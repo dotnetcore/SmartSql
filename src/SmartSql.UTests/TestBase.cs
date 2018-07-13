@@ -17,7 +17,7 @@ namespace SmartSql.UTests
         public string SqlMapConfigFilePath { get { return "SmartSqlMapConfig.xml"; } }
         public DbProviderFactory DbProviderFactory { get; private set; }
         public ILoggerFactory LoggerFactory { get { return new NoneLoggerFactory(); } }
-        public string Scope { get { return "Entity"; } }
+        public virtual string Scope { get { return "Entity"; } }
         public string ConnectionString { get { return "Data Source=.;database=SmartSqlStarterDB;uid=sa;pwd=SmartSql.Net!"; } }
         public IDataSource DataSource
         {

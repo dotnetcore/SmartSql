@@ -31,11 +31,10 @@ namespace SmartSql.Abstractions
         public object Request { get; set; }
 
         [Obsolete("Internal call")]
-        public void Setup(SmartSqlContext smartSqlContext, ISqlBuilder sqlBuilder)
+        public void Setup(SmartSqlContext smartSqlContext)
         {
             SmartSqlContext = smartSqlContext;
             SetupParameters();
-            SetupSql(sqlBuilder);
         }
         internal void SetupParameters()
         {
@@ -69,12 +68,6 @@ namespace SmartSql.Abstractions
             }
             RequestParameters = ObjectUtils.ToDictionary(Request, ignoreParameterCase);
         }
-
-        internal void SetupSql(ISqlBuilder sqlBuilder)
-        {
-            sqlBuilder.BuildSql(this);
-        }
-
 
         public String Key { get { return $"{FullSqlId}:{RequestString}"; } }
 

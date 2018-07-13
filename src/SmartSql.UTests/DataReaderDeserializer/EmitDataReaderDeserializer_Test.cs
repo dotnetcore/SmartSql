@@ -44,7 +44,8 @@ namespace SmartSql.UTests.DataReaderDeserializer
                 SqlId = "Query",
                 Request = new { Taken = 10 }
             };
-            context.Setup(_smartSqlContext, _sqlBuilder);
+            context.Setup(_smartSqlContext);
+            _sqlBuilder.BuildSql(context);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteReader(dbSession, context);
             var deser = _deserializerFactory.Create();
@@ -60,7 +61,8 @@ namespace SmartSql.UTests.DataReaderDeserializer
                 Scope = Scope,
                 SqlId = "QueryStatus",
             };
-            context.Setup(_smartSqlContext, _sqlBuilder);
+            context.Setup(_smartSqlContext);
+            _sqlBuilder.BuildSql(context);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteReader(dbSession, context);
             var deser = _deserializerFactory.Create();
@@ -76,7 +78,8 @@ namespace SmartSql.UTests.DataReaderDeserializer
                 Scope = Scope,
                 SqlId = "QueryNullStatus",
             };
-            context.Setup(_smartSqlContext, _sqlBuilder);
+            context.Setup(_smartSqlContext);
+            _sqlBuilder.BuildSql(context);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteReader(dbSession, context);
             var deser = _deserializerFactory.Create();

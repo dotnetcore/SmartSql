@@ -46,7 +46,8 @@ namespace SmartSql.UTests.Command
                 SqlId = "Delete",
                 Request = new { Id = 3 }
             };
-            context.Setup(_smartSqlContext, _sqlBuilder);
+            context.Setup(_smartSqlContext);
+            _sqlBuilder.BuildSql(context);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
 
             var result = _commandExecuter.ExecuteNonQuery(dbSession, context);
@@ -62,7 +63,8 @@ namespace SmartSql.UTests.Command
 
                 //Request = new { Id = 1, UserName = "SmartSql" },
             };
-            context.Setup(_smartSqlContext, _sqlBuilder);
+            context.Setup(_smartSqlContext);
+            _sqlBuilder.BuildSql(context);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteReader(dbSession, context);
             while (result.Read())
@@ -82,7 +84,8 @@ namespace SmartSql.UTests.Command
                 SqlId = "GetRecord",
                 Request = new { Id = 2 }
             };
-            context.Setup(_smartSqlContext, _sqlBuilder);
+            context.Setup(_smartSqlContext);
+            _sqlBuilder.BuildSql(context);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteScalar(dbSession, context);
             //Assert.Equal(1, result);
@@ -109,7 +112,8 @@ namespace SmartSql.UTests.Command
                     Status = EntityStatus.Ok
                 }
             };
-            context.Setup(_smartSqlContext, _sqlBuilder);
+            context.Setup(_smartSqlContext);
+            _sqlBuilder.BuildSql(context);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteScalar(dbSession, context);
 
@@ -135,7 +139,8 @@ namespace SmartSql.UTests.Command
                     Status = EntityStatus.Ok
                 }
             };
-            context.Setup(_smartSqlContext, _sqlBuilder);
+            context.Setup(_smartSqlContext);
+            _sqlBuilder.BuildSql(context);
             var dbSession = _sessionStore.GetOrAddDbSession(DataSource);
             dbSession.Begin();
             for (int i = 0; i < 10; i++)

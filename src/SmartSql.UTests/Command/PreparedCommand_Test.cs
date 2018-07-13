@@ -39,7 +39,8 @@ namespace SmartSql.UTests.Command
                 SqlId = "Query",
                 Request = new { Id = 1, UserName = "SmartSql", Ids = new long[] { 1, 2, 3, 4 } }
             };
-            context.Setup(_smartSqlContext, _sqlBuilder);
+            context.Setup(_smartSqlContext);
+            _sqlBuilder.BuildSql(context);
             var dbSession = _sessionStore.GetOrAddDbSession(DataSource);
             var dbCommand = _preparedCommand.Prepare(dbSession, context);
 
