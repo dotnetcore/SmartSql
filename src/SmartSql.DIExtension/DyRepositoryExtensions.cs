@@ -28,13 +28,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 return new RepositoryFactory(repositoryBuilder, logger);
             });
         }
-        public static void AddRepository<T>(this IServiceCollection services, ISmartSqlMapper smartSqlMapper = null) where T : class
+        public static void AddRepository<T>(this IServiceCollection services, ISmartSqlMapper smartSqlMapper = null, string scope = "") where T : class
         {
             services.AddSingleton<T>(sp =>
             {
                 var sqlMapper = smartSqlMapper ?? sp.GetRequiredService<ISmartSqlMapper>();
                 var factory = sp.GetRequiredService<IRepositoryFactory>();
-                return factory.CreateInstance<T>(sqlMapper);
+                return factory.CreateInstance<T>(sqlMapper, scope);
             });
         }
 
