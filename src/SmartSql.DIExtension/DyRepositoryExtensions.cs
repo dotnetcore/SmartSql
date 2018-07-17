@@ -54,7 +54,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     var sqlMapper = options.SmartSqlMapper ?? sp.GetRequiredService<ISmartSqlMapper>();
                     var factory = sp.GetRequiredService<IRepositoryFactory>();
-                    var scope = templateParser.Parse(type.Name);
+                    var scope = string.Empty;
+                    if (!String.IsNullOrEmpty(options.ScopeTemplate))
+                    {
+                        scope = templateParser.Parse(type.Name);
+                    }
                     return factory.CreateInstance(type, sqlMapper, scope);
                 });
             }
