@@ -17,10 +17,7 @@ namespace SmartSql.DyRepository
 {
     public class RepositoryBuilder : IRepositoryBuilder
     {
-        private const string DEFAULT_SCOPE_TEMPLATE = "I{Scope}Repository";
-
-        private Regex _repositoryScope;
-
+        private ScopeTemplateParser _templateParser;
         private AssemblyBuilder _assemblyBuilder;
         private ModuleBuilder _moduleBuilder;
 
@@ -29,27 +26,9 @@ namespace SmartSql.DyRepository
             , ILogger<RepositoryBuilder> logger
             )
         {
-            InitScopeTemlate(scope_template);
+            _templateParser = new ScopeTemplateParser(scope_template);
             InitAssembly();
             _logger = logger;
-        }
-
-        private void InitScopeTemlate(string template = "")
-        {
-            if (String.IsNullOrEmpty(template))
-            {
-                template = DEFAULT_SCOPE_TEMPLATE;
-            }
-            template = template.Replace("{Scope}", @"([\p{L}\p{N}_]+)");
-            template = template.Insert(0, "^");
-            template = template + "$";
-            _repositoryScope = new Regex(template, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
-        }
-
-        private String GetScope(string repositoryName)
-        {
-            var matchScope = _repositoryScope.Match(repositoryName);
-            return matchScope.Groups[1].Value;
         }
 
         private void InitAssembly()
@@ -67,14 +46,14 @@ namespace SmartSql.DyRepository
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public Type BuildRepositoryImpl(Type interfaceType)
+        public Type BuildRepositoryImpl(Type interfaceType, string scope = "")
         {
             string implName = interfaceType.Name.TrimStart('I') + "_Impl";
             var typeBuilder = _moduleBuilder.DefineType(implName, TypeAttributes.Public);
             typeBuilder.AddInterfaceImplementation(interfaceType);
             var sqlMapperField = typeBuilder.DefineField("sqlMapper", typeof(ISmartSqlMapper), FieldAttributes.Family);
             var scopeField = typeBuilder.DefineField("scope", typeof(string), FieldAttributes.Family);
-            string scope = PreScoe(interfaceType);
+            scope = PreScoe(interfaceType, scope);
             EmitBuildCtor(scope, typeBuilder, sqlMapperField, scopeField);
             var interfaceMethods = new List<MethodInfo>();
 
@@ -110,17 +89,16 @@ namespace SmartSql.DyRepository
             ctorIL.Emit(OpCodes.Ret);
         }
 
-        private string PreScoe(Type interfaceType)
+        private string PreScoe(Type interfaceType, string scope = "")
         {
             var sqlmapAttr = interfaceType.GetCustomAttribute<SqlMapAttribute>();
-            string scope = String.Empty;
-            if (sqlmapAttr != null)
+            if (sqlmapAttr != null && !String.IsNullOrEmpty(sqlmapAttr.Scope))
             {
-                scope = !String.IsNullOrEmpty(sqlmapAttr.Scope) ? sqlmapAttr.Scope : GetScope(interfaceType.Name);
+                scope = sqlmapAttr.Scope;
             }
-            else
+            else if (String.IsNullOrEmpty(scope))
             {
-                scope = GetScope(interfaceType.Name);
+                scope = _templateParser.Parse(interfaceType.Name);
             }
             return scope;
         }

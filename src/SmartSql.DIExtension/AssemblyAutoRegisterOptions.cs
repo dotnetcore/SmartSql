@@ -9,6 +9,7 @@ namespace SmartSql.DIExtension
     {
         public ISmartSqlMapper SmartSqlMapper { get; set; }
         public string AssemblyString { get; set; }
+        public string ScopeTemplate { get; set; }
         public Func<Type, bool> Filter { get; set; }
 
         public void UseTypeFilter<T>()

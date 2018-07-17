@@ -4,6 +4,6 @@ namespace SmartSql.DyRepository
 {
     public interface IRepositoryBuilder
     {
-        Type BuildRepositoryImpl(Type interfaceType);
+        Type BuildRepositoryImpl(Type interfaceType, string scope = "");
     }
 }

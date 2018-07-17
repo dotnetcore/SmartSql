@@ -36,7 +36,7 @@ namespace SmartSql.DyRepository
             _moduleBuilder = _assemblyBuilder.DefineDynamicModule(assemblyName + ".dll");
         }
 
-        public object CreateInstance(Type interfaceType, ISmartSqlMapper smartSqlMapper)
+        public object CreateInstance(Type interfaceType, ISmartSqlMapper smartSqlMapper, string scope = "")
         {
             if (!_cachedRepository.ContainsKey(interfaceType))
             {
@@ -48,7 +48,7 @@ namespace SmartSql.DyRepository
                         {
                             _logger.LogDebug($"RepositoryFactory.CreateInstance :InterfaceType.FullName:[{interfaceType.FullName}] Start");
                         }
-                        var implType = _repositoryBuilder.BuildRepositoryImpl(interfaceType);
+                        var implType = _repositoryBuilder.BuildRepositoryImpl(interfaceType, scope);
                         var obj = Activator.CreateInstance(implType, new object[] { smartSqlMapper });
                         _cachedRepository.Add(interfaceType, obj);
                         if (_logger.IsEnabled(LogLevel.Debug))
@@ -62,10 +62,10 @@ namespace SmartSql.DyRepository
         }
 
 
-        public T CreateInstance<T>(ISmartSqlMapper smartSqlMapper)
+        public T CreateInstance<T>(ISmartSqlMapper smartSqlMapper, string scope = "")
         {
             var interfaceType = typeof(T);
-            return (T)CreateInstance(interfaceType, smartSqlMapper);
+            return (T)CreateInstance(interfaceType, smartSqlMapper, scope);
         }
     }
 }

@@ -45,6 +45,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 Filter = (type) => { return type.IsInterface; }
             };
             setupOptions(options);
+            ScopeTemplateParser templateParser = new ScopeTemplateParser(options.ScopeTemplate);
             var assembly = Assembly.Load(options.AssemblyString);
             var allTypes = assembly.GetTypes().Where(options.Filter);
             foreach (var type in allTypes)
@@ -53,7 +54,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     var sqlMapper = options.SmartSqlMapper ?? sp.GetRequiredService<ISmartSqlMapper>();
                     var factory = sp.GetRequiredService<IRepositoryFactory>();
-                    return factory.CreateInstance(type, sqlMapper);
+                    var scope = templateParser.Parse(type.Name);
+                    return factory.CreateInstance(type, sqlMapper, scope);
                 });
             }
         }

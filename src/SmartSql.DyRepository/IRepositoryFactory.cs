@@ -5,7 +5,7 @@ namespace SmartSql.DyRepository
 {
     public interface IRepositoryFactory
     {
-        object CreateInstance(Type interfaceType, ISmartSqlMapper smartSqlMapper);
-        T CreateInstance<T>(ISmartSqlMapper smartSqlMapper);
+        object CreateInstance(Type interfaceType, ISmartSqlMapper smartSqlMapper, string scope = "");
+        T CreateInstance<T>(ISmartSqlMapper smartSqlMapper, string scope = "");
     }
 }
