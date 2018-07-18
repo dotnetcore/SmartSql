@@ -8,13 +8,13 @@
     <Description>SmartSql = MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting +Dynamic Repository ....</Description>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Copyright>Ahoo Wang</Copyright>
-    <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartPager</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Ahoo-Wang/SmartPager</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>3.3.18</Version>
+    <Version>3.4.0</Version>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <PackageReleaseNotes>
-      1. optimize Tag.Placeholder
+      1. fix Cache.FlushInterval attr bug
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>

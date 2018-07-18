@@ -8,6 +8,7 @@
 <SmartSqlMap Scope="Entity"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Caches>
     <Cache Id="LRU" Type="Lru">
+      <FlushInterval Hours="1"/>
       <Parameter Key="Size" Value="100"/>
     </Cache>
   </Caches>

@@ -35,14 +35,17 @@ namespace SmartSql.Configuration
                         }
                     case "FlushInterval":
                         {
-                            string hours = childNode.Attributes["Hours"]?.Value;
-                            string minutes = childNode.Attributes["Minutes"]?.Value;
-                            string seconds = childNode.Attributes["Seconds"]?.Value;
+                            string hoursStr = childNode.Attributes["Hours"]?.Value;
+                            string minutesStr = childNode.Attributes["Minutes"]?.Value;
+                            string secondsStr = childNode.Attributes["Seconds"]?.Value;
+                            int.TryParse(hoursStr, out int hours);
+                            int.TryParse(minutesStr, out int minutes);
+                            int.TryParse(secondsStr, out int seconds);
                             cache.FlushInterval = new FlushInterval
                             {
-                                Hours = XmlConvert.ToInt32(hours),
-                                Minutes = XmlConvert.ToInt32(minutes),
-                                Seconds = XmlConvert.ToInt32(seconds)
+                                Hours = hours,
+                                Minutes = minutes,
+                                Seconds = seconds
                             };
                             break;
                         }
