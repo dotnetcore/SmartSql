@@ -11,10 +11,10 @@
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartPager</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartPager</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>3.4.0</Version>
+    <Version>3.4.1</Version>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <PackageReleaseNotes>
-      1. fix Cache.FlushInterval attr bug
+      1. Optimize the resource reading directory
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>

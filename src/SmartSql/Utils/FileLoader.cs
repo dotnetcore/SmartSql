@@ -9,12 +9,13 @@ namespace SmartSql.Utils
     {
         public static FileInfo GetInfo(String filePath)
         {
+            filePath = Path.Combine(AppContext.BaseDirectory, filePath);
             return new FileInfo(filePath);
         }
 
         public static Stream Load(String filePath)
         {
-            var fileInfo = new FileInfo(filePath);
+            var fileInfo = GetInfo(filePath);
             return Load(fileInfo);
         }
         public static Stream Load(FileInfo fileInfo)
