@@ -6,11 +6,11 @@
     <Company>Ahoo Wang</Company>
     <Title>SmartSql.DyRepository</Title>
     <Description>SmartSql 动态代理仓储</Description>
-    <Version>3.4.6</Version>
+    <Version>3.4.8</Version>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageReleaseNotes>
-      1. optimize DyRepository automatic execute for return int
+      1. add support StatementAttribute.CommandType and SourceChoice
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <Copyright>Ahoo Wang</Copyright>

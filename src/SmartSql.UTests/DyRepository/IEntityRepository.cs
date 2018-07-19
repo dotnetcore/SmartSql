@@ -14,7 +14,7 @@ namespace SmartSql.UTests.DyRepository
         IEnumerable<EntityStatus> QueryStatus();
         IEnumerable<EntityStatus?> QueryNullStatus();
 
-        
+
         IEnumerable<T_Entity> Query([Param("FString")]String fString);
 
         [Statement(Id = "MultiQuery")]
@@ -30,7 +30,7 @@ namespace SmartSql.UTests.DyRepository
         Task<int> UpdateAsync(T_Entity entity);
         Task<IEnumerable<T_Entity>> QueryAsync(int Taken);
         Task<T_Entity> GetEntityAsync(long Id);
-        [Statement(Id = "MultiQuery")]
+        [Statement(Id = "MultiQuery", SourceChoice = Abstractions.DataSourceChoice.Write)]
         Task<DataTable> QueryDataTableAsync();
         [Statement(Id = "MultiQuery")]
         Task<DataSet> QueryDataSetAsync();

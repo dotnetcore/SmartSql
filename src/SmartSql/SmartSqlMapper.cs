@@ -56,6 +56,21 @@ namespace SmartSql
             context.Setup(SmartSqlOptions.SmartSqlContext);
             SqlBuilder.BuildSql(context);
         }
+        private void SetWriteSourceIfUnknow(RequestContext context)
+        {
+            if (context.DataSourceChoice == DataSourceChoice.Unknow)
+            {
+                context.DataSourceChoice = DataSourceChoice.Write;
+            }
+        }
+        private void SetReadSourceIfUnknow(RequestContext context)
+        {
+            if (context.DataSourceChoice == DataSourceChoice.Unknow)
+            {
+                context.DataSourceChoice = DataSourceChoice.Read;
+            }
+        }
+
         #region Sync
         public T ExecuteWrap<T>(Func<IDbConnectionSession, T> execute, RequestContext context)
         {
@@ -89,6 +104,7 @@ namespace SmartSql
 
         public int Execute(RequestContext context)
         {
+            SetWriteSourceIfUnknow(context);
             return ExecuteWrap((dbSession) =>
              {
                  return CommandExecuter.ExecuteNonQuery(dbSession, context);
@@ -96,6 +112,7 @@ namespace SmartSql
         }
         public T ExecuteScalar<T>(RequestContext context)
         {
+            SetWriteSourceIfUnknow(context);
             return ExecuteWrap((dbSession) =>
             {
                 var result = CommandExecuter.ExecuteScalar(dbSession, context);
@@ -105,6 +122,7 @@ namespace SmartSql
 
         public IEnumerable<T> Query<T>(RequestContext context)
         {
+            SetReadSourceIfUnknow(context);
             return ExecuteWrap((dbSession) =>
             {
                 var dataReader = CommandExecuter.ExecuteReader(dbSession, context);
@@ -114,6 +132,7 @@ namespace SmartSql
         }
         public T QuerySingle<T>(RequestContext context)
         {
+            SetReadSourceIfUnknow(context);
             return ExecuteWrap((dbSession) =>
             {
                 var dataReader = CommandExecuter.ExecuteReader(dbSession, context);
@@ -124,6 +143,7 @@ namespace SmartSql
 
         public DataTable GetDataTable(RequestContext context)
         {
+            SetReadSourceIfUnknow(context);
             return ExecuteWrap((dbSession) =>
             {
                 IDataReader dataReader = null;
@@ -145,6 +165,7 @@ namespace SmartSql
 
         public DataSet GetDataSet(RequestContext context)
         {
+            SetReadSourceIfUnknow(context);
             return ExecuteWrap((dbSession) =>
             {
                 IDataReader dataReader = null;
@@ -195,6 +216,7 @@ namespace SmartSql
         }
         public async Task<int> ExecuteAsync(RequestContext context)
         {
+            SetWriteSourceIfUnknow(context);
             return await ExecuteWrapAsync(async (dbSession) =>
            {
                return await CommandExecuter.ExecuteNonQueryAsync(dbSession, context);
@@ -202,6 +224,7 @@ namespace SmartSql
         }
         public async Task<T> ExecuteScalarAsync<T>(RequestContext context)
         {
+            SetWriteSourceIfUnknow(context);
             return await ExecuteWrapAsync(async (dbSession) =>
             {
                 var result = await CommandExecuter.ExecuteScalarAsync(dbSession, context);
@@ -210,6 +233,7 @@ namespace SmartSql
         }
         public async Task<IEnumerable<T>> QueryAsync<T>(RequestContext context)
         {
+            SetReadSourceIfUnknow(context);
             return await ExecuteWrapAsync(async (dbSession) =>
             {
                 var dataReader = await CommandExecuter.ExecuteReaderAsync(dbSession, context);
@@ -219,6 +243,7 @@ namespace SmartSql
         }
         public async Task<T> QuerySingleAsync<T>(RequestContext context)
         {
+            SetReadSourceIfUnknow(context);
             return await ExecuteWrapAsync(async (dbSession) =>
             {
                 var dataReader = await CommandExecuter.ExecuteReaderAsync(dbSession, context);
@@ -229,6 +254,7 @@ namespace SmartSql
 
         public async Task<DataTable> GetDataTableAsync(RequestContext context)
         {
+            SetReadSourceIfUnknow(context);
             return await ExecuteWrapAsync(async (dbSession) =>
             {
                 DbDataReader dataReader = null;
@@ -250,6 +276,7 @@ namespace SmartSql
 
         public async Task<DataSet> GetDataSetAsync(RequestContext context)
         {
+            SetReadSourceIfUnknow(context);
             return await ExecuteWrapAsync(async (dbSession) =>
             {
                 DbDataReader dataReader = null;
@@ -280,17 +307,18 @@ namespace SmartSql
             {
                 DataSourceChoice = DataSourceChoice.Write
             };
-
             return BeginTransaction(reqContext, isolationLevel);
         }
 
         public IDbConnectionSession BeginTransaction(RequestContext context)
         {
+            SetWriteSourceIfUnknow(context);
             return BeginTransaction(context, IsolationLevel.Unspecified);
         }
 
         public IDbConnectionSession BeginTransaction(RequestContext context, IsolationLevel isolationLevel)
         {
+            SetWriteSourceIfUnknow(context);
             var dbSession = BeginSession(context);
             dbSession.BeginTransaction(isolationLevel);
             if (_logger.IsEnabled(LogLevel.Debug))
@@ -360,6 +388,7 @@ namespace SmartSql
             {
                 throw new SmartSqlException("SmartSqlMapper could not invoke BeginSession(). A LocalSession is already existed.");
             }
+            SetReadSourceIfUnknow(context);
             var dataSource = DataSourceFilter.Elect(context);
             var dbSession = SessionStore.CreateDbSession(dataSource);
             dbSession.Begin();
@@ -387,9 +416,5 @@ namespace SmartSql
                 _logger.LogWarning($"SmartSqlMapper Dispose.");
             }
         }
-
-
-
-
     }
 }

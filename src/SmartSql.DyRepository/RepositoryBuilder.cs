@@ -165,6 +165,16 @@ namespace SmartSql.DyRepository
             else
             {
                 EmitNewRequestContext(ilGenerator);
+                ilGenerator.Emit(OpCodes.Ldloc_0);
+                EmitUtils.LoadInt32(ilGenerator, statementAttr.CommandType.GetHashCode());
+                ilGenerator.Emit(OpCodes.Call, _set_CommandTypeMethod);
+
+                if (statementAttr.SourceChoice != DataSourceChoice.Unknow)
+                {
+                    ilGenerator.Emit(OpCodes.Ldloc_0);
+                    EmitUtils.LoadInt32(ilGenerator, statementAttr.SourceChoice.GetHashCode());
+                    ilGenerator.Emit(OpCodes.Call, _set_DataSourceChoiceMethod);
+                }
                 if (String.IsNullOrEmpty(statementAttr.Sql))
                 {
                     EmitSetScope(ilGenerator, statementAttr.Scope);
@@ -188,20 +198,6 @@ namespace SmartSql.DyRepository
                     {
                         int argIndex = i + 1;
                         var reqParam = methodParams[i];
-                        if (reqParam.ParameterType == typeof(DataSourceChoice))
-                        {
-                            ilGenerator.Emit(OpCodes.Ldloc_0);
-                            EmitUtils.LoadArg(ilGenerator, argIndex);
-                            ilGenerator.Emit(OpCodes.Call, _set_DataSourceChoiceMethod);
-                            continue;
-                        }
-                        if (reqParam.ParameterType == typeof(CommandType))
-                        {
-                            ilGenerator.Emit(OpCodes.Ldloc_0);
-                            EmitUtils.LoadArg(ilGenerator, argIndex);
-                            ilGenerator.Emit(OpCodes.Call, _set_CommandTypeMethod);
-                            continue;
-                        }
                         string reqParamName = reqParam.Name;
                         var paramAttr = reqParam.GetCustomAttribute<ParamAttribute>();
                         if (paramAttr != null && !String.IsNullOrEmpty(paramAttr.Name))

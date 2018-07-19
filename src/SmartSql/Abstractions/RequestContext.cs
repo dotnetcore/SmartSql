@@ -17,7 +17,7 @@ namespace SmartSql.Abstractions
     {
         //public Guid Id { get; } = Guid.NewGuid();
         public SmartSqlContext SmartSqlContext { get; internal set; }
-        public DataSourceChoice DataSourceChoice { get; set; } = DataSourceChoice.Write;
+        public DataSourceChoice DataSourceChoice { get; set; } = DataSourceChoice.Unknow;
         public CommandType CommandType { get; set; } = CommandType.Text;
         public Statement Statement { get; internal set; }
         public StringBuilder Sql { get; internal set; }

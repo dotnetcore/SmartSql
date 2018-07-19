@@ -18,7 +18,7 @@ namespace SmartSql.Abstractions
     /// </summary>
     public interface ISmartSqlMapper : ISmartSqlMapperAsync, ISession, ITransaction, IDisposable
     {
-        SmartSqlOptions SmartSqlOptions { get;  }
+        SmartSqlOptions SmartSqlOptions { get; }
         int Execute(RequestContext context);
         T ExecuteScalar<T>(RequestContext context);
         IEnumerable<T> Query<T>(RequestContext context);
@@ -29,6 +29,7 @@ namespace SmartSql.Abstractions
 
     public enum DataSourceChoice
     {
+        Unknow,
         Write,
         Read
     }
