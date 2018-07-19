@@ -9,7 +9,8 @@ namespace SmartSql.UTests
 {
     public class SmartSqlMapper_Test : TestBase, IDisposable
     {
-        ISmartSqlMapper _sqlMapper;
+        private ISmartSqlMapper _sqlMapper;
+
         public SmartSqlMapper_Test()
         {
             _sqlMapper = MapperContainer.Instance.GetSqlMapper();
@@ -19,6 +20,7 @@ namespace SmartSql.UTests
         {
             _sqlMapper.Dispose();
         }
+
         [Fact]
         public void BeginSession()
         {
@@ -26,6 +28,7 @@ namespace SmartSql.UTests
             _sqlMapper.BeginSession(context);
             _sqlMapper.EndSession();
         }
+
         [Fact]
         public void BeginTransaction()
         {
@@ -49,6 +52,7 @@ namespace SmartSql.UTests
                 throw ex;
             }
         }
+
         [Fact]
         public void Insert()
         {
@@ -70,6 +74,7 @@ namespace SmartSql.UTests
                 }
             });
         }
+
         [Fact]
         public void Execute()
         {
@@ -81,6 +86,7 @@ namespace SmartSql.UTests
             };
             _sqlMapper.Execute(context);
         }
+
         [Fact]
         public void ExecuteScalar()
         {
@@ -126,6 +132,7 @@ namespace SmartSql.UTests
             };
             var list = _sqlMapper.Query<T_CustomConstructorEntity>(context);
         }
+
         [Fact]
         public void QueryPrivateEntity()
         {
@@ -139,6 +146,22 @@ namespace SmartSql.UTests
                 }
             };
             var list = _sqlMapper.Query<T_PrivateEntity>(context);
+        }
+
+        [Fact]
+        public void Query_NoDefaultConstructorEntity()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "Query",
+                Request = new
+                {
+                    Taken = 10
+                }
+            };
+            var list = _sqlMapper.Query<T_NoDefaultConstructorEntity>(context);
+            Assert.NotNull(list);
         }
 
         [Fact]
@@ -156,6 +179,7 @@ namespace SmartSql.UTests
             };
             var list = _sqlMapper.Query<T_Entity>(context);
         }
+
         [Fact]
         public void QuerySingle()
         {
@@ -167,6 +191,7 @@ namespace SmartSql.UTests
             };
             var entity = _sqlMapper.QuerySingle<T_Entity>(context);
         }
+
         [Fact]
         public void GetDataTable()
         {
@@ -181,6 +206,7 @@ namespace SmartSql.UTests
             };
             var dataTable = _sqlMapper.GetDataTable(context);
         }
+
         [Fact]
         public void GetDataSet()
         {
@@ -197,6 +223,7 @@ namespace SmartSql.UTests
         }
 
         #region Async
+
         [Fact]
         public async Task ExecuteAsync()
         {
@@ -208,6 +235,7 @@ namespace SmartSql.UTests
             };
             int exeNum = await _sqlMapper.ExecuteAsync(context);
         }
+
         [Fact]
         public async Task ExecuteScalarAsync()
         {
@@ -218,6 +246,7 @@ namespace SmartSql.UTests
             };
             var total = await _sqlMapper.ExecuteScalarAsync<long>(context);
         }
+
         [Fact]
         public async Task QueryAsync()
         {
@@ -241,6 +270,7 @@ namespace SmartSql.UTests
             };
             var user = await _sqlMapper.QuerySingleAsync<T_Entity>(context);
         }
+
         [Fact]
         public async Task GetDataTableAsync()
         {
@@ -262,6 +292,7 @@ namespace SmartSql.UTests
             };
             var dataSet = await _sqlMapper.GetDataSetAsync(context);
         }
+
         [Fact]
         public async Task TransactionAsync()
         {
@@ -307,6 +338,7 @@ namespace SmartSql.UTests
                 }
             });
         }
-        #endregion
+
+        #endregion Async
     }
 }
