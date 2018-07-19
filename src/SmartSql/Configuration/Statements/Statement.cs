@@ -11,16 +11,15 @@ namespace SmartSql.Configuration.Statements
 {
     public enum StatementType
     {
-        Statement,
-        Insert,
-        Update,
-        Delete,
-        Select
+        Insert = 1 << 0,
+        Update = 1 << 1,
+        Delete = 1 << 2,
+        Select = 1 << 3
     }
 
     public class Statement
     {
-        public virtual StatementType Type { get { return StatementType.Statement; } }
+        public virtual StatementType Type { get; internal set; }
         [XmlIgnore]
         public SmartSqlMap SmartSqlMap { get; internal set; }
         [XmlAttribute]
@@ -28,8 +27,8 @@ namespace SmartSql.Configuration.Statements
         public String FullSqlId => $"{SmartSqlMap.Scope}.{Id}";
         public IList<ITag> SqlTags { get; set; }
         public Cache Cache { get; set; }
-        public ResultMap  ResultMap { get; set; }
-        public ParameterMap  ParameterMap { get; set; }
+        public ResultMap ResultMap { get; set; }
+        public ParameterMap ParameterMap { get; set; }
 
         public void BuildSql(RequestContext context)
         {

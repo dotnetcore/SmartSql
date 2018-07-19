@@ -54,7 +54,8 @@ namespace SmartSql
                         }
                     case SmartSqlMapSource.ResourceType.Directory:
                         {
-                            var childSqlmapSources = Directory.EnumerateFiles(sqlMapSource.Path, "*.xml");
+                            var dicPath = Path.Combine(AppContext.BaseDirectory, sqlMapSource.Path);
+                            var childSqlmapSources = Directory.EnumerateFiles(dicPath, "*.xml");
                             foreach (var childSqlmapSource in childSqlmapSources)
                             {
                                 LoadSmartSqlMapAndInConfig(childSqlmapSource);

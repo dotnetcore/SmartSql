@@ -89,18 +89,6 @@ namespace SmartSql.Abstractions.Config
                 #region Init Statement
                 var statementNodes = xmlDoc.SelectNodes("//ns:Statement", xmlNsM);
                 LoadStatementInSqlMap(sqlMap, statementNodes);
-
-                var insertNodes = xmlDoc.SelectNodes("//ns:Insert", xmlNsM);
-                LoadStatementInSqlMap(sqlMap, insertNodes);
-
-                var updateNodes = xmlDoc.SelectNodes("//ns:Update", xmlNsM);
-                LoadStatementInSqlMap(sqlMap, updateNodes);
-
-                var deleteNodes = xmlDoc.SelectNodes("//ns:Delete", xmlNsM);
-                LoadStatementInSqlMap(sqlMap, deleteNodes);
-
-                var selectNodes = xmlDoc.SelectNodes("//ns:Select", xmlNsM);
-                LoadStatementInSqlMap(sqlMap, selectNodes);
                 #endregion
 
                 return sqlMap;
