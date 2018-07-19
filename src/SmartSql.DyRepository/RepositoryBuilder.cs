@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SmartSql.Abstractions;
+using SmartSql.Configuration.Statements;
+using SmartSql.Configuration.Tags;
 using SmartSql.Exceptions;
 using SmartSql.Utils;
 using System;
@@ -20,13 +22,14 @@ namespace SmartSql.DyRepository
         private ScopeTemplateParser _templateParser;
         private AssemblyBuilder _assemblyBuilder;
         private ModuleBuilder _moduleBuilder;
-
+        SqlCommandAnalyzer _commandAnalyzer;
         public RepositoryBuilder(
              string scope_template
             , ILogger<RepositoryBuilder> logger
             )
         {
             _templateParser = new ScopeTemplateParser(scope_template);
+            _commandAnalyzer = new SqlCommandAnalyzer();
             InitAssembly();
             _logger = logger;
         }
@@ -46,7 +49,7 @@ namespace SmartSql.DyRepository
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public Type BuildRepositoryImpl(Type interfaceType, string scope = "")
+        public Type BuildRepositoryImpl(Type interfaceType, ISmartSqlMapper smartSqlMapper, string scope = "")
         {
             string implName = interfaceType.Name.TrimStart('I') + "_Impl";
             var typeBuilder = _moduleBuilder.DefineType(implName, TypeAttributes.Public);
@@ -67,7 +70,7 @@ namespace SmartSql.DyRepository
             }
             foreach (var methodInfo in interfaceMethods)
             {
-                BuildMethod(typeBuilder, methodInfo, sqlMapperField, scope);
+                BuildMethod(typeBuilder, methodInfo, sqlMapperField, smartSqlMapper, scope);
             }
             return typeBuilder.CreateTypeInfo();
         }
@@ -119,7 +122,7 @@ namespace SmartSql.DyRepository
         private readonly static MethodInfo _addReqParamMehtod = _reqParamsDicType.GetMethod("Add");
         private readonly ILogger<RepositoryBuilder> _logger;
 
-        private void BuildMethod(TypeBuilder typeBuilder, MethodInfo methodInfo, FieldBuilder sqlMapperField, string scope)
+        private void BuildMethod(TypeBuilder typeBuilder, MethodInfo methodInfo, FieldBuilder sqlMapperField, ISmartSqlMapper smartSqlMapper, string scope)
         {
             var methodParams = methodInfo.GetParameters();
             var paramTypes = methodParams.Select(m => m.ParameterType).ToArray();
@@ -149,7 +152,7 @@ namespace SmartSql.DyRepository
                 }
             }
 
-            StatementAttribute statementAttr = PreStatement(scope, methodInfo, returnType, isTaskReturnType);
+            StatementAttribute statementAttr = PreStatement(scope, methodInfo, returnType, isTaskReturnType, smartSqlMapper);
             var ilGenerator = implMehtod.GetILGenerator();
             ilGenerator.DeclareLocal(_reqContextType);
             ilGenerator.DeclareLocal(_reqParamsDicType);
@@ -264,7 +267,7 @@ namespace SmartSql.DyRepository
             ilGenerator.Emit(OpCodes.Call, _set_ScopeMethod);
         }
 
-        private StatementAttribute PreStatement(string scope, MethodInfo methodInfo, Type returnType, bool isTaskReturnType)
+        private StatementAttribute PreStatement(string scope, MethodInfo methodInfo, Type returnType, bool isTaskReturnType, ISmartSqlMapper smartSqlMapper)
         {
             returnType = isTaskReturnType ? returnType.GetGenericArguments().FirstOrDefault() : returnType;
             var statementAttr = methodInfo.GetCustomAttribute<StatementAttribute>();
@@ -301,6 +304,19 @@ namespace SmartSql.DyRepository
                 if (returnType == typeof(int) || returnType == _voidType || returnType == null)
                 {
                     statementAttr.Execute = ExecuteBehavior.Execute;
+                    if (returnType == typeof(int))
+                    {
+                        var realSqlStr = statementAttr.Sql;
+                        if (String.IsNullOrEmpty(statementAttr.Sql))
+                        {
+                            realSqlStr = _commandAnalyzer.BuildStatementFullSql(smartSqlMapper, statementAttr.Scope, statementAttr.Id);
+                        }
+                        var cmdType = _commandAnalyzer.Analyse(realSqlStr);
+                        if (cmdType.HasFlag(SqlCommandType.Select))
+                        {
+                            statementAttr.Execute = ExecuteBehavior.ExecuteScalar;
+                        }
+                    }
                 }
                 else if (returnType.IsValueType || returnType == typeof(string))
                 {

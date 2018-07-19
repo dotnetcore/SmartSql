@@ -11,11 +11,10 @@
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>3.4.3</Version>
+    <Version>3.4.6</Version>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <PackageReleaseNotes>
-      1. Optimize the SqlMap.xml reading directory
-      2. remove Strong type Statement
+      1. optimize DyRepository automatic execute for return int
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>

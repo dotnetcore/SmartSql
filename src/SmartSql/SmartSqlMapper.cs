@@ -20,16 +20,16 @@ namespace SmartSql
 {
     public class SmartSqlMapper : ISmartSqlMapper
     {
-        private readonly SmartSqlOptions _smartSqlOptions;
         private readonly ILogger _logger;
-        public IDbConnectionSessionStore SessionStore { get { return _smartSqlOptions.DbSessionStore; } }
-        public IDataSourceFilter DataSourceFilter { get { return _smartSqlOptions.DataSourceFilter; } }
-        public IConfigLoader ConfigLoader { get { return _smartSqlOptions.ConfigLoader; } }
-        public ICommandExecuter CommandExecuter { get { return _smartSqlOptions.CommandExecuter; } }
-        public IDataReaderDeserializerFactory DeserializerFactory { get { return _smartSqlOptions.DataReaderDeserializerFactory; } }
-        public ILoggerFactory LoggerFactory { get { return _smartSqlOptions.LoggerFactory; } }
-        public ICacheManager CacheManager { get { return _smartSqlOptions.CacheManager; } }
-        public ISqlBuilder SqlBuilder { get { return _smartSqlOptions.SqlBuilder; } }
+        public SmartSqlOptions SmartSqlOptions { get; internal set; }
+        public IDbConnectionSessionStore SessionStore { get { return SmartSqlOptions.DbSessionStore; } }
+        public IDataSourceFilter DataSourceFilter { get { return SmartSqlOptions.DataSourceFilter; } }
+        public IConfigLoader ConfigLoader { get { return SmartSqlOptions.ConfigLoader; } }
+        public ICommandExecuter CommandExecuter { get { return SmartSqlOptions.CommandExecuter; } }
+        public IDataReaderDeserializerFactory DeserializerFactory { get { return SmartSqlOptions.DataReaderDeserializerFactory; } }
+        public ILoggerFactory LoggerFactory { get { return SmartSqlOptions.LoggerFactory; } }
+        public ICacheManager CacheManager { get { return SmartSqlOptions.CacheManager; } }
+        public ISqlBuilder SqlBuilder { get { return SmartSqlOptions.SqlBuilder; } }
         public SmartSqlMapper(String sqlMapConfigFilePath = "SmartSqlMapConfig.xml") : this(NoneLoggerFactory.Instance, sqlMapConfigFilePath)
         {
 
@@ -47,13 +47,13 @@ namespace SmartSql
         }
         public SmartSqlMapper(SmartSqlOptions options)
         {
-            _smartSqlOptions = options;
-            _smartSqlOptions.Setup();
+            SmartSqlOptions = options;
+            SmartSqlOptions.Setup();
             _logger = LoggerFactory.CreateLogger<SmartSqlMapper>();
         }
         private void SetupRequestContext(RequestContext context)
         {
-            context.Setup(_smartSqlOptions.SmartSqlContext);
+            context.Setup(SmartSqlOptions.SmartSqlContext);
             SqlBuilder.BuildSql(context);
         }
         #region Sync

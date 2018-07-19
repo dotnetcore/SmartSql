@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>3.3.18</Version>
+    <Version>3.4.6</Version>
     <Title>SmartSql.DIExtension</Title>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageReleaseNotes>
-      1. add support custom scope_template
+      1. optimize DyRepository automatic execute for return int
     </PackageReleaseNotes>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <Copyright>Ahoo Wang</Copyright>

@@ -16,13 +16,13 @@ namespace SmartSql.Abstractions
     /// <summary>
     /// SmartSql 映射器
     /// </summary>
-    public interface ISmartSqlMapper : ISmartSqlMapperAsync, ISession, ITransaction,  IDisposable
+    public interface ISmartSqlMapper : ISmartSqlMapperAsync, ISession, ITransaction, IDisposable
     {
+        SmartSqlOptions SmartSqlOptions { get;  }
         int Execute(RequestContext context);
         T ExecuteScalar<T>(RequestContext context);
         IEnumerable<T> Query<T>(RequestContext context);
         T QuerySingle<T>(RequestContext context);
-
         DataTable GetDataTable(RequestContext context);
         DataSet GetDataSet(RequestContext context);
     }

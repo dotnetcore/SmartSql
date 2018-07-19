@@ -48,7 +48,7 @@ namespace SmartSql.DyRepository
                         {
                             _logger.LogDebug($"RepositoryFactory.CreateInstance :InterfaceType.FullName:[{interfaceType.FullName}] Start");
                         }
-                        var implType = _repositoryBuilder.BuildRepositoryImpl(interfaceType, scope);
+                        var implType = _repositoryBuilder.BuildRepositoryImpl(interfaceType, smartSqlMapper, scope);
                         var obj = Activator.CreateInstance(implType, new object[] { smartSqlMapper });
                         _cachedRepository.Add(interfaceType, obj);
                         if (_logger.IsEnabled(LogLevel.Debug))

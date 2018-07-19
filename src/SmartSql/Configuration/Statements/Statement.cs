@@ -9,17 +9,10 @@ using System.Xml.Serialization;
 
 namespace SmartSql.Configuration.Statements
 {
-    public enum StatementType
-    {
-        Insert = 1 << 0,
-        Update = 1 << 1,
-        Delete = 1 << 2,
-        Select = 1 << 3
-    }
+
 
     public class Statement
     {
-        public virtual StatementType Type { get; internal set; }
         [XmlIgnore]
         public SmartSqlMap SmartSqlMap { get; internal set; }
         [XmlAttribute]
@@ -37,5 +30,7 @@ namespace SmartSql.Configuration.Statements
                 tag.BuildSql(context);
             }
         }
+
+
     }
 }
