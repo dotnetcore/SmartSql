@@ -16,7 +16,7 @@ namespace SmartSql.DataReaderDeserializer
         {
             _dataRowParserFactory = new DataRowParserFactory();
         }
-        public IEnumerable<T> ToEnumerable<T>(RequestContext context, IDataReader dataReader)
+        public IEnumerable<T> ToEnumerable<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
         {
             try
             {
@@ -33,12 +33,20 @@ namespace SmartSql.DataReaderDeserializer
             }
             finally
             {
-                //while (dataReader.NextResult()) { }
-                dataReader.Close();
+               Dispose(dataReader, isDispose);
             }
         }
 
-        public async Task<IEnumerable<T>> ToEnumerableAsync<T>(RequestContext context, IDataReader dataReader)
+        private  void Dispose(IDataReader dataReader, bool isDispose)
+        {
+            if (isDispose)
+            {
+                dataReader.Dispose();
+                dataReader = null;
+            }
+        }
+
+        public async Task<IEnumerable<T>> ToEnumerableAsync<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
         {
             var dataReaderAsync = dataReader as DbDataReader;
             try
@@ -59,12 +67,11 @@ namespace SmartSql.DataReaderDeserializer
             }
             finally
             {
-                //while (await dataReaderAsync.NextResultAsync()) { }
-                dataReader.Close();
+                Dispose(dataReader, isDispose);
             }
         }
 
-        public T ToSingle<T>(RequestContext context, IDataReader dataReader)
+        public T ToSingle<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
         {
             try
             {
@@ -79,12 +86,11 @@ namespace SmartSql.DataReaderDeserializer
             }
             finally
             {
-                //while (dataReader.NextResult()) { }
-                dataReader.Close();
+                Dispose(dataReader, isDispose);
             }
         }
 
-        public async Task<T> ToSingleAsync<T>(RequestContext context, IDataReader dataReader)
+        public async Task<T> ToSingleAsync<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
         {
             var dataReaderAsync = dataReader as DbDataReader;
             try
@@ -101,8 +107,7 @@ namespace SmartSql.DataReaderDeserializer
             }
             finally
             {
-                //while (await dataReaderAsync.NextResultAsync()) { }
-                dataReader.Close();
+                Dispose(dataReader, isDispose);
             }
         }
     }

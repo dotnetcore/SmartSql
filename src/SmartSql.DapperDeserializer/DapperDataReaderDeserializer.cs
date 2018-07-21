@@ -8,18 +8,19 @@ using System.Data.Common;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-
+using Dapper;
 namespace SmartSql.DapperDeserializer
 {
     public class DapperDataReaderDeserializer : IDataReaderDeserializer
     {
-        public IEnumerable<T> ToEnumerable<T>(RequestContext context, IDataReader dataReader)
+        public IEnumerable<T> ToEnumerable<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
         {
             try
             {
                 if (dataReader.Read())
                 {
-                    var rowParser = Dapper.SqlMapper.GetRowParser(dataReader, typeof(T));
+                    
+                    var rowParser = dataReader.GetRowParser(typeof(T));
                     do
                     {
                         var target = (T)rowParser(dataReader);
@@ -29,13 +30,12 @@ namespace SmartSql.DapperDeserializer
             }
             finally
             {
-                dataReader.Dispose();
-                dataReader.Close();
+                Dispose(dataReader, isDispose);
             }
         }
 
 
-        public T ToSingle<T>(RequestContext context, IDataReader dataReader)
+        public T ToSingle<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
         {
             try
             {
@@ -45,12 +45,11 @@ namespace SmartSql.DapperDeserializer
             }
             finally
             {
-                dataReader.Dispose();
-                dataReader.Close();
+                Dispose(dataReader, isDispose);
             }
         }
         #region Async
-        public async Task<IEnumerable<T>> ToEnumerableAsync<T>(RequestContext context, IDataReader dataReader)
+        public async Task<IEnumerable<T>> ToEnumerableAsync<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
         {
             try
             {
@@ -69,12 +68,11 @@ namespace SmartSql.DapperDeserializer
             }
             finally
             {
-                dataReader.Dispose();
-                dataReader.Close();
+                Dispose(dataReader, isDispose);
             }
         }
 
-        public async Task<T> ToSingleAsync<T>(RequestContext context, IDataReader dataReader)
+        public async Task<T> ToSingleAsync<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
         {
             try
             {
@@ -85,12 +83,18 @@ namespace SmartSql.DapperDeserializer
             }
             finally
             {
-                dataReader.Dispose();
-                dataReader.Close();
+                Dispose(dataReader, isDispose);
             }
         }
 
         #endregion
-
+        private void Dispose(IDataReader dataReader, bool isDispose)
+        {
+            if (isDispose)
+            {
+                dataReader.Dispose();
+                dataReader = null;
+            }
+        }
     }
 }

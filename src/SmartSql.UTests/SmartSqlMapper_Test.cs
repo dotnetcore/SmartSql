@@ -2,6 +2,7 @@
 using SmartSql.UTests.Entity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -168,6 +169,25 @@ namespace SmartSql.UTests
             var entity = _sqlMapper.QuerySingle<T_Entity>(context);
         }
         [Fact]
+        public void QueryMultiple()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "MultiQuery",
+                Request = new
+                {
+                    Taken = 10
+                }
+            };
+            using (var mult = _sqlMapper.QueryMultiple(context))
+            {
+                var list1 = mult.Read<T_Entity>();
+                var list2 = mult.Read<T_Entity>();
+            }
+        }
+
+        [Fact]
         public void GetDataTable()
         {
             RequestContext context = new RequestContext
@@ -195,6 +215,9 @@ namespace SmartSql.UTests
             };
             var dataSet = _sqlMapper.GetDataSet(context);
         }
+
+
+
 
         #region Async
         [Fact]
@@ -241,6 +264,26 @@ namespace SmartSql.UTests
             };
             var user = await _sqlMapper.QuerySingleAsync<T_Entity>(context);
         }
+
+        [Fact]
+        public async Task QueryMultipleAsync()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "MultiQuery",
+                Request = new
+                {
+                    Taken = 10
+                }
+            };
+            using (var mult = await _sqlMapper.QueryMultipleAsync(context))
+            {
+                var list1 = await mult.ReadAsync<T_Entity>();
+                var list2 = await mult.ReadAsync<T_Entity>();
+            }
+        }
+
         [Fact]
         public async Task GetDataTableAsync()
         {

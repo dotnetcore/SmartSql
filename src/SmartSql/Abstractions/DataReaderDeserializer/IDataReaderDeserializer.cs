@@ -13,12 +13,12 @@ namespace SmartSql.Abstractions.DataReaderDeserializer
     /// </summary>
     public interface IDataReaderDeserializer : IDataReaderDeserializerAsync
     {
-        T ToSingle<T>(RequestContext context,IDataReader dataReader);
-        IEnumerable<T> ToEnumerable<T>(RequestContext context, IDataReader dataReader);
+        T ToSingle<T>(RequestContext context, IDataReader dataReader, bool isDispose = true);
+        IEnumerable<T> ToEnumerable<T>(RequestContext context, IDataReader dataReader, bool isDispose = true);
     }
     public interface IDataReaderDeserializerAsync
     {
-        Task<T> ToSingleAsync<T>(RequestContext context, IDataReader dataReader);
-        Task<IEnumerable<T>> ToEnumerableAsync<T>(RequestContext context, IDataReader dataReader);
+        Task<T> ToSingleAsync<T>(RequestContext context, IDataReader dataReader, bool isDispose = true);
+        Task<IEnumerable<T>> ToEnumerableAsync<T>(RequestContext context, IDataReader dataReader, bool isDispose = true);
     }
 }

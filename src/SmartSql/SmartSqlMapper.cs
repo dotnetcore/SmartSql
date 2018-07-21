@@ -140,7 +140,24 @@ namespace SmartSql
                 return deser.ToSingle<T>(context, dataReader);
             }, context);
         }
-
+        public IMultipleResult QueryMultiple(RequestContext context)
+        {
+            SetReadSourceIfUnknow(context);
+            SetupRequestContext(context);
+            var dataSource = DataSourceFilter.Elect(context);
+            var dbSession = SessionStore.GetOrAddDbSession(dataSource);
+            try
+            {
+                var dataReader = CommandExecuter.ExecuteReader(dbSession, context);
+                var deser = DeserializerFactory.Create();
+                return new MultipleResult(context, dataReader, deser, SessionStore);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.HelpLink, ex, ex.Message);
+                throw ex;
+            }
+        }
         public DataTable GetDataTable(RequestContext context)
         {
             SetReadSourceIfUnknow(context);
@@ -154,10 +171,7 @@ namespace SmartSql
                 }
                 finally
                 {
-                    if (dataReader != null)
-                    {
-                        dataReader.Dispose();
-                    }
+                    DisposeReader(dataReader);
                 }
 
             }, context);
@@ -176,10 +190,7 @@ namespace SmartSql
                 }
                 finally
                 {
-                    if (dataReader != null)
-                    {
-                        dataReader.Dispose();
-                    }
+                    DisposeReader(dataReader);
                 }
             }, context);
         }
@@ -252,6 +263,24 @@ namespace SmartSql
             }, context);
         }
 
+        public async Task<IMultipleResult> QueryMultipleAsync(RequestContext context)
+        {
+            SetReadSourceIfUnknow(context);
+            SetupRequestContext(context);
+            var dataSource = DataSourceFilter.Elect(context);
+            var dbSession = SessionStore.GetOrAddDbSession(dataSource);
+            try
+            {
+                var dataReader = await CommandExecuter.ExecuteReaderAsync(dbSession, context);
+                var deser = DeserializerFactory.Create();
+                return new MultipleResult(context, dataReader, deser, SessionStore);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.HelpLink, ex, ex.Message);
+                throw ex;
+            }
+        }
         public async Task<DataTable> GetDataTableAsync(RequestContext context)
         {
             SetReadSourceIfUnknow(context);
@@ -265,10 +294,7 @@ namespace SmartSql
                 }
                 finally
                 {
-                    if (dataReader != null)
-                    {
-                        dataReader.Dispose();
-                    }
+                    DisposeReader(dataReader);
                 }
 
             }, context);
@@ -287,13 +313,20 @@ namespace SmartSql
                 }
                 finally
                 {
-                    if (dataReader != null)
-                    {
-                        dataReader.Dispose();
-                    }
+                    DisposeReader(dataReader);
                 }
             }, context);
         }
+
+        private void DisposeReader(IDataReader dataReader)
+        {
+            if (dataReader != null)
+            {
+                dataReader.Dispose();
+                dataReader = null;
+            }
+        }
+
         #endregion
         #region Transaction
         public IDbConnectionSession BeginTransaction()
