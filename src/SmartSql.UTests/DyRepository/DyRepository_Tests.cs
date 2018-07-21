@@ -109,7 +109,23 @@ namespace SmartSql.UTests.DyRepository
             });
         }
 
-
+        [Fact]
+        public void UpdateEntity()
+        {
+            var result = _repository.UpdateEntity(new T_Entity
+            {
+                Id = 1,
+                CreationTime = DateTime.Now,
+                FBool = true,
+                FDecimal = 0,
+                FLong = 0,
+                FNullBool = false,
+                FNullDecimal = 0,
+                FString = "",
+                LastUpdateTime = DateTime.Now,
+                Status = EntityStatus.Ok
+            });
+        }
 
         [Fact]
         public async Task DeleteAsync()
@@ -144,6 +160,8 @@ namespace SmartSql.UTests.DyRepository
             var list = await _repository.QueryAsync(10);
 
         }
+
+
 
         public void Dispose()
         {

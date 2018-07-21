@@ -297,17 +297,13 @@ namespace SmartSql.DyRepository
             }
             if (statementAttr.Execute == ExecuteBehavior.Auto)
             {
+                SqlCommandType cmdType = AnalyseCmdType(smartSqlMapper, statementAttr);
+
                 if (returnType == typeof(int) || returnType == _voidType || returnType == null)
                 {
                     statementAttr.Execute = ExecuteBehavior.Execute;
                     if (returnType == typeof(int))
                     {
-                        var realSqlStr = statementAttr.Sql;
-                        if (String.IsNullOrEmpty(statementAttr.Sql))
-                        {
-                            realSqlStr = _commandAnalyzer.BuildStatementFullSql(smartSqlMapper, statementAttr.Scope, statementAttr.Id);
-                        }
-                        var cmdType = _commandAnalyzer.Analyse(realSqlStr);
                         if (cmdType.HasFlag(SqlCommandType.Select))
                         {
                             statementAttr.Execute = ExecuteBehavior.ExecuteScalar;
@@ -317,6 +313,10 @@ namespace SmartSql.DyRepository
                 else if (returnType.IsValueType || returnType == typeof(string))
                 {
                     statementAttr.Execute = ExecuteBehavior.ExecuteScalar;
+                    if (!cmdType.HasFlag(SqlCommandType.Select))
+                    {
+                        statementAttr.Execute = ExecuteBehavior.Execute;
+                    }
                 }
                 else
                 {
@@ -332,6 +332,17 @@ namespace SmartSql.DyRepository
                 }
             }
             return statementAttr;
+        }
+
+        private SqlCommandType AnalyseCmdType(ISmartSqlMapper smartSqlMapper, StatementAttribute statementAttr)
+        {
+            var realSqlStr = statementAttr.Sql;
+            if (String.IsNullOrEmpty(statementAttr.Sql))
+            {
+                realSqlStr = _commandAnalyzer.BuildStatementFullSql(smartSqlMapper, statementAttr.Scope, statementAttr.Id);
+            }
+            var cmdType = _commandAnalyzer.Analyse(realSqlStr);
+            return cmdType;
         }
 
         private MethodInfo PreExecuteMethod(StatementAttribute statementAttr, Type returnType, bool isTaskReturnType)

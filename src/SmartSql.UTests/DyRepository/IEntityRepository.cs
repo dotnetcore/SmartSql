@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace SmartSql.UTests.DyRepository
 {
-    public interface IEntityRepository : IRepository<T_Entity, long>
+    public interface IEntityRepository : IRepository<T_Entity, long>, IRepositoryAsync<T_Entity, long>
     {
         IEnumerable<long> QueryId();
         IEnumerable<EntityStatus> QueryStatus();
         IEnumerable<EntityStatus?> QueryNullStatus();
-
+        [Statement(Id = "Update")]
+        long UpdateEntity(T_Entity entity);
 
         IEnumerable<T_Entity> Query([Param("FString")]String fString);
 
@@ -27,7 +28,6 @@ namespace SmartSql.UTests.DyRepository
         IEnumerable<T_Entity> QueryBySql(int taken);
 
         Task DeleteAsync(long Id);
-        Task<int> UpdateAsync(T_Entity entity);
         Task<IEnumerable<T_Entity>> QueryAsync(int Taken);
         Task<T_Entity> GetEntityAsync(long Id);
         [Statement(Id = "MultiQuery", SourceChoice = Abstractions.DataSourceChoice.Write)]
