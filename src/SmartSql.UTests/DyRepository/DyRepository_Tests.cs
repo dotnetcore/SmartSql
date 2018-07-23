@@ -37,6 +37,17 @@ namespace SmartSql.UTests.DyRepository
         {
             var list = _repository.QueryBySql(10);
         }
+
+        [Fact]
+        public void QueryMultiple()
+        {
+            var multipleResult = _repository.QueryMultiple();
+            using (multipleResult)
+            {
+                var list1 = multipleResult.Read<T_Entity>();
+                var list2 = multipleResult.Read<T_Entity>();
+            }
+        }
         [Fact]
         public void QueryDataTable()
         {
@@ -95,6 +106,7 @@ namespace SmartSql.UTests.DyRepository
         {
             var list = _repository.QueryNullStatus();
         }
+
 
         [Fact]
         public void Update()

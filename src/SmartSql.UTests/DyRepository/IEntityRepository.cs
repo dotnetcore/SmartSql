@@ -1,4 +1,5 @@
-﻿using SmartSql.DyRepository;
+﻿using SmartSql.Abstractions;
+using SmartSql.DyRepository;
 using SmartSql.UTests.Entity;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,9 @@ namespace SmartSql.UTests.DyRepository
         long UpdateEntity(T_Entity entity);
 
         IEnumerable<T_Entity> Query([Param("FString")]String fString);
+
+        [Statement(Id = "MultiQuery")]
+        IMultipleResult QueryMultiple();
 
         [Statement(Id = "MultiQuery")]
         DataTable QueryDataTable();
