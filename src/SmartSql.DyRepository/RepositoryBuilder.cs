@@ -165,16 +165,8 @@ namespace SmartSql.DyRepository
             else
             {
                 EmitNewRequestContext(ilGenerator);
-                ilGenerator.Emit(OpCodes.Ldloc_0);
-                EmitUtils.LoadInt32(ilGenerator, statementAttr.CommandType.GetHashCode());
-                ilGenerator.Emit(OpCodes.Call, _set_CommandTypeMethod);
+                SetCmdTypeAndSourceChoice(statementAttr, ilGenerator);
 
-                if (statementAttr.SourceChoice != DataSourceChoice.Unknow)
-                {
-                    ilGenerator.Emit(OpCodes.Ldloc_0);
-                    EmitUtils.LoadInt32(ilGenerator, statementAttr.SourceChoice.GetHashCode());
-                    ilGenerator.Emit(OpCodes.Call, _set_DataSourceChoiceMethod);
-                }
                 if (String.IsNullOrEmpty(statementAttr.Sql))
                 {
                     EmitSetScope(ilGenerator, statementAttr.Scope);
@@ -237,6 +229,22 @@ namespace SmartSql.DyRepository
             }
         }
 
+        private static void SetCmdTypeAndSourceChoice(StatementAttribute statementAttr, ILGenerator ilGenerator)
+        {
+            if (statementAttr.CommandType != CommandType.Text)
+            {
+                ilGenerator.Emit(OpCodes.Ldloc_0);
+                EmitUtils.LoadInt32(ilGenerator, statementAttr.CommandType.GetHashCode());
+                ilGenerator.Emit(OpCodes.Call, _set_CommandTypeMethod);
+            }
+            if (statementAttr.SourceChoice != DataSourceChoice.Unknow)
+            {
+                ilGenerator.Emit(OpCodes.Ldloc_0);
+                EmitUtils.LoadInt32(ilGenerator, statementAttr.SourceChoice.GetHashCode());
+                ilGenerator.Emit(OpCodes.Call, _set_DataSourceChoiceMethod);
+            }
+        }
+
         private void EmitNewRequestContext(ILGenerator ilGenerator)
         {
             ilGenerator.Emit(OpCodes.Newobj, _reqContextCtor);
@@ -293,6 +301,11 @@ namespace SmartSql.DyRepository
             if (returnType == typeof(DataSet))
             {
                 statementAttr.Execute = ExecuteBehavior.GetDataSet;
+                return statementAttr;
+            }
+            if (returnType == typeof(IMultipleResult))
+            {
+                statementAttr.Execute = ExecuteBehavior.QueryMultiple;
                 return statementAttr;
             }
             if (statementAttr.Execute == ExecuteBehavior.Auto)
@@ -388,6 +401,11 @@ namespace SmartSql.DyRepository
                             executeMethod = typeof(ISmartSqlMapperAsync).GetMethod("GetDataSetAsync", new Type[] { typeof(RequestContext) });
                             break;
                         }
+                    case ExecuteBehavior.QueryMultiple:
+                        {
+                            executeMethod = typeof(ISmartSqlMapper).GetMethod("QueryMultipleAsync", new Type[] { typeof(RequestContext) });
+                            break;
+                        }
                     default: { throw new ArgumentException(); }
                 }
             }
@@ -427,6 +445,11 @@ namespace SmartSql.DyRepository
                     case ExecuteBehavior.GetDataSet:
                         {
                             executeMethod = typeof(ISmartSqlMapper).GetMethod("GetDataSet", new Type[] { typeof(RequestContext) });
+                            break;
+                        }
+                    case ExecuteBehavior.QueryMultiple:
+                        {
+                            executeMethod = typeof(ISmartSqlMapper).GetMethod("QueryMultiple", new Type[] { typeof(RequestContext) });
                             break;
                         }
                     default: { throw new ArgumentException(); }

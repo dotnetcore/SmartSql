@@ -67,6 +67,7 @@ namespace SmartSql.DyRepository
         /// <summary>
         /// 返回DataSet
         /// </summary>
-        GetDataSet = 6
+        GetDataSet = 6,
+        QueryMultiple = 7
     }
 }

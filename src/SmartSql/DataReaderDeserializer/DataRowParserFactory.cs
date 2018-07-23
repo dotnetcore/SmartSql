@@ -19,10 +19,15 @@ namespace SmartSql.DataReaderDeserializer
         public DataRowParserFactory()
         {
         }
-
+        private string GetColumnKey(IDataReader dataReader)
+        {
+            var columns = Enumerable.Range(0, dataReader.FieldCount)
+                            .Select(i => $"({i}:{dataReader.GetName(i)}:{dataReader.GetFieldType(i).Name})");
+            return String.Join("&", columns);
+        }
         public Func<IDataReader, RequestContext, object> GetParser(IDataReader dataReader, RequestContext requestContext, Type targetType)
         {
-            string key = $"{requestContext.FullSqlId}_{targetType.FullName}";
+            string key = $"{requestContext.StatementKey}_{GetColumnKey(dataReader)}_{targetType.FullName}";
             if (!_cachedDeserializer.ContainsKey(key))
             {
                 lock (this)

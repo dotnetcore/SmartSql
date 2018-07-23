@@ -12,7 +12,10 @@
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
-    <Description />
+    <PackageReleaseNotes>
+      1. add UserOptions for DI
+    </PackageReleaseNotes>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

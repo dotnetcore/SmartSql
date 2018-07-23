@@ -76,11 +76,9 @@ namespace SmartSql.UTests.DyRepository
         [Fact]
         public void QueryByPage()
         {
-            var list = _repository.QueryByPage(new
-            {
-                PageIndex = 1,
-                PageSize = 10
-            });
+            var reqParams = new QueryByPageRequest { };
+            var record = _repository.GetRecord(reqParams);
+            var list = _repository.QueryByPage(reqParams);
         }
         [Fact]
         public void QueryId()
@@ -166,6 +164,13 @@ namespace SmartSql.UTests.DyRepository
         public void Dispose()
         {
             MapperContainer.Instance.Dispose();
+        }
+
+        public class QueryByPageRequest
+        {
+            public int PageIndex { get; set; } = 1;
+            public int PageSize { get; set; } = 10;
+
         }
     }
 }

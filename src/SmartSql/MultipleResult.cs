@@ -43,7 +43,6 @@ namespace SmartSql
             return result;
         }
 
-
         private void NextResult()
         {
             if (!_dataReader.NextResult())

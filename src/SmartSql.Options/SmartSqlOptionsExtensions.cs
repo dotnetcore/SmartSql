@@ -49,11 +49,10 @@ namespace Microsoft.Extensions.DependencyInjection
             });
         }
 
-
         public static void UserOptions(this SmartSqlOptions smartSqlOptions, IServiceProvider sp)
         {
-
-
+            var _configLoader = sp.GetRequiredService<IConfigLoader>();
+            smartSqlOptions.ConfigLoader = _configLoader;
         }
     }
 }

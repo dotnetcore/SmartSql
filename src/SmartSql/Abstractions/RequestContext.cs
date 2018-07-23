@@ -69,7 +69,9 @@ namespace SmartSql.Abstractions
             RequestParameters = ObjectUtils.ToDictionary(Request, ignoreParameterCase);
         }
 
-        public String Key { get { return $"{FullSqlId}:{RequestString}"; } }
+        public String StatementKey { get { return (!String.IsNullOrEmpty(FullSqlId) ? FullSqlId : RealSql); } }
+
+        public String Key { get { return $"{StatementKey}:{RequestString}"; } }
 
         public String RequestString
         {
