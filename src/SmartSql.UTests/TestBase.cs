@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using SmartSql.UTests.Entity;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace SmartSql.UTests
 {
@@ -38,11 +39,6 @@ namespace SmartSql.UTests
                               .GetType(typeName)
                               .GetField("Instance")
                               .GetValue(null) as DbProviderFactory;
-        }
-
-        public void ENull()
-        {
-            T_Entity entity = null;
         }
     }
 }

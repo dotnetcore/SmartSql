@@ -21,7 +21,8 @@ namespace SmartSql.UTests.DyRepository
 
         [Statement(Id = "MultiQuery")]
         IMultipleResult QueryMultiple();
-
+        [Statement(Id = "MultiQuery")]
+        (IEnumerable<T_Entity>, IEnumerable<T_Entity>) QueryMultiple_VT();
         [Statement(Id = "MultiQuery")]
         DataTable QueryDataTable();
 

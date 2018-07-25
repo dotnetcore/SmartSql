@@ -109,6 +109,7 @@ namespace SmartSql.DyRepository
         private readonly static Type _taskType = typeof(Task);
         private readonly static Type _voidType = typeof(void);
         private readonly static Type _reqParamsDicType = typeof(Dictionary<string, object>);
+        private readonly static Type _enumerableType = typeof(IEnumerable);
 
         private readonly static ConstructorInfo _reqContextCtor = _reqContextType.GetConstructor(Type.EmptyTypes);
         private readonly static MethodInfo _set_DataSourceChoiceMethod = _reqContextType.GetMethod("set_DataSourceChoice");
@@ -120,6 +121,7 @@ namespace SmartSql.DyRepository
 
         private readonly static ConstructorInfo _reqParamsDicCtor = _reqParamsDicType.GetConstructor(Type.EmptyTypes);
         private readonly static MethodInfo _addReqParamMehtod = _reqParamsDicType.GetMethod("Add");
+
         private readonly ILogger<RepositoryBuilder> _logger;
 
         private void BuildMethod(TypeBuilder typeBuilder, MethodInfo methodInfo, FieldBuilder sqlMapperField, ISmartSqlMapper smartSqlMapper, string scope)
@@ -156,7 +158,11 @@ namespace SmartSql.DyRepository
             var ilGenerator = implMehtod.GetILGenerator();
             ilGenerator.DeclareLocal(_reqContextType);
             ilGenerator.DeclareLocal(_reqParamsDicType);
-
+            if (IsValueTuple(returnType))
+            {
+                ilGenerator.DeclareLocal(_multipleResultType);
+                ilGenerator.DeclareLocal(returnType);
+            }
             if (paramTypes.Length == 1 && paramTypes.First() == _reqContextType)
             {
                 ilGenerator.Emit(OpCodes.Ldarg_1);
@@ -221,12 +227,55 @@ namespace SmartSql.DyRepository
             {
                 ilGenerator.Emit(OpCodes.Pop);
             }
+            if (IsValueTuple(returnType))
+            {
+                ilGenerator.Emit(OpCodes.Stloc_2);
+                QueryMultipleToValueTuple(methodInfo, returnType, ilGenerator);
+            }
             ilGenerator.Emit(OpCodes.Ret);
 
             if (_logger.IsEnabled(LogLevel.Debug))
             {
                 _logger.LogDebug($"RepositoryBuilder.BuildMethod:{methodInfo.Name}->Statement:[Scope:{statementAttr.Scope},Id:{statementAttr.Id},Execute:{statementAttr.Execute},Sql:{statementAttr.Sql},IsAsync:{isTaskReturnType}]");
             }
+        }
+        private readonly static Type _disposableType = typeof(IDisposable);
+        private readonly static Type _multipleResultType = typeof(IMultipleResult);
+        private readonly static Type _valueTupleType = typeof(ValueTuple);
+        private readonly static MethodInfo _multipleResult_Read = _multipleResultType.GetMethod("Read");
+        private readonly static MethodInfo _multipleResult_ReadSingle = _multipleResultType.GetMethod("ReadSingle");
+        private readonly static MethodInfo _dispose_Method = _disposableType.GetMethod("Dispose");
+        private static void QueryMultipleToValueTuple(MethodInfo methodInfo, Type returnType, ILGenerator ilGenerator)
+        {
+            var returnGenericTypeArguments = returnType.GenericTypeArguments;
+            if (returnGenericTypeArguments.Length > 8)
+            {
+                throw new SmartSqlException($"SmartSql.DyRepository method:{methodInfo.Name} return type ValueTuple More than 8!");
+            }
+            var createVT = _valueTupleType.GetMethods().First(m =>
+            {
+                if (m.Name != "Create") { return false; }
+                return m.GetParameters().Length == returnGenericTypeArguments.Length;
+            }).MakeGenericMethod(returnGenericTypeArguments);
+
+            ilGenerator.BeginExceptionBlock();
+            foreach (var typeArg in returnGenericTypeArguments)
+            {
+                ilGenerator.Emit(OpCodes.Ldloc_2);
+                bool isEnum = _enumerableType.IsAssignableFrom(typeArg);
+                var readMethod = isEnum ? _multipleResult_Read : _multipleResult_ReadSingle;
+                var realRetType = isEnum ? typeArg.GenericTypeArguments[0] : typeArg;
+                readMethod = readMethod.MakeGenericMethod(new Type[] { realRetType });
+                ilGenerator.Emit(OpCodes.Call, readMethod);
+            }
+            ilGenerator.Emit(OpCodes.Call, createVT);
+            ilGenerator.Emit(OpCodes.Stloc_3);
+            ilGenerator.BeginFinallyBlock();
+            ilGenerator.Emit(OpCodes.Ldloc_2);
+            ilGenerator.Emit(OpCodes.Call, _dispose_Method);
+            ilGenerator.Emit(OpCodes.Endfinally);
+            ilGenerator.EndExceptionBlock();
+            ilGenerator.Emit(OpCodes.Ldloc_3);
         }
 
         private static void SetCmdTypeAndSourceChoice(StatementAttribute statementAttr, ILGenerator ilGenerator)
@@ -304,6 +353,11 @@ namespace SmartSql.DyRepository
                 return statementAttr;
             }
             if (returnType == typeof(IMultipleResult))
+            {
+                statementAttr.Execute = ExecuteBehavior.QueryMultiple;
+                return statementAttr;
+            }
+            if (IsValueTuple(returnType))
             {
                 statementAttr.Execute = ExecuteBehavior.QueryMultiple;
                 return statementAttr;
@@ -458,7 +512,10 @@ namespace SmartSql.DyRepository
 
             return executeMethod;
         }
-
+        private bool IsValueTuple(Type type)
+        {
+            return type != null && type.FullName.StartsWith("System.ValueTuple");
+        }
         private bool IsSimpleParam(Type paramType)
         {
             if (paramType == typeof(CommandType))
@@ -472,7 +529,7 @@ namespace SmartSql.DyRepository
             if (paramType.IsValueType) { return true; }
             if (paramType == typeof(string)) { return true; }
             if (paramType.IsGenericParameter) { return true; }
-            return typeof(IEnumerable).IsAssignableFrom(paramType);
+            return _enumerableType.IsAssignableFrom(paramType);
         }
     }
 }

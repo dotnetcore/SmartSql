@@ -180,10 +180,16 @@ namespace SmartSql.UTests
                     Taken = 10
                 }
             };
-            using (var mult = _sqlMapper.QueryMultiple(context))
+            IMultipleResult multipleResult = _sqlMapper.QueryMultiple(context); 
+            try
             {
-                var list1 = mult.Read<T_Entity>();
-                var list2 = mult.Read<T_Entity>();
+                var val1 = multipleResult.Read<T_Entity>();
+                var val2 = multipleResult.Read<T_Entity>();
+                var vals = ValueTuple.Create(val1, val2);
+            }
+            finally
+            {
+                multipleResult.Dispose();
             }
         }
 

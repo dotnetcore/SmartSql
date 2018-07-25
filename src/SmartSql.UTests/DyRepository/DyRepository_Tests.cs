@@ -49,6 +49,12 @@ namespace SmartSql.UTests.DyRepository
             }
         }
         [Fact]
+        public void QueryMultiple_VT()
+        {
+            var vals = _repository.QueryMultiple_VT();
+        }
+
+        [Fact]
         public void QueryDataTable()
         {
             var dataTable = _repository.QueryDataTable();

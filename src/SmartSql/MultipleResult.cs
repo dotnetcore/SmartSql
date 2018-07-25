@@ -1,6 +1,7 @@
 ﻿using SmartSql.Abstractions;
 using SmartSql.Abstractions.DataReaderDeserializer;
 using SmartSql.Abstractions.DbSession;
+using SmartSql.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -32,12 +33,23 @@ namespace SmartSql
         }
         public T ReadSingle<T>()
         {
+            CheckDbReader();
             var result = _dataReaderDeserializer.ToSingle<T>(_context, _dataReader, false);
             NextResult();
             return result;
         }
+
+        private void CheckDbReader()
+        {
+            if (_dataReader == null)
+            {
+                throw new SmartSqlException("no more result!");
+            }
+        }
+
         public IEnumerable<T> Read<T>()
         {
+            CheckDbReader();
             var result = _dataReaderDeserializer.ToEnumerable<T>(_context, _dataReader, false).ToList();
             NextResult();
             return result;
