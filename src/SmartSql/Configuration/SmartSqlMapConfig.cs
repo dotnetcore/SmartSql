@@ -90,6 +90,7 @@ namespace SmartSql.Configuration
         {
             File = 1,
             Directory = 2,
+            DirectoryWithAllSub = 3
         }
     }
 

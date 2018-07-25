@@ -53,9 +53,15 @@ namespace SmartSql
                             break;
                         }
                     case SmartSqlMapSource.ResourceType.Directory:
+                    case SmartSqlMapSource.ResourceType.DirectoryWithAllSub:
                         {
+                            SearchOption searchOption = SearchOption.TopDirectoryOnly;
+                            if (sqlMapSource.Type == SmartSqlMapSource.ResourceType.DirectoryWithAllSub)
+                            {
+                                searchOption = SearchOption.AllDirectories;
+                            }
                             var dicPath = Path.Combine(AppContext.BaseDirectory, sqlMapSource.Path);
-                            var childSqlmapSources = Directory.EnumerateFiles(dicPath, "*.xml");
+                            var childSqlmapSources = Directory.EnumerateFiles(dicPath, "*.xml", searchOption);
                             foreach (var childSqlmapSource in childSqlmapSources)
                             {
                                 LoadSmartSqlMapAndInConfig(childSqlmapSource);

@@ -60,6 +60,7 @@
                       <xs:restriction base="xs:NMTOKEN">
                         <xs:enumeration value="File"/>
                         <xs:enumeration value="Directory"/>
+                        <xs:enumeration value="DirectoryWithAllSub"/>
                       </xs:restriction>
                     </xs:simpleType>
                   </xs:attribute>
