@@ -30,13 +30,13 @@ namespace SmartSql
         public ILoggerFactory LoggerFactory { get { return SmartSqlOptions.LoggerFactory; } }
         public ICacheManager CacheManager { get { return SmartSqlOptions.CacheManager; } }
         public ISqlBuilder SqlBuilder { get { return SmartSqlOptions.SqlBuilder; } }
-        public SmartSqlMapper(String sqlMapConfigFilePath = "SmartSqlMapConfig.xml") : this(NoneLoggerFactory.Instance, sqlMapConfigFilePath)
+        public SmartSqlMapper(String sqlMapConfigFilePath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH) : this(NoneLoggerFactory.Instance, sqlMapConfigFilePath)
         {
 
         }
         public SmartSqlMapper(
              ILoggerFactory loggerFactory,
-             String sqlMapConfigFilePath = "SmartSqlMapConfig.xml"
+             String sqlMapConfigFilePath =  Consts.DEFAULT_SMARTSQL_CONFIG_PATH
         ) : this(new SmartSqlOptions
         {
             LoggerFactory = loggerFactory,

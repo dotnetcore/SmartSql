@@ -19,7 +19,7 @@ namespace SmartSql
 {
     public class SmartSqlOptions
     {
-        public String ConfigPath { get; set; } = "SmartSqlMapConfig.xml";
+        public String ConfigPath { get; set; }
         public ILoggerFactory LoggerFactory { get; set; }
         public IConfigLoader ConfigLoader { get; set; }
         public IDbConnectionSessionStore DbSessionStore { get; set; }
@@ -36,7 +36,7 @@ namespace SmartSql
         {
             if (String.IsNullOrEmpty(ConfigPath))
             {
-                ConfigPath = "SmartSqlMapConfig.xml";
+                ConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH;
             }
             if (LoggerFactory == null)
             {

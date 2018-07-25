@@ -14,7 +14,7 @@ namespace SmartSql
         /// </summary>
         private IDictionary<String, ISmartSqlMapper> _mapperContainer = new Dictionary<String, ISmartSqlMapper>();
 
-        public ISmartSqlMapper GetSqlMapper(String smartSqlMapConfigPath = "SmartSqlMapConfig.xml")
+        public ISmartSqlMapper GetSqlMapper(String smartSqlMapConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH)
         {
             return GetSqlMapper(new SmartSqlOptions { ConfigPath = smartSqlMapConfigPath });
         }
