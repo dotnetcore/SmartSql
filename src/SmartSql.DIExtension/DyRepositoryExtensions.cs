@@ -28,11 +28,17 @@ namespace Microsoft.Extensions.DependencyInjection
                 return new RepositoryFactory(repositoryBuilder, logger);
             });
         }
-        public static void AddRepository<T>(this IServiceCollection services, ISmartSqlMapper smartSqlMapper = null, string scope = "") where T : class
+
+        public static void AddRepository<T>(this IServiceCollection services, Func<IServiceProvider, ISmartSqlMapper> getSmartSql = null, string scope = "") where T : class
         {
             services.AddSingleton<T>(sp =>
             {
-                var sqlMapper = smartSqlMapper ?? sp.GetRequiredService<ISmartSqlMapper>();
+                ISmartSqlMapper sqlMapper = null;
+                if (getSmartSql != null)
+                {
+                    sqlMapper = getSmartSql(sp);
+                }
+                sqlMapper = sqlMapper ?? sp.GetRequiredService<ISmartSqlMapper>();
                 var factory = sp.GetRequiredService<IRepositoryFactory>();
                 return factory.CreateInstance<T>(sqlMapper, scope);
             });
@@ -48,11 +54,16 @@ namespace Microsoft.Extensions.DependencyInjection
             ScopeTemplateParser templateParser = new ScopeTemplateParser(options.ScopeTemplate);
             var assembly = Assembly.Load(options.AssemblyString);
             var allTypes = assembly.GetTypes().Where(options.Filter);
+            ISmartSqlMapper sqlMapper = null;
             foreach (var type in allTypes)
             {
                 services.AddSingleton(type, sp =>
                 {
-                    var sqlMapper = options.SmartSqlMapper ?? sp.GetRequiredService<ISmartSqlMapper>();
+                    if (sqlMapper == null && options.GetSmartSql != null)
+                    {
+                        sqlMapper = options.GetSmartSql(sp);
+                    }
+                    sqlMapper = sqlMapper ?? sp.GetRequiredService<ISmartSqlMapper>();
                     var factory = sp.GetRequiredService<IRepositoryFactory>();
                     var scope = string.Empty;
                     if (!String.IsNullOrEmpty(options.ScopeTemplate))
@@ -63,6 +74,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 });
             }
         }
+
+
     }
 
 }

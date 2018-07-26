@@ -7,7 +7,8 @@ namespace SmartSql.DIExtension
 {
     public class AssemblyAutoRegisterOptions
     {
-        public ISmartSqlMapper SmartSqlMapper { get; set; }
+        public Func<IServiceProvider, ISmartSqlMapper> GetSmartSql { get; set; }
+
         public string AssemblyString { get; set; }
         public string ScopeTemplate { get; set; }
         public Func<Type, bool> Filter { get; set; }
