@@ -514,7 +514,7 @@ namespace SmartSql.DyRepository
         }
         private bool IsValueTuple(Type type)
         {
-            return type != null && type.FullName.StartsWith("System.ValueTuple");
+            return type != null && type.FullName != null && type.FullName.StartsWith("System.ValueTuple");
         }
         private bool IsSimpleParam(Type paramType)
         {
