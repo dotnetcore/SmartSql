@@ -51,7 +51,7 @@ namespace SmartSql.DyRepository
         /// <returns></returns>
         public Type BuildRepositoryImpl(Type interfaceType, ISmartSqlMapper smartSqlMapper, string scope = "")
         {
-            string implName = interfaceType.Name.TrimStart('I') + "_Impl";
+            string implName = $"{interfaceType.Name.TrimStart('I')}_Impl_{Guid.NewGuid().ToString("N")}";
             var typeBuilder = _moduleBuilder.DefineType(implName, TypeAttributes.Public);
             typeBuilder.AddInterfaceImplementation(interfaceType);
             var sqlMapperField = typeBuilder.DefineField("sqlMapper", typeof(ISmartSqlMapper), FieldAttributes.Family);
