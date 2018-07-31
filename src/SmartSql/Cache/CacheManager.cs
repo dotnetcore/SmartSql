@@ -148,19 +148,22 @@ namespace SmartSql.Cahce
         {
             cachedResult = default(T);
             if (context.Statement == null) { return false; }
-            var cachedType = typeof(T);
             string fullSqlId = context.FullSqlId;
             var statement = context.Statement;
             if (statement.Cache == null) { return false; }
             var cacheKey = new CacheKey(context);
-            var cache = statement.Cache.Provider[cacheKey, cachedType];
+            var cached = statement.Cache.Provider.Contains(cacheKey);
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug($"CacheManager GetCache FullSqlId:{fullSqlId}，Success:{cache != null} !");
+                _logger.LogDebug($"CacheManager GetCache FullSqlId:{fullSqlId}，Success:{cached} !");
             }
-            if (cache == null) { return false; }
-            cachedResult = (T)cache;
-            return true;
+            if (cached)
+            {
+                var cachedType = typeof(T);
+                var cache = statement.Cache.Provider[cacheKey, cachedType];
+                cachedResult = (T)cache;
+            }
+            return cached;
         }
 
         public void TryAdd<T>(RequestContext context, T cacheItem)

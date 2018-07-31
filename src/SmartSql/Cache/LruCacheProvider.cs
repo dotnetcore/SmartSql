@@ -56,6 +56,10 @@ namespace SmartSql.Cache
                 }
             }
         }
+        public bool Contains(CacheKey key)
+        {
+            return _cache.ContainsKey(key);
+        }
         public void Initialize(IDictionary properties)
         {
             string size = (string)properties["CacheSize"]; ;
@@ -64,5 +68,6 @@ namespace SmartSql.Cache
                 _cacheSize = Convert.ToInt32(size);
             }
         }
+
     }
 }

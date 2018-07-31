@@ -13,6 +13,7 @@ namespace SmartSql.Abstractions.Cache
             get;
             set;
         }
+        bool Contains(CacheKey key);
         bool Remove(CacheKey key);
         void Flush();
     }

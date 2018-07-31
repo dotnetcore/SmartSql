@@ -76,5 +76,10 @@ namespace SmartSql.Cache.Redis
         {
             return CacheDB.KeyDelete(key.Key);
         }
+
+        public bool Contains(CacheKey key)
+        {
+            return CacheDB.KeyExists(key.Key);
+        }
     }
 }

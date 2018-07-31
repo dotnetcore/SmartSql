@@ -14,6 +14,11 @@ namespace SmartSql.Cache
             set { }
         }
 
+        public bool Contains(CacheKey key)
+        {
+            return false;
+        }
+
         public void Flush()
         {
            
