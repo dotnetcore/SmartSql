@@ -36,7 +36,7 @@ namespace SmartSql
         }
         public SmartSqlMapper(
              ILoggerFactory loggerFactory,
-             String sqlMapConfigFilePath =  Consts.DEFAULT_SMARTSQL_CONFIG_PATH
+             String sqlMapConfigFilePath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH
         ) : this(new SmartSqlOptions
         {
             LoggerFactory = loggerFactory,
@@ -54,7 +54,10 @@ namespace SmartSql
         private void SetupRequestContext(RequestContext context)
         {
             context.Setup(SmartSqlOptions.SmartSqlContext);
-            SqlBuilder.BuildSql(context);
+            if (context.CommandType == CommandType.Text)
+            {
+                SqlBuilder.BuildSql(context);
+            }
         }
         private void SetWriteSourceIfUnknow(RequestContext context)
         {

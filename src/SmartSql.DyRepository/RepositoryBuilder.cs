@@ -364,8 +364,11 @@ namespace SmartSql.DyRepository
             }
             if (statementAttr.Execute == ExecuteBehavior.Auto)
             {
-                SqlCommandType cmdType = AnalyseCmdType(smartSqlMapper, statementAttr);
-
+                SqlCommandType cmdType = SqlCommandType.Unknown;
+                if (statementAttr.CommandType != CommandType.StoredProcedure)
+                {
+                    cmdType = AnalyseCmdType(smartSqlMapper, statementAttr);
+                }
                 if (returnType == typeof(int) || returnType == _voidType || returnType == null)
                 {
                     statementAttr.Execute = ExecuteBehavior.Execute;

@@ -47,10 +47,7 @@ namespace SmartSql.Configuration.Tags
 
         protected virtual Object GetPropertyValue(RequestContext context)
         {
-            var reqParams = context.RequestParameters;
-            if (reqParams == null) { return null; }
-            reqParams.TryGetValue(Property, out object propVal);
-            return propVal;
+            return context.RequestParameters.GetValue(Property);
         }
     }
 }

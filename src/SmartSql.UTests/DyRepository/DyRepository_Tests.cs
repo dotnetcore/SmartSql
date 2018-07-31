@@ -21,6 +21,21 @@ namespace SmartSql.UTests.DyRepository
             _repository = factory.CreateInstance<IEntityRepository>(sqlMapper);
         }
 
+
+
+        [Fact]
+        public void SP_QueryByPage()
+        {
+            DbParameterCollection dbParameterCollection = new DbParameterCollection();
+            dbParameterCollection.Add(new DbParameter
+            {
+                Name = "Total",
+                DbType = System.Data.DbType.Int32,
+                Direction = System.Data.ParameterDirection.Output
+            });
+            var list = _repository.SP_QueryByPage(dbParameterCollection);
+            var total = dbParameterCollection.GetValue<int>("Total");
+        }
         [Fact]
         public void DeleteById()
         {

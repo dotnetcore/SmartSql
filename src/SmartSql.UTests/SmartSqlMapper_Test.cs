@@ -168,6 +168,26 @@ namespace SmartSql.UTests
             };
             var entity = _sqlMapper.QuerySingle<T_Entity>(context);
         }
+
+        [Fact]
+        public void StoredProcedure()
+        {
+            DbParameterCollection dbParameterCollection = new DbParameterCollection();
+            dbParameterCollection.Add(new DbParameter
+            {
+                Name = "Total",
+                DbType = System.Data.DbType.Int32,
+                Direction = System.Data.ParameterDirection.Output
+            });
+            RequestContext context = new RequestContext
+            {
+                CommandType = System.Data.CommandType.StoredProcedure,
+                SqlId = "SP_QueryByPage",
+                Request = dbParameterCollection
+            };
+            var list = _sqlMapper.Query<T_Entity>(context);
+            var total = dbParameterCollection.GetValue<int>("Total");
+        }
         [Fact]
         public void QueryMultiple()
         {
@@ -180,7 +200,7 @@ namespace SmartSql.UTests
                     Taken = 10
                 }
             };
-            IMultipleResult multipleResult = _sqlMapper.QueryMultiple(context); 
+            IMultipleResult multipleResult = _sqlMapper.QueryMultiple(context);
             try
             {
                 var val1 = multipleResult.Read<T_Entity>();

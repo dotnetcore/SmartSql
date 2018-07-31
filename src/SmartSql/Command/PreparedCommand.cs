@@ -56,19 +56,18 @@ namespace SmartSql.Command
                                   var paramMap = context.Statement?.ParameterMap?.Parameters?.FirstOrDefault(p => p.Name == paramName);
                                   var propertyName = paramMap != null ? paramMap.Property : paramName;
 
-                                  if (context.RequestParameters == null
-                                    ||
-                                    !context.RequestParameters.TryGetValue(propertyName, out object paramVal))
+                                  if (!context.RequestParameters.Contains(propertyName))
                                   {
                                       return match.Value;
                                   }
-
+                                  var dbParameter = context.RequestParameters.Get(propertyName);
                                   ITypeHandler typeHandler = paramMap?.Handler;
                                   if (typeHandler != null)
                                   {
-                                      AddParameterIfNotExists(context, dbCommand, paramName, paramVal, typeHandler);
+                                      AddDbParameter(dbCommand, dbParameter, typeHandler);
                                       return match.Value;
                                   }
+                                  var paramVal = dbParameter.Value;
                                   bool isString = paramVal is String;
                                   if (paramVal is IEnumerable && !isString)
                                   {
@@ -80,7 +79,11 @@ namespace SmartSql.Command
                                       {
                                           string itemParamName = $"{_smartSqlContext.DbPrefix}{paramName}_{item_Index}";
                                           inParamSql.AppendFormat("{0},", itemParamName);
-                                          AddParameterIfNotExists(context, dbCommand, itemParamName, itemVal);
+                                          AddDbParameter(dbCommand, new DbParameter
+                                          {
+                                              Name = itemParamName,
+                                              Value = itemVal
+                                          }, typeHandler);
                                           item_Index++;
                                       }
                                       inParamSql.Remove(inParamSql.Length - 1, 1);
@@ -89,7 +92,7 @@ namespace SmartSql.Command
                                   }
                                   else
                                   {
-                                      AddParameterIfNotExists(context, dbCommand, paramName, paramVal);
+                                      AddDbParameter(dbCommand, dbParameter);
                                       return match.Value;
                                   }
                               });
@@ -99,13 +102,7 @@ namespace SmartSql.Command
                     }
                 case CommandType.StoredProcedure:
                     {
-                        if (context.Request is IDataParameterCollection reqParams)
-                        {
-                            foreach (var reqParam in reqParams)
-                            {
-                                dbCommand.Parameters.Add(reqParam);
-                            }
-                        }
+                        AddDbParameterCollection(dbCommand, context.RequestParameters);
                         dbCommand.CommandText = context.SqlId;
                         break;
                     }
@@ -128,33 +125,63 @@ namespace SmartSql.Command
             return dbCommand;
         }
 
-        private void AddParameterIfNotExists(RequestContext context, IDbCommand dbCommand, string paramName, object paramVal, ITypeHandler typeHandler = null)
+        private void AddDbParameterCollection(IDbCommand dbCommand, DbParameterCollection reqParams)
         {
-            if (!dbCommand.Parameters.Contains(paramName))
+            foreach (var paramName in reqParams.ParameterNames)
             {
-                var cmdParameter = dbCommand.CreateParameter();
-                cmdParameter.ParameterName = paramName;
-                if (paramVal == null)
+                var dbParameter = reqParams.Get(paramName);
+                AddDbParameter(dbCommand, dbParameter);
+            }
+        }
+
+        private void AddDbParameter(IDbCommand dbCommand, DbParameter dbParameter, ITypeHandler typeHandler = null)
+        {
+            if (dbCommand.Parameters.Contains(dbParameter.Name)) { return; }
+            var sourceParam = dbCommand.CreateParameter();
+            sourceParam.ParameterName = dbParameter.Name;
+            var paramVal = dbParameter.Value;
+            if (paramVal == null)
+            {
+                sourceParam.Value = DBNull.Value;
+            }
+            else
+            {
+                if (typeHandler != null)
                 {
-                    cmdParameter.Value = DBNull.Value;
+                    typeHandler.SetParameter(sourceParam, paramVal);
                 }
                 else
                 {
-                    if (typeHandler != null)
+                    if (paramVal is Enum)
                     {
-                        typeHandler.SetParameter(cmdParameter, paramVal);
+                        paramVal = paramVal.GetHashCode();
                     }
-                    else
-                    {
-                        if (paramVal is Enum)
-                        {
-                            paramVal = paramVal.GetHashCode();
-                        }
-                        cmdParameter.Value = paramVal;
-                    }
+                    sourceParam.Value = paramVal;
                 }
-                dbCommand.Parameters.Add(cmdParameter);
             }
+            dbParameter.SourceParameter = sourceParam;
+            if (dbParameter.DbType.HasValue)
+            {
+                sourceParam.DbType = dbParameter.DbType.Value;
+            }
+            if (dbParameter.Direction.HasValue)
+            {
+                sourceParam.Direction = dbParameter.Direction.Value;
+            }
+            if (dbParameter.Precision.HasValue)
+            {
+                sourceParam.Precision = dbParameter.Precision.Value;
+            }
+            if (dbParameter.Scale.HasValue)
+            {
+                sourceParam.Scale = dbParameter.Scale.Value;
+            }
+            if (dbParameter.Size.HasValue)
+            {
+                sourceParam.Size = dbParameter.Size.Value;
+            }
+            dbCommand.Parameters.Add(sourceParam);
         }
+
     }
 }

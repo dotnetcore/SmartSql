@@ -27,7 +27,7 @@ namespace SmartSql.Abstractions
         public String Scope { get; set; }
         public String SqlId { get; set; }
         public String FullSqlId => $"{Scope}.{SqlId}";
-        public IDictionary<string, object> RequestParameters { get; internal set; }
+        public DbParameterCollection RequestParameters { get; internal set; }
         public object Request { get; set; }
 
         [Obsolete("Internal call")]
@@ -38,35 +38,15 @@ namespace SmartSql.Abstractions
         }
         internal void SetupParameters()
         {
-            if (CommandType == CommandType.StoredProcedure || Request == null)
-            {
-                return;
-            }
-
             bool ignoreParameterCase = SmartSqlContext.IgnoreParameterCase;
-            var paramComparer = ignoreParameterCase ? StringComparer.CurrentCultureIgnoreCase : StringComparer.CurrentCulture;
-            if (Request is Dictionary<string, object> reqDicParams)
+            if (Request is DbParameterCollection dbParameterCollection)
             {
-                if (reqDicParams.Comparer == paramComparer)
-                {
-                    RequestParameters = reqDicParams;
-                }
-                else
-                {
-                    RequestParameters = new Dictionary<string, object>(reqDicParams, paramComparer);
-                }
-                return;
+                RequestParameters = dbParameterCollection;
             }
-            if (Request is IEnumerable<KeyValuePair<string, object>> reqDic)
+            else
             {
-                RequestParameters = new Dictionary<string, object>(paramComparer);
-                foreach (var kv in reqDic)
-                {
-                    RequestParameters.Add(kv.Key, kv.Value);
-                }
-                return;
+                RequestParameters = new DbParameterCollection(ignoreParameterCase, Request);
             }
-            RequestParameters = ObjectUtils.ToDictionary(Request, ignoreParameterCase);
         }
 
         public String StatementKey { get { return (!String.IsNullOrEmpty(FullSqlId) ? FullSqlId : RealSql); } }
@@ -80,9 +60,10 @@ namespace SmartSql.Abstractions
                 if (RequestParameters == null) { return "Null"; }
                 StringBuilder strBuilder = new StringBuilder();
                 var reqParams = RequestParameters;
-                foreach (var reqParam in reqParams)
+                foreach (var reqParamName in reqParams.ParameterNames)
                 {
-                    BuildSqlQueryString(strBuilder, reqParam.Key, reqParam.Value);
+                    var reqParamVal = reqParams.GetValue(reqParamName);
+                    BuildSqlQueryString(strBuilder, reqParamName, reqParamVal);
                 }
                 return strBuilder.ToString().Trim('&');
             }

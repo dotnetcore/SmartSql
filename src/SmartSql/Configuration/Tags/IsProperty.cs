@@ -13,7 +13,7 @@ namespace SmartSql.Configuration.Tags
         public override bool IsCondition(RequestContext context)
         {
             if (context.RequestParameters == null) { return false; }
-            return context.RequestParameters.ContainsKey(Property);
+            return context.RequestParameters.Contains(Property);
         }
     }
 }
