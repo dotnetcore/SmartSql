@@ -39,7 +39,9 @@ namespace SmartSql.Abstractions
         internal void SetupParameters()
         {
             bool ignoreParameterCase = SmartSqlContext.IgnoreParameterCase;
-            if (Request is DbParameterCollection dbParameterCollection)
+            if (Request is DbParameterCollection dbParameterCollection
+                && dbParameterCollection.IgnoreParameterCase == ignoreParameterCase
+                )
             {
                 RequestParameters = dbParameterCollection;
             }
@@ -49,7 +51,7 @@ namespace SmartSql.Abstractions
             }
         }
 
-        public String StatementKey { get { return (!String.IsNullOrEmpty(FullSqlId) ? FullSqlId : RealSql); } }
+        public String StatementKey { get { return (!String.IsNullOrEmpty(SqlId) ? FullSqlId : RealSql); } }
 
         public String Key { get { return $"{StatementKey}:{RequestString}"; } }
 

@@ -28,6 +28,11 @@ namespace SmartSql
                 _dbParameters = new Dictionary<string, DbParameter>(paramComparer);
                 return;
             }
+            if (reqParams is DbParameterCollection dbParameterCollection)
+            {
+                _dbParameters = new Dictionary<string, DbParameter>(dbParameterCollection._dbParameters, paramComparer);
+                return;
+            }
             if (reqParams is IEnumerable<KeyValuePair<string, object>> reqKVs)
             {
                 _dbParameters = new Dictionary<string, DbParameter>(paramComparer);
