@@ -45,7 +45,6 @@ namespace SmartSql
                     var cachedRequest = _cachedRequest[context.Key];
                     context.Sql = cachedRequest.Sql;
                     context.RealSql = cachedRequest.RealSql;
-                    context.RequestParameters = context.RequestParameters;
                     context.Statement = cachedRequest.Statement;
                 }
                 else
