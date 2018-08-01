@@ -24,7 +24,7 @@ namespace SmartSql.UTests.DyRepository
 
 
         [Fact]
-        public void SP_QueryByPage()
+        public void SP_QueryByPage_From_XML()
         {
             DbParameterCollection dbParameterCollection = new DbParameterCollection();
             dbParameterCollection.Add(new DbParameter
@@ -33,7 +33,20 @@ namespace SmartSql.UTests.DyRepository
                 DbType = System.Data.DbType.Int32,
                 Direction = System.Data.ParameterDirection.Output
             });
-            var list = _repository.SP_QueryByPage(dbParameterCollection);
+            var list = _repository.SP_QueryByPage_From_XML(dbParameterCollection);
+            var total = dbParameterCollection.GetValue<int>("Total");
+        }
+        [Fact]
+        public void SP_QueryByPage_From_RealSql()
+        {
+            DbParameterCollection dbParameterCollection = new DbParameterCollection();
+            dbParameterCollection.Add(new DbParameter
+            {
+                Name = "Total",
+                DbType = System.Data.DbType.Int32,
+                Direction = System.Data.ParameterDirection.Output
+            });
+            var list = _repository.SP_QueryByPage_From_RealSql(dbParameterCollection);
             var total = dbParameterCollection.GetValue<int>("Total");
         }
         [Fact]

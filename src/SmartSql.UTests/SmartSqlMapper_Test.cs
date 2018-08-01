@@ -170,7 +170,7 @@ namespace SmartSql.UTests
         }
 
         [Fact]
-        public void StoredProcedure()
+        public void StoredProcedure_From_XML()
         {
             DbParameterCollection dbParameterCollection = new DbParameterCollection();
             dbParameterCollection.Add(new DbParameter
@@ -182,12 +182,34 @@ namespace SmartSql.UTests
             RequestContext context = new RequestContext
             {
                 CommandType = System.Data.CommandType.StoredProcedure,
+                Scope = Scope,
                 SqlId = "SP_QueryByPage",
                 Request = dbParameterCollection
             };
             var list = _sqlMapper.Query<T_Entity>(context);
             var total = dbParameterCollection.GetValue<int>("Total");
         }
+
+        [Fact]
+        public void StoredProcedure_From_RealSql()
+        {
+            DbParameterCollection dbParameterCollection = new DbParameterCollection();
+            dbParameterCollection.Add(new DbParameter
+            {
+                Name = "Total",
+                DbType = System.Data.DbType.Int32,
+                Direction = System.Data.ParameterDirection.Output
+            });
+            RequestContext context = new RequestContext
+            {
+                CommandType = System.Data.CommandType.StoredProcedure,
+                RealSql = "SP_QueryByPage",
+                Request = dbParameterCollection
+            };
+            var list = _sqlMapper.Query<T_Entity>(context);
+            var total = dbParameterCollection.GetValue<int>("Total");
+        }
+
         [Fact]
         public void QueryMultiple()
         {

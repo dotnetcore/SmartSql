@@ -103,7 +103,7 @@ namespace SmartSql.Command
                 case CommandType.StoredProcedure:
                     {
                         AddDbParameterCollection(dbCommand, context.RequestParameters);
-                        dbCommand.CommandText = context.SqlId;
+                        dbCommand.CommandText = context.RealSql;
                         break;
                     }
             }

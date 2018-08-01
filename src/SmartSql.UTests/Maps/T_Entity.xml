@@ -19,9 +19,9 @@
         <Arg Column="FLong" Type="Int64" />
         <Arg Column="FDecimal" Type="Decimal" />
       </Constructor>
+      
     </ResultMap>
   </ResultMaps>
-
   <ParameterMaps>
     <ParameterMap Id="ParameterMap">
       <Parameter Property="" TypeHandler="Json" />
@@ -30,6 +30,9 @@
 
 
   <Statements>
+    <Statement Id="SP_QueryByPage">
+      SP_QueryByPage
+    </Statement>
     <Statement Id="QueryForPlaceholder">
       SELECT Top(10) T.* From <Placeholder Property="TableName"></Placeholder> T With(NoLock)
     </Statement>

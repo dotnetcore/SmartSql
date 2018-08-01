@@ -54,10 +54,7 @@ namespace SmartSql
         private void SetupRequestContext(RequestContext context)
         {
             context.Setup(SmartSqlOptions.SmartSqlContext);
-            if (context.CommandType == CommandType.Text)
-            {
-                SqlBuilder.BuildSql(context);
-            }
+            SqlBuilder.BuildSql(context);
         }
         private void SetWriteSourceIfUnknow(RequestContext context)
         {
