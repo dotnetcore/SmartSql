@@ -108,7 +108,7 @@ namespace SmartSql.DyRepository
         private readonly static Type _reqContextType = typeof(RequestContext);
         private readonly static Type _taskType = typeof(Task);
         private readonly static Type _voidType = typeof(void);
-        private readonly static Type _reqParamsDicType = typeof(Dictionary<string, object>);
+        private readonly static Type _dbParametersType = typeof(DbParameterCollection);
         private readonly static Type _enumerableType = typeof(IEnumerable);
 
         private readonly static ConstructorInfo _reqContextCtor = _reqContextType.GetConstructor(Type.EmptyTypes);
@@ -119,8 +119,8 @@ namespace SmartSql.DyRepository
         private readonly static MethodInfo _set_RequestMethod = _reqContextType.GetMethod("set_Request");
         private readonly static MethodInfo _set_RealSqlMethod = _reqContextType.GetMethod("set_RealSql");
 
-        private readonly static ConstructorInfo _reqParamsDicCtor = _reqParamsDicType.GetConstructor(Type.EmptyTypes);
-        private readonly static MethodInfo _addReqParamMehtod = _reqParamsDicType.GetMethod("Add");
+        private readonly static ConstructorInfo _dbParametersCtor = _dbParametersType.GetConstructor(new Type[] { typeof(bool) });
+        private readonly static MethodInfo _addDbParamMehtod = _dbParametersType.GetMethod("Add", new Type[] { typeof(string), typeof(object) });
 
         private readonly ILogger<RepositoryBuilder> _logger;
 
@@ -157,7 +157,7 @@ namespace SmartSql.DyRepository
             StatementAttribute statementAttr = PreStatement(scope, methodInfo, returnType, isTaskReturnType, smartSqlMapper);
             var ilGenerator = implMehtod.GetILGenerator();
             ilGenerator.DeclareLocal(_reqContextType);
-            ilGenerator.DeclareLocal(_reqParamsDicType);
+            ilGenerator.DeclareLocal(_dbParametersType);
             if (IsValueTuple(returnType))
             {
                 ilGenerator.DeclareLocal(_multipleResultType);
@@ -190,7 +190,9 @@ namespace SmartSql.DyRepository
                 }
                 else if (paramTypes.Length > 0)
                 {
-                    ilGenerator.Emit(OpCodes.Newobj, _reqParamsDicCtor);
+                    bool ignoreParameterCase = smartSqlMapper.SmartSqlOptions.SmartSqlContext.IgnoreParameterCase;
+                    ilGenerator.Emit(ignoreParameterCase ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
+                    ilGenerator.Emit(OpCodes.Newobj, _dbParametersCtor);
                     ilGenerator.Emit(OpCodes.Stloc_1);
                     for (int i = 0; i < methodParams.Length; i++)
                     {
@@ -209,7 +211,7 @@ namespace SmartSql.DyRepository
                         {
                             ilGenerator.Emit(OpCodes.Box, reqParam.ParameterType);
                         }
-                        ilGenerator.Emit(OpCodes.Call, _addReqParamMehtod);//[empty]
+                        ilGenerator.Emit(OpCodes.Call, _addDbParamMehtod);//[empty]
                     }
                     ilGenerator.Emit(OpCodes.Ldloc_0);
                     ilGenerator.Emit(OpCodes.Ldloc_1);
