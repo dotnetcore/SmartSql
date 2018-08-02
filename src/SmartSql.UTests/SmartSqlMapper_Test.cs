@@ -72,6 +72,41 @@ namespace SmartSql.UTests
             });
         }
         [Fact]
+        public void InsertBatch_For()
+        {
+            var items = new List<T_Entity> {
+                new T_Entity
+                {
+                    CreationTime = DateTime.Now,
+                    FBool = true,
+                    FDecimal = 1,
+                    FLong = 1,
+                    FNullBool = false,
+                    FString = Guid.NewGuid().ToString("N"),
+                    FNullDecimal = 1.1M,
+                    LastUpdateTime = DateTime.Now,
+                    Status = EntityStatus.Ok
+                },new T_Entity
+                {
+                    CreationTime = DateTime.Now,
+                    FBool = true,
+                    FDecimal = 1,
+                    FLong = 1,
+                    FNullBool = false,
+                    FString = Guid.NewGuid().ToString("N"),
+                    FNullDecimal = 1.1M,
+                    LastUpdateTime = DateTime.Now,
+                    Status = EntityStatus.Ok
+                }
+            };
+            _sqlMapper.Execute(new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "InsertBatch",
+                Request = new { Items = items }
+            });
+        }
+        [Fact]
         public void Execute()
         {
             RequestContext context = new RequestContext

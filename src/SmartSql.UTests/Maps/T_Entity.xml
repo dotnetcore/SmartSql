@@ -30,8 +30,32 @@
 
 
   <Statements>
-    <Statement Id="SP_QueryByPage" CommandType="StoredProcedure">
+    <Statement Id="SP_QueryByPage">
       SP_QueryByPage
+    </Statement>
+    <Statement Id="InsertBatch">
+      INSERT INTO T_Entity
+      (FString
+      ,FDecimal
+      ,FNullDecimal
+      ,FBool
+      ,FNullBool
+      ,Status
+      ,NullStatus
+      ,CreationTime
+      ,LastUpdateTime)
+      VALUES
+      <For Open="" Close="" Key="T" Property="Items" Separator=",">
+        (@FString
+        ,@FDecimal
+        ,@FNullDecimal
+        ,@FBool
+        ,@FNullBool
+        ,@Status
+        ,@NullStatus
+        ,@CreationTime
+        ,@LastUpdateTime)
+      </For>
     </Statement>
     <Statement Id="QueryForPlaceholder">
       SELECT Top(10) T.* From <Placeholder Property="TableName"></Placeholder> T With(NoLock)

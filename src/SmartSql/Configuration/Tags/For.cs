@@ -5,8 +5,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
 using SmartSql.Abstractions;
-using System.Reflection;
 using SmartSql.Exceptions;
+using SmartSql.Utils;
 
 namespace SmartSql.Configuration.Tags
 {
@@ -73,7 +73,7 @@ namespace SmartSql.Configuration.Tags
                     context.Sql.AppendFormat(" {0} ", Separator);
                 }
                 string patternStr = $"([{dbPrefixs}]{Regex.Escape(Key)})";
-                string key_name = $"{Key}{FOR_KEY_SUFFIX}{item_index}";
+                string key_name = $"{Key}{FOR_KEY_SUFFIX}_{Property}_{item_index}";
                 context.RequestParameters.Add(key_name, itemVal);
                 string key_name_dbPrefix = $"{dbPrefix}{key_name}";
                 string item_sql = Regex.Replace(itemSqlStr
@@ -99,28 +99,30 @@ namespace SmartSql.Configuration.Tags
                 }
                 string item_sql = itemSqlStr;
 
-                var properties = itemVal.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                foreach (var property in properties)
+                var itemParams = ObjectUtils.ToDicDbParameters(itemVal, false);
+
+                foreach (var propertyName in itemParams.Keys)
                 {
-                    string patternStr = $"([{dbPrefixs}]{Regex.Escape(property.Name)})";
+                    string patternStr = $"([{dbPrefixs}]{Regex.Escape(propertyName)})";
                     bool isHasParam = Regex.IsMatch(item_sql, patternStr);
                     if (!isHasParam) { continue; }
-
-                    var propertyVal = property.GetValue(itemVal);
-                    string key_name = $"{Key}{FOR_KEY_SUFFIX}{item_index}";
-                    context.RequestParameters.Add(key_name, itemVal);
+                    if (!itemParams.TryGetValue(propertyName, out DbParameter propertyVal))
+                    {
+                        continue;
+                    }
+                    string key_name = $"{Key}{FOR_KEY_SUFFIX}_{propertyName}_{item_index}";
                     string key_name_dbPrefix = $"{dbPrefix}{key_name}";
-
-                    context.RequestParameters.Add(key_name, propertyVal);
+                    context.RequestParameters.Add(key_name, propertyVal.Value);
 
                     item_sql = Regex.Replace(item_sql
                                       , (patternStr)
                                       , key_name_dbPrefix
                                       , RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant);
+                    item_index++;
                 }
 
                 context.Sql.AppendFormat("{0}", item_sql);
-                item_index++;
+
             }
         }
         private bool IsDirectValue(object obj)
