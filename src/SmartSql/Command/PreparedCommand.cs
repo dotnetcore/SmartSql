@@ -58,6 +58,10 @@ namespace SmartSql.Command
 
                                   if (!context.RequestParameters.Contains(propertyName))
                                   {
+                                      if (_logger.IsEnabled(LogLevel.Warning))
+                                      {
+                                          _logger.LogWarning($"PreparedCommand.Prepare:StatementKey:{context.StatementKey}:can not find ParamterName:{propertyName}!");
+                                      }
                                       return match.Value;
                                   }
                                   var dbParameter = context.RequestParameters.Get(propertyName);
