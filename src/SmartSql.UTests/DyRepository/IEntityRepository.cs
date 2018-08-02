@@ -45,7 +45,7 @@ namespace SmartSql.UTests.DyRepository
         [Statement(Sql = "Select Top(@taken) T.* From T_Entity T With(NoLock);")]
         Task<IEnumerable<T_Entity>> QueryBySqlAsync(int taken);
 
-        [Statement(Id = "SP_QueryByPage", CommandType = CommandType.StoredProcedure)]
+        [Statement(Id = "SP_QueryByPage")]
         IEnumerable<T_Entity> SP_QueryByPage_From_XML(DbParameterCollection dbParameterCollection);
 
         [Statement(Sql = "SP_QueryByPage", CommandType = CommandType.StoredProcedure)]

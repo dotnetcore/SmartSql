@@ -14,7 +14,40 @@
   vs:defaultnsprefix=""
   >
 
-
+  <xs:simpleType name="CSharpType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Boolean"/>
+      <xs:enumeration value="Char"/>
+      <xs:enumeration value="SByte"/>
+      <xs:enumeration value="Byte"/>
+      <xs:enumeration value="Int16"/>
+      <xs:enumeration value="UInt16"/>
+      <xs:enumeration value="Int32"/>
+      <xs:enumeration value="UInt32"/>
+      <xs:enumeration value="Int64"/>
+      <xs:enumeration value="UInt64"/>
+      <xs:enumeration value="Single"/>
+      <xs:enumeration value="Double"/>
+      <xs:enumeration value="Decimal"/>
+      <xs:enumeration value="DateTime"/>
+      <xs:enumeration value="String"/>
+      <xs:enumeration value="Guid"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CommandType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Text"/>
+      <xs:enumeration value="StoredProcedure"/>
+      <xs:enumeration value="TableDirect"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="DataSourceChoice">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Unknow"/>
+      <xs:enumeration value="Write"/>
+      <xs:enumeration value="Read"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:element name="Cache">
     <xs:complexType>
       <xs:choice maxOccurs="unbounded">
@@ -114,26 +147,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:simpleType name="CSharpType">
-    <xs:restriction base="xs:NMTOKEN">
-      <xs:enumeration value="Boolean"/>
-      <xs:enumeration value="Char"/>
-      <xs:enumeration value="SByte"/>
-      <xs:enumeration value="Byte"/>
-      <xs:enumeration value="Int16"/>
-      <xs:enumeration value="UInt16"/>
-      <xs:enumeration value="Int32"/>
-      <xs:enumeration value="UInt32"/>
-      <xs:enumeration value="Int64"/>
-      <xs:enumeration value="UInt64"/>
-      <xs:enumeration value="Single"/>
-      <xs:enumeration value="Double"/>
-      <xs:enumeration value="Decimal"/>
-      <xs:enumeration value="DateTime"/>
-      <xs:enumeration value="String"/>
-      <xs:enumeration value="Guid"/>
-    </xs:restriction>
-  </xs:simpleType>
+
   <xs:element name="Include">
     <xs:complexType mixed="true">
       <xs:attribute name="RefId" type="xs:string" use="required" />
@@ -749,6 +763,8 @@
       <xs:attribute name="Cache" type="xs:string" use="optional" />
       <xs:attribute name="ResultMap" type="xs:string" use="optional" />
       <xs:attribute name="ParameterMap" type="xs:string" use="optional" />
+      <xs:attribute name="CommandType" type="CommandType" use="optional"/>
+      <xs:attribute name="SourceChoice" type="DataSourceChoice" use="optional"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="Statements" >

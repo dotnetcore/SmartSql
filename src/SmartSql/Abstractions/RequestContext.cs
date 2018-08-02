@@ -28,13 +28,37 @@ namespace SmartSql.Abstractions
         public String SqlId { get; set; }
         public String FullSqlId => $"{Scope}.{SqlId}";
         public DbParameterCollection RequestParameters { get; internal set; }
+        public IDictionary<object, object> Items { get; set; }
         public object Request { get; set; }
-
         [Obsolete("Internal call")]
         public void Setup(SmartSqlContext smartSqlContext)
         {
             SmartSqlContext = smartSqlContext;
+            SetupStatement();
             SetupParameters();
+            if (Items == null)
+            {
+                Items = new Dictionary<object, object>();
+            }
+        }
+        internal void SetupStatement()
+        {
+            if (!String.IsNullOrEmpty(RealSql))
+            {
+                IsStatementSql = false;
+            }
+            if (IsStatementSql)
+            {
+                Statement = SmartSqlContext.GetStatement(FullSqlId);
+                if (Statement.SourceChoice.HasValue)
+                {
+                    DataSourceChoice = Statement.SourceChoice.Value;
+                }
+                if (Statement.CommandType.HasValue)
+                {
+                    CommandType = Statement.CommandType.Value;
+                }
+            }
         }
         internal void SetupParameters()
         {
@@ -50,11 +74,8 @@ namespace SmartSql.Abstractions
                 RequestParameters = new DbParameterCollection(ignoreParameterCase, Request);
             }
         }
-
         public String StatementKey { get { return (!String.IsNullOrEmpty(SqlId) ? FullSqlId : RealSql); } }
-
         public String Key { get { return $"{StatementKey}:{RequestString}"; } }
-
         public String RequestString
         {
             get
@@ -70,7 +91,6 @@ namespace SmartSql.Abstractions
                 return strBuilder.ToString().Trim('&');
             }
         }
-
         private void BuildSqlQueryString(StringBuilder strBuilder, string key, object val)
         {
             if (val is IEnumerable list && !(val is String))
@@ -87,11 +107,9 @@ namespace SmartSql.Abstractions
                 strBuilder.AppendFormat("&{0}={1}", key, val);
             }
         }
-
         public ITypeHandler GetTypeHandler(string typeHandlerName)
         {
             return SmartSqlContext.SqlMapConfig.TypeHandlers.FirstOrDefault(th => th.Name == typeHandlerName)?.Handler;
         }
-
     }
 }

@@ -8,6 +8,8 @@ using System.Text;
 using System.Xml;
 using SmartSql.Configuration.Statements;
 using SmartSql.Configuration.Maps;
+using System.Data;
+using SmartSql.Abstractions;
 
 namespace SmartSql.Configuration
 {
@@ -21,6 +23,16 @@ namespace SmartSql.Configuration
                 SqlTags = new List<ITag> { },
                 SmartSqlMap = smartSqlMap
             };
+            var cmdTypeStr = statementNode.Attributes["CommandType"]?.Value;
+            var sourceChoiceStr = statementNode.Attributes["SourceChoice"]?.Value;
+            if (Enum.TryParse<CommandType>(cmdTypeStr, out CommandType cmdType))
+            {
+                statement.CommandType = cmdType;
+            }
+            if (Enum.TryParse<DataSourceChoice>(cmdTypeStr, out DataSourceChoice sourceChoice))
+            {
+                statement.SourceChoice = sourceChoice;
+            }
             string cacheId = statementNode.Attributes["Cache"]?.Value;
             #region Attribute For Cache & ResultMap & ParameterMap
             if (!String.IsNullOrEmpty(cacheId))

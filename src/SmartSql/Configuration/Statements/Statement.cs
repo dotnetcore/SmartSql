@@ -4,19 +4,22 @@ using SmartSql.Configuration.Maps;
 using SmartSql.Configuration.Tags;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Xml;
 using System.Xml.Serialization;
 
 namespace SmartSql.Configuration.Statements
 {
-
-
     public class Statement
     {
         [XmlIgnore]
         public SmartSqlMap SmartSqlMap { get; internal set; }
         [XmlAttribute]
         public String Id { get; set; }
+        [XmlAttribute]
+        public CommandType? CommandType { get; set; }
+        [XmlAttribute]
+        public DataSourceChoice? SourceChoice { get; set; }
         public String FullSqlId => $"{SmartSqlMap.Scope}.{Id}";
         public IList<ITag> SqlTags { get; set; }
         public Cache Cache { get; set; }

@@ -30,7 +30,7 @@
 
 
   <Statements>
-    <Statement Id="SP_QueryByPage">
+    <Statement Id="SP_QueryByPage" CommandType="StoredProcedure">
       SP_QueryByPage
     </Statement>
     <Statement Id="QueryForPlaceholder">

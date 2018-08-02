@@ -34,28 +34,23 @@ namespace SmartSql
 
         public string BuildSql(RequestContext context)
         {
-            if (!String.IsNullOrEmpty(context.RealSql))
+            if (!context.IsStatementSql)
             {
-                context.IsStatementSql = false;
+                return context.RealSql;
+            }
+
+            if (_cachedRequest.ContainsKey(context.Key))
+            {
+                var cachedRequest = _cachedRequest[context.Key];
+                context.Sql = cachedRequest.Sql;
+                context.RealSql = cachedRequest.RealSql;
             }
             else
             {
-                if (_cachedRequest.ContainsKey(context.Key))
-                {
-                    var cachedRequest = _cachedRequest[context.Key];
-                    context.Sql = cachedRequest.Sql;
-                    context.RealSql = cachedRequest.RealSql;
-                    context.Statement = cachedRequest.Statement;
-                }
-                else
-                {
-                    context.Sql = new StringBuilder();
-                    var statement = _smartSqlContext.GetStatement(context.FullSqlId);
-                    context.Statement = statement;
-                    statement.BuildSql(context);
-                    context.RealSql = context.Sql.ToString().Trim().Replace(_smartSqlContext.SmartDbPrefix, _smartSqlContext.DbPrefix);
-                    _cachedRequest.TryAdd(context.Key, context);
-                }
+                context.Sql = new StringBuilder();
+                context.Statement.BuildSql(context);
+                context.RealSql = context.Sql.ToString().Trim().Replace(_smartSqlContext.SmartDbPrefix, _smartSqlContext.DbPrefix);
+                _cachedRequest.TryAdd(context.Key, context);
             }
 
             return context.RealSql;

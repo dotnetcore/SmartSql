@@ -181,7 +181,6 @@ namespace SmartSql.UTests
             });
             RequestContext context = new RequestContext
             {
-                CommandType = System.Data.CommandType.StoredProcedure,
                 Scope = Scope,
                 SqlId = "SP_QueryByPage",
                 Request = dbParameterCollection
