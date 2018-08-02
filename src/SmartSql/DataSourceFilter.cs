@@ -42,6 +42,7 @@ namespace SmartSql
             IDataSource choiceDataSource = _smartSqlContext.Database.WriteDataSource;
             var readDataSources = _smartSqlContext.Database.ReadDataSources;
             if (sourceChoice == DataSourceChoice.Read
+                && readDataSources != null
                 && readDataSources.Count > 0
                 )
             {
