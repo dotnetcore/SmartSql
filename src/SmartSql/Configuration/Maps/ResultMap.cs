@@ -9,7 +9,7 @@ namespace SmartSql.Configuration.Maps
     {
         public string Id { get; set; }
         public Constructor Constructor { get; set; }
-        public IList<Result> Results { get; set; }
+        public IList<Property> Properties { get; set; }
     }
 
     public class Constructor
@@ -26,9 +26,9 @@ namespace SmartSql.Configuration.Maps
         public ITypeHandler Handler { get; set; }
     }
 
-    public class Result
+    public class Property
     {
-        public string Property { get; set; }
+        public string Name { get; set; }
         public string Column { get; set; }
         public string TypeHandler { get; set; }
         public ITypeHandler Handler { get; set; }

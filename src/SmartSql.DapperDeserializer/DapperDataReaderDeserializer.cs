@@ -13,7 +13,7 @@ namespace SmartSql.DapperDeserializer
 {
     public class DapperDataReaderDeserializer : IDataReaderDeserializer
     {
-        public IEnumerable<T> ToEnumerable<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
+        public IEnumerable<T> ToEnumerable<T>(RequestContext context, IDataReaderWrapper dataReader, bool isDispose = true)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace SmartSql.DapperDeserializer
         }
 
 
-        public T ToSingle<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
+        public T ToSingle<T>(RequestContext context, IDataReaderWrapper dataReader, bool isDispose = true)
         {
             try
             {
@@ -49,20 +49,19 @@ namespace SmartSql.DapperDeserializer
             }
         }
         #region Async
-        public async Task<IEnumerable<T>> ToEnumerableAsync<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
+        public async Task<IEnumerable<T>> ToEnumerableAsync<T>(RequestContext context, IDataReaderWrapper dataReader, bool isDispose = true)
         {
             try
             {
                 IList<T> list = new List<T>();
-                var dataReaderAsync = dataReader as DbDataReader;
-                if (await dataReaderAsync.ReadAsync())
+                if (await dataReader.ReadAsync())
                 {
-                    var rowParser = Dapper.SqlMapper.GetRowParser(dataReader, typeof(T));
+                    var rowParser = SqlMapper.GetRowParser(dataReader, typeof(T));
                     do
                     {
                         var item = (T)rowParser(dataReader);
                         list.Add(item);
-                    } while (await dataReaderAsync.ReadAsync());
+                    } while (await dataReader.ReadAsync());
                 }
                 return list;
             }
@@ -72,13 +71,12 @@ namespace SmartSql.DapperDeserializer
             }
         }
 
-        public async Task<T> ToSingleAsync<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
+        public async Task<T> ToSingleAsync<T>(RequestContext context, IDataReaderWrapper dataReader, bool isDispose = true)
         {
             try
             {
-                var dataReaderAsync = dataReader as DbDataReader;
-                await dataReaderAsync.ReadAsync();
-                var rowParser = Dapper.SqlMapper.GetRowParser(dataReader, typeof(T));
+                await dataReader.ReadAsync();
+                var rowParser = SqlMapper.GetRowParser(dataReader, typeof(T));
                 return (T)rowParser(dataReader);
             }
             finally

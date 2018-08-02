@@ -48,8 +48,9 @@ namespace SmartSql.UTests.DataReaderDeserializer
             _sqlBuilder.BuildSql(context);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteReader(dbSession, context);
+            var wrapper = new DataReaderWrapper(result);
             var deser = _deserializerFactory.Create();
-            var list = deser.ToEnumerable<T_Entity>(context, result).ToList();
+            var list = deser.ToEnumerable<T_Entity>(context, wrapper).ToList();
             result.Close();
             result.Dispose();
         }
@@ -65,8 +66,9 @@ namespace SmartSql.UTests.DataReaderDeserializer
             _sqlBuilder.BuildSql(context);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteReader(dbSession, context);
+            var wrapper = new DataReaderWrapper(result);
             var deser = _deserializerFactory.Create();
-            var userIds = deser.ToEnumerable<EntityStatus>(context, result).ToList();
+            var userIds = deser.ToEnumerable<EntityStatus>(context, wrapper).ToList();
             result.Close();
             result.Dispose();
         }
@@ -82,8 +84,9 @@ namespace SmartSql.UTests.DataReaderDeserializer
             _sqlBuilder.BuildSql(context);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteReader(dbSession, context);
+            var wrapper = new DataReaderWrapper(result);
             var deser = _deserializerFactory.Create();
-            var userIds = deser.ToEnumerable<EntityStatus?>(context, result).ToList();
+            var userIds = deser.ToEnumerable<EntityStatus?>(context, wrapper).ToList();
             result.Close();
             result.Dispose();
         }

@@ -34,7 +34,7 @@ namespace SmartSql.Configuration
                 statement.SourceChoice = sourceChoice;
             }
             string cacheId = statementNode.Attributes["Cache"]?.Value;
-            #region Attribute For Cache & ResultMap & ParameterMap
+            #region Attribute For Cache & ResultMap & ParameterMap & MultipleResultMap
             if (!String.IsNullOrEmpty(cacheId))
             {
                 var cache = smartSqlMap.Caches.FirstOrDefault(m => m.Id == cacheId);
@@ -53,6 +53,13 @@ namespace SmartSql.Configuration
             {
                 var parameterMap = smartSqlMap.ParameterMaps.FirstOrDefault(r => r.Id == parameterMapId);
                 statement.ParameterMap = parameterMap ?? throw new SmartSqlException($"Statement.Id:{statement.Id} can not find ParameterMap.Id:{parameterMapId}");
+            }
+
+            string multipleResultMapId = statementNode.Attributes["MultipleResultMap"]?.Value;
+            if (!String.IsNullOrEmpty(multipleResultMapId))
+            {
+                var multipleResultMap = smartSqlMap.MultipleResultMaps.FirstOrDefault(r => r.Id == multipleResultMapId);
+                statement.MultipleResultMap = multipleResultMap ?? throw new SmartSqlException($"Statement.Id:{statement.Id} can not find MultipleResultMap.Id:{multipleResultMapId}");
             }
             #endregion
             var tagNodes = statementNode.ChildNodes;

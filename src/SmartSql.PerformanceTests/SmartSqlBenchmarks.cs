@@ -67,7 +67,8 @@ namespace SmartSql.PerformanceTests
                         Scope = "T_Entity",
                         SqlId = "Query"
                     };
-                    var deser = _dataRowParserFactory.GetParser(dataReader, reqCtx, typeof(T_Entity));
+                    var wrapper = new DataReaderWrapper(dataReader);
+                    var deser = _dataRowParserFactory.GetParser(wrapper, reqCtx, typeof(T_Entity));
                     do
                     {
                         var obj = (T_Entity)deser.Invoke(dataReader, reqCtx);

@@ -3,6 +3,7 @@ using SmartSql.UTests.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -387,11 +388,12 @@ namespace SmartSql.UTests
             };
             var dataSet = await _sqlMapper.GetDataSetAsync(context);
         }
+
         [Fact]
         public async Task TransactionAsync()
         {
             try
-            {
+            {               
                 _sqlMapper.BeginTransaction();
                 var entity = await _sqlMapper.QuerySingleAsync<T_Entity>(new RequestContext
                 {

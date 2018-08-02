@@ -250,10 +250,6 @@ namespace SmartSql.DyRepository
         private static void QueryMultipleToValueTuple(MethodInfo methodInfo, Type returnType, ILGenerator ilGenerator)
         {
             var returnGenericTypeArguments = returnType.GenericTypeArguments;
-            if (returnGenericTypeArguments.Length > 8)
-            {
-                throw new SmartSqlException($"SmartSql.DyRepository method:{methodInfo.Name} return type ValueTuple More than 8!");
-            }
             var createVT = _valueTupleType.GetMethods().First(m =>
             {
                 if (m.Name != "Create") { return false; }

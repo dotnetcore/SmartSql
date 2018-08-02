@@ -26,6 +26,8 @@ namespace SmartSql.Abstractions
         IMultipleResult QueryMultiple(RequestContext context);
         DataTable GetDataTable(RequestContext context);
         DataSet GetDataSet(RequestContext context);
+        
+        T GetNested<T>(RequestContext context);
     }
 
     public enum DataSourceChoice

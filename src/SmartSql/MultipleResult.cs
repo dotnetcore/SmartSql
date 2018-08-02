@@ -15,33 +15,33 @@ namespace SmartSql
     public class MultipleResult : IMultipleResult
     {
         private readonly RequestContext _context;
-        private IDataReader _dataReader;
+        private IDataReaderWrapper _dataReaderWrapper;
         private readonly IDataReaderDeserializer _dataReaderDeserializer;
         private readonly IDbConnectionSessionStore _sessionStore;
 
         public MultipleResult(
             RequestContext context
-            , IDataReader dataReader
+            , IDataReaderWrapper dataReaderWrapper
             , IDataReaderDeserializer dataReaderDeserializer
             , IDbConnectionSessionStore sessionStore
             )
         {
             _context = context;
-            _dataReader = dataReader;
+            _dataReaderWrapper = dataReaderWrapper;
             _dataReaderDeserializer = dataReaderDeserializer;
             _sessionStore = sessionStore;
         }
         public T ReadSingle<T>()
         {
             CheckDbReader();
-            var result = _dataReaderDeserializer.ToSingle<T>(_context, _dataReader, false);
+            var result = _dataReaderDeserializer.ToSingle<T>(_context, _dataReaderWrapper, false);
             NextResult();
             return result;
         }
 
         private void CheckDbReader()
         {
-            if (_dataReader == null)
+            if (_dataReaderWrapper == null)
             {
                 throw new SmartSqlException("no more result!");
             }
@@ -50,46 +50,47 @@ namespace SmartSql
         public IEnumerable<T> Read<T>()
         {
             CheckDbReader();
-            var result = _dataReaderDeserializer.ToEnumerable<T>(_context, _dataReader, false).ToList();
+            var result = _dataReaderDeserializer.ToEnumerable<T>(_context, _dataReaderWrapper, false).ToList();
             NextResult();
             return result;
         }
 
         private void NextResult()
         {
-            if (!_dataReader.NextResult())
+            if (!_dataReaderWrapper.NextResult())
             {
                 Dispose();
             }
         }
         private async Task NextResultAsync()
         {
-            var dataReaderAsync = _dataReader as DbDataReader;
-            if (!await dataReaderAsync.NextResultAsync())
+            if (!await _dataReaderWrapper.NextResultAsync())
             {
                 Dispose();
             }
         }
         public void Dispose()
         {
-            if (_dataReader != null)
+            if (_dataReaderWrapper != null)
             {
-                _dataReader.Dispose();
-                _dataReader = null;
+                _dataReaderWrapper.Dispose();
+                _dataReaderWrapper = null;
             }
             _sessionStore.Dispose();
         }
 
         public async Task<T> ReadSingleAsync<T>()
         {
-            var result = await _dataReaderDeserializer.ToSingleAsync<T>(_context, _dataReader, false);
+            CheckDbReader();
+            var result = await _dataReaderDeserializer.ToSingleAsync<T>(_context, _dataReaderWrapper, false);
             await NextResultAsync();
             return result;
         }
 
         public async Task<IEnumerable<T>> ReadAsync<T>()
         {
-            var result = await _dataReaderDeserializer.ToEnumerableAsync<T>(_context, _dataReader, false);
+            CheckDbReader();
+            var result = await _dataReaderDeserializer.ToEnumerableAsync<T>(_context, _dataReaderWrapper, false);
             await NextResultAsync();
             return result;
         }

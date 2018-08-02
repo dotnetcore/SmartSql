@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartSql.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -70,6 +71,33 @@ namespace SmartSql.Utils
                 DataColumn column = new DataColumn(colName, colType);
                 dataTable.Columns.Add(column);
             }
+        }
+
+        public static T ToNested<T>(RequestContext context, IDataReader dataReader)
+        {
+            //var targetType = typeof(T);
+            //var _enumerableType = typeof(IEnumerable);
+            //dataReader = CommandExecuter.ExecuteReader(dbSession, context);
+            //var dataReaderWrapper = new DataReaderWrapper(dataReader);
+            //var results = context.Statement.MultipleResultMap.Results;
+            //foreach (var result in results)
+            //{
+            //    var property = targetType.GetProperty(result.Property);
+            //    var propertyType = property.PropertyType;
+            //    bool isEnum = _enumerableType.IsAssignableFrom(propertyType);
+            //    var desType = isEnum ? propertyType.GenericTypeArguments[0] : propertyType;
+            //    if (isEnum)
+            //    {
+            //        var val = _dataReaderDeserializer.ToEnumerable<desType>(context, dataReaderWrapper, false);
+            //        //set proVal
+            //    }
+            //    else
+            //    {
+            //        var val = _dataReaderDeserializer.ToSingle<desType>(context, dataReaderWrapper, false);
+            //        //set proVal
+            //    }
+            //}
+            throw new NotImplementedException();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace SmartSql.DataReaderDeserializer
         {
             _dataRowParserFactory = new DataRowParserFactory();
         }
-        public IEnumerable<T> ToEnumerable<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
+        public IEnumerable<T> ToEnumerable<T>(RequestContext context, IDataReaderWrapper dataReader, bool isDispose = true)
         {
             try
             {
@@ -46,22 +46,21 @@ namespace SmartSql.DataReaderDeserializer
             }
         }
 
-        public async Task<IEnumerable<T>> ToEnumerableAsync<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
+        public async Task<IEnumerable<T>> ToEnumerableAsync<T>(RequestContext context, IDataReaderWrapper dataReader, bool isDispose = true)
         {
-            var dataReaderAsync = dataReader as DbDataReader;
             try
             {
                 IList<T> list = new List<T>();
                 Type targetType = typeof(T);
 
-                if (await dataReaderAsync.ReadAsync())
+                if (await dataReader.ReadAsync())
                 {
                     var deser = _dataRowParserFactory.GetParser(dataReader, context, targetType);
                     do
                     {
                         T target = (T)deser(dataReader, context);
                         list.Add(target);
-                    } while (await dataReaderAsync.ReadAsync());
+                    } while (await dataReader.ReadAsync());
                 }
                 return list;
             }
@@ -71,7 +70,7 @@ namespace SmartSql.DataReaderDeserializer
             }
         }
 
-        public T ToSingle<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
+        public T ToSingle<T>(RequestContext context, IDataReaderWrapper dataReader, bool isDispose = true)
         {
             try
             {
@@ -90,14 +89,13 @@ namespace SmartSql.DataReaderDeserializer
             }
         }
 
-        public async Task<T> ToSingleAsync<T>(RequestContext context, IDataReader dataReader, bool isDispose = true)
+        public async Task<T> ToSingleAsync<T>(RequestContext context, IDataReaderWrapper dataReader, bool isDispose = true)
         {
-            var dataReaderAsync = dataReader as DbDataReader;
             try
             {
 
                 Type targetType = typeof(T);
-                if (await dataReaderAsync.ReadAsync())
+                if (await dataReader.ReadAsync())
                 {
                     var deser = _dataRowParserFactory.GetParser(dataReader, context, targetType);
                     object target = deser(dataReader, context);

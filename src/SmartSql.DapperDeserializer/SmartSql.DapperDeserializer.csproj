@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
     <Authors>Ahoo Wang</Authors>
     <Company>Ahoo Wang</Company>
-    <Version>3.0.8</Version>
+    <Version>3.1.0</Version>
     <Copyright>Ahoo Wang</Copyright>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
@@ -12,7 +12,7 @@
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>
     <PackageReleaseNotes>
-      1. adapt SmartSql MultipleResult
+      1. adapt SmartSql MultipleResultMap
     </PackageReleaseNotes>
   </PropertyGroup>
 

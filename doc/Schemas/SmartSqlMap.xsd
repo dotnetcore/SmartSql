@@ -110,7 +110,6 @@
       <xs:attribute name="TypeHandler" type="xs:string" />
     </xs:complexType>
   </xs:element>
-
   <xs:element name="ResultMaps">
     <xs:complexType>
       <xs:sequence>
@@ -147,7 +146,26 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-
+  <xs:element name="MultipleResultMaps">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="MultipleResultMap">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="Result">
+                <xs:complexType>
+                  <xs:attribute name="Index" type="xs:unsignedByte" use="optional" />
+                  <xs:attribute name="Property" type="xs:string" use="optional" />
+                  <xs:attribute name="MapId" type="xs:string" use="optional" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Id" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="Include">
     <xs:complexType mixed="true">
       <xs:attribute name="RefId" type="xs:string" use="required" />
@@ -762,6 +780,7 @@
       <xs:attribute name="Id" type="xs:string" use="required" />
       <xs:attribute name="Cache" type="xs:string" use="optional" />
       <xs:attribute name="ResultMap" type="xs:string" use="optional" />
+      <xs:attribute name="MultipleResultMap" type="xs:string" use="optional" />
       <xs:attribute name="ParameterMap" type="xs:string" use="optional" />
       <xs:attribute name="CommandType" type="CommandType" use="optional"/>
       <xs:attribute name="SourceChoice" type="DataSourceChoice" use="optional"/>
@@ -778,9 +797,10 @@
   <xs:element name="SmartSqlMap">
     <xs:complexType mixed="true">
       <xs:all>
-        <xs:element ref="ResultMaps" minOccurs="0"  maxOccurs="1"/>
-        <xs:element ref="ParameterMaps" minOccurs="0"  maxOccurs="1"/>
         <xs:element ref="Caches" minOccurs="0"  maxOccurs="1"/>
+        <xs:element ref="ResultMaps" minOccurs="0"  maxOccurs="1"/>
+        <xs:element ref="MultipleResultMaps" minOccurs="0"  maxOccurs="1"/>
+        <xs:element ref="ParameterMaps" minOccurs="0"  maxOccurs="1"/>
         <xs:element ref="Statements"  minOccurs="0"  maxOccurs="1"/>
       </xs:all>
       <xs:attribute name="Scope" type="xs:string" use="required" />

@@ -12,14 +12,12 @@
       <Parameter Key="Size" Value="100"/>
     </Cache>
   </Caches>
-
   <ResultMaps>
     <ResultMap Id="ResultMap_CustomerConstructor">
       <Constructor>
         <Arg Column="FLong" Type="Int64" />
         <Arg Column="FDecimal" Type="Decimal" />
       </Constructor>
-      
     </ResultMap>
   </ResultMaps>
   <ParameterMaps>
@@ -27,10 +25,14 @@
       <Parameter Property="" TypeHandler="Json" />
     </ParameterMap>
   </ParameterMaps>
-
-
+  <MultipleResultMaps>
+    <MultipleResultMap Id="QueryByPageMReuslt">
+      <Result Property="Total" Index="0"/>
+      <Result Property="List" Index="1"/>
+    </MultipleResultMap>
+  </MultipleResultMaps>
   <Statements>
-    <Statement Id="SP_QueryByPage">
+    <Statement Id="SP_QueryByPage" CommandType="StoredProcedure">
       SP_QueryByPage
     </Statement>
     <Statement Id="InsertBatch">
@@ -203,7 +205,6 @@
     <Statement Id="MultiQuery">
       Select Top 6 T.* From T_Entity T With(NoLock);
       Select Top 8 T.* From T_Entity T With(NoLock);
-
     </Statement>
   </Statements>
 </SmartSqlMap>

@@ -47,8 +47,9 @@ namespace SmartSql.UTests.DataReaderDeserializer
             _sqlBuilder.BuildSql(context);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteReader(dbSession, context);
+            var wrapper = new DataReaderWrapper(result);
             var deser = _deserializerFactory.Create();
-            var users = deser.ToEnumerable<T_Entity>(context, result);
+            var users = deser.ToEnumerable<T_Entity>(context, wrapper);
             var list = users.ToList();
             result.Close();
             result.Dispose();

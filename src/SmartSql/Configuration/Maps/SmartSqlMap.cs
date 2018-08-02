@@ -18,11 +18,13 @@ namespace SmartSql.Configuration.Maps
         [XmlIgnore]
         public IList<Cache> Caches { get; set; }
         [XmlArray]
-        public List<Statement> Statements { get; set; }
+        public IList<Statement> Statements { get; set; }
         [XmlIgnore]
         public IList<ResultMap> ResultMaps { get; set; }
         [XmlIgnore]
         public IList<ParameterMap> ParameterMaps { get; set; }
+        [XmlIgnore]
+        public IList<MultipleResultMap>  MultipleResultMaps { get; set; }
     }
 
 

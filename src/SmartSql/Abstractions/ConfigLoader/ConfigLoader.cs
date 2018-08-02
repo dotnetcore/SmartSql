@@ -51,6 +51,7 @@ namespace SmartSql.Abstractions.Config
                     Statements = new List<Statement> { },
                     Caches = new List<Configuration.Cache> { },
                     ResultMaps = new List<ResultMap> { },
+                    MultipleResultMaps = new List<MultipleResultMap> { },
                     ParameterMaps = new List<ParameterMap> { }
                 };
                 XmlDocument xmlDoc = new XmlDocument();
@@ -75,6 +76,14 @@ namespace SmartSql.Abstractions.Config
                 {
                     var resultMap = MapFactory.LoadResultMap(xmlNode, SqlMapConfig, xmlNsM);
                     sqlMap.ResultMaps.Add(resultMap);
+                }
+                #endregion
+                #region Init MultipleResultMaps
+                var multipleResultMapsNode = xmlDoc.SelectNodes("//ns:MultipleResultMap", xmlNsM);
+                foreach (XmlElement xmlNode in multipleResultMapsNode)
+                {
+                    var multipleResultMap = MapFactory.LoadMultipleResultMap(xmlNode, sqlMap.ResultMaps);
+                    sqlMap.MultipleResultMaps.Add(multipleResultMap);
                 }
                 #endregion
                 #region Init ParameterMaps

@@ -25,6 +25,8 @@ namespace SmartSql.Configuration.Statements
         public Cache Cache { get; set; }
         public ResultMap ResultMap { get; set; }
         public ParameterMap ParameterMap { get; set; }
+        public MultipleResultMap  MultipleResultMap { get; set; }
+        
 
         public void BuildSql(RequestContext context)
         {

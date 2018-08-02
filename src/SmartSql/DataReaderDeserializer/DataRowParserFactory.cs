@@ -25,7 +25,7 @@ namespace SmartSql.DataReaderDeserializer
                             .Select(i => $"({i}:{dataReader.GetName(i)}:{dataReader.GetFieldType(i).Name})");
             return String.Join("&", columns);
         }
-        public Func<IDataReader, RequestContext, object> GetParser(IDataReader dataReader, RequestContext requestContext, Type targetType)
+        public Func<IDataReader, RequestContext, object> GetParser(IDataReaderWrapper dataReader, RequestContext requestContext, Type targetType)
         {
             string key = $"{requestContext.StatementKey}_{GetColumnKey(dataReader)}_{targetType.FullName}";
             if (!_cachedDeserializer.ContainsKey(key))
@@ -137,9 +137,12 @@ namespace SmartSql.DataReaderDeserializer
             };
         }
 
-        private Func<IDataReader, RequestContext, object> CreateParserImpl(IDataReader dataReader, RequestContext context, Type targetType)
+        private Func<IDataReader, RequestContext, object> CreateParserImpl(IDataReaderWrapper dataReader, RequestContext context, Type targetType)
         {
-            var resultMap = context.Statement?.ResultMap;
+            var statement = context.Statement;
+            var resultMap = statement?.ResultMap;
+            resultMap = statement?.MultipleResultMap?.Results.FirstOrDefault(m => m.Index == dataReader.ResultIndex)?.Map ?? resultMap;
+
             var constructorMap = resultMap?.Constructor;
 
             var columns = Enumerable.Range(0, dataReader.FieldCount)
@@ -174,8 +177,8 @@ namespace SmartSql.DataReaderDeserializer
             {
                 var colName = col.Key;
                 var colIndex = col.Value.Index;
-                var result = resultMap?.Results?.FirstOrDefault(r => r.Column == colName);
-                string propertyName = result != null ? result.Property : colName;
+                var result = resultMap?.Properties?.FirstOrDefault(r => r.Column == colName);
+                string propertyName = result != null ? result.Name : colName;
                 var property = targetType.GetProperty(propertyName);
                 if (property == null) { continue; }
                 if (!property.CanWrite) { continue; }

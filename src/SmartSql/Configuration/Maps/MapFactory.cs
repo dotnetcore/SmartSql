@@ -9,15 +9,16 @@ namespace SmartSql.Configuration.Maps
 {
     public class MapFactory
     {
+        #region ResultMap
         public static ResultMap LoadResultMap(XmlElement xmlNode, SmartSqlMapConfig sqlMapConfig, XmlNamespaceManager xmlNsM)
         {
             ResultMap resultMap = new ResultMap
             {
                 Id = xmlNode.Attributes["Id"].Value,
-                Results = new List<Result> { }
+                Properties = new List<Property> { }
             };
             LoadCtor(xmlNode, sqlMapConfig, xmlNsM, resultMap);
-            LoadResult(xmlNode, sqlMapConfig, xmlNsM, resultMap);
+            LoadProperty(xmlNode, sqlMapConfig, xmlNsM, resultMap);
             return resultMap;
         }
 
@@ -78,26 +79,27 @@ namespace SmartSql.Configuration.Maps
             }
         }
 
-        private static void LoadResult(XmlElement xmlNode, SmartSqlMapConfig sqlMapConfig, XmlNamespaceManager xmlNsM, ResultMap resultMap)
+        private static void LoadProperty(XmlElement xmlNode, SmartSqlMapConfig sqlMapConfig, XmlNamespaceManager xmlNsM, ResultMap resultMap)
         {
             var resultNodes = xmlNode.SelectNodes("//ns:Result", xmlNsM);
             foreach (XmlNode resultNode in resultNodes)
             {
-                var result = new Result
+                var property = new Property
                 {
-                    Property = resultNode.Attributes["Property"].Value,
+                    Name = resultNode.Attributes["Property"].Value,
                     Column = (resultNode.Attributes["Column"] ?? resultNode.Attributes["Property"]).Value,
                     TypeHandler = resultNode.Attributes["TypeHandler"]?.Value
                 };
-                if (!String.IsNullOrEmpty(result.TypeHandler))
+                if (!String.IsNullOrEmpty(property.TypeHandler))
                 {
-                    TypeHandler typeHandler = TypeHanderNotNull(sqlMapConfig, result.TypeHandler);
-                    result.Handler = typeHandler.Handler;
+                    TypeHandler typeHandler = TypeHanderNotNull(sqlMapConfig, property.TypeHandler);
+                    property.Handler = typeHandler.Handler;
                 }
-                resultMap.Results.Add(result);
+                resultMap.Properties.Add(property);
             }
         }
-
+        #endregion
+        #region ParameterMap
         public static ParameterMap LoadParameterMap(XmlElement xmlNode, SmartSqlMapConfig sqlMapConfig)
         {
             ParameterMap parameterMap = new ParameterMap
@@ -135,5 +137,40 @@ namespace SmartSql.Configuration.Maps
             }
             return typeHandler;
         }
+        #endregion
+
+        #region MultipleResultMap
+        public static MultipleResultMap LoadMultipleResultMap(XmlElement xmlNode, IList<ResultMap> resultMaps)
+        {
+            MultipleResultMap multipleResultMap = new MultipleResultMap
+            {
+                Id = xmlNode.Attributes["Id"].Value,
+                Results = new List<Result> { }
+            };
+            int resultIndex = 0;
+            foreach (XmlNode childNode in xmlNode.ChildNodes)
+            {
+                var result = new Result
+                {
+                    Index = resultIndex,
+                    Property = childNode.Attributes["Property"]?.Value,
+                    MapId = childNode.Attributes["MapId"]?.Value,
+                };
+                var indexStr = childNode.Attributes["Index"]?.Value;
+                if (int.TryParse(indexStr, out int index))
+                {
+                    result.Index = index;
+                }
+                if (!String.IsNullOrEmpty(result.MapId))
+                {
+                    var resultMap = resultMaps.FirstOrDefault(m => m.Id == result.MapId);
+                    result.Map = resultMap ?? throw new SmartSqlException($"Can not find ResultMap.Id:{result.MapId}");
+                }
+                multipleResultMap.Results.Add(result);
+                resultIndex++;
+            }
+            return multipleResultMap;
+        }
+        #endregion
     }
 }
