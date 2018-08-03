@@ -102,7 +102,7 @@ namespace SmartSql.Configuration
                         {
                             bodyText += " ";
                         }
-                        bodyText += innerText.Trim().Replace("\r\n", " ");
+                        bodyText += innerText.Trim().Replace("\r", " ").Replace("\n", " ");
                         if (innerText.EndsWith(" "))
                         {
                             bodyText += " ";
