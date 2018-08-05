@@ -52,5 +52,7 @@ namespace SmartSql.UTests.DyRepository
         QueryByPageResponse MQueryByPage();
         [Statement(Id = "MQueryByPage")]
         Task<QueryByPageResponse> MQueryByPageAsync();
+
+        T MQueryByPage<T>();
     }
 }

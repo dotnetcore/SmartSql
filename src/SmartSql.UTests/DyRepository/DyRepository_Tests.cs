@@ -126,6 +126,11 @@ namespace SmartSql.UTests.DyRepository
             var result = _repository.MQueryByPage();
         }
         [Fact]
+        public void MQueryByPageG()
+        {
+            var result = _repository.MQueryByPage<QueryByPageResponse>();
+        }
+        [Fact]
         public async Task MQueryByPageAsync()
         {
             var result = await _repository.MQueryByPageAsync();
