@@ -20,6 +20,7 @@ namespace SmartSql.UTests
         public void Dispose()
         {
             _sqlMapper.Dispose();
+
         }
         [Fact]
         public void BeginSession()
@@ -51,6 +52,16 @@ namespace SmartSql.UTests
                 throw ex;
             }
         }
+        [Fact]
+        public void GetNested()
+        {
+            var result = _sqlMapper.GetNested<QueryByPageResponse>(new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "MQueryByPage"
+            });
+        }
+
         [Fact]
         public void Insert()
         {
@@ -246,7 +257,7 @@ namespace SmartSql.UTests
         }
 
         [Fact]
-        public void QueryMultiple()
+        public void FillMultiple()
         {
             RequestContext context = new RequestContext
             {
@@ -257,17 +268,12 @@ namespace SmartSql.UTests
                     Taken = 10
                 }
             };
-            IMultipleResult multipleResult = _sqlMapper.QueryMultiple(context);
-            try
-            {
-                var val1 = multipleResult.Read<T_Entity>();
-                var val2 = multipleResult.Read<T_Entity>();
-                var vals = ValueTuple.Create(val1, val2);
-            }
-            finally
-            {
-                multipleResult.Dispose();
-            }
+            MultipleResult multipleResult = new MultipleResult();
+            multipleResult.AddTypeMap<T_Entity>();
+            multipleResult.AddTypeMap<T_Entity>();
+            _sqlMapper.FillMultiple(context, multipleResult);
+            var val1 = multipleResult.Get<T_Entity>(0);
+            var val2 = multipleResult.Get<T_Entity>(1);
         }
 
         [Fact]
@@ -315,14 +321,16 @@ namespace SmartSql.UTests
             int exeNum = await _sqlMapper.ExecuteAsync(context);
         }
         [Fact]
-        public async Task ExecuteScalarAsync()
+        public long ExecuteScalarAsync()
         {
             RequestContext context = new RequestContext
             {
                 Scope = Scope,
                 SqlId = "GetRecord"
             };
-            var total = await _sqlMapper.ExecuteScalarAsync<long>(context);
+
+            var total = _sqlMapper.ExecuteScalarAsync<long>(context).GetAwaiter().GetResult();
+            return total;
         }
         [Fact]
         public async Task QueryAsync()
@@ -360,11 +368,12 @@ namespace SmartSql.UTests
                     Taken = 10
                 }
             };
-            using (var mult = await _sqlMapper.QueryMultipleAsync(context))
-            {
-                var list1 = await mult.ReadAsync<T_Entity>();
-                var list2 = await mult.ReadAsync<T_Entity>();
-            }
+            MultipleResult multipleResult = new MultipleResult();
+            multipleResult.AddTypeMap<T_Entity>();
+            multipleResult.AddTypeMap<T_Entity>();
+            await _sqlMapper.FillMultipleAsync(context, multipleResult);
+            var val1 = multipleResult.Get<T_Entity>(0);
+            var val2 = multipleResult.Get<T_Entity>(1);
         }
 
         [Fact]
@@ -393,7 +402,7 @@ namespace SmartSql.UTests
         public async Task TransactionAsync()
         {
             try
-            {               
+            {
                 _sqlMapper.BeginTransaction();
                 var entity = await _sqlMapper.QuerySingleAsync<T_Entity>(new RequestContext
                 {
@@ -435,5 +444,13 @@ namespace SmartSql.UTests
             });
         }
         #endregion
+
+
+
+    }
+    public class QueryByPageResponse
+    {
+        public int Total { get; set; }
+        public IEnumerable<T_Entity> List { get; set; }
     }
 }

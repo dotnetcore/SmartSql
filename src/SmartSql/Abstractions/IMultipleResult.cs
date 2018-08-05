@@ -1,16 +1,21 @@
-﻿using System;
+﻿using SmartSql.Abstractions.DataReaderDeserializer;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SmartSql.Abstractions
 {
-    public interface IMultipleResult : IDisposable
+    public interface IMultipleResult
     {
-        T ReadSingle<T>();
-        IEnumerable<T> Read<T>();
+        IMultipleResult AddTypeMap<TResult>();
+        IMultipleResult AddSingleTypeMap<TResult>();
 
-        Task<T> ReadSingleAsync<T>();
-        Task<IEnumerable<T>> ReadAsync<T>();
+        IMultipleResult InitData(RequestContext requestContext, IDataReaderWrapper dataReaderWrapper, IDataReaderDeserializer dataReaderDeserializer);
+        Task<IMultipleResult> InitDataAsync(RequestContext requestContext, IDataReaderWrapper dataReaderWrapper, IDataReaderDeserializer dataReaderDeserializer);
+
+
+        IEnumerable<TResult> Get<TResult>(int resultIndex);
+        TResult GetSingle<TResult>(int resultIndex);
     }
 }

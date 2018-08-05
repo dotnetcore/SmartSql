@@ -23,7 +23,7 @@ namespace SmartSql.Abstractions.Command
     {
         event OnExecutedHandler OnExecuted;
         int ExecuteNonQuery(IDbConnectionSession dbSession, RequestContext context);
-        IDataReader ExecuteReader(IDbConnectionSession dbSession, RequestContext context);
+        IDataReaderWrapper ExecuteReader(IDbConnectionSession dbSession, RequestContext context);
         object ExecuteScalar(IDbConnectionSession dbSession, RequestContext context);
     }
 
@@ -31,8 +31,8 @@ namespace SmartSql.Abstractions.Command
     {
         Task<int> ExecuteNonQueryAsync(IDbConnectionSession dbSession, RequestContext context);
         Task<int> ExecuteNonQueryAsync(IDbConnectionSession dbSession, RequestContext context, CancellationToken cancellationToken);
-        Task<DbDataReader> ExecuteReaderAsync(IDbConnectionSession dbSession, RequestContext context);
-        Task<DbDataReader> ExecuteReaderAsync(IDbConnectionSession dbSession, RequestContext context, CancellationToken cancellationToken);
+        Task<IDataReaderWrapper> ExecuteReaderAsync(IDbConnectionSession dbSession, RequestContext context);
+        Task<IDataReaderWrapper> ExecuteReaderAsync(IDbConnectionSession dbSession, RequestContext context, CancellationToken cancellationToken);
         Task<object> ExecuteScalarAsync(IDbConnectionSession dbSession, RequestContext context);
         Task<object> ExecuteScalarAsync(IDbConnectionSession dbSession, RequestContext context, CancellationToken cancellationToken);
     }

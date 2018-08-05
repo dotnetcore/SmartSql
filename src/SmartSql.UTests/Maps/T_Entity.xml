@@ -27,11 +27,16 @@
   </ParameterMaps>
   <MultipleResultMaps>
     <MultipleResultMap Id="QueryByPageMReuslt">
-      <Result Property="Total" Index="0"/>
-      <Result Property="List" Index="1"/>
+      <Result Property="Total"/>
+      <Result Property="List"/>
     </MultipleResultMap>
   </MultipleResultMaps>
   <Statements>
+    <Statement Id="MQueryByPage" MultipleResultMap="QueryByPageMReuslt">
+      Select Count(1) From T_Entity;
+      Select Top 10 T.* From T_Entity T
+    </Statement>
+    
     <Statement Id="SP_QueryByPage" CommandType="StoredProcedure">
       SP_QueryByPage
     </Statement>

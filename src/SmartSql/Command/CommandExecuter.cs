@@ -35,11 +35,12 @@ namespace SmartSql.Command
             }, dbSession, context);
         }
 
-        public IDataReader ExecuteReader(IDbConnectionSession dbSession, RequestContext context)
+        public IDataReaderWrapper ExecuteReader(IDbConnectionSession dbSession, RequestContext context)
         {
             return ExecuteWarp((dbCommand) =>
             {
-                return dbCommand.ExecuteReader();
+                var dataReader = dbCommand.ExecuteReader();
+                return new DataReaderWrapper(dataReader);
             }, dbSession, context);
         }
 
@@ -95,20 +96,23 @@ namespace SmartSql.Command
                 return dbCommand.ExecuteScalarAsync(cancellationToken);
             }, dbSession, context);
         }
-        public Task<DbDataReader> ExecuteReaderAsync(IDbConnectionSession dbSession, RequestContext context)
+        public Task<IDataReaderWrapper> ExecuteReaderAsync(IDbConnectionSession dbSession, RequestContext context)
         {
-            return ExecuteWarpAsync((dbCommand) =>
+            return ExecuteWarpAsync<IDataReaderWrapper>(async (dbCommand) =>
             {
-                return dbCommand.ExecuteReaderAsync();
+                var dataReader = await dbCommand.ExecuteReaderAsync();
+                return new DataReaderWrapper(dataReader);
             }, dbSession, context);
         }
 
-        public Task<DbDataReader> ExecuteReaderAsync(IDbConnectionSession dbSession, RequestContext context, CancellationToken cancellationToken)
+        public Task<IDataReaderWrapper> ExecuteReaderAsync(IDbConnectionSession dbSession, RequestContext context, CancellationToken cancellationToken)
         {
-            return ExecuteWarpAsync((dbCommand) =>
+            return ExecuteWarpAsync<IDataReaderWrapper>(async (dbCommand) =>
             {
-                return dbCommand.ExecuteReaderAsync(cancellationToken);
-            }, dbSession, context);
+                var dataReader = await dbCommand.ExecuteReaderAsync(cancellationToken);
+                return new DataReaderWrapper(dataReader);
+            }
+            , dbSession, context);
         }
 
         private async Task<T> ExecuteWarpAsync<T>(Func<DbCommand, Task<T>> excute, IDbConnectionSession dbSession, RequestContext context)

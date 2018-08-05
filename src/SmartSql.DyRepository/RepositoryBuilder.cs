@@ -158,10 +158,11 @@ namespace SmartSql.DyRepository
             var ilGenerator = implMehtod.GetILGenerator();
             ilGenerator.DeclareLocal(_reqContextType);
             ilGenerator.DeclareLocal(_dbParametersType);
-            if (IsValueTuple(returnType))
+            if (statementAttr.Execute == ExecuteBehavior.FillMultiple)
             {
                 ilGenerator.DeclareLocal(_multipleResultType);
-                ilGenerator.DeclareLocal(returnType);
+                ilGenerator.Emit(OpCodes.Newobj, _multipleResultImplCtor);
+                ilGenerator.Emit(OpCodes.Stloc_2);
             }
             if (paramTypes.Length == 1 && paramTypes.First() == _reqContextType)
             {
@@ -224,14 +225,29 @@ namespace SmartSql.DyRepository
             ilGenerator.Emit(OpCodes.Ldarg_0);// [this]
             ilGenerator.Emit(OpCodes.Ldfld, sqlMapperField);//[this][sqlMapper]
             ilGenerator.Emit(OpCodes.Ldloc_0);//[sqlMapper][requestContext]
+            if (statementAttr.Execute == ExecuteBehavior.FillMultiple)
+            {
+                var returnGenericTypeArguments = returnType.GenericTypeArguments;
+                foreach (var typeArg in returnGenericTypeArguments)
+                {
+                    bool isEnum = _enumerableType.IsAssignableFrom(typeArg);
+                    var addTypeMapMethod = isEnum ? _multipleResult_AddTypeMap : _multipleResult_AddSingleTypeMap;
+                    var realRetType = isEnum ? typeArg.GenericTypeArguments[0] : typeArg;
+                    addTypeMapMethod = addTypeMapMethod.MakeGenericMethod(realRetType);
+                    ilGenerator.Emit(OpCodes.Ldloc_2);
+                    ilGenerator.Emit(OpCodes.Call, addTypeMapMethod);
+                    ilGenerator.Emit(OpCodes.Pop);
+                }
+                ilGenerator.Emit(OpCodes.Ldloc_2);
+            }
             ilGenerator.Emit(OpCodes.Call, executeMethod);
             if (returnType == _voidType)
             {
                 ilGenerator.Emit(OpCodes.Pop);
             }
-            if (IsValueTuple(returnType))
+            if (statementAttr.Execute == ExecuteBehavior.FillMultiple)
             {
-                ilGenerator.Emit(OpCodes.Stloc_2);
+                ilGenerator.Emit(OpCodes.Pop);
                 QueryMultipleToValueTuple(methodInfo, returnType, ilGenerator);
             }
             ilGenerator.Emit(OpCodes.Ret);
@@ -241,12 +257,16 @@ namespace SmartSql.DyRepository
                 _logger.LogDebug($"RepositoryBuilder.BuildMethod:{methodInfo.Name}->Statement:[Scope:{statementAttr.Scope},Id:{statementAttr.Id},Execute:{statementAttr.Execute},Sql:{statementAttr.Sql},IsAsync:{isTaskReturnType}]");
             }
         }
-        private readonly static Type _disposableType = typeof(IDisposable);
+
         private readonly static Type _multipleResultType = typeof(IMultipleResult);
+        private readonly static Type _multipleResultImplType = typeof(MultipleResult);
+        private readonly static ConstructorInfo _multipleResultImplCtor = _multipleResultImplType.GetConstructor(Type.EmptyTypes);
+        private readonly static MethodInfo _multipleResult_AddTypeMap = _multipleResultType.GetMethod("AddTypeMap");
+        private readonly static MethodInfo _multipleResult_AddSingleTypeMap = _multipleResultType.GetMethod("AddSingleTypeMap");
         private readonly static Type _valueTupleType = typeof(ValueTuple);
-        private readonly static MethodInfo _multipleResult_Read = _multipleResultType.GetMethod("Read");
-        private readonly static MethodInfo _multipleResult_ReadSingle = _multipleResultType.GetMethod("ReadSingle");
-        private readonly static MethodInfo _dispose_Method = _disposableType.GetMethod("Dispose");
+        private readonly static MethodInfo _multipleResult_Get = _multipleResultType.GetMethod("Get");
+        private readonly static MethodInfo _multipleResult_GetSingle = _multipleResultType.GetMethod("GetSingle");
+
         private static void QueryMultipleToValueTuple(MethodInfo methodInfo, Type returnType, ILGenerator ilGenerator)
         {
             var returnGenericTypeArguments = returnType.GenericTypeArguments;
@@ -255,25 +275,23 @@ namespace SmartSql.DyRepository
                 if (m.Name != "Create") { return false; }
                 return m.GetParameters().Length == returnGenericTypeArguments.Length;
             }).MakeGenericMethod(returnGenericTypeArguments);
-
-            ilGenerator.BeginExceptionBlock();
+            if (returnGenericTypeArguments.Length > 8)
+            {
+                throw new SmartSqlException($"SmartSql.DyRepository method:{methodInfo.Name} return type ValueTuple More than 8!");
+            }
+            var resultIndex = 0;
             foreach (var typeArg in returnGenericTypeArguments)
             {
-                ilGenerator.Emit(OpCodes.Ldloc_2);
                 bool isEnum = _enumerableType.IsAssignableFrom(typeArg);
-                var readMethod = isEnum ? _multipleResult_Read : _multipleResult_ReadSingle;
+                var getMethod = isEnum ? _multipleResult_Get : _multipleResult_GetSingle;
                 var realRetType = isEnum ? typeArg.GenericTypeArguments[0] : typeArg;
-                readMethod = readMethod.MakeGenericMethod(new Type[] { realRetType });
-                ilGenerator.Emit(OpCodes.Call, readMethod);
+                getMethod = getMethod.MakeGenericMethod(realRetType);
+                ilGenerator.Emit(OpCodes.Ldloc_2);
+                EmitUtils.LoadInt32(ilGenerator, resultIndex);
+                ilGenerator.Emit(OpCodes.Call, getMethod);
+                resultIndex++;
             }
             ilGenerator.Emit(OpCodes.Call, createVT);
-            ilGenerator.Emit(OpCodes.Stloc_3);
-            ilGenerator.BeginFinallyBlock();
-            ilGenerator.Emit(OpCodes.Ldloc_2);
-            ilGenerator.Emit(OpCodes.Call, _dispose_Method);
-            ilGenerator.Emit(OpCodes.Endfinally);
-            ilGenerator.EndExceptionBlock();
-            ilGenerator.Emit(OpCodes.Ldloc_3);
         }
 
         private static void SetCmdTypeAndSourceChoice(StatementAttribute statementAttr, ILGenerator ilGenerator)
@@ -340,6 +358,8 @@ namespace SmartSql.DyRepository
                     Id = methodName
                 };
             }
+
+
             if (returnType == typeof(DataTable))
             {
                 statementAttr.Execute = ExecuteBehavior.GetDataTable;
@@ -350,18 +370,23 @@ namespace SmartSql.DyRepository
                 statementAttr.Execute = ExecuteBehavior.GetDataSet;
                 return statementAttr;
             }
-            if (returnType == typeof(IMultipleResult))
-            {
-                statementAttr.Execute = ExecuteBehavior.QueryMultiple;
-                return statementAttr;
-            }
             if (IsValueTuple(returnType))
             {
-                statementAttr.Execute = ExecuteBehavior.QueryMultiple;
+                statementAttr.Execute = ExecuteBehavior.FillMultiple;
                 return statementAttr;
             }
+
             if (statementAttr.Execute == ExecuteBehavior.Auto)
             {
+                if (String.IsNullOrEmpty(statementAttr.Sql))
+                {
+                    var sqlStatement = smartSqlMapper.SmartSqlOptions.SmartSqlContext.GetStatement($"{statementAttr.Scope}.{statementAttr.Id}");
+                    if (sqlStatement.MultipleResultMap != null && !returnType.IsValueType)
+                    {
+                        statementAttr.Execute = ExecuteBehavior.GetNested;
+                        return statementAttr;
+                    }
+                }
                 SqlCommandType cmdType = AnalyseCmdType(smartSqlMapper, statementAttr);
                 if (returnType == typeof(int) || returnType == _voidType || returnType == null)
                 {
@@ -426,20 +451,20 @@ namespace SmartSql.DyRepository
                         {
                             var method = typeof(ISmartSqlMapperAsync).GetMethod("ExecuteScalarAsync", new Type[] { typeof(RequestContext) });
 
-                            executeMethod = method.MakeGenericMethod(new Type[] { realReturnType });
+                            executeMethod = method.MakeGenericMethod(realReturnType);
                             break;
                         }
                     case ExecuteBehavior.QuerySingle:
                         {
                             var method = typeof(ISmartSqlMapperAsync).GetMethod("QuerySingleAsync", new Type[] { typeof(RequestContext) });
-                            executeMethod = method.MakeGenericMethod(new Type[] { realReturnType });
+                            executeMethod = method.MakeGenericMethod(realReturnType);
                             break;
                         }
                     case ExecuteBehavior.Query:
                         {
                             var method = typeof(ISmartSqlMapperAsync).GetMethod("QueryAsync", new Type[] { typeof(RequestContext) });
                             var enumerableType = realReturnType.GenericTypeArguments[0];
-                            executeMethod = method.MakeGenericMethod(new Type[] { enumerableType });
+                            executeMethod = method.MakeGenericMethod(enumerableType);
                             break;
                         }
                     case ExecuteBehavior.GetDataTable:
@@ -452,9 +477,15 @@ namespace SmartSql.DyRepository
                             executeMethod = typeof(ISmartSqlMapperAsync).GetMethod("GetDataSetAsync", new Type[] { typeof(RequestContext) });
                             break;
                         }
-                    case ExecuteBehavior.QueryMultiple:
+                    case ExecuteBehavior.FillMultiple:
                         {
-                            executeMethod = typeof(ISmartSqlMapper).GetMethod("QueryMultipleAsync", new Type[] { typeof(RequestContext) });
+                            executeMethod = typeof(ISmartSqlMapperAsync).GetMethod("FillMultipleAsync", new Type[] { typeof(RequestContext), typeof(IMultipleResult) });
+                            break;
+                        }
+                    case ExecuteBehavior.GetNested:
+                        {
+                            var method = typeof(ISmartSqlMapperAsync).GetMethod("GetNestedAsync", new Type[] { typeof(RequestContext) });
+                            executeMethod = method.MakeGenericMethod(realReturnType);
                             break;
                         }
                     default: { throw new ArgumentException(); }
@@ -472,13 +503,13 @@ namespace SmartSql.DyRepository
                     case ExecuteBehavior.ExecuteScalar:
                         {
                             var method = typeof(ISmartSqlMapper).GetMethod("ExecuteScalar", new Type[] { typeof(RequestContext) });
-                            executeMethod = method.MakeGenericMethod(new Type[] { returnType });
+                            executeMethod = method.MakeGenericMethod(returnType);
                             break;
                         }
                     case ExecuteBehavior.QuerySingle:
                         {
                             var method = typeof(ISmartSqlMapper).GetMethod("QuerySingle", new Type[] { typeof(RequestContext) });
-                            executeMethod = method.MakeGenericMethod(new Type[] { returnType });
+                            executeMethod = method.MakeGenericMethod(returnType);
                             break;
                         }
                     case ExecuteBehavior.Query:
@@ -498,9 +529,15 @@ namespace SmartSql.DyRepository
                             executeMethod = typeof(ISmartSqlMapper).GetMethod("GetDataSet", new Type[] { typeof(RequestContext) });
                             break;
                         }
-                    case ExecuteBehavior.QueryMultiple:
+                    case ExecuteBehavior.FillMultiple:
                         {
-                            executeMethod = typeof(ISmartSqlMapper).GetMethod("QueryMultiple", new Type[] { typeof(RequestContext) });
+                            executeMethod = typeof(ISmartSqlMapper).GetMethod("FillMultiple", new Type[] { typeof(RequestContext), typeof(IMultipleResult) });
+                            break;
+                        }
+                    case ExecuteBehavior.GetNested:
+                        {
+                            var method = typeof(ISmartSqlMapper).GetMethod("GetNested", new Type[] { typeof(RequestContext) });
+                            executeMethod = method.MakeGenericMethod(returnType);
                             break;
                         }
                     default: { throw new ArgumentException(); }

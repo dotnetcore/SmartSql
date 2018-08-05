@@ -1,4 +1,6 @@
 ﻿using SmartSql.Abstractions;
+using SmartSql.Abstractions.DataReaderDeserializer;
+using SmartSql.Configuration.Maps;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -25,7 +27,7 @@ namespace SmartSql.Utils
             }
             return dataTable;
         }
-        public static async Task<DataTable> ToDataTableAsync(DbDataReader dataReader)
+        public static async Task<DataTable> ToDataTableAsync(IDataReaderWrapper dataReader)
         {
             DataTable dataTable = new DataTable();
             InitDataTableColumns(dataReader, dataTable);
@@ -51,7 +53,7 @@ namespace SmartSql.Utils
             while (dataReader.NextResult());
             return dataSet;
         }
-        public static async Task<DataSet> ToDataSetAsync(DbDataReader dataReader)
+        public static async Task<DataSet> ToDataSetAsync(IDataReaderWrapper dataReader)
         {
             DataSet dataSet = new DataSet();
             do
@@ -71,33 +73,6 @@ namespace SmartSql.Utils
                 DataColumn column = new DataColumn(colName, colType);
                 dataTable.Columns.Add(column);
             }
-        }
-
-        public static T ToNested<T>(RequestContext context, IDataReader dataReader)
-        {
-            //var targetType = typeof(T);
-            //var _enumerableType = typeof(IEnumerable);
-            //dataReader = CommandExecuter.ExecuteReader(dbSession, context);
-            //var dataReaderWrapper = new DataReaderWrapper(dataReader);
-            //var results = context.Statement.MultipleResultMap.Results;
-            //foreach (var result in results)
-            //{
-            //    var property = targetType.GetProperty(result.Property);
-            //    var propertyType = property.PropertyType;
-            //    bool isEnum = _enumerableType.IsAssignableFrom(propertyType);
-            //    var desType = isEnum ? propertyType.GenericTypeArguments[0] : propertyType;
-            //    if (isEnum)
-            //    {
-            //        var val = _dataReaderDeserializer.ToEnumerable<desType>(context, dataReaderWrapper, false);
-            //        //set proVal
-            //    }
-            //    else
-            //    {
-            //        var val = _dataReaderDeserializer.ToSingle<desType>(context, dataReaderWrapper, false);
-            //        //set proVal
-            //    }
-            //}
-            throw new NotImplementedException();
         }
     }
 }

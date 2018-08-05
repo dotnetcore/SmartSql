@@ -6,11 +6,12 @@
     <Company>Ahoo Wang</Company>
     <Title>SmartSql.DyRepository</Title>
     <Description>SmartSql 动态代理仓储</Description>
-    <Version>3.5.9</Version>
+    <Version>3.6.0-pre8</Version>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageReleaseNotes>
-      1. optimized repository interface function parameters are directly converted to DbParameterCollection
+      1. optimized ValueTuple result type
+      2. add support Nested result type
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <Copyright>Ahoo Wang</Copyright>

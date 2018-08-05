@@ -17,16 +17,18 @@ namespace SmartSql.DapperDeserializer
         {
             try
             {
+                IList<T> list = new List<T>();
                 if (dataReader.Read())
                 {
-                    
-                    var rowParser = dataReader.GetRowParser(typeof(T));
+                    var targetType = typeof(T);
+                    var rowParser = dataReader.GetRowParser(targetType);
                     do
                     {
                         var target = (T)rowParser(dataReader);
-                        yield return target;
+                        list.Add(target);
                     } while (dataReader.Read());
                 }
+                return list;
             }
             finally
             {
@@ -39,9 +41,13 @@ namespace SmartSql.DapperDeserializer
         {
             try
             {
-                dataReader.Read();
-                var rowParser = Dapper.SqlMapper.GetRowParser(dataReader, typeof(T));
-                return (T)rowParser(dataReader);
+                if (dataReader.Read())
+                {
+                    var targetType = typeof(T);
+                    var rowParser = dataReader.GetRowParser(targetType);
+                    return (T)rowParser(dataReader);
+                }
+                return default(T);
             }
             finally
             {
@@ -56,7 +62,8 @@ namespace SmartSql.DapperDeserializer
                 IList<T> list = new List<T>();
                 if (await dataReader.ReadAsync())
                 {
-                    var rowParser = SqlMapper.GetRowParser(dataReader, typeof(T));
+                    var targetType = typeof(T);
+                    var rowParser = dataReader.GetRowParser(targetType);
                     do
                     {
                         var item = (T)rowParser(dataReader);
@@ -75,9 +82,13 @@ namespace SmartSql.DapperDeserializer
         {
             try
             {
-                await dataReader.ReadAsync();
-                var rowParser = SqlMapper.GetRowParser(dataReader, typeof(T));
-                return (T)rowParser(dataReader);
+                if (await dataReader.ReadAsync())
+                {
+                    var targetType = typeof(T);
+                    var rowParser = dataReader.GetRowParser(targetType);
+                    return (T)rowParser(dataReader);
+                }
+                return default(T);
             }
             finally
             {
@@ -92,6 +103,78 @@ namespace SmartSql.DapperDeserializer
             {
                 dataReader.Dispose();
                 dataReader = null;
+            }
+        }
+
+        public object ToSingle(RequestContext context, IDataReaderWrapper dataReader, Type targetType, bool isDispose = true)
+        {
+            try
+            {
+                dataReader.Read();
+                var rowParser = dataReader.GetRowParser(targetType);
+                return rowParser(dataReader);
+            }
+            finally
+            {
+                Dispose(dataReader, isDispose);
+            }
+        }
+
+        public IEnumerable<object> ToEnumerable(RequestContext context, IDataReaderWrapper dataReader, Type targetType, bool isDispose = true)
+        {
+            try
+            {
+                IList<object> list = new List<object>();
+                if (dataReader.Read())
+                {
+                    var rowParser = dataReader.GetRowParser(targetType);
+                    do
+                    {
+                        var target = rowParser(dataReader);
+                        list.Add(target);
+                    } while (dataReader.Read());
+                }
+                return list;
+            }
+            finally
+            {
+                Dispose(dataReader, isDispose);
+            }
+        }
+
+        public async Task<object> ToSingleAsync(RequestContext context, IDataReaderWrapper dataReader, Type targetType, bool isDispose = true)
+        {
+            try
+            {
+                await dataReader.ReadAsync();
+                var rowParser = dataReader.GetRowParser(targetType);
+                return rowParser(dataReader);
+            }
+            finally
+            {
+                Dispose(dataReader, isDispose);
+            }
+        }
+
+        public async Task<IEnumerable<object>> ToEnumerableAsync(RequestContext context, IDataReaderWrapper dataReader, Type targetType, bool isDispose = true)
+        {
+            try
+            {
+                IList<object> list = new List<object>();
+                if (await dataReader.ReadAsync())
+                {
+                    var rowParser = dataReader.GetRowParser(targetType);
+                    do
+                    {
+                        var item = rowParser(dataReader);
+                        list.Add(item);
+                    } while (await dataReader.ReadAsync());
+                }
+                return list;
+            }
+            finally
+            {
+                Dispose(dataReader, isDispose);
             }
         }
     }

@@ -13,7 +13,7 @@ namespace SmartSql.Abstractions
         Task<T> ExecuteScalarAsync<T>(RequestContext context);
         Task<IEnumerable<T>> QueryAsync<T>(RequestContext context);
         Task<T> QuerySingleAsync<T>(RequestContext context);
-        Task<IMultipleResult> QueryMultipleAsync(RequestContext context);
+        Task<IMultipleResult> FillMultipleAsync(RequestContext context, IMultipleResult multipleResult);
         Task<DataTable> GetDataTableAsync(RequestContext context);
         Task<DataSet> GetDataSetAsync(RequestContext context);
         Task<T> GetNestedAsync<T>(RequestContext context);

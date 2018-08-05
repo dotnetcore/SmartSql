@@ -3,6 +3,7 @@ using SmartSql.Abstractions.DataReaderDeserializer;
 using SmartSql.Abstractions.DbSession;
 using SmartSql.Exceptions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -14,85 +15,119 @@ namespace SmartSql
 {
     public class MultipleResult : IMultipleResult
     {
-        private readonly RequestContext _context;
-        private IDataReaderWrapper _dataReaderWrapper;
-        private readonly IDataReaderDeserializer _dataReaderDeserializer;
-        private readonly IDbConnectionSessionStore _sessionStore;
-
-        public MultipleResult(
-            RequestContext context
-            , IDataReaderWrapper dataReaderWrapper
-            , IDataReaderDeserializer dataReaderDeserializer
-            , IDbConnectionSessionStore sessionStore
-            )
+        private IDictionary<int, ResultMap> _resultDataMap = new Dictionary<int, ResultMap>();
+        private int _resultIndex = 0;
+        public MultipleResult() { }
+        public MultipleResult(params Type[] resultTypes)
         {
-            _context = context;
-            _dataReaderWrapper = dataReaderWrapper;
-            _dataReaderDeserializer = dataReaderDeserializer;
-            _sessionStore = sessionStore;
-        }
-        public T ReadSingle<T>()
-        {
-            CheckDbReader();
-            var result = _dataReaderDeserializer.ToSingle<T>(_context, _dataReaderWrapper, false);
-            NextResult();
-            return result;
-        }
-
-        private void CheckDbReader()
-        {
-            if (_dataReaderWrapper == null)
+            foreach (var type in resultTypes)
             {
-                throw new SmartSqlException("no more result!");
+                bool isEnum = typeof(IEnumerable).IsAssignableFrom(type);
+                var resultType = isEnum ? type.GenericTypeArguments[0] : type;
+                _resultDataMap.Add(_resultIndex, new ResultMap
+                {
+                    Index = _resultIndex,
+                    Type = isEnum ? ResultMap.ResultTypeType.Enumerable : ResultMap.ResultTypeType.Single,
+                    ResultType = resultType
+                });
+                _resultIndex++;
             }
         }
-
-        public IEnumerable<T> Read<T>()
+        public IMultipleResult InitData(RequestContext requestContext, IDataReaderWrapper dataReaderWrapper, IDataReaderDeserializer dataReaderDeserializer)
         {
-            CheckDbReader();
-            var result = _dataReaderDeserializer.ToEnumerable<T>(_context, _dataReaderWrapper, false).ToList();
-            NextResult();
-            return result;
-        }
-
-        private void NextResult()
-        {
-            if (!_dataReaderWrapper.NextResult())
+            foreach (var resultMapKV in _resultDataMap)
             {
-                Dispose();
+                var resultMap = resultMapKV.Value;
+
+                switch (resultMap.Type)
+                {
+                    case ResultMap.ResultTypeType.Single:
+                        {
+                            resultMap.Result = dataReaderDeserializer.ToSingle(requestContext, dataReaderWrapper, resultMap.ResultType, false);
+                            break;
+                        }
+                    case ResultMap.ResultTypeType.Enumerable:
+                        {
+                            resultMap.Result = dataReaderDeserializer.ToEnumerable(requestContext, dataReaderWrapper, resultMap.ResultType, false);
+                            break;
+                        }
+                }
+                dataReaderWrapper.NextResult();
             }
+            return this;
         }
-        private async Task NextResultAsync()
+        public async Task<IMultipleResult> InitDataAsync(RequestContext requestContext, IDataReaderWrapper dataReaderWrapper, IDataReaderDeserializer dataReaderDeserializer)
         {
-            if (!await _dataReaderWrapper.NextResultAsync())
+            foreach (var resultMapKV in _resultDataMap)
             {
-                Dispose();
+                var resultMap = resultMapKV.Value;
+
+                switch (resultMap.Type)
+                {
+                    case ResultMap.ResultTypeType.Single:
+                        {
+                            resultMap.Result = await dataReaderDeserializer.ToSingleAsync(requestContext, dataReaderWrapper, resultMap.ResultType, false);
+                            break;
+                        }
+                    case ResultMap.ResultTypeType.Enumerable:
+                        {
+                            resultMap.Result = await dataReaderDeserializer.ToEnumerableAsync(requestContext, dataReaderWrapper, resultMap.ResultType, false);
+                            break;
+                        }
+                }
+                await dataReaderWrapper.NextResultAsync();
             }
-        }
-        public void Dispose()
-        {
-            if (_dataReaderWrapper != null)
-            {
-                _dataReaderWrapper.Dispose();
-                _dataReaderWrapper = null;
-            }
-            _sessionStore.Dispose();
+            return this;
         }
 
-        public async Task<T> ReadSingleAsync<T>()
+        public IMultipleResult AddSingleTypeMap<TResult>()
         {
-            CheckDbReader();
-            var result = await _dataReaderDeserializer.ToSingleAsync<T>(_context, _dataReaderWrapper, false);
-            await NextResultAsync();
-            return result;
+            _resultDataMap.Add(_resultIndex, new ResultMap
+            {
+                Index = _resultIndex,
+                Type = ResultMap.ResultTypeType.Single,
+                ResultType = typeof(TResult)
+            });
+            _resultIndex++;
+            return this;
         }
 
-        public async Task<IEnumerable<T>> ReadAsync<T>()
+        public IMultipleResult AddTypeMap<TResult>()
         {
-            CheckDbReader();
-            var result = await _dataReaderDeserializer.ToEnumerableAsync<T>(_context, _dataReaderWrapper, false);
-            await NextResultAsync();
-            return result;
+            _resultDataMap.Add(_resultIndex, new ResultMap
+            {
+                Index = _resultIndex,
+                Type = ResultMap.ResultTypeType.Enumerable,
+                ResultType = typeof(TResult)
+            });
+            _resultIndex++;
+            return this;
+        }
+
+        public IEnumerable<TResult> Get<TResult>(int resultIndex)
+        {
+            var result = (IEnumerable<object>)_resultDataMap[resultIndex].Result;
+            return result.Select(m => (TResult)m);
+        }
+
+        public TResult GetSingle<TResult>(int resultIndex)
+        {
+            return (TResult)_resultDataMap[resultIndex].Result;
+        }
+
+        public class ResultMap
+        {
+            public int Index { get; set; }
+            public ResultTypeType Type { get; set; }
+            public Type ResultType { get; set; }
+            public object Result { get; set; }
+
+            public enum ResultTypeType
+            {
+                Single = 1,
+                Enumerable = 2
+            }
         }
     }
+
 }

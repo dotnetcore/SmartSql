@@ -67,16 +67,6 @@ namespace SmartSql.UTests.DyRepository
         }
 
         [Fact]
-        public void QueryMultiple()
-        {
-            var multipleResult = _repository.QueryMultiple();
-            using (multipleResult)
-            {
-                var list1 = multipleResult.Read<T_Entity>();
-                var list2 = multipleResult.Read<T_Entity>();
-            }
-        }
-        [Fact]
         public void QueryMultiple_VT()
         {
             var vals = _repository.QueryMultiple_VT();
@@ -129,6 +119,16 @@ namespace SmartSql.UTests.DyRepository
             var reqParams = new QueryByPageRequest { };
             var record = _repository.GetRecord(reqParams);
             var list = _repository.QueryByPage(reqParams);
+        }
+        [Fact]
+        public void MQueryByPage()
+        {
+            var result = _repository.MQueryByPage();
+        }
+        [Fact]
+        public async Task MQueryByPageAsync()
+        {
+            var result = await _repository.MQueryByPageAsync();
         }
         [Fact]
         public void QueryId()

@@ -23,10 +23,10 @@ namespace SmartSql.Abstractions
         T ExecuteScalar<T>(RequestContext context);
         IEnumerable<T> Query<T>(RequestContext context);
         T QuerySingle<T>(RequestContext context);
-        IMultipleResult QueryMultiple(RequestContext context);
+        IMultipleResult FillMultiple(RequestContext context, IMultipleResult multipleResult);
         DataTable GetDataTable(RequestContext context);
         DataSet GetDataSet(RequestContext context);
-        
+
         T GetNested<T>(RequestContext context);
     }
 

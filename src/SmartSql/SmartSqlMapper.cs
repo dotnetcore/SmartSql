@@ -16,6 +16,7 @@ using SmartSql.Abstractions.Cache;
 using System.Data.Common;
 using SmartSql.Utils;
 using System.Collections;
+using SmartSql.DataReaderDeserializer;
 
 namespace SmartSql
 {
@@ -48,12 +49,15 @@ namespace SmartSql
         }
 
         private readonly IDataReaderDeserializer _dataReaderDeserializer;
+        private readonly NestedObjectConverter _nestedObjectConverter;
         public SmartSqlMapper(SmartSqlOptions options)
         {
             SmartSqlOptions = options;
             SmartSqlOptions.Setup();
             _logger = LoggerFactory.CreateLogger<SmartSqlMapper>();
             _dataReaderDeserializer = DeserializerFactory.Create();
+            NestedObjectConvertFactory convertFactory = new NestedObjectConvertFactory();
+            _nestedObjectConverter = new NestedObjectConverter(convertFactory);
         }
         private void SetupRequestContext(RequestContext context, DataSourceChoice sourceChoice)
         {
@@ -121,8 +125,7 @@ namespace SmartSql
             return ExecuteWrap((dbSession) =>
             {
                 var dataReader = CommandExecuter.ExecuteReader(dbSession, context);
-                var dataReaderWrapper = new DataReaderWrapper(dataReader);
-                return _dataReaderDeserializer.ToEnumerable<T>(context, dataReaderWrapper).ToList();
+                return _dataReaderDeserializer.ToEnumerable<T>(context, dataReader);
             }, context, DataSourceChoice.Read);
         }
         public T QuerySingle<T>(RequestContext context)
@@ -130,26 +133,24 @@ namespace SmartSql
             return ExecuteWrap((dbSession) =>
             {
                 var dataReader = CommandExecuter.ExecuteReader(dbSession, context);
-                var dataReaderWrapper = new DataReaderWrapper(dataReader);
-                return _dataReaderDeserializer.ToSingle<T>(context, dataReaderWrapper);
+                return _dataReaderDeserializer.ToSingle<T>(context, dataReader);
             }, context, DataSourceChoice.Read);
         }
-        public IMultipleResult QueryMultiple(RequestContext context)
+        public IMultipleResult FillMultiple(RequestContext context, IMultipleResult multipleResult)
         {
-            SetupRequestContext(context, DataSourceChoice.Read);
-            var dataSource = DataSourceFilter.Elect(context);
-            var dbSession = SessionStore.GetOrAddDbSession(dataSource);
-            try
+            return ExecuteWrap((dbSession) =>
             {
-                var dataReader = CommandExecuter.ExecuteReader(dbSession, context);
-                var dataReaderWrapper = new DataReaderWrapper(dataReader);
-                return new MultipleResult(context, dataReaderWrapper, _dataReaderDeserializer, SessionStore);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.HelpLink, ex, ex.Message);
-                throw ex;
-            }
+                IDataReaderWrapper dataReader = null;
+                try
+                {
+                    dataReader = CommandExecuter.ExecuteReader(dbSession, context);
+                    return multipleResult.InitData(context, dataReader, _dataReaderDeserializer);
+                }
+                finally
+                {
+                    DisposeReader(dataReader);
+                }
+            }, context, DataSourceChoice.Read);
         }
         public DataTable GetDataTable(RequestContext context)
         {
@@ -189,10 +190,11 @@ namespace SmartSql
         {
             return ExecuteWrap<T>((dbSession) =>
             {
-                IDataReader dataReader = null;
+                IDataReaderWrapper dataReader = null;
                 try
                 {
-                    throw new SmartSqlException();
+                    dataReader = CommandExecuter.ExecuteReader(dbSession, context);
+                    return _nestedObjectConverter.ToNested<T>(context, dataReader, _dataReaderDeserializer);
                 }
                 finally
                 {
@@ -251,8 +253,7 @@ namespace SmartSql
             return await ExecuteWrapAsync(async (dbSession) =>
             {
                 var dataReader = await CommandExecuter.ExecuteReaderAsync(dbSession, context);
-                var dataReaderWrapper = new DataReaderWrapper(dataReader);
-                return await _dataReaderDeserializer.ToEnumerableAsync<T>(context, dataReaderWrapper);
+                return await _dataReaderDeserializer.ToEnumerableAsync<T>(context, dataReader);
             }, context, DataSourceChoice.Read);
         }
         public async Task<T> QuerySingleAsync<T>(RequestContext context)
@@ -260,34 +261,32 @@ namespace SmartSql
             return await ExecuteWrapAsync(async (dbSession) =>
             {
                 var dataReader = await CommandExecuter.ExecuteReaderAsync(dbSession, context);
-                var dataReaderWrapper = new DataReaderWrapper(dataReader);
-                return await _dataReaderDeserializer.ToSingleAsync<T>(context, dataReaderWrapper);
+                return await _dataReaderDeserializer.ToSingleAsync<T>(context, dataReader);
             }, context, DataSourceChoice.Read);
         }
 
-        public async Task<IMultipleResult> QueryMultipleAsync(RequestContext context)
+        public async Task<IMultipleResult> FillMultipleAsync(RequestContext context, IMultipleResult multipleResult)
         {
-            SetupRequestContext(context, DataSourceChoice.Read);
-            var dataSource = DataSourceFilter.Elect(context);
-            var dbSession = SessionStore.GetOrAddDbSession(dataSource);
-            try
+            return await ExecuteWrapAsync(async (dbSession) =>
             {
-                var dataReader = await CommandExecuter.ExecuteReaderAsync(dbSession, context);
-                var dataReaderWrapper = new DataReaderWrapper(dataReader);
-                return new MultipleResult(context, dataReaderWrapper, _dataReaderDeserializer, SessionStore);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.HelpLink, ex, ex.Message);
-                throw ex;
-            }
+                IDataReaderWrapper dataReader = null;
+                try
+                {
+                    dataReader = CommandExecuter.ExecuteReader(dbSession, context);
+                    return await multipleResult.InitDataAsync(context, dataReader, _dataReaderDeserializer);
+                }
+                finally
+                {
+                    DisposeReader(dataReader);
+                }
+            }, context, DataSourceChoice.Read);
         }
 
         public async Task<DataTable> GetDataTableAsync(RequestContext context)
         {
             return await ExecuteWrapAsync(async (dbSession) =>
             {
-                DbDataReader dataReader = null;
+                IDataReaderWrapper dataReader = null;
                 try
                 {
                     dataReader = await CommandExecuter.ExecuteReaderAsync(dbSession, context);
@@ -304,7 +303,7 @@ namespace SmartSql
         {
             return await ExecuteWrapAsync(async (dbSession) =>
             {
-                DbDataReader dataReader = null;
+                IDataReaderWrapper dataReader = null;
                 try
                 {
                     dataReader = await CommandExecuter.ExecuteReaderAsync(dbSession, context);
@@ -316,7 +315,22 @@ namespace SmartSql
                 }
             }, context, DataSourceChoice.Read);
         }
-
+        public Task<T> GetNestedAsync<T>(RequestContext context)
+        {
+            return ExecuteWrapAsync<T>(async (dbSession) =>
+            {
+                IDataReaderWrapper dataReader = null;
+                try
+                {
+                    dataReader = await CommandExecuter.ExecuteReaderAsync(dbSession, context);
+                    return _nestedObjectConverter.ToNested<T>(context, dataReader, _dataReaderDeserializer);
+                }
+                finally
+                {
+                    DisposeReader(dataReader);
+                }
+            }, context, DataSourceChoice.Read);
+        }
         private void DisposeReader(IDataReader dataReader)
         {
             if (dataReader != null)
@@ -325,10 +339,7 @@ namespace SmartSql
                 dataReader = null;
             }
         }
-        public Task<T> GetNestedAsync<T>(RequestContext context)
-        {
-            throw new NotImplementedException();
-        }
+
         #endregion
         #region Transaction
         public IDbConnectionSession BeginTransaction()

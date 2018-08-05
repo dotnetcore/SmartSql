@@ -68,6 +68,13 @@ namespace SmartSql.DyRepository
         /// 返回DataSet
         /// </summary>
         GetDataSet = 6,
-        QueryMultiple = 7
+        /// <summary>
+        /// 返回 ValueTuple
+        /// </summary>
+        FillMultiple = 7,
+        /// <summary>
+        /// 返回嵌套实体
+        /// </summary>
+        GetNested = 8
     }
 }

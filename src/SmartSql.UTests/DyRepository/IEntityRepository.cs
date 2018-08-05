@@ -20,8 +20,6 @@ namespace SmartSql.UTests.DyRepository
         IEnumerable<T_Entity> Query([Param("FString")]String fString);
 
         [Statement(Id = "MultiQuery")]
-        IMultipleResult QueryMultiple();
-        [Statement(Id = "MultiQuery")]
         (IEnumerable<T_Entity>, IEnumerable<T_Entity>) QueryMultiple_VT();
 
         [Statement(Id = "MultiQuery")]
@@ -50,5 +48,9 @@ namespace SmartSql.UTests.DyRepository
 
         [Statement(Sql = "SP_QueryByPage", CommandType = CommandType.StoredProcedure)]
         IEnumerable<T_Entity> SP_QueryByPage_From_RealSql(DbParameterCollection dbParameterCollection);
+
+        QueryByPageResponse MQueryByPage();
+        [Statement(Id = "MQueryByPage")]
+        Task<QueryByPageResponse> MQueryByPageAsync();
     }
 }

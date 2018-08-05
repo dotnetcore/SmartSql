@@ -31,7 +31,8 @@ namespace SmartSql.UTests
             };
             context.Setup(_smartSqlContext);
             _sqlBuilder.BuildSql(context);
-            string sql = "Select T.* From T_Entity T Order By Id Desc";
+            string sql = @"Select T.* From T_Entity T
+      Order By Id Desc";
              Assert.Equal<string>(context.RealSql, sql);
         }
 
@@ -49,7 +50,8 @@ namespace SmartSql.UTests
             };
             context.Setup(_smartSqlContext);
             _sqlBuilder.BuildSql(context);
-            string sql = "Select T.* From T_Entity T Order By Id Desc";
+            string sql = @"Select T.* From T_Entity T
+      Order By Id Desc";
             Assert.Equal<string>(context.RealSql, sql);
         }
 
@@ -68,7 +70,9 @@ namespace SmartSql.UTests
             };
             context.Setup(_smartSqlContext);
             _sqlBuilder.BuildSql(context);
-            string sql = "Select T.* From T_Entity_2018 T  Where   T.FString=@FString";
+            string sql = @"Select T.* From T_Entity_2018 T
+       Where   
+          T.FString=@FString";
             Assert.Equal<string>(context.RealSql, sql);
         }
         [Fact]

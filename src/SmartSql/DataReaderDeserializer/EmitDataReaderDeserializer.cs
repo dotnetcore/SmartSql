@@ -20,24 +20,47 @@ namespace SmartSql.DataReaderDeserializer
         {
             try
             {
-                Type targetType = typeof(T);
+                IList<T> list = new List<T>();
+                var targetType = typeof(T);
                 if (dataReader.Read())
                 {
                     var deser = _dataRowParserFactory.GetParser(dataReader, context, targetType);
                     do
                     {
-                        object target = deser(dataReader, context);
-                        yield return (T)target;
+                        T target = (T)deser(dataReader, context);
+                        list.Add(target);
                     } while (dataReader.Read());
                 }
+                return list;
             }
             finally
             {
-               Dispose(dataReader, isDispose);
+                Dispose(dataReader, isDispose);
+            }
+        }
+        public IEnumerable<object> ToEnumerable(RequestContext context, IDataReaderWrapper dataReader, Type targetType, bool isDispose = true)
+        {
+            try
+            {
+                IList<object> list = new List<object>();
+                if (dataReader.Read())
+                {
+                    var deser = _dataRowParserFactory.GetParser(dataReader, context, targetType);
+                    do
+                    {
+                        var target = deser(dataReader, context);
+                        list.Add(target);
+                    } while (dataReader.Read());
+                }
+                return list;
+            }
+            finally
+            {
+                Dispose(dataReader, isDispose);
             }
         }
 
-        private  void Dispose(IDataReader dataReader, bool isDispose)
+        private void Dispose(IDataReader dataReader, bool isDispose)
         {
             if (isDispose)
             {
@@ -51,8 +74,7 @@ namespace SmartSql.DataReaderDeserializer
             try
             {
                 IList<T> list = new List<T>();
-                Type targetType = typeof(T);
-
+                var targetType = typeof(T);
                 if (await dataReader.ReadAsync())
                 {
                     var deser = _dataRowParserFactory.GetParser(dataReader, context, targetType);
@@ -69,12 +91,33 @@ namespace SmartSql.DataReaderDeserializer
                 Dispose(dataReader, isDispose);
             }
         }
+        public async Task<IEnumerable<object>> ToEnumerableAsync(RequestContext context, IDataReaderWrapper dataReader, Type targetType, bool isDispose = true)
+        {
+            try
+            {
+                IList<object> list = new List<object>();
+                if (await dataReader.ReadAsync())
+                {
+                    var deser = _dataRowParserFactory.GetParser(dataReader, context, targetType);
+                    do
+                    {
+                        var target = deser(dataReader, context);
+                        list.Add(target);
+                    } while (await dataReader.ReadAsync());
+                }
+                return list;
+            }
+            finally
+            {
+                Dispose(dataReader, isDispose);
+            }
+        }
 
         public T ToSingle<T>(RequestContext context, IDataReaderWrapper dataReader, bool isDispose = true)
         {
             try
             {
-                Type targetType = typeof(T);
+                var targetType = typeof(T);
                 if (dataReader.Read())
                 {
                     var deser = _dataRowParserFactory.GetParser(dataReader, context, targetType);
@@ -89,12 +132,25 @@ namespace SmartSql.DataReaderDeserializer
             }
         }
 
+        public object ToSingle(RequestContext context, IDataReaderWrapper dataReader, Type targetType, bool isDispose = true)
+        {
+            try
+            {
+                dataReader.Read();
+                var deser = _dataRowParserFactory.GetParser(dataReader, context, targetType);
+                return deser(dataReader, context);
+            }
+            finally
+            {
+                Dispose(dataReader, isDispose);
+            }
+        }
+
         public async Task<T> ToSingleAsync<T>(RequestContext context, IDataReaderWrapper dataReader, bool isDispose = true)
         {
             try
             {
-
-                Type targetType = typeof(T);
+                var targetType = typeof(T);
                 if (await dataReader.ReadAsync())
                 {
                     var deser = _dataRowParserFactory.GetParser(dataReader, context, targetType);
@@ -102,6 +158,19 @@ namespace SmartSql.DataReaderDeserializer
                     return (T)target;
                 }
                 return default(T);
+            }
+            finally
+            {
+                Dispose(dataReader, isDispose);
+            }
+        }
+        public async Task<object> ToSingleAsync(RequestContext context, IDataReaderWrapper dataReader, Type targetType = null, bool isDispose = true)
+        {
+            try
+            {
+                await dataReader.ReadAsync();
+                var deser = _dataRowParserFactory.GetParser(dataReader, context, targetType);
+                return deser(dataReader, context);
             }
             finally
             {
