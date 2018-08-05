@@ -24,10 +24,10 @@ namespace SmartSql.Configuration.Maps
 
         private static void LoadCtor(XmlElement xmlNode, SmartSqlMapConfig sqlMapConfig, XmlNamespaceManager xmlNsM, ResultMap resultMap)
         {
-            var ctorNode = xmlNode.SelectSingleNode("//ns:Constructor", xmlNsM);
+            var ctorNode = xmlNode.SelectSingleNode("./ns:Constructor", xmlNsM);
             if (ctorNode != null)
             {
-                var argNodes = ctorNode.SelectNodes("//ns:Arg", xmlNsM);
+                var argNodes = ctorNode.SelectNodes("./ns:Arg", xmlNsM);
                 if (argNodes.Count > 0)
                 {
                     var ctorMap = new Constructor
@@ -81,7 +81,7 @@ namespace SmartSql.Configuration.Maps
 
         private static void LoadProperty(XmlElement xmlNode, SmartSqlMapConfig sqlMapConfig, XmlNamespaceManager xmlNsM, ResultMap resultMap)
         {
-            var resultNodes = xmlNode.SelectNodes("//ns:Result", xmlNsM);
+            var resultNodes = xmlNode.SelectNodes("./ns:Result", xmlNsM);
             foreach (XmlNode resultNode in resultNodes)
             {
                 var property = new Property

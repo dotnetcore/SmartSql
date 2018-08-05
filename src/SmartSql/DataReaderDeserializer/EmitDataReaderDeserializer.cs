@@ -136,9 +136,13 @@ namespace SmartSql.DataReaderDeserializer
         {
             try
             {
-                dataReader.Read();
-                var deser = _dataRowParserFactory.GetParser(dataReader, context, targetType);
-                return deser(dataReader, context);
+                if (dataReader.Read())
+                {
+                    var deser = _dataRowParserFactory.GetParser(dataReader, context, targetType);
+                    return deser(dataReader, context);
+                }
+                return null;
+
             }
             finally
             {

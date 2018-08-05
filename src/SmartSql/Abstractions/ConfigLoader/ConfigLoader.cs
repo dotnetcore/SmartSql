@@ -62,7 +62,7 @@ namespace SmartSql.Abstractions.Config
                     .Attributes["Scope"].Value;
 
                 #region Init Caches
-                var cacheNodes = xmlDoc.SelectNodes("//ns:Cache", xmlNsM);
+                var cacheNodes = xmlDoc.SelectNodes("//ns:Caches/ns:Cache", xmlNsM);
                 foreach (XmlElement cacheNode in cacheNodes)
                 {
                     var cache = CacheFactory.Load(cacheNode);
@@ -71,7 +71,7 @@ namespace SmartSql.Abstractions.Config
                 #endregion
 
                 #region Init ResultMaps
-                var resultMapsNodes = xmlDoc.SelectNodes("//ns:ResultMap", xmlNsM);
+                var resultMapsNodes = xmlDoc.SelectNodes("//ns:ResultMaps/ns:ResultMap", xmlNsM);
                 foreach (XmlElement xmlNode in resultMapsNodes)
                 {
                     var resultMap = MapFactory.LoadResultMap(xmlNode, SqlMapConfig, xmlNsM);
@@ -79,7 +79,7 @@ namespace SmartSql.Abstractions.Config
                 }
                 #endregion
                 #region Init MultipleResultMaps
-                var multipleResultMapsNode = xmlDoc.SelectNodes("//ns:MultipleResultMap", xmlNsM);
+                var multipleResultMapsNode = xmlDoc.SelectNodes("//ns:MultipleResultMaps/ns:MultipleResultMap", xmlNsM);
                 foreach (XmlElement xmlNode in multipleResultMapsNode)
                 {
                     var multipleResultMap = MapFactory.LoadMultipleResultMap(xmlNode, sqlMap.ResultMaps);
@@ -87,7 +87,7 @@ namespace SmartSql.Abstractions.Config
                 }
                 #endregion
                 #region Init ParameterMaps
-                var parameterMaps = xmlDoc.SelectNodes("//ns:ParameterMap", xmlNsM);
+                var parameterMaps = xmlDoc.SelectNodes("//ns:ParameterMaps/ns:ParameterMap", xmlNsM);
                 foreach (XmlElement xmlNode in parameterMaps)
                 {
                     var parameterMap = MapFactory.LoadParameterMap(xmlNode, SqlMapConfig);
@@ -96,7 +96,7 @@ namespace SmartSql.Abstractions.Config
                 #endregion
 
                 #region Init Statement
-                var statementNodes = xmlDoc.SelectNodes("//ns:Statement", xmlNsM);
+                var statementNodes = xmlDoc.SelectNodes("//ns:Statements/ns:Statement", xmlNsM);
                 LoadStatementInSqlMap(sqlMap, statementNodes);
                 #endregion
 
