@@ -359,7 +359,6 @@ namespace SmartSql.DyRepository
                 };
             }
 
-
             if (returnType == typeof(DataTable))
             {
                 statementAttr.Execute = ExecuteBehavior.GetDataTable;
@@ -378,16 +377,22 @@ namespace SmartSql.DyRepository
 
             if (statementAttr.Execute == ExecuteBehavior.Auto)
             {
+                SqlCommandType cmdType = SqlCommandType.Unknown;
                 if (String.IsNullOrEmpty(statementAttr.Sql))
                 {
                     var sqlStatement = smartSqlMapper.SmartSqlOptions.SmartSqlContext.GetStatement($"{statementAttr.Scope}.{statementAttr.Id}");
+                    cmdType = sqlStatement.SqlCommandType;
                     if (sqlStatement.MultipleResultMap != null && !returnType.IsValueType)
                     {
                         statementAttr.Execute = ExecuteBehavior.GetNested;
                         return statementAttr;
                     }
                 }
-                SqlCommandType cmdType = AnalyseCmdType(smartSqlMapper, statementAttr);
+                else
+                {
+                    cmdType = _commandAnalyzer.Analyse(statementAttr.Sql);
+                }
+
                 if (returnType == typeof(int) || returnType == _voidType || returnType == null)
                 {
                     statementAttr.Execute = ExecuteBehavior.Execute;
@@ -421,17 +426,6 @@ namespace SmartSql.DyRepository
                 }
             }
             return statementAttr;
-        }
-
-        private SqlCommandType AnalyseCmdType(ISmartSqlMapper smartSqlMapper, StatementAttribute statementAttr)
-        {
-            var realSqlStr = statementAttr.Sql;
-            if (String.IsNullOrEmpty(statementAttr.Sql))
-            {
-                realSqlStr = _commandAnalyzer.BuildStatementFullSql(smartSqlMapper, statementAttr.Scope, statementAttr.Id);
-            }
-            var cmdType = _commandAnalyzer.Analyse(realSqlStr);
-            return cmdType;
         }
 
         private MethodInfo PreExecuteMethod(StatementAttribute statementAttr, Type returnType, bool isTaskReturnType)

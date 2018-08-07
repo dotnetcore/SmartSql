@@ -11,14 +11,11 @@
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>3.6.0-rc1</Version>
+    <Version>3.6.0-rc2</Version>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <PackageReleaseNotes>
-      1. add MultipleResultMap
-      2. add GetNested api
-      2. add GetNestedAsync api
-      3. add FillMultiple api
-      4. add FillMultipleAsync api
+      1. add SqlCommandAnalyzer
+      2. optimize DataSourceChoice selection
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>

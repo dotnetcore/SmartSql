@@ -10,11 +10,13 @@ using SmartSql.Configuration.Statements;
 using SmartSql.Configuration.Maps;
 using System.Data;
 using SmartSql.Abstractions;
+using SmartSql.Utils;
 
 namespace SmartSql.Configuration
 {
     public class StatementFactory
     {
+        private SqlCommandAnalyzer _sqlCommandAnalyzer = new SqlCommandAnalyzer();
         public Statement Load(XmlElement statementNode, SmartSqlMap smartSqlMap)
         {
             var statement = new Statement
@@ -62,11 +64,12 @@ namespace SmartSql.Configuration
                 statement.MultipleResultMap = multipleResultMap ?? throw new SmartSqlException($"Statement.Id:{statement.Id} can not find MultipleResultMap.Id:{multipleResultMapId}");
             }
             #endregion
+            StringBuilder fullSqlTextBuilder = new StringBuilder();
             var tagNodes = statementNode.ChildNodes;
             IList<Include> includes = new List<Include>();
             foreach (XmlNode tagNode in tagNodes)
             {
-                var tag = LoadTag(tagNode, includes);
+                var tag = LoadTag(tagNode, includes, fullSqlTextBuilder);
                 if (tag != null) { statement.SqlTags.Add(tag); }
             }
             #region Init Include
@@ -81,10 +84,12 @@ namespace SmartSql.Configuration
                 include.Ref = refStatement ?? throw new SmartSqlException($"Statement.Load can not find statement.id:{include.RefId}");
             }
             #endregion
+            var fullSqlText = fullSqlTextBuilder.ToString();
+            statement.SqlCommandType = _sqlCommandAnalyzer.Analyse(fullSqlText);
             return statement;
         }
 
-        private ITag LoadTag(XmlNode xmlNode, IList<Include> includes)
+        private ITag LoadTag(XmlNode xmlNode, IList<Include> includes, StringBuilder fullSqlTextBuilder)
         {
             ITag tag = null;
             var prepend = xmlNode.Attributes?["Prepend"]?.Value.Trim();
@@ -98,6 +103,7 @@ namespace SmartSql.Configuration
                     {
                         var innerText = xmlNode.InnerText;
                         var bodyText = innerText;
+                        fullSqlTextBuilder.Append(bodyText);
                         //bodyText += innerText.Trim().Replace("\r", " ").Replace("\n", " ");
                         //bodyText += " ";
                         return new SqlText
@@ -364,7 +370,7 @@ namespace SmartSql.Configuration
             #endregion
             foreach (XmlNode childNode in xmlNode)
             {
-                ITag childTag = LoadTag(childNode, includes);
+                ITag childTag = LoadTag(childNode, includes, fullSqlTextBuilder);
                 if (childTag != null && tag != null)
                 {
                     childTag.Parent = tag;
@@ -373,7 +379,6 @@ namespace SmartSql.Configuration
             }
             return tag;
         }
-
 
     }
 }

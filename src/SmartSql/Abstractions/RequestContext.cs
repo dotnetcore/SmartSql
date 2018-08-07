@@ -54,6 +54,16 @@ namespace SmartSql.Abstractions
                 {
                     DataSourceChoice = Statement.SourceChoice.Value;
                 }
+                else
+                {
+                    if (Statement.SqlCommandType.HasFlag(SqlCommandType.Insert)
+                        || Statement.SqlCommandType.HasFlag(SqlCommandType.Delete)
+                        || Statement.SqlCommandType.HasFlag(SqlCommandType.Update)
+                        )
+                    {
+                        DataSourceChoice = DataSourceChoice.Write;
+                    }
+                }
                 if (Statement.CommandType.HasValue)
                 {
                     CommandType = Statement.CommandType.Value;
