@@ -6,7 +6,7 @@
     <Company>Ahoo Wang</Company>
     <Title>SmartSql.DyRepository</Title>
     <Description>SmartSql 动态代理仓储</Description>
-    <Version>3.6.0-rc2</Version>
+    <Version>3.6.0</Version>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageReleaseNotes>
