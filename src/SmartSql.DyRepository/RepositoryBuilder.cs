@@ -22,12 +22,15 @@ namespace SmartSql.DyRepository
         private ScopeTemplateParser _templateParser;
         private AssemblyBuilder _assemblyBuilder;
         private ModuleBuilder _moduleBuilder;
+        private Func<Type, MethodInfo, String> _sqlIdNamingConvert;
         SqlCommandAnalyzer _commandAnalyzer;
         public RepositoryBuilder(
              string scope_template
+            , Func<Type, MethodInfo, String> sqlIdNamingConvert
             , ILogger<RepositoryBuilder> logger
             )
         {
+            _sqlIdNamingConvert = sqlIdNamingConvert;
             _templateParser = new ScopeTemplateParser(scope_template);
             _commandAnalyzer = new SqlCommandAnalyzer();
             InitAssembly();
@@ -70,7 +73,7 @@ namespace SmartSql.DyRepository
             }
             foreach (var methodInfo in interfaceMethods)
             {
-                BuildMethod(typeBuilder, methodInfo, sqlMapperField, smartSqlMapper, scope);
+                BuildMethod(interfaceType, typeBuilder, methodInfo, sqlMapperField, smartSqlMapper, scope);
             }
             return typeBuilder.CreateTypeInfo();
         }
@@ -124,7 +127,7 @@ namespace SmartSql.DyRepository
 
         private readonly ILogger<RepositoryBuilder> _logger;
 
-        private void BuildMethod(TypeBuilder typeBuilder, MethodInfo methodInfo, FieldBuilder sqlMapperField, ISmartSqlMapper smartSqlMapper, string scope)
+        private void BuildMethod(Type interfaceType, TypeBuilder typeBuilder, MethodInfo methodInfo, FieldBuilder sqlMapperField, ISmartSqlMapper smartSqlMapper, string scope)
         {
             var methodParams = methodInfo.GetParameters();
             var paramTypes = methodParams.Select(m => m.ParameterType).ToArray();
@@ -154,7 +157,7 @@ namespace SmartSql.DyRepository
                 }
             }
 
-            StatementAttribute statementAttr = PreStatement(scope, methodInfo, returnType, isTaskReturnType, smartSqlMapper);
+            StatementAttribute statementAttr = PreStatement(interfaceType, scope, methodInfo, returnType, isTaskReturnType, smartSqlMapper);
             var ilGenerator = implMehtod.GetILGenerator();
             ilGenerator.DeclareLocal(_reqContextType);
             ilGenerator.DeclareLocal(_dbParametersType);
@@ -336,12 +339,14 @@ namespace SmartSql.DyRepository
             ilGenerator.Emit(OpCodes.Call, _set_ScopeMethod);
         }
 
-        private StatementAttribute PreStatement(string scope, MethodInfo methodInfo, Type returnType, bool isTaskReturnType, ISmartSqlMapper smartSqlMapper)
+        private StatementAttribute PreStatement(Type interfaceType, string scope, MethodInfo methodInfo, Type returnType, bool isTaskReturnType, ISmartSqlMapper smartSqlMapper)
         {
             returnType = isTaskReturnType ? returnType.GetGenericArguments().FirstOrDefault() : returnType;
             var statementAttr = methodInfo.GetCustomAttribute<StatementAttribute>();
-            var methodName = methodInfo.Name;
-            if (isTaskReturnType && methodInfo.Name.EndsWith("Async"))
+
+            var methodName = _sqlIdNamingConvert == null ? methodInfo.Name : _sqlIdNamingConvert.Invoke(interfaceType, methodInfo);
+
+            if (isTaskReturnType && methodInfo.Name.EndsWith("Async") && _sqlIdNamingConvert == null)
             {
                 methodName = methodName.Substring(0, methodName.Length - 5);
             }

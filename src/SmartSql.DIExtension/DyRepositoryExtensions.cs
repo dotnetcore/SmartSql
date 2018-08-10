@@ -12,13 +12,13 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class DyRepositoryExtensions
     {
-        public static void AddRepositoryFactory(this IServiceCollection services, string scope_template = "")
+        public static void AddRepositoryFactory(this IServiceCollection services, string scope_template = "", Func<Type, MethodInfo, String> sqlIdNamingConvert = null)
         {
             services.AddSingleton<IRepositoryBuilder>((sp) =>
             {
                 var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
                 var logger = loggerFactory.CreateLogger<RepositoryBuilder>();
-                return new RepositoryBuilder(scope_template, logger);
+                return new RepositoryBuilder(scope_template, sqlIdNamingConvert, logger);
             });
             services.AddSingleton<IRepositoryFactory>((sp) =>
             {

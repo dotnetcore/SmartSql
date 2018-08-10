@@ -15,7 +15,7 @@ namespace SmartSql.UTests.DyRepository
         public DyRepository_Tests()
         {
             string scope_template = "I{Scope}Repository";
-            var builder = new RepositoryBuilder(scope_template, LoggerFactory.CreateLogger<RepositoryBuilder>());
+            var builder = new RepositoryBuilder(scope_template, null, LoggerFactory.CreateLogger<RepositoryBuilder>());
             var factory = new RepositoryFactory(builder, LoggerFactory.CreateLogger<RepositoryFactory>());
             var sqlMapper = MapperContainer.Instance.GetSqlMapper();
             _repository = factory.CreateInstance<IEntityRepository>(sqlMapper);
