@@ -139,6 +139,30 @@ namespace SmartSql.UTests
             };
             var total = _sqlMapper.ExecuteScalar<long>(context);
         }
+        [Fact]
+        public void ExecuteScalar_Bool_True()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "IsExist"
+            };
+            var isExist = _sqlMapper.ExecuteScalar<bool>(context);
+            Assert.True(isExist);
+        }
+
+        [Fact]
+        public void ExecuteScalar_Bool_False()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "IsExist",
+                Request = new { FString = Guid.NewGuid().ToString() }
+            };
+            var isExist = _sqlMapper.ExecuteScalar<bool>(context);
+            Assert.False(isExist);
+        }
 
         [Fact]
         public void QueryBySql()

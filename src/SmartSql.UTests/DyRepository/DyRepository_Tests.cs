@@ -21,8 +21,18 @@ namespace SmartSql.UTests.DyRepository
             _repository = factory.CreateInstance<IEntityRepository>(sqlMapper);
         }
 
-
-
+        [Fact]
+        public void IsExist()
+        {
+            var isExist = _repository.IsExist(null);
+            Assert.True(isExist);
+        }
+        [Fact]
+        public void IsExist_False()
+        {
+            var isExist = _repository.IsExist(new { FString = Guid.NewGuid().ToString() });
+            Assert.False(isExist);
+        }
         [Fact]
         public void SP_QueryByPage_From_XML()
         {

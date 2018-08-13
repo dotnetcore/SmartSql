@@ -10,7 +10,7 @@ namespace SmartSql.Utils
         public SqlCommandType Analyse(string realSql)
         {
             SqlCommandType commandType = SqlCommandType.Unknown;
-            var statements = realSql.Split(';');
+            var statements = realSql.Trim().Replace("\r\n", " ").Trim().Split(';');
             foreach (var statement in statements)
             {
                 var statementStr = statement.TrimStart(' ', '(');
