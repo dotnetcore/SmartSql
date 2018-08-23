@@ -3,6 +3,7 @@ using SmartSql.Abstractions.TypeHandler;
 using SmartSql.Configuration.Maps;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Xml.Serialization;
 
 namespace SmartSql.Configuration
@@ -78,6 +79,19 @@ namespace SmartSql.Configuration
         public String Type { get; set; }
         [XmlAttribute]
         public String ParameterPrefix { get; set; }
+        private DbProviderFactory _dbProviderFactory;
+        [XmlIgnore]
+        public DbProviderFactory Factory
+        {
+            get
+            {
+                if (_dbProviderFactory == null)
+                {
+                    _dbProviderFactory = DbProviderFactoryFactory.Create(Type);
+                }
+                return _dbProviderFactory;
+            }
+        }
     }
 
     public class SmartSqlMapSource

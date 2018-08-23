@@ -23,7 +23,6 @@ namespace SmartSql
         public ILoggerFactory LoggerFactory { get; set; }
         public IConfigLoader ConfigLoader { get; set; }
         public IDbConnectionSessionStore DbSessionStore { get; set; }
-        public IDbConnectionSession DbSession { get; set; }
         public IDataSourceFilter DataSourceFilter { get; set; }
         public ISqlBuilder SqlBuilder { get; set; }
         public IPreparedCommand PreparedCommand { get; set; }
@@ -51,8 +50,7 @@ namespace SmartSql
             SmartSqlContext = new SmartSqlContext(LoggerFactory.CreateLogger<SmartSqlContext>(), sqlMapConfig);
             if (DbSessionStore == null)
             {
-                var dbProviderFactory = DbProviderFactoryFactory.Create(SmartSqlContext.DbProvider.Type);
-                DbSessionStore = new DbConnectionSessionStore(LoggerFactory, dbProviderFactory);
+                DbSessionStore = new DbConnectionSessionStore(LoggerFactory, SmartSqlContext.DbProvider.Factory);
             }
             if (DataSourceFilter == null)
             {
@@ -87,7 +85,6 @@ namespace SmartSql
                 }
             }
             ConfigLoader.OnChanged += ConfigLoader_OnChanged;
-
         }
 
         private void ConfigLoader_OnChanged(object sender, OnChangedEventArgs eventArgs)

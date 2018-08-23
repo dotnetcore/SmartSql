@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Cache.Redis", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.ZooKeeperConfig", "src\SmartSql.ZooKeeperConfig\SmartSql.ZooKeeperConfig.csproj", "{E793B9C1-23DD-4D12-9257-48177ED2AF6F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "src\Tests", "{8EF12533-817B-464A-A5B3-FEAE6E7541B7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8EF12533-817B-464A-A5B3-FEAE6E7541B7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.ConsoleTests", "src\SmartSql.ConsoleTests\SmartSql.ConsoleTests.csproj", "{4FFABF3E-6443-4BFF-976D-1949197096AE}"
 EndProject
@@ -30,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DIExtension", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.TypeHandler", "src\SmartSql.TypeHandler\SmartSql.TypeHandler.csproj", "{9634AE6E-FCEF-4208-BE31-A7F3D5F86E0B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalORM", "src\ExternalORM", "{8EC342B0-BDF1-442A-AC3D-2244C8E1D26D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalORM", "ExternalORM", "{8EC342B0-BDF1-442A-AC3D-2244C8E1D26D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar", "src\ExternalORM\SqlSugar.csproj", "{7BA4008F-2454-4479-B425-56D117BF5AE8}"
 EndProject
