@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using SmartSql.Abstractions.Config;
 using SmartSql.Configuration;
 using SmartSql.Configuration.Maps;
@@ -31,6 +31,7 @@ namespace SmartSql.Options
         public override void Dispose()
         {
         }
+
         public void TriggerChanged(SmartSqlConfigOptions options)
         {
             _options = options;
@@ -41,6 +42,7 @@ namespace SmartSql.Options
                 SqlMapConfig = newConfig
             });
         }
+
         public override SmartSqlMapConfig Load()
         {
             SqlMapConfig = new SmartSqlMapConfig()
@@ -67,8 +69,15 @@ namespace SmartSql.Options
                             break;
                         }
                     case SmartSqlMapSource.ResourceType.Directory:
+                    case SmartSqlMapSource.ResourceType.DirectoryWithAllSub:
                         {
-                            var childSqlmapSources = Directory.EnumerateFiles(sqlMapSource.Path, "*.xml");
+                            SearchOption searchOption = SearchOption.TopDirectoryOnly;
+                            if (sqlMapSource.Type == SmartSqlMapSource.ResourceType.DirectoryWithAllSub)
+                            {
+                                searchOption = SearchOption.AllDirectories;
+                            }
+                            var dicPath = Path.Combine(AppContext.BaseDirectory, sqlMapSource.Path);
+                            var childSqlmapSources = Directory.EnumerateFiles(dicPath, "*.xml", searchOption);
                             foreach (var childSqlmapSource in childSqlmapSources)
                             {
                                 LoadSmartSqlMap(SqlMapConfig, childSqlmapSource);
