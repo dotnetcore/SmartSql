@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using SmartSql.Abstractions;
 using SmartSql.DIExtension;
 using SmartSql.DyRepository;
@@ -14,13 +15,14 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static void AddRepositoryFactory(this IServiceCollection services, string scope_template = "", Func<Type, MethodInfo, String> sqlIdNamingConvert = null)
         {
-            services.AddSingleton<IRepositoryBuilder>((sp) =>
+            services.AddSmartSql();
+            services.TryAddSingleton<IRepositoryBuilder>((sp) =>
             {
                 var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
                 var logger = loggerFactory.CreateLogger<RepositoryBuilder>();
                 return new RepositoryBuilder(scope_template, sqlIdNamingConvert, logger);
             });
-            services.AddSingleton<IRepositoryFactory>((sp) =>
+            services.TryAddSingleton<IRepositoryFactory>((sp) =>
             {
                 var repositoryBuilder = sp.GetRequiredService<IRepositoryBuilder>();
                 var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
@@ -28,10 +30,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 return new RepositoryFactory(repositoryBuilder, logger);
             });
         }
-
+        public static void AddSmartSqlRepositoryFactory(this IServiceCollection services, string scope_template = "", Func<Type, MethodInfo, String> sqlIdNamingConvert = null)
+        {
+            services.AddRepositoryFactory(scope_template, sqlIdNamingConvert);
+        }
         public static void AddRepository<T>(this IServiceCollection services, Func<IServiceProvider, ISmartSqlMapper> getSmartSql = null, string scope = "") where T : class
         {
-            services.AddSingleton<T>(sp =>
+            services.AddRepositoryFactory();
+            services.TryAddSingleton<T>(sp =>
             {
                 ISmartSqlMapper sqlMapper = null;
                 if (getSmartSql != null)
@@ -43,9 +49,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 return factory.CreateInstance<T>(sqlMapper, scope);
             });
         }
-
+        public static void AddSmartSqlRepository<T>(this IServiceCollection services, Func<IServiceProvider, ISmartSqlMapper> getSmartSql = null, string scope = "") where T : class
+        {
+            services.AddRepository<T>(getSmartSql, scope);
+        }
         public static void AddRepositoryFromAssembly(this IServiceCollection services, Action<AssemblyAutoRegisterOptions> setupOptions)
         {
+            services.AddRepositoryFactory();
             var options = new AssemblyAutoRegisterOptions
             {
                 Filter = (type) => { return type.IsInterface; }
@@ -57,7 +67,7 @@ namespace Microsoft.Extensions.DependencyInjection
             ISmartSqlMapper sqlMapper = null;
             foreach (var type in allTypes)
             {
-                services.AddSingleton(type, sp =>
+                services.TryAddSingleton(type, sp =>
                 {
                     if (sqlMapper == null && options.GetSmartSql != null)
                     {
@@ -75,6 +85,10 @@ namespace Microsoft.Extensions.DependencyInjection
             }
         }
 
+        public static void AddSmartSqlRepositoryFromAssembly(this IServiceCollection services, Action<AssemblyAutoRegisterOptions> setupOptions)
+        {
+            services.AddRepositoryFromAssembly(setupOptions);
+        }
 
     }
 

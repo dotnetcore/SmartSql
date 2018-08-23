@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using SmartSql;
 using SmartSql.Abstractions;
@@ -10,7 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static void AddSmartSql(this IServiceCollection services)
         {
-            services.AddSingleton<ISmartSqlMapper>(sp =>
+            services.TryAddSingleton(sp =>
             {
                 var options = new SmartSqlOptions();
                 InitOptions(sp, options);
@@ -21,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static void AddSmartSql(this IServiceCollection services, Func<IServiceProvider, SmartSqlOptions> setupOptions)
         {
-            services.AddSingleton((sp =>
+            services.TryAddSingleton((sp =>
             {
                 var options = setupOptions(sp);
                 InitOptions(sp, options);
@@ -49,15 +50,15 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static void AddOthers(IServiceCollection services)
         {
-            services.AddSingleton<ISmartSqlMapperAsync>(sp =>
+            services.TryAddSingleton<ISmartSqlMapperAsync>(sp =>
             {
                 return sp.GetRequiredService<ISmartSqlMapper>();
             });
-            services.AddSingleton<ITransaction>(sp =>
+            services.TryAddSingleton<ITransaction>(sp =>
             {
                 return sp.GetRequiredService<ISmartSqlMapper>();
             });
-            services.AddSingleton<ISession>(sp =>
+            services.TryAddSingleton<ISession>(sp =>
             {
                 return sp.GetRequiredService<ISmartSqlMapper>();
             });
