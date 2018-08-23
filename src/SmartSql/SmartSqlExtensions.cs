@@ -9,62 +9,62 @@ namespace SmartSql
 {
     public static class SmartSqlExtensions
     {
-        public static void TransactionWrap(this ISmartSqlMapper sqlMapper, Action handler)
+        public static void TransactionWrap(this ITransaction transaction, Action handler)
         {
             try
             {
-                sqlMapper.BeginTransaction();
+                transaction.BeginTransaction();
                 handler();
-                sqlMapper.CommitTransaction();
+                transaction.CommitTransaction();
             }
             catch (Exception ex)
             {
-                sqlMapper.RollbackTransaction();
+                transaction.RollbackTransaction();
                 throw ex;
             }
         }
 
-        public static void TransactionWrap(this ISmartSqlMapper sqlMapper, IsolationLevel isolationLevel, Action handler)
+        public static void TransactionWrap(this ITransaction transaction, IsolationLevel isolationLevel, Action handler)
         {
             try
             {
-                sqlMapper.BeginTransaction(isolationLevel);
+                transaction.BeginTransaction(isolationLevel);
                 handler();
-                sqlMapper.CommitTransaction();
+                transaction.CommitTransaction();
             }
             catch (Exception ex)
             {
-                sqlMapper.RollbackTransaction();
+                transaction.RollbackTransaction();
                 throw ex;
             }
         }
 
-        public async static Task TransactionWrapAsync(this ISmartSqlMapper sqlMapper, Func<Task> handler)
+        public async static Task TransactionWrapAsync(this ITransaction transaction, Func<Task> handler)
         {
             try
             {
-                sqlMapper.BeginTransaction();
+                transaction.BeginTransaction();
                 await handler();
-                sqlMapper.CommitTransaction();
+                transaction.CommitTransaction();
             }
             catch (Exception ex)
             {
-                sqlMapper.RollbackTransaction();
+                transaction.RollbackTransaction();
                 throw ex;
             }
         }
 
-        public async static Task TransactionWrapAsync(this ISmartSqlMapper sqlMapper, IsolationLevel isolationLevel, Func<Task> handler)
+        public async static Task TransactionWrapAsync(this ITransaction transaction, IsolationLevel isolationLevel, Func<Task> handler)
         {
             try
             {
-                sqlMapper.BeginTransaction(isolationLevel);
+                transaction.BeginTransaction(isolationLevel);
                 await handler();
-                sqlMapper.CommitTransaction();
+                transaction.CommitTransaction();
             }
             catch (Exception ex)
             {
-                sqlMapper.RollbackTransaction();
+                transaction.RollbackTransaction();
                 throw ex;
             }
         }
