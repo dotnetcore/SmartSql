@@ -18,7 +18,7 @@ namespace SmartSql.Command
 {
     public class PreparedCommand : IPreparedCommand
     {
-        Regex _sqlParamsTokens;
+        private Regex _sqlParamsTokens;
         private readonly ILogger<PreparedCommand> _logger;
         private readonly SmartSqlContext _smartSqlContext;
 
@@ -38,6 +38,7 @@ namespace SmartSql.Command
             }
             _sqlParamsTokens = new Regex(@"[" + dbPrefixs + @"]([\p{L}\p{N}_]+)", regOptions);
         }
+
         public IDbCommand Prepare(IDbConnectionSession dbSession, RequestContext context)
         {
             var dbCommand = dbSession.Connection.CreateCommand();
@@ -119,11 +120,7 @@ namespace SmartSql.Command
             });
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                StringBuilder dbParameterStr = new StringBuilder();
-                foreach (IDbDataParameter dbParameter in dbCommand.Parameters)
-                {
-                    dbParameterStr.AppendFormat("{0}={1},", dbParameter.ParameterName, dbParameter.Value);
-                }
+                string dbParameterStr = string.Join(",", dbCommand.Parameters.Cast<IDbDataParameter>().Select(p => $"{p.ParameterName}={p.Value}"));
                 _logger.LogDebug($"PreparedCommand.Prepare->Statement.Id:[{context.FullSqlId}],Sql:[{dbCommand.CommandText}],Parameters:[{dbParameterStr}]");
             }
             return dbCommand;
@@ -186,6 +183,5 @@ namespace SmartSql.Command
             }
             dbCommand.Parameters.Add(sourceParam);
         }
-
     }
 }
