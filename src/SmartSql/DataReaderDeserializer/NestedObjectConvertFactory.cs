@@ -8,8 +8,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartSql.DataReaderDeserializer
 {
@@ -47,11 +45,26 @@ namespace SmartSql.DataReaderDeserializer
             var dynamicMethod = new DynamicMethod("NestedObjectConvert_" + Guid.NewGuid().ToString("N"), targetType, new[] { TypeUtils.RequestContextType, _dataReaderWrapperType, _deserType }, targetType, true);
             var iLGenerator = dynamicMethod.GetILGenerator();
             iLGenerator.DeclareLocal(targetType);
-            ConstructorInfo targetCtor = targetType.GetConstructor(
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
-            iLGenerator.Emit(OpCodes.Newobj, targetCtor); // [target]
-            iLGenerator.Emit(OpCodes.Stloc_0);
             MultipleResultMap multipleResultMap = requestContext.Statement.MultipleResultMap;
+            if (multipleResultMap.Root != null)
+            {
+                iLGenerator.Emit(OpCodes.Ldarg_2);
+                iLGenerator.Emit(OpCodes.Ldarg_0);
+                iLGenerator.Emit(OpCodes.Ldarg_1);
+                iLGenerator.Emit(OpCodes.Ldc_I4_0);
+                var deserToRoot = _deserToSingle.MakeGenericMethod(targetType);
+                iLGenerator.Emit(OpCodes.Call, deserToRoot);
+                iLGenerator.Emit(OpCodes.Stloc_0);
+                EmitNextResult(iLGenerator);
+            }
+            else
+            {
+                ConstructorInfo targetCtor = targetType.GetConstructor(
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
+                iLGenerator.Emit(OpCodes.Newobj, targetCtor); // [target]
+                iLGenerator.Emit(OpCodes.Stloc_0);
+            }
+            
             foreach (var result in multipleResultMap.Results)
             {
                 var property = targetType.GetProperty(result.Property);
@@ -74,9 +87,7 @@ namespace SmartSql.DataReaderDeserializer
                 iLGenerator.Emit(OpCodes.Ldc_I4_0);
                 iLGenerator.Emit(OpCodes.Call, executeMethod);
                 iLGenerator.Emit(OpCodes.Call, property.SetMethod);
-                iLGenerator.Emit(OpCodes.Ldarg_1);
-                iLGenerator.Emit(OpCodes.Call, _dataReader_NextResult);
-                iLGenerator.Emit(OpCodes.Pop);
+                EmitNextResult(iLGenerator);
             }
             iLGenerator.Emit(OpCodes.Ldloc_0);
             iLGenerator.Emit(OpCodes.Ret);
@@ -84,6 +95,11 @@ namespace SmartSql.DataReaderDeserializer
             return (Func<RequestContext, IDataReaderWrapper, IDataReaderDeserializer, object>)dynamicMethod.CreateDelegate(funcType);
         }
 
-
+        private void EmitNextResult(ILGenerator iLGenerator)
+        {
+            iLGenerator.Emit(OpCodes.Ldarg_1);
+            iLGenerator.Emit(OpCodes.Call, _dataReader_NextResult);
+            iLGenerator.Emit(OpCodes.Pop);
+        }
     }
 }

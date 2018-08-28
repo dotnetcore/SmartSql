@@ -30,13 +30,25 @@
       <Result Property="Total"/>
       <Result Property="List"/>
     </MultipleResultMap>
+    <MultipleResultMap Id="GetNested_RootMReuslt">
+      <Root/>
+      <Result Property="List"/>
+    </MultipleResultMap>
   </MultipleResultMaps>
   <Statements>
+    <Statement Id="Query_ReadDb2"  ReadDb="ReadDb-2">
+      Select Top 10 T.* From T_Entity T
+    </Statement>
+    
+    <Statement Id="GetNested_Root" MultipleResultMap="GetNested_RootMReuslt">
+      Select Count(1) As Total From T_Entity;
+      Select Top 10 T.* From T_Entity T
+    </Statement>
     <Statement Id="MQueryByPage" MultipleResultMap="QueryByPageMReuslt">
       Select Count(1) From T_Entity;
       Select Top 10 T.* From T_Entity T
     </Statement>
-    
+
     <Statement Id="SP_QueryByPage" CommandType="StoredProcedure">
       SP_QueryByPage
     </Statement>

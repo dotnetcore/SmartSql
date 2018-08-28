@@ -2,6 +2,7 @@
 using SmartSql.Abstractions;
 using SmartSql.Abstractions.DataSource;
 using SmartSql.Abstractions.DbSession;
+using SmartSql.Exceptions;
 using SmartSql.Utils;
 using System;
 using System.Collections.Generic;
@@ -34,11 +35,12 @@ namespace SmartSql
             {
                 return _dbSessionStore.LocalSession.DataSource;
             }
-            return GetDataSource(context.DataSourceChoice);
+            return GetDataSource(context);
         }
 
-        private IDataSource GetDataSource(DataSourceChoice sourceChoice)
+        private IDataSource GetDataSource(RequestContext context)
         {
+            var sourceChoice = context.DataSourceChoice;
             IDataSource choiceDataSource = _smartSqlContext.Database.WriteDataSource;
             var readDataSources = _smartSqlContext.Database.ReadDataSources;
             if (sourceChoice == DataSourceChoice.Read
@@ -46,12 +48,24 @@ namespace SmartSql
                 && readDataSources.Count > 0
                 )
             {
-                var seekList = readDataSources.Select(readDataSource => new WeightFilter<IReadDataSource>.WeightSource
+                var statement = context.Statement;
+                if (statement != null && !String.IsNullOrEmpty(statement.ReadDb))
                 {
-                    Source = readDataSource,
-                    Weight = readDataSource.Weight
-                });
-                choiceDataSource = _weightFilter.Elect(seekList).Source;
+                    choiceDataSource = readDataSources.FirstOrDefault(readDb => readDb.Name == statement.ReadDb);
+                    if (choiceDataSource == null)
+                    {
+                        throw new SmartSqlException($"Statement.Id:{statement.FullSqlId},can not find ReadDb:{statement.ReadDb} .");
+                    }
+                }
+                else
+                {
+                    var seekList = readDataSources.Select(readDataSource => new WeightFilter<IReadDataSource>.WeightSource
+                    {
+                        Source = readDataSource,
+                        Weight = readDataSource.Weight
+                    });
+                    choiceDataSource = _weightFilter.Elect(seekList).Source;
+                }
             }
             if (_logger.IsEnabled(LogLevel.Debug))
             {

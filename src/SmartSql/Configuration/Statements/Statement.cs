@@ -31,6 +31,8 @@ namespace SmartSql.Configuration.Statements
         public CommandType? CommandType { get; set; }
         [XmlAttribute]
         public DataSourceChoice? SourceChoice { get; set; }
+        [XmlAttribute]
+        public String ReadDb { get; set; }
         public String FullSqlId => $"{SmartSqlMap.Scope}.{Id}";
         public IList<ITag> SqlTags { get; set; }
         public Cache Cache { get; set; }

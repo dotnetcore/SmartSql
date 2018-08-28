@@ -1,18 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema
-  attributeFormDefault="unqualified"
-  elementFormDefault="qualified"
-  targetNamespace="http://SmartSql.net/schemas/SmartSqlMap.xsd"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd"
-  xmlns:vs="http://schemas.microsoft.com/Visual-Studio-Intellisense"
-  vs:friendlyname="SmartSqlMap Configuration Schema"
-  vs:ishtmlschema="false"
-  vs:iscasesensitive="true"
-  vs:requireattributequotes="true"
-  vs:defaultnamespacequalifier=""
-  vs:defaultnsprefix=""
-  >
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://SmartSql.net/schemas/SmartSqlMap.xsd" 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd" 
+  xmlns:vs="http://schemas.microsoft.com/Visual-Studio-Intellisense" vs:friendlyname="SmartSqlMap Configuration Schema" vs:ishtmlschema="false" vs:iscasesensitive="true" vs:requireattributequotes="true" vs:defaultnamespacequalifier="" vs:defaultnsprefix="">
 
   <xs:simpleType name="CSharpType">
     <xs:restriction base="xs:NMTOKEN">
@@ -71,7 +61,7 @@
         </xs:element>
       </xs:choice>
       <xs:attribute name="Id" type="xs:string" use="required" />
-      <xs:attribute name="Type" use="required" >
+      <xs:attribute name="Type" use="required">
         <xs:simpleType>
           <xs:restriction base="xs:NMTOKEN">
             <xs:enumeration value="Lru"/>
@@ -121,7 +111,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="Constructor" maxOccurs="1" minOccurs="0"></xs:element>
-        <xs:element ref="Result" maxOccurs="unbounded"  minOccurs="0"/>
+        <xs:element ref="Result" maxOccurs="unbounded" minOccurs="0"/>
       </xs:sequence>
       <xs:attribute name="Id" type="xs:string" use="required" />
     </xs:complexType>
@@ -152,9 +142,13 @@
         <xs:element name="MultipleResultMap" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence>
+              <xs:element maxOccurs="1" minOccurs="0"  name="Root">
+                <xs:complexType>
+                  <xs:attribute name="MapId" type="xs:string" use="optional" />
+                </xs:complexType>
+              </xs:element>
               <xs:element maxOccurs="unbounded" name="Result">
                 <xs:complexType>
-                  <xs:attribute name="Index" type="xs:unsignedByte" use="optional" />
                   <xs:attribute name="Property" type="xs:string" use="optional" />
                   <xs:attribute name="MapId" type="xs:string" use="optional" />
                 </xs:complexType>
@@ -228,8 +222,8 @@
   <xs:element name="Switch">
     <xs:complexType mixed="true">
       <xs:sequence minOccurs="1">
-        <xs:element ref="Case"  minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="Default"  minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="Case" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="Default" minOccurs="0" maxOccurs="1"/>
       </xs:sequence>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -693,7 +687,7 @@
   </xs:element>
   <xs:element name="For">
     <xs:complexType mixed="true">
-      <xs:choice  minOccurs="0" maxOccurs="unbounded">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="IsEmpty" />
         <xs:element ref="IsEqual" />
         <xs:element ref="IsGreaterEqual" />
@@ -754,7 +748,7 @@
   </xs:element>
   <xs:element name="Statement">
     <xs:complexType mixed="true">
-      <xs:choice  minOccurs="0" maxOccurs="unbounded">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="IsEmpty" />
         <xs:element ref="IsEqual" />
         <xs:element ref="IsGreaterEqual" />
@@ -784,11 +778,12 @@
       <xs:attribute name="ParameterMap" type="xs:string" use="optional" />
       <xs:attribute name="CommandType" type="CommandType" use="optional"/>
       <xs:attribute name="SourceChoice" type="DataSourceChoice" use="optional"/>
+      <xs:attribute name="ReadDb" type="xs:string" use="optional"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="Statements" >
+  <xs:element name="Statements">
     <xs:complexType mixed="true">
-      <xs:choice  minOccurs="1" maxOccurs="unbounded">
+      <xs:choice minOccurs="1" maxOccurs="unbounded">
         <xs:element ref="Statement"/>
       </xs:choice>
     </xs:complexType>
@@ -797,11 +792,11 @@
   <xs:element name="SmartSqlMap">
     <xs:complexType mixed="true">
       <xs:all>
-        <xs:element ref="Caches" minOccurs="0"  maxOccurs="1"/>
-        <xs:element ref="ResultMaps" minOccurs="0"  maxOccurs="1"/>
-        <xs:element ref="MultipleResultMaps" minOccurs="0"  maxOccurs="1"/>
-        <xs:element ref="ParameterMaps" minOccurs="0"  maxOccurs="1"/>
-        <xs:element ref="Statements"  minOccurs="0"  maxOccurs="1"/>
+        <xs:element ref="Caches" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="ResultMaps" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="MultipleResultMaps" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="ParameterMaps" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="Statements" minOccurs="0" maxOccurs="1"/>
       </xs:all>
       <xs:attribute name="Scope" type="xs:string" use="required" />
     </xs:complexType>

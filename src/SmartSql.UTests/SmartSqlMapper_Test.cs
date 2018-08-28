@@ -20,7 +20,6 @@ namespace SmartSql.UTests
         public void Dispose()
         {
             _sqlMapper.Dispose();
-
         }
         [Fact]
         public void BeginSession()
@@ -51,6 +50,27 @@ namespace SmartSql.UTests
                 _sqlMapper.RollbackTransaction();
                 throw ex;
             }
+        }
+
+        
+
+        [Fact]
+        public void Query_ReadDb2()
+        {
+            var result = _sqlMapper.Query<T_Entity>(new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "Query_ReadDb2"
+            });
+        }
+        [Fact]
+        public void GetNested_Root()
+        {
+            var result = _sqlMapper.GetNested<QueryByPageResponse>(new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "GetNested_Root"
+            });
         }
         [Fact]
         public void GetNested()
@@ -468,9 +488,6 @@ namespace SmartSql.UTests
             });
         }
         #endregion
-
-
-
     }
     public class QueryByPageResponse
     {

@@ -166,7 +166,15 @@ namespace SmartSql.Configuration.Maps
                     var resultMap = resultMaps.FirstOrDefault(m => m.Id == result.MapId);
                     result.Map = resultMap ?? throw new SmartSqlException($"Can not find ResultMap.Id:{result.MapId}");
                 }
-                multipleResultMap.Results.Add(result);
+                if (childNode.Name == "Root")
+                {
+                    multipleResultMap.Root = result;
+                }
+                else
+                {
+                    multipleResultMap.Results.Add(result);
+                }
+
                 resultIndex++;
             }
             return multipleResultMap;

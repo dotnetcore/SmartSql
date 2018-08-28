@@ -23,8 +23,10 @@ namespace SmartSql.Configuration
             {
                 Id = statementNode.Attributes["Id"].Value,
                 SqlTags = new List<ITag> { },
+                ReadDb = statementNode.Attributes["ReadDb"]?.Value,
                 SmartSqlMap = smartSqlMap
             };
+
             var cmdTypeStr = statementNode.Attributes["CommandType"]?.Value;
             var sourceChoiceStr = statementNode.Attributes["SourceChoice"]?.Value;
             if (Enum.TryParse<CommandType>(cmdTypeStr, out CommandType cmdType))
