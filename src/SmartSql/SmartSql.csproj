@@ -11,12 +11,10 @@
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>3.6.4</Version>
+    <Version>3.6.5</Version>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <PackageReleaseNotes>
-      1. added support Root for MultipleResultMap
-      2. added support ReadDb for Statement
-      3. optimized PreparedCommand.Prepare log output
+      1. fixed ObjectUtils key conflicts
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>

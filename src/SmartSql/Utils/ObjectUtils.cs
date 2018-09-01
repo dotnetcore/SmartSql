@@ -19,7 +19,7 @@ namespace SmartSql.Utils
 
         public static Func<object, Dictionary<string, DbParameter>> GetDicDbParametersConvert(Type sourceType, bool ignorePropNameCase)
         {
-            string key = $"{sourceType.GUID.ToString("N")}_{ignorePropNameCase}";
+            string key = $"{sourceType.FullName}_{ignorePropNameCase}";
             if (!_cachedConvert.ContainsKey(key))
             {
                 lock (_syncObj)
@@ -47,7 +47,7 @@ namespace SmartSql.Utils
             Type returnType = _dicType;
             var addItemMethod = _addItemDicMentod;
             var sourceProps = sourceType.GetProperties().Where(p => p.CanRead);
-            var dynamicMethod = new DynamicMethod("ObjToDic" + Guid.NewGuid().ToString("N"), returnType, new[] { typeof(object) }, sourceType, true);
+            var dynamicMethod = new DynamicMethod("ObjToDic_" + Guid.NewGuid().ToString("N"), returnType, new[] { typeof(object) }, sourceType, true);
             var iLGenerator = dynamicMethod.GetILGenerator();
             iLGenerator.DeclareLocal(returnType);
             EmitUtils.LoadInt32(iLGenerator, sourceProps.Count());
