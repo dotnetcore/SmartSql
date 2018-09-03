@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SmartSql;
 using SmartSql.Abstractions.Config;
@@ -14,7 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static void AddSmartSqlOptionLoader(this IServiceCollection services)
         {
-            services.AddSingleton<IConfigLoader>((sp) =>
+            services.TryAddSingleton<IConfigLoader>((sp) =>
             {
                 var loggerFactory = sp.GetService<ILoggerFactory>() ?? NoneLoggerFactory.Instance;
                 var optionsMonitor = sp.GetService<IOptionsMonitor<SmartSqlConfigOptions>>();
@@ -34,6 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return _configLoader;
             });
         }
+
         public static void AddSmartSqlOption(this IServiceCollection services)
         {
             services.AddSmartSqlOptionLoader();

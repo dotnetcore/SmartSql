@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using SmartSql;
 using SmartSql.Abstractions;
+using SmartSql.Abstractions.Config;
 using System;
 using System.IO;
 namespace Microsoft.Extensions.DependencyInjection
@@ -46,6 +47,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
             }
             options.LoggerFactory = options.LoggerFactory ?? sp.GetService<ILoggerFactory>();
+            if (options.ConfigLoader == null)
+            {
+                options.ConfigLoader = sp.GetService<IConfigLoader>();
+            }
         }
 
         private static void AddOthers(IServiceCollection services)
