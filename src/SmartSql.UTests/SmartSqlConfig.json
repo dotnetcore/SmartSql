@@ -1,31 +1,64 @@
 {
-  "Settings": {
-    "IgnoreParameterCase": "false",
-    "IsCacheEnabled": "false",
-    "IsWatchConfigFile": "false",
-    "ParameterPrefix": "$"
-  },
-  "Database": {
-    "DbProvider": {
-      "Name": "SqlClientFactory",
-      "ParameterPrefix": "@",
-      "Type": "System.Data.SqlClient.SqlClientFactory,System.Data.SqlClient"
+  "SmartSqlConfig": {
+    "Settings": {
+      "IgnoreParameterCase": "true",
+      "IsCacheEnabled": "false",
+      "IsWatchConfigFile": "false",
+      "ParameterPrefix": "$"
     },
-    "Write": {
-      "Name": "WriteDB",
-      "ConnectionString": "Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True"
-    }
+    "Database": {
+      "DbProvider": {
+        "Name": "SqlClientFactory",
+        "ParameterPrefix": "@",
+        "Type": "System.Data.SqlClient.SqlClientFactory,System.Data.SqlClient"
+      },
+      "Write": {
+        "Name": "WriteDB",
+        "ConnectionString": "Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True"
+      }
+    },
+    "SmartSqlMaps": [
+      {
+        "Path": "Maps",
+        "Type": "Directory"
+      }
+    ],
+    "TypeHandlers": [
+      {
+        "Name": "Json",
+        "Type": "SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"
+      }
+    ]
   },
-  "SmartSqlMaps": [
-    {
-      "Path": "Maps",
-      "Type": "Directory"
-    }
-  ],
-  "TypeHandlers": [
-    {
-      "Name": "Json",
-      "Type": "SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"
-    }
-  ]
+  "SmartSqlConfig-1": {
+    "Settings": {
+      "IgnoreParameterCase": "false",
+      "IsCacheEnabled": "false",
+      "IsWatchConfigFile": "false",
+      "ParameterPrefix": "$"
+    },
+    "Database": {
+      "DbProvider": {
+        "Name": "SqlClientFactory",
+        "ParameterPrefix": "@",
+        "Type": "System.Data.SqlClient.SqlClientFactory,System.Data.SqlClient"
+      },
+      "Write": {
+        "Name": "WriteDB",
+        "ConnectionString": "Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True"
+      }
+    },
+    "SmartSqlMaps": [
+      {
+        "Path": "Maps",
+        "Type": "Directory"
+      }
+    ],
+    "TypeHandlers": [
+      {
+        "Name": "Json",
+        "Type": "SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"
+      }
+    ]
+  }
 }

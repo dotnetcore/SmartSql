@@ -7,15 +7,38 @@
     <Product>SmartSq</Product>
     <Copyright>SmartSq</Copyright>
     <Title>SmartSql.Options</Title>
+    <Version>1.3.1</Version>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <PackageReleaseNotes>
-      1. optimize Options DI
+      1. optimize Options DI for SmartSqlOptions.UseOptions
+      <![CDATA[
+      ``` csharp
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                 .AddJsonFile("SmartSqlConfig.json", false, true);
+
+            var configuration = builder.Build();
+            var services = new ServiceCollection();
+
+            services.AddOptions();
+            var smartSqlConfigJson = configuration.GetSection("SmartSqlConfig");
+            services.Configure<SmartSqlConfigOptions>("SmartSql", smartSqlConfigJson);
+
+            services.AddSmartSql(sp =>
+            {
+                return new SmartSqlOptions
+                {
+                     ConfigPath= "SmartSql"
+                }.UseOptions(sp);
+            });      
+     ```
+      ]]>
     </PackageReleaseNotes>
-    <Version>1.3.0</Version>
+
   </PropertyGroup>
 
   <ItemGroup>

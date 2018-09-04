@@ -33,10 +33,10 @@ namespace SmartSql
 
         public void Setup()
         {
-            if (String.IsNullOrEmpty(ConfigPath))
-            {
-                ConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH;
-            }
+            //if (String.IsNullOrEmpty(ConfigPath))
+            //{
+            //    ConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH;
+            //}
             if (LoggerFactory == null)
             {
                 LoggerFactory = NoneLoggerFactory.Instance;

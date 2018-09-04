@@ -13,43 +13,53 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class SmartSqlOptionsExtensions
     {
-        public static void AddSmartSqlOptionLoader(this IServiceCollection services)
+        [Obsolete("Please use SmartSqlOptions.UseOptions!")]
+        public static void AddSmartSqlOptionLoader(this IServiceCollection services, string configName = "")
         {
-            services.TryAddSingleton<IConfigLoader>((sp) =>
+            services.AddSingleton((sp) =>
             {
-                var loggerFactory = sp.GetService<ILoggerFactory>() ?? NoneLoggerFactory.Instance;
-                var optionsMonitor = sp.GetService<IOptionsMonitor<SmartSqlConfigOptions>>();
-                var _configLoader = new OptionConfigLoader(optionsMonitor.CurrentValue, loggerFactory);
-                if (optionsMonitor.CurrentValue.Settings.IsWatchConfigFile)
-                {
-                    optionsMonitor.OnChange((ops, name) =>
-                    {
-                        _configLoader.TriggerChanged(ops);
-                    });
-                }
-                return _configLoader;
+                return BuildConfigLoader(sp, configName);
             });
         }
-
+        [Obsolete("Please use SmartSqlOptions.UseOptions!")]
         public static void AddSmartSqlOption(this IServiceCollection services)
         {
             services.AddSmartSqlOptionLoader();
             services.AddSmartSql(sp =>
             {
                 var loggerFactory = sp.GetService<ILoggerFactory>() ?? NoneLoggerFactory.Instance;
-                var _configLoader = sp.GetRequiredService<IConfigLoader>();
+                var configLoader = sp.GetRequiredService<IConfigLoader>();
                 return new SmartSqlOptions
                 {
-                    ConfigLoader = _configLoader,
+                    ConfigLoader = configLoader,
                     LoggerFactory = loggerFactory
                 };
             });
         }
-
-        public static void UserOptions(this SmartSqlOptions smartSqlOptions, IServiceProvider sp)
+        private static IConfigLoader BuildConfigLoader(IServiceProvider sp, string configName)
         {
-            var _configLoader = sp.GetRequiredService<IConfigLoader>();
-            smartSqlOptions.ConfigLoader = _configLoader;
+            var loggerFactory = sp.GetService<ILoggerFactory>() ?? NoneLoggerFactory.Instance;
+            var optionsMonitor = sp.GetService<IOptionsMonitor<SmartSqlConfigOptions>>();
+
+            var smartSqlOptions = String.IsNullOrEmpty(configName)
+                                        ? optionsMonitor.CurrentValue : optionsMonitor.Get(configName);
+
+            var _configLoader = new OptionConfigLoader(smartSqlOptions, loggerFactory);
+            if (smartSqlOptions.Settings.IsWatchConfigFile)
+            {
+                optionsMonitor.OnChange((ops, name) =>
+                {
+                    if (name == configName) { return; }
+                    _configLoader.TriggerChanged(ops);
+                });
+            }
+            return _configLoader;
+        }
+        public static SmartSqlOptions UseOptions(this SmartSqlOptions smartSqlOptions, IServiceProvider sp)
+        {
+            var configLoader = BuildConfigLoader(sp, smartSqlOptions.ConfigPath);
+            smartSqlOptions.ConfigLoader = configLoader;
+            return smartSqlOptions;
         }
     }
 }
