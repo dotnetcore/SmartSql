@@ -30,14 +30,12 @@ namespace SmartSql.UTests
 
             var configuration = builder.Build();
             var services = new ServiceCollection();
-            services.AddOptions();
-
-            services.Configure<SmartSqlConfigOptions>(configuration);
-
             services.AddSingleton<ILoggerFactory>(LoggerFactory);
 
+            services.AddOptions();
+            services.Configure<SmartSqlConfigOptions>(configuration);
+            
             services.AddSmartSqlOption();
-
             var serviceProvider = services.BuildServiceProvider();
             _smartSqlMapper = serviceProvider.GetRequiredService<ISmartSqlMapper>();
         }

@@ -20,11 +20,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 var loggerFactory = sp.GetService<ILoggerFactory>() ?? NoneLoggerFactory.Instance;
                 var optionsMonitor = sp.GetService<IOptionsMonitor<SmartSqlConfigOptions>>();
                 var _configLoader = new OptionConfigLoader(optionsMonitor.CurrentValue, loggerFactory);
-                SmartSqlOptions smartSqlOptions = new SmartSqlOptions
-                {
-                    ConfigLoader = _configLoader,
-                    LoggerFactory = loggerFactory
-                };
                 if (optionsMonitor.CurrentValue.Settings.IsWatchConfigFile)
                 {
                     optionsMonitor.OnChange((ops, name) =>
