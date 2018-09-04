@@ -2,20 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>3.6.6</Version>
+    <Version>3.6.6.1</Version>
     <Title>SmartSql.DIExtension</Title>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageReleaseNotes>
-      1. add support for SmartSqlMapper multiple instance injection
-      2. add support for IServiceProvider.GetSmartSqlMapper(string configPath)
-      <![CDATA[
-      ``` csharp
-      var smartSqlMapper = serviceProvider.GetSmartSqlMapper("SmartSql");
-      var smartSqlMapper_1 = serviceProvider.GetSmartSqlMapper("SmartSql-1");
-      ```
-      ]]>
+      1. optimized DI for DyRepository
     </PackageReleaseNotes>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <Copyright>Ahoo Wang</Copyright>

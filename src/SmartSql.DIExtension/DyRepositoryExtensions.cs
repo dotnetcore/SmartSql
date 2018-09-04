@@ -15,7 +15,6 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static void AddRepositoryFactory(this IServiceCollection services, string scope_template = "", Func<Type, MethodInfo, String> sqlIdNamingConvert = null)
         {
-            services.AddSmartSql();
             services.AddSingleton<IRepositoryBuilder>((sp) =>
             {
                 var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
@@ -30,13 +29,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 return new RepositoryFactory(repositoryBuilder, logger);
             });
         }
-        public static void AddSmartSqlRepositoryFactory(this IServiceCollection services, string scope_template = "", Func<Type, MethodInfo, String> sqlIdNamingConvert = null)
-        {
-            services.AddRepositoryFactory(scope_template, sqlIdNamingConvert);
-        }
         public static void AddRepository<T>(this IServiceCollection services, Func<IServiceProvider, ISmartSqlMapper> getSmartSql = null, string scope = "") where T : class
         {
-            services.AddRepositoryFactory();
             services.AddSingleton<T>(sp =>
             {
                 ISmartSqlMapper sqlMapper = null;
@@ -49,13 +43,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 return factory.CreateInstance<T>(sqlMapper, scope);
             });
         }
-        public static void AddSmartSqlRepository<T>(this IServiceCollection services, Func<IServiceProvider, ISmartSqlMapper> getSmartSql = null, string scope = "") where T : class
-        {
-            services.AddRepository<T>(getSmartSql, scope);
-        }
         public static void AddRepositoryFromAssembly(this IServiceCollection services, Action<AssemblyAutoRegisterOptions> setupOptions)
         {
-            services.AddRepositoryFactory();
             var options = new AssemblyAutoRegisterOptions
             {
                 Filter = (type) => { return type.IsInterface; }
@@ -84,9 +73,25 @@ namespace Microsoft.Extensions.DependencyInjection
                 });
             }
         }
-
+        /// <summary>
+        /// AddSmartSql & AddRepositoryFactory
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="scope_template"></param>
+        /// <param name="sqlIdNamingConvert"></param>
+        public static void AddSmartSqlRepositoryFactory(this IServiceCollection services, string scope_template = "", Func<Type, MethodInfo, String> sqlIdNamingConvert = null)
+        {
+            services.AddSmartSql();
+            services.AddRepositoryFactory(scope_template, sqlIdNamingConvert);
+        }
+        /// <summary>
+        /// AddSmartSqlRepositoryFactory & AddRepositoryFromAssembly
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="setupOptions"></param>
         public static void AddSmartSqlRepositoryFromAssembly(this IServiceCollection services, Action<AssemblyAutoRegisterOptions> setupOptions)
         {
+            services.AddSmartSqlRepositoryFactory();
             services.AddRepositoryFromAssembly(setupOptions);
         }
 
