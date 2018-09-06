@@ -70,7 +70,7 @@ namespace SmartSql
             if (paramName.IndexOf('.') > -1)
             {
                 var paramVal = GetAccessorUtil.GetValue(RequestParams, paramName, IgnoreParameterCase);
-                dbParameter = new DbParameter { Name = paramName, Value = paramVal };
+                dbParameter = new DbParameter { Name = paramName, Value = paramVal.Value };
                 Add(dbParameter);
             }
             return dbParameter;

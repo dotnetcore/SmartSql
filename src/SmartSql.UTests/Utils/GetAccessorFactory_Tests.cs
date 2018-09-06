@@ -45,7 +45,7 @@ namespace SmartSql.UTests.Utils
             };
 
             var val = GetAccessorUtil.GetValue(first, "Second.Third.Fourth.Value", false);
-            Assert.Equal("GoodJob", val);
+            Assert.Equal("GoodJob", val.Value);
         }
 
 

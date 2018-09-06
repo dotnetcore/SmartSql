@@ -6,6 +6,11 @@ namespace SmartSql.Utils.PropertyAccessor
 {
     public class PropertyValue
     {
+        public PropertyValue() { }
+        public PropertyValue(object val)
+        {
+            Value = val;
+        }
         public GetStatus Status { get; set; } = GetStatus.Ok;
         public object Value { get; set; }
 
@@ -18,6 +23,6 @@ namespace SmartSql.Utils.PropertyAccessor
     }
     public interface IGetAccessorFactory
     {
-        Func<object, object> CreateGet(Type targetType, string propertyName, bool ignorePropertyCase);
+        Func<object, PropertyValue> CreateGet(Type targetType, string propertyName, bool ignorePropertyCase);
     }
 }
