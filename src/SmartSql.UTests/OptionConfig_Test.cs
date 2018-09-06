@@ -35,7 +35,7 @@ namespace SmartSql.UTests
             services.AddOptions();
             var smartSqlConfigJson = configuration.GetSection("SmartSqlConfig");
             services.Configure<SmartSqlConfigOptions>("SmartSql", smartSqlConfigJson);
-
+            
             services.AddSmartSql(sp =>
             {
                 return new SmartSqlOptions

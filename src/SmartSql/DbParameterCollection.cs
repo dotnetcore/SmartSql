@@ -3,12 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SmartSql.Utils;
+using SmartSql.Utils.PropertyAccessor;
+using SmartSql.Utils.PropertyAccessor.Impl;
+using System.Linq;
 
 namespace SmartSql
 {
     public class DbParameterCollection
     {
+        private readonly IGetAccessorFactory _getAccessorFactory = GetAccessorFactory.Instance;
         public bool IgnoreParameterCase { get; }
+        public object RequestParams { get; }
+
         public ICollection<string> ParameterNames { get { return _dbParameters.Keys; } }
         IDictionary<string, DbParameter> _dbParameters;
         public DbParameterCollection() : this(false)
@@ -22,6 +28,7 @@ namespace SmartSql
         public DbParameterCollection(bool ignoreParameterCase, object reqParams)
         {
             IgnoreParameterCase = ignoreParameterCase;
+            RequestParams = reqParams;
             var paramComparer = IgnoreParameterCase ? StringComparer.CurrentCultureIgnoreCase : StringComparer.CurrentCulture;
             if (reqParams == null)
             {
@@ -53,17 +60,27 @@ namespace SmartSql
             }
             _dbParameters = ObjectUtils.ToDicDbParameters(reqParams, ignoreParameterCase);
         }
+
         public DbParameter Get(string paramName)
         {
-            if (!_dbParameters.TryGetValue(paramName, out DbParameter dbParameter))
+            if (_dbParameters.TryGetValue(paramName, out DbParameter dbParameter))
             {
-                return null;
+                return dbParameter;
+            }
+
+            if (paramName.IndexOf('.') > -1)
+            {
+                var getParamVal = _getAccessorFactory.CreateGet(RequestParams.GetType(), paramName, IgnoreParameterCase);
+                var paramVal = getParamVal(RequestParams);
+                dbParameter = new DbParameter { Name = paramName, Value = paramVal };
+                Add(dbParameter);
             }
             return dbParameter;
         }
         public object GetValue(string paramName)
         {
-            if (!_dbParameters.TryGetValue(paramName, out DbParameter dbParameter))
+            var dbParameter = Get(paramName);
+            if (dbParameter == null)
             {
                 return null;
             }

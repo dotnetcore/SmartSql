@@ -233,12 +233,12 @@ namespace SmartSql
                 }
             }
         }
-        public async Task<int> ExecuteAsync(RequestContext context)
+        public Task<int> ExecuteAsync(RequestContext context)
         {
-            return await ExecuteWrapAsync(async (dbSession) =>
-           {
-               return await CommandExecuter.ExecuteNonQueryAsync(dbSession, context);
-           }, context);
+            return ExecuteWrapAsync((dbSession) =>
+          {
+              return CommandExecuter.ExecuteNonQueryAsync(dbSession, context);
+          }, context);
         }
         public async Task<T> ExecuteScalarAsync<T>(RequestContext context)
         {

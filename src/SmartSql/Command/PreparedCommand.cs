@@ -36,7 +36,7 @@ namespace SmartSql.Command
             {
                 regOptions = regOptions | RegexOptions.IgnoreCase;
             }
-            _sqlParamsTokens = new Regex(@"[" + dbPrefixs + @"]([\p{L}\p{N}_]+)", regOptions);
+            _sqlParamsTokens = new Regex(@"[" + dbPrefixs + @"]([\p{L}\p{N}_.]+)", regOptions);
         }
 
         public IDbCommand Prepare(IDbConnectionSession dbSession, RequestContext context)
