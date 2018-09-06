@@ -50,7 +50,7 @@ namespace SmartSql.Utils.PropertyAccessor.Impl
             {
                 iLGenerator.Emit(OpCodes.Box, getProperty.ReturnType);
             }
-            iLGenerator.Emit(OpCodes.Call, _propertyVal_Constructor);
+            iLGenerator.Emit(OpCodes.Newobj, _propertyVal_Constructor);
             iLGenerator.Emit(OpCodes.Ret);
             var funcType = Expression.GetFuncType(TypeUtils.ObjectType, typeof(PropertyValue));
             return (Func<object, PropertyValue>)dynamicMethod.CreateDelegate(funcType);

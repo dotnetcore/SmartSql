@@ -6,6 +6,7 @@ namespace SmartSql.Utils.PropertyAccessor
 {
     public class PropertyValue
     {
+        public static PropertyValue NotFindProperty = new PropertyValue { Status = GetStatus.NotFindProperty };
         public PropertyValue() { }
         public PropertyValue(object val)
         {
