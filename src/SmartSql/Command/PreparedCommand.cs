@@ -149,14 +149,7 @@ namespace SmartSql.Command
         {
             if (dbCommand.Parameters.Contains(dbParameter.Name)) { return; }
             var sourceParam = dbCommand.CreateParameter();
-            if (dbParameter.Name.IndexOf('.') > -1)
-            {
-                sourceParam.ParameterName = dbParameter.Name.Replace(".", "__");
-            }
-            else
-            {
-                sourceParam.ParameterName = dbParameter.Name;
-            }
+            sourceParam.ParameterName = GetParameterName(dbParameter.Name);
 
             var paramVal = dbParameter.Value;
             if (paramVal == null)
