@@ -67,11 +67,9 @@ namespace SmartSql
             {
                 return dbParameter;
             }
-
             if (paramName.IndexOf('.') > -1)
             {
-                var getParamVal = _getAccessorFactory.CreateGet(RequestParams.GetType(), paramName, IgnoreParameterCase);
-                var paramVal = getParamVal(RequestParams);
+                var paramVal = GetAccessorUtil.GetValue(RequestParams, paramName, IgnoreParameterCase);
                 dbParameter = new DbParameter { Name = paramName, Value = paramVal };
                 Add(dbParameter);
             }
