@@ -9,12 +9,14 @@ namespace SmartSql.Utils
     {
         public static object GetValue(object target, string propertyName, bool ignorePropertyCase)
         {
+            if (target == null) { return null; }
             var getAccessorFactory = GetAccessorFactory.Instance;
             if (propertyName.IndexOf('.') > -1)
             {
                 var pNames = propertyName.Split('.');
                 for (int i = 0; i < pNames.Length; i++)
                 {
+                    if (target == null) { return null; }
                     var childName = pNames[i];
                     var getChildParamVal = getAccessorFactory.CreateGet(target.GetType(), childName, false);
                     target = getChildParamVal(target);
