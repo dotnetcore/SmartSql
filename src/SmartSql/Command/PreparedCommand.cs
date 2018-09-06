@@ -63,14 +63,14 @@ namespace SmartSql.Command
                                       {
                                           _logger.LogWarning($"PreparedCommand.Prepare:StatementKey:{context.StatementKey}:can not find ParamterName:{propertyName}!");
                                       }
-                                      return match.Value;
+                                      return GetParameterName(match.Value);
                                   }
                                   var dbParameter = context.RequestParameters.Get(propertyName);
                                   ITypeHandler typeHandler = paramMap?.Handler;
                                   if (typeHandler != null)
                                   {
                                       AddDbParameter(dbCommand, dbParameter, typeHandler);
-                                      return match.Value;
+                                      return GetParameterName(match.Value);
                                   }
                                   var paramVal = dbParameter.Value;
                                   bool isString = paramVal is String;
@@ -98,8 +98,9 @@ namespace SmartSql.Command
                                   else
                                   {
                                       AddDbParameter(dbCommand, dbParameter);
-                                      return match.Value;
+                                      return GetParameterName(match.Value);
                                   }
+
                               });
                         }
                         dbCommand.CommandText = sql;
@@ -126,6 +127,15 @@ namespace SmartSql.Command
             return dbCommand;
         }
 
+        private string GetParameterName(string paramToken)
+        {
+            if (paramToken.IndexOf('.') > -1)
+            {
+                return paramToken.Replace(".", "__");
+            }
+            return paramToken;
+        }
+
         private void AddDbParameterCollection(IDbCommand dbCommand, DbParameterCollection reqParams)
         {
             foreach (var paramName in reqParams.ParameterNames)
@@ -139,7 +149,15 @@ namespace SmartSql.Command
         {
             if (dbCommand.Parameters.Contains(dbParameter.Name)) { return; }
             var sourceParam = dbCommand.CreateParameter();
-            sourceParam.ParameterName = dbParameter.Name;
+            if (dbParameter.Name.IndexOf('.') > -1)
+            {
+                sourceParam.ParameterName = dbParameter.Name.Replace(".", "__");
+            }
+            else
+            {
+                sourceParam.ParameterName = dbParameter.Name;
+            }
+
             var paramVal = dbParameter.Value;
             if (paramVal == null)
             {
