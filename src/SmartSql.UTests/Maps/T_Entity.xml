@@ -36,6 +36,12 @@
     </MultipleResultMap>
   </MultipleResultMaps>
   <Statements>
+
+    <Statement Id="Query_NestedParams"  >
+      Select Top 10 T.* From T_Entity T
+      Where FLong=@Root.Second.Id
+    </Statement>
+    
     <Statement Id="Query_ReadDb2"  ReadDb="ReadDb-2">
       Select Top 10 T.* From T_Entity T
     </Statement>

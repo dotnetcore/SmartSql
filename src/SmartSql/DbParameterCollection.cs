@@ -119,7 +119,20 @@ namespace SmartSql
 
         public bool Contains(string paramName)
         {
-            return _dbParameters.ContainsKey(paramName);
+            if (_dbParameters.ContainsKey(paramName))
+            {
+                return true;
+            }
+            //*** To be optimized 
+            if (paramName.IndexOf('.') > -1)
+            {
+                var paramVal = GetAccessorUtil.GetValue(RequestParams, paramName, IgnoreParameterCase);
+                if (paramVal.Status == PropertyValue.GetStatus.NotFindProperty) { return false; }
+                var dbParameter = new DbParameter { Name = paramName, Value = paramVal.Value };
+                _dbParameters.Add(dbParameter.Name, dbParameter);
+                return true;
+            }
+            return false;
         }
     }
 }

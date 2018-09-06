@@ -52,7 +52,7 @@ namespace SmartSql.UTests
             }
         }
 
-        
+
 
         [Fact]
         public void Query_ReadDb2()
@@ -231,6 +231,27 @@ namespace SmartSql.UTests
                 }
             };
             var list = _sqlMapper.Query<T_PrivateEntity>(context);
+        }
+
+        [Fact]
+        public void Query_NestedParams()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "Query_NestedParams",
+                Request = new
+                {
+                    Root = new
+                    {
+                        Second = new
+                        {
+                            Id = 1
+                        }
+                    }
+                }
+            };
+            var list = _sqlMapper.Query<T_Entity>(context);
         }
 
         [Fact]
