@@ -29,6 +29,8 @@ namespace SmartSql.Configuration
 
             var cmdTypeStr = statementNode.Attributes["CommandType"]?.Value;
             var sourceChoiceStr = statementNode.Attributes["SourceChoice"]?.Value;
+            var transactionStr = statementNode.Attributes["Transaction"]?.Value;
+
             if (Enum.TryParse<CommandType>(cmdTypeStr, out CommandType cmdType))
             {
                 statement.CommandType = cmdType;
@@ -36,6 +38,10 @@ namespace SmartSql.Configuration
             if (Enum.TryParse<DataSourceChoice>(cmdTypeStr, out DataSourceChoice sourceChoice))
             {
                 statement.SourceChoice = sourceChoice;
+            }
+            if (Enum.TryParse<IsolationLevel>(transactionStr, out IsolationLevel isolationLevel))
+            {
+                statement.Transaction = isolationLevel;
             }
             string cacheId = statementNode.Attributes["Cache"]?.Value;
             #region Attribute For Cache & ResultMap & ParameterMap & MultipleResultMap

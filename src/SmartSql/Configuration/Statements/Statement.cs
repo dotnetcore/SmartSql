@@ -32,6 +32,8 @@ namespace SmartSql.Configuration.Statements
         [XmlAttribute]
         public DataSourceChoice? SourceChoice { get; set; }
         [XmlAttribute]
+        public IsolationLevel? Transaction { get; set; }
+        [XmlAttribute]
         public String ReadDb { get; set; }
         public String FullSqlId => $"{SmartSqlMap.Scope}.{Id}";
         public IList<ITag> SqlTags { get; set; }

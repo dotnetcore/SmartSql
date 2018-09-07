@@ -38,6 +38,17 @@
       <xs:enumeration value="Read"/>
     </xs:restriction>
   </xs:simpleType>
+    <xs:simpleType name="Transaction">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Unspecified"/>
+      <xs:enumeration value="Chaos"/>
+      <xs:enumeration value="ReadUncommitted"/>
+      <xs:enumeration value="ReadCommitted"/>
+      <xs:enumeration value="RepeatableRead"/>
+      <xs:enumeration value="Serializable"/>
+      <xs:enumeration value="Snapshot"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:element name="Cache">
     <xs:complexType>
       <xs:choice maxOccurs="unbounded">
@@ -778,6 +789,7 @@
       <xs:attribute name="ParameterMap" type="xs:string" use="optional" />
       <xs:attribute name="CommandType" type="CommandType" use="optional"/>
       <xs:attribute name="SourceChoice" type="DataSourceChoice" use="optional"/>
+      <xs:attribute name="Transaction" type="Transaction" use="optional"/>
       <xs:attribute name="ReadDb" type="xs:string" use="optional"/>
     </xs:complexType>
   </xs:element>
