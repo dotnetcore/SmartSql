@@ -16,23 +16,27 @@ namespace SmartSql
 
         public ISmartSqlMapper GetSqlMapper(String smartSqlMapConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH)
         {
-            return GetSqlMapper(new SmartSqlOptions { ConfigPath = smartSqlMapConfigPath });
+            return GetSqlMapper(new SmartSqlOptions { Alias = smartSqlMapConfigPath, ConfigPath = smartSqlMapConfigPath });
         }
 
         public ISmartSqlMapper GetSqlMapper(SmartSqlOptions smartSqlOptions)
         {
-            if (!_mapperContainer.ContainsKey(smartSqlOptions.ConfigPath))
+            if (String.IsNullOrEmpty(smartSqlOptions.Alias))
+            {
+                smartSqlOptions.Alias = smartSqlOptions.ConfigPath;
+            }
+            if (!_mapperContainer.ContainsKey(smartSqlOptions.Alias))
             {
                 lock (this)
                 {
-                    if (!_mapperContainer.ContainsKey(smartSqlOptions.ConfigPath))
+                    if (!_mapperContainer.ContainsKey(smartSqlOptions.Alias))
                     {
                         ISmartSqlMapper _mapper = new SmartSqlMapper(smartSqlOptions);
-                        _mapperContainer.Add(smartSqlOptions.ConfigPath, _mapper);
+                        _mapperContainer.Add(smartSqlOptions.Alias, _mapper);
                     }
                 }
             }
-            return _mapperContainer[smartSqlOptions.ConfigPath];
+            return _mapperContainer[smartSqlOptions.Alias];
         }
         public void Dispose()
         {

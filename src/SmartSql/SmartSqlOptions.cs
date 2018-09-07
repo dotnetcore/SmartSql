@@ -19,6 +19,7 @@ namespace SmartSql
 {
     public class SmartSqlOptions
     {
+        public String Alias { get; set; }
         public String ConfigPath { get; set; }
         public ILoggerFactory LoggerFactory { get; set; }
         public IConfigLoader ConfigLoader { get; set; }
@@ -33,10 +34,14 @@ namespace SmartSql
 
         public void Setup()
         {
-            //if (String.IsNullOrEmpty(ConfigPath))
-            //{
-            //    ConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH;
-            //}
+            if (String.IsNullOrEmpty(ConfigPath))
+            {
+                ConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH;
+            }
+            if (String.IsNullOrEmpty(Alias))
+            {
+                Alias = ConfigPath;
+            }
             if (LoggerFactory == null)
             {
                 LoggerFactory = NoneLoggerFactory.Instance;

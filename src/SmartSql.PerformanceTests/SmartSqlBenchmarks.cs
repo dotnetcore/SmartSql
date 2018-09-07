@@ -19,6 +19,7 @@ namespace SmartSql.PerformanceTests
             _dataRowParserFactory = new DataRowParserFactory();
             var smartSqlOptions = new SmartSqlOptions
             {
+                ConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH
             };
             _sqlMapper = new SmartSqlMapper(smartSqlOptions);
         }

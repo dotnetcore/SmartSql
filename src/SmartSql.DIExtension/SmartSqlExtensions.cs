@@ -48,6 +48,10 @@ namespace Microsoft.Extensions.DependencyInjection
                     options.ConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH;
                 }
             }
+            if (String.IsNullOrEmpty(options.Alias))
+            {
+                options.Alias = options.ConfigPath;
+            }
             if (options.LoggerFactory == null)
             {
                 options.LoggerFactory = sp.GetService<ILoggerFactory>();
@@ -74,9 +78,9 @@ namespace Microsoft.Extensions.DependencyInjection
             });
         }
 
-        public static ISmartSqlMapper GetSmartSqlMapper(this IServiceProvider sp, string configPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH)
+        public static ISmartSqlMapper GetSmartSqlMapper(this IServiceProvider sp, string alias = Consts.DEFAULT_SMARTSQL_CONFIG_PATH)
         {
-            return sp.GetServices<ISmartSqlMapper>().FirstOrDefault(m => m.SmartSqlOptions.ConfigPath == configPath);
+            return sp.GetServices<ISmartSqlMapper>().FirstOrDefault(m => m.SmartSqlOptions.Alias == alias);
         }
     }
 }

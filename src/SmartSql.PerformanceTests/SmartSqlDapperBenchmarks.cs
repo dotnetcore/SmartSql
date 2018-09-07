@@ -15,6 +15,7 @@ namespace SmartSql.PerformanceTests
         {
             _sqlMapper = new SmartSqlMapper(new SmartSqlOptions
             {
+                ConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH,
                 DataReaderDeserializerFactory = new DapperDeserializer.DapperDataReaderDeserializerFactory()
             });
         }
