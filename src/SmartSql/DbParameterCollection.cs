@@ -71,6 +71,7 @@ namespace SmartSql
             {
                 var paramVal = GetAccessorUtil.GetValue(RequestParams, paramName, IgnoreParameterCase);
                 dbParameter = new DbParameter { Name = paramName, Value = paramVal.Value };
+                _dbParameters.Add(dbParameter.Name, dbParameter);
                 Add(dbParameter);
             }
             return dbParameter;
@@ -116,18 +117,25 @@ namespace SmartSql
             }
             _dbParameters.Add(dbParameter.Name, dbParameter);
         }
-
+        private IDictionary<string, bool> _cachedNoFindProperty = new Dictionary<string, bool>();
         public bool Contains(string paramName)
         {
             if (_dbParameters.ContainsKey(paramName))
             {
                 return true;
             }
-            //*** To be optimized 
             if (paramName.IndexOf('.') > -1)
             {
+                if (_cachedNoFindProperty.ContainsKey(paramName))
+                {
+                    return false;
+                }
                 var paramVal = GetAccessorUtil.GetValue(RequestParams, paramName, IgnoreParameterCase);
-                if (paramVal.Status == PropertyValue.GetStatus.NotFindProperty) { return false; }
+                if (paramVal.Status != PropertyValue.GetStatus.Ok)
+                {
+                    _cachedNoFindProperty.Add(paramName, true);
+                    return false;
+                }
                 var dbParameter = new DbParameter { Name = paramName, Value = paramVal.Value };
                 _dbParameters.Add(dbParameter.Name, dbParameter);
                 return true;

@@ -10,7 +10,7 @@ namespace SmartSql.Utils
     {
         public static PropertyValue GetValue(object target, string propertyName, bool ignorePropertyCase)
         {
-            if (target == null) { return PropertyValue.NotFindProperty; }
+            if (target == null) { return PropertyValue.NullTarget; }
             var getAccessorFactory = GetAccessorFactory.Instance;
             if (propertyName.IndexOf('.') > -1)
             {
@@ -18,7 +18,7 @@ namespace SmartSql.Utils
                 PropertyValue propertyVal = new PropertyValue { Value = target };
                 for (int i = 0; i < pNames.Length; i++)
                 {
-                    if (propertyVal.Value == null) { return PropertyValue.NotFindProperty; }
+                    if (propertyVal.Value == null) { return PropertyValue.NullTarget; }
                     var childName = pNames[i];
                     var getChildParamVal = getAccessorFactory.CreateGet(propertyVal.Value.GetType(), childName, false);
                     propertyVal = getChildParamVal(propertyVal.Value);

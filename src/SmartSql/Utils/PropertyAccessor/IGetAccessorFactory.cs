@@ -6,6 +6,7 @@ namespace SmartSql.Utils.PropertyAccessor
 {
     public class PropertyValue
     {
+        public static PropertyValue NullTarget = new PropertyValue { Status = GetStatus.NullTarget };
         public static PropertyValue NotFindProperty = new PropertyValue { Status = GetStatus.NotFindProperty };
         public PropertyValue() { }
         public PropertyValue(object val)
@@ -18,8 +19,8 @@ namespace SmartSql.Utils.PropertyAccessor
         public enum GetStatus
         {
             Ok = 1,
-            NotFindProperty = 1 << 1,
-            NotFindGet = 1 << 2
+            NullTarget = 1 << 1,
+            NotFindProperty = 1 << 2
         }
     }
     public interface IGetAccessorFactory
