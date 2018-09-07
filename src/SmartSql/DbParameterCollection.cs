@@ -69,10 +69,7 @@ namespace SmartSql
             }
             if (paramName.IndexOf('.') > -1)
             {
-                var paramVal = GetAccessorUtil.GetValue(RequestParams, paramName, IgnoreParameterCase);
-                dbParameter = new DbParameter { Name = paramName, Value = paramVal.Value };
-                _dbParameters.Add(dbParameter.Name, dbParameter);
-                Add(dbParameter);
+                var paramVal = GetOrAddNestedObject(paramName, out dbParameter);
             }
             return dbParameter;
         }
@@ -126,21 +123,38 @@ namespace SmartSql
             }
             if (paramName.IndexOf('.') > -1)
             {
-                if (_cachedNoFindProperty.ContainsKey(paramName))
-                {
-                    return false;
-                }
-                var paramVal = GetAccessorUtil.GetValue(RequestParams, paramName, IgnoreParameterCase);
-                if (paramVal.Status != PropertyValue.GetStatus.Ok)
-                {
-                    _cachedNoFindProperty.Add(paramName, true);
-                    return false;
-                }
-                var dbParameter = new DbParameter { Name = paramName, Value = paramVal.Value };
-                _dbParameters.Add(dbParameter.Name, dbParameter);
-                return true;
+                var paramVal = GetOrAddNestedObject(paramName, out DbParameter dbParameter);
+                return paramVal.Status == PropertyValue.GetStatus.Ok;
             }
             return false;
+        }
+
+        private PropertyValue GetOrAddNestedObject(string paramName, out DbParameter dbParameter)
+        {
+            dbParameter = default(DbParameter);
+            if (_cachedNoFindProperty.ContainsKey(paramName))
+            {
+                return PropertyValue.NotFindProperty;
+            }
+
+            var reqParamNames = paramName.Split('.');
+            var reqRootParamName = reqParamNames[0];
+            if (!_dbParameters.ContainsKey(reqRootParamName))
+            {
+                _cachedNoFindProperty.Add(paramName, true);
+                return PropertyValue.NotFindProperty;
+            }
+            var reqRootParam = _dbParameters[reqRootParamName];
+            var nestedParamName = paramName.Substring(reqRootParamName.Length + 1);
+            PropertyValue paramVal = GetAccessorUtil.GetValue(reqRootParam.Value, nestedParamName, IgnoreParameterCase);
+            if (paramVal.Status != PropertyValue.GetStatus.Ok)
+            {
+                _cachedNoFindProperty.Add(paramName, true);
+                return PropertyValue.NotFindProperty;
+            }
+            dbParameter = new DbParameter { Name = paramName, Value = paramVal.Value };
+            _dbParameters.Add(dbParameter.Name, dbParameter);
+            return paramVal;
         }
     }
 }

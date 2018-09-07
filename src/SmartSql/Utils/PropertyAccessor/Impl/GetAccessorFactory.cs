@@ -41,7 +41,7 @@ namespace SmartSql.Utils.PropertyAccessor.Impl
 
             if (property == null)
             {
-                return (target) => { return new PropertyValue { Status = PropertyValue.GetStatus.NotFindProperty }; };
+                return (target) => { return PropertyValue.NotFindProperty; };
             }
             var getProperty = property.GetMethod;
             iLGenerator.Emit(OpCodes.Ldarg_0);
