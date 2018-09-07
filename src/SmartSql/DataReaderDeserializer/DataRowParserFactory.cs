@@ -1,14 +1,13 @@
-﻿using SmartSql.Abstractions.TypeHandler;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 using System.Linq;
 using SmartSql.Abstractions;
 using SmartSql.Utils;
 using System.Globalization;
+using SmartSql.Exceptions;
 
 namespace SmartSql.DataReaderDeserializer
 {
@@ -19,12 +18,14 @@ namespace SmartSql.DataReaderDeserializer
         public DataRowParserFactory()
         {
         }
+
         private string GetColumnKey(IDataReader dataReader)
         {
             var columns = Enumerable.Range(0, dataReader.FieldCount)
                             .Select(i => $"({i}:{dataReader.GetName(i)}:{dataReader.GetFieldType(i).Name})");
             return String.Join("&", columns);
         }
+
         public Func<IDataReader, RequestContext, object> GetParser(IDataReaderWrapper dataReader, RequestContext requestContext, Type targetType)
         {
             string key = $"{requestContext.StatementKey}_{GetColumnKey(dataReader)}_{targetType.FullName}";
@@ -49,6 +50,7 @@ namespace SmartSql.DataReaderDeserializer
             }
             return _cachedDeserializer[key];
         }
+
         private MethodInfo GetRealValueMethod(Type valueType)
         {
             var typeCode = Type.GetTypeCode(valueType);
@@ -170,6 +172,10 @@ namespace SmartSql.DataReaderDeserializer
                     EmitLoadColVal(iLGenerator, dataReader, col.Index, arg.TypeHandler, arg.ArgType, null);
                 }
             }
+
+            if (targetCtor == null)
+                throw new SmartSqlException($"No parameterless constructor defined for the target type: \"{targetType.FullName}\"");
+
             iLGenerator.Emit(OpCodes.Newobj, targetCtor); // [target]
             iLGenerator.Emit(OpCodes.Stloc_0);
 
@@ -238,7 +244,9 @@ namespace SmartSql.DataReaderDeserializer
                 {
                     EmitUtils.TypeOf(iLGenerator, realType);//[target][enumType]
                 }
+
                 #region GetValue
+
                 iLGenerator.Emit(OpCodes.Ldarg_0);// [dataReader]
                 EmitUtils.LoadInt32(iLGenerator, colIndex);// [dataReader][index]
                 if (getRealValueMethod != null)
@@ -253,7 +261,9 @@ namespace SmartSql.DataReaderDeserializer
                         iLGenerator.Emit(OpCodes.Unbox_Any, fieldType);
                     }
                 }
-                #endregion
+
+                #endregion GetValue
+
                 //[target][property-Value]
                 if (realType.IsEnum)
                 {
@@ -274,6 +284,7 @@ namespace SmartSql.DataReaderDeserializer
         }
 
         private static readonly MethodInfo _getTypeHandlerMethod = TypeUtils.RequestContextType.GetMethod("GetTypeHandler");
+
         private void EmitGetTypeHanderValue(ILGenerator iLGenerator, int colIndex, string typeHandlerName, Type propertyType)
         {
             iLGenerator.Emit(OpCodes.Ldarg_1);// [RequestContext]
@@ -299,5 +310,4 @@ namespace SmartSql.DataReaderDeserializer
             iLGenerator.Emit(OpCodes.Call, enumConvertMethod);
         }
     }
-
 }
