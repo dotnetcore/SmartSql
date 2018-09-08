@@ -100,7 +100,6 @@ namespace SmartSql.Command
                                       AddDbParameter(dbCommand, dbParameter);
                                       return GetParameterName(match.Value);
                                   }
-
                               });
                         }
                         dbCommand.CommandText = sql;
@@ -122,7 +121,19 @@ namespace SmartSql.Command
             if (_logger.IsEnabled(LogLevel.Debug))
             {
                 string dbParameterStr = string.Join(",", dbCommand.Parameters.Cast<IDbDataParameter>().Select(p => $"{p.ParameterName}={p.Value}"));
-                _logger.LogDebug($"PreparedCommand.Prepare->Statement.Id:[{context.FullSqlId}],Sql:[{dbCommand.CommandText}],Parameters:[{dbParameterStr}]");
+                string realSql = dbCommand.CommandText;
+                foreach (var p in dbCommand.Parameters.Cast<IDbDataParameter>())
+                {
+                    string name = p.ParameterName;
+                    string value = p.Value.ToString();
+
+                    if (name.StartsWith(_smartSqlContext.DbPrefix))
+                        name = name.Replace(_smartSqlContext.DbPrefix, string.Empty);
+
+                    realSql = Regex.Replace(realSql, $"{_smartSqlContext.DbPrefix}{name}", value, _smartSqlContext.IgnoreParameterCase ? RegexOptions.IgnoreCase : RegexOptions.None);
+                }
+
+                _logger.LogDebug($"PreparedCommand.Prepare->Statement.Id:[{context.FullSqlId}],Sql:{Environment.NewLine}{dbCommand.CommandText}{Environment.NewLine}Parameters:[{dbParameterStr}]{Environment.NewLine}Sql with parameter value: {Environment.NewLine}{realSql}");
             }
             return dbCommand;
         }
