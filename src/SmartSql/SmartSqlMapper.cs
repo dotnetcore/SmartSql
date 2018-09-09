@@ -74,6 +74,31 @@ namespace SmartSql
         }
 
         #region Sync
+
+        private T WrapWithTransaction<T>(RequestContext context, Func<IDbConnectionSession, T> executeFun)
+        {
+            var transaction = context.Statement?.Transaction;
+            if (transaction.HasValue)
+            {
+                try
+                {
+                    var dbSession = BeginTransaction(transaction.Value);
+                    var result = executeFun(dbSession);
+                    CommitTransaction();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    RollbackTransaction();
+                    throw ex;
+                }
+            }
+            else
+            {
+                return executeFun(null);
+            }
+        }
+
         public T ExecuteWrap<T>(Func<IDbConnectionSession, T> execute, RequestContext context, DataSourceChoice sourceChoice = DataSourceChoice.Write)
         {
             SetupRequestContext(context, sourceChoice);
@@ -81,27 +106,33 @@ namespace SmartSql
             {
                 return cachedResult;
             }
-            var dataSource = DataSourceFilter.Elect(context);
-            var dbSession = SessionStore.GetOrAddDbSession(dataSource);
-            try
-            {
-                var result = execute(dbSession);
-                CacheManager.RequestExecuted(dbSession, context);
-                CacheManager.TryAdd<T>(context, result);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.HelpLink, ex, ex.Message);
-                throw ex;
-            }
-            finally
-            {
-                if (dbSession.LifeCycle == DbSessionLifeCycle.Transient)
-                {
-                    SessionStore.Dispose();
-                }
-            }
+            return WrapWithTransaction<T>(context, (dbSession) =>
+             {
+                 if (dbSession == null)
+                 {
+                     var dataSource = DataSourceFilter.Elect(context);
+                     dbSession = SessionStore.GetOrAddDbSession(dataSource);
+                 }
+                 try
+                 {
+                     var result = execute(dbSession);
+                     CacheManager.RequestExecuted(dbSession, context);
+                     CacheManager.TryAdd<T>(context, result);
+                     return result;
+                 }
+                 catch (Exception ex)
+                 {
+                     _logger.LogError(ex.HelpLink, ex, ex.Message);
+                     throw ex;
+                 }
+                 finally
+                 {
+                     if (dbSession.LifeCycle == DbSessionLifeCycle.Transient)
+                     {
+                         SessionStore.Dispose();
+                     }
+                 }
+             });
         }
 
         public int Execute(RequestContext context)
@@ -204,6 +235,29 @@ namespace SmartSql
         }
         #endregion
         #region Async
+        private async Task<T> WrapWithTransactionAsync<T>(RequestContext context, Func<IDbConnectionSession, Task<T>> executeFun)
+        {
+            var transaction = context.Statement?.Transaction;
+            if (transaction.HasValue)
+            {
+                try
+                {
+                    var dbSession = BeginTransaction(transaction.Value);
+                    var result = await executeFun(dbSession);
+                    CommitTransaction();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    RollbackTransaction();
+                    throw ex;
+                }
+            }
+            else
+            {
+                return await executeFun(null);
+            }
+        }
         public async Task<T> ExecuteWrapAsync<T>(Func<IDbConnectionSession, Task<T>> execute, RequestContext context, DataSourceChoice sourceChoice = DataSourceChoice.Write)
         {
             SetupRequestContext(context, sourceChoice);
@@ -211,27 +265,36 @@ namespace SmartSql
             {
                 return cachedResult;
             }
-            var dataSource = DataSourceFilter.Elect(context);
-            var dbSession = SessionStore.GetOrAddDbSession(dataSource);
-            try
-            {
-                var result = await execute(dbSession).ConfigureAwait(false);
-                CacheManager.RequestExecuted(dbSession, context);
-                CacheManager.TryAdd<T>(context, result);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.HelpLink, ex, ex.Message);
-                throw ex;
-            }
-            finally
-            {
-                if (dbSession.LifeCycle == DbSessionLifeCycle.Transient)
-                {
-                    SessionStore.Dispose();
-                }
-            }
+
+            return await WrapWithTransactionAsync<T>(context, async (dbSession) =>
+           {
+               if (dbSession == null)
+               {
+                   var dataSource = DataSourceFilter.Elect(context);
+                   dbSession = SessionStore.GetOrAddDbSession(dataSource);
+               }
+               try
+               {
+                   var result = await execute(dbSession).ConfigureAwait(false);
+                   CacheManager.RequestExecuted(dbSession, context);
+                   CacheManager.TryAdd<T>(context, result);
+                   return result;
+               }
+               catch (Exception ex)
+               {
+                   _logger.LogError(ex.HelpLink, ex, ex.Message);
+                   throw ex;
+               }
+               finally
+               {
+                   if (dbSession.LifeCycle == DbSessionLifeCycle.Transient)
+                   {
+                       SessionStore.Dispose();
+                   }
+               }
+           });
+
+
         }
         public Task<int> ExecuteAsync(RequestContext context)
         {
