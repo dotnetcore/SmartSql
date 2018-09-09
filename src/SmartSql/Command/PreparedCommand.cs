@@ -121,17 +121,14 @@ namespace SmartSql.Command
             if (_logger.IsEnabled(LogLevel.Debug))
             {
                 string dbParameterStr = string.Join(",", dbCommand.Parameters.Cast<IDbDataParameter>().Select(p => $"{p.ParameterName}={p.Value}"));
-                string realSql = dbCommand.CommandText;
-                foreach (var p in dbCommand.Parameters.Cast<IDbDataParameter>())
+
+                string realSql = _sqlParamsTokens.Replace(dbCommand.CommandText, (match) =>
                 {
-                    string name = p.ParameterName;
-                    string value = p.Value.ToString();
-
-                    if (name.StartsWith(_smartSqlContext.DbPrefix))
-                        name = name.Replace(_smartSqlContext.DbPrefix, string.Empty);
-
-                    realSql = Regex.Replace(realSql, $"{_smartSqlContext.DbPrefix}{name}", value, _smartSqlContext.IgnoreParameterCase ? RegexOptions.IgnoreCase : RegexOptions.None);
-                }
+                    string paramName = match.Groups[1].Value;
+                    var dbParam = dbCommand.Parameters.Cast<IDbDataParameter>().FirstOrDefault(m => m.ParameterName == paramName);
+                    if (dbParam == null) { return match.Value; }                   
+                    return dbParam.Value.ToString();
+                });
 
                 _logger.LogDebug($"PreparedCommand.Prepare->Statement.Id:[{context.FullSqlId}],Sql:{Environment.NewLine}{dbCommand.CommandText}{Environment.NewLine}Parameters:[{dbParameterStr}]{Environment.NewLine}Sql with parameter value: {Environment.NewLine}{realSql}");
             }
