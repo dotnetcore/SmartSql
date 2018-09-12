@@ -2,16 +2,12 @@
 using SmartSql.Abstractions.DbSession;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
 using SmartSql.Abstractions.Command;
-using System.Data.Common;
 using SmartSql.Abstractions.TypeHandler;
-using SmartSql.Exceptions;
-using SmartSql.Configuration.Statements;
 using Microsoft.Extensions.Logging;
 
 namespace SmartSql.Command
@@ -91,7 +87,17 @@ namespace SmartSql.Command
                                           }, typeHandler);
                                           item_Index++;
                                       }
-                                      inParamSql.Remove(inParamSql.Length - 1, 1);
+                                      if (_logger.IsEnabled(LogLevel.Warning))
+                                      {
+                                          if (item_Index == 0)
+                                          {
+                                              _logger.LogWarning($"PreparedCommand.Prepare:StatementKey:{context.StatementKey}:ParamterName:{propertyName} no element For [In] Tag!");
+                                          }
+                                      }
+                                      if (item_Index > 0)
+                                      {
+                                          inParamSql.Remove(inParamSql.Length - 1, 1);
+                                      }
                                       inParamSql.Append(")");
                                       return inParamSql.ToString();
                                   }
@@ -126,10 +132,28 @@ namespace SmartSql.Command
                 {
                     string paramName = match.Groups[1].Value;
                     var dbParam = dbCommand.Parameters.Cast<IDbDataParameter>().FirstOrDefault(m => m.ParameterName == paramName);
-                    if (dbParam == null) { return match.Value; }                   
+                    if (dbParam == null) { return match.Value; }
+                    if (dbParam.Value == DBNull.Value) { return "NULL"; }
+                    switch (dbParam.DbType)
+                    {
+                        case DbType.AnsiString:
+                        case DbType.AnsiStringFixedLength:
+                        case DbType.DateTime:
+                        case DbType.DateTime2:
+                        case DbType.DateTimeOffset:
+                        case DbType.Guid:
+                        case DbType.String:
+                        case DbType.StringFixedLength:
+                        case DbType.Time:
+                        case DbType.Xml:
+                            { return $"'{dbParam.Value}'"; }
+                        case DbType.Boolean:
+                            {
+                                return ((bool)dbParam.Value) ? "1" : "0";
+                            }
+                    }
                     return dbParam.Value.ToString();
                 });
-
                 _logger.LogDebug($"PreparedCommand.Prepare->Statement.Id:[{context.FullSqlId}],Sql:{Environment.NewLine}{dbCommand.CommandText}{Environment.NewLine}Parameters:[{dbParameterStr}]{Environment.NewLine}Sql with parameter value: {Environment.NewLine}{realSql}");
             }
             return dbCommand;
