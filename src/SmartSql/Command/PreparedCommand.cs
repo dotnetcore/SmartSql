@@ -131,7 +131,8 @@ namespace SmartSql.Command
                 string realSql = _sqlParamsTokens.Replace(dbCommand.CommandText, (match) =>
                 {
                     string paramName = match.Groups[1].Value;
-                    var dbParam = dbCommand.Parameters.Cast<IDbDataParameter>().FirstOrDefault(m => m.ParameterName == paramName);
+                    var paramNameCompare = _smartSqlContext.IgnoreParameterCase ? StringComparison.CurrentCultureIgnoreCase : StringComparison.CurrentCulture;
+                    var dbParam = dbCommand.Parameters.Cast<IDbDataParameter>().FirstOrDefault(m => String.Equals(m.ParameterName, paramName, paramNameCompare));
                     if (dbParam == null) { return match.Value; }
                     if (dbParam.Value == DBNull.Value) { return "NULL"; }
                     switch (dbParam.DbType)

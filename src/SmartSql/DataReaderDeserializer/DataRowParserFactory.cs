@@ -143,8 +143,11 @@ namespace SmartSql.DataReaderDeserializer
         {
             var statement = context.Statement;
             var resultMap = statement?.ResultMap;
-            resultMap = statement?.MultipleResultMap?.Results.FirstOrDefault(m => m.Index == dataReader.ResultIndex)?.Map ?? resultMap;
-
+            resultMap = resultMap ?? statement?.MultipleResultMap?.Results.FirstOrDefault(m => m.Index == dataReader.ResultIndex)?.Map;
+            if (resultMap == null)
+            {
+                resultMap = statement?.MultipleResultMap?.Root?.Map;
+            }
             var constructorMap = resultMap?.Constructor;
 
             var columns = Enumerable.Range(0, dataReader.FieldCount)
