@@ -36,7 +36,17 @@
     </MultipleResultMap>
   </MultipleResultMaps>
   <Statements>
-
+    <Statement Id="Query_1_Entity">
+      Select Top 2 T.* From T_Entity T;
+    </Statement>
+    <Statement Id="Query_2_Entity">
+      <Include RefId="Query_1_Entity"></Include>
+      Select Top 2 T.* From T_Entity T;
+    </Statement>
+    <Statement Id="Query_All">
+      Select Top 1 T.* From T_Entity T;
+      <Include RefId="Query_2_Entity"></Include>
+    </Statement>
     <Statement Id="Query_NestedParams"  >
       Select Top 10 T.* From T_Entity T
       Where FLong=@Root.Second.Id

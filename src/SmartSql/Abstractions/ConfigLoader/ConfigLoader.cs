@@ -140,7 +140,13 @@ namespace SmartSql.Abstractions.Config
             }
             #endregion
             #region Check Statement.Include Cyclic Dependency
-
+            foreach (var sqlMap in SqlMapConfig.SmartSqlMaps)
+            {
+                foreach (var statement in sqlMap.Statements)
+                {
+                    CheckIncludeCyclicDependency(statement, statement.IncludeDependencies);
+                }
+            }
             #endregion
             foreach (var sqlMap in SqlMapConfig.SmartSqlMaps)
             {
@@ -212,10 +218,17 @@ namespace SmartSql.Abstractions.Config
             #endregion
         }
 
-        private void CheckIncludeCyclicDependency()
+        private void CheckIncludeCyclicDependency(Statement statement, IEnumerable<Include> dependencies)
         {
-
-
+            foreach (var dependency in dependencies)
+            {
+                if (statement == dependency.Ref)
+                {
+                    string errMsg = $"Detecting Statement.Id:{statement.FullSqlId} and Statement.Id:{dependency.Statement.FullSqlId} have cyclic dependency!";
+                    throw new SmartSqlException(errMsg);
+                }
+                CheckIncludeCyclicDependency(statement, dependency.Ref.IncludeDependencies);
+            }
         }
 
 
