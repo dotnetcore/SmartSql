@@ -11,11 +11,12 @@
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>3.6.9</Version>
+    <Version>3.7.0-pre</Version>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <PackageReleaseNotes>
-      1. fixed MultipleResultMap.Root result Map
-      2. fixed PreparedCommand Sql log output for IgnoreParameterCase
+      1. Support cross SqlMap reference for https://github.com/Ahoo-Wang/SmartSql/issues/30
+      2. Modifying Statement.Ref for delay dependence
+      3. Optimize Analyse Statement.SqlCommandType
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>

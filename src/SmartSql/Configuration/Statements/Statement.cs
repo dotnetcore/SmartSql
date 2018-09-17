@@ -37,11 +37,15 @@ namespace SmartSql.Configuration.Statements
         public String ReadDb { get; set; }
         public String FullSqlId => $"{SmartSqlMap.Scope}.{Id}";
         public IList<ITag> SqlTags { get; set; }
+        public String CacheId { get; set; }
         public Cache Cache { get; set; }
+        public String ResultMapId { get; set; }
         public ResultMap ResultMap { get; set; }
+        public String ParameterMapId { get; set; }
         public ParameterMap ParameterMap { get; set; }
+        public String MultipleResultMapId { get; set; }
         public MultipleResultMap MultipleResultMap { get; set; }
-
+        internal IList<Include> IncludeDependencies { get; set; }
 
         public void BuildSql(RequestContext context)
         {

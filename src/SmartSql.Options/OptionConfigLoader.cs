@@ -94,7 +94,7 @@ namespace SmartSql.Options
                         }
                 }
             }
-
+            InitDependency();
             if (_logger.IsEnabled(LogLevel.Debug))
             {
                 _logger.LogDebug($"OptionConfigLoader Load End");

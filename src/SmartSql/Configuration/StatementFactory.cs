@@ -16,7 +16,6 @@ namespace SmartSql.Configuration
 {
     public class StatementFactory
     {
-        private SqlCommandAnalyzer _sqlCommandAnalyzer = new SqlCommandAnalyzer();
         public Statement Load(XmlElement statementNode, SmartSqlMap smartSqlMap)
         {
             var statement = new Statement
@@ -24,9 +23,40 @@ namespace SmartSql.Configuration
                 Id = statementNode.Attributes["Id"].Value,
                 SqlTags = new List<ITag> { },
                 ReadDb = statementNode.Attributes["ReadDb"]?.Value,
-                SmartSqlMap = smartSqlMap
+                SmartSqlMap = smartSqlMap,
+                CacheId = statementNode.Attributes["Cache"]?.Value,
+                ResultMapId = statementNode.Attributes["ResultMap"]?.Value,
+                ParameterMapId = statementNode.Attributes["ParameterMap"]?.Value,
+                MultipleResultMapId = statementNode.Attributes["MultipleResultMap"]?.Value,
+                IncludeDependencies = new List<Include>()
             };
-
+            if (!String.IsNullOrEmpty(statement.ReadDb))
+            {
+                var readDb = smartSqlMap.SqlMapConfig.Database.ReadDataSources?.FirstOrDefault(m => m.Name == statement.ReadDb);
+                if (readDb == null)
+                {
+                    throw new SmartSqlException($"Statement.Id:{statement.FullSqlId} can not find ReadDb:{statement.ReadDb}!");
+                }
+            }
+            #region Init CacheId & ResultMapId & ParameterMapId & MultipleResultMapId
+            if (statement.CacheId?.IndexOf('.') < 0)
+            {
+                statement.CacheId = $"{smartSqlMap.Scope}.{statement.CacheId}";
+            }
+            if (statement.ResultMapId?.IndexOf('.') < 0)
+            {
+                statement.ResultMapId = $"{smartSqlMap.Scope}.{statement.ResultMapId}";
+            }
+            if (statement.ParameterMapId?.IndexOf('.') < 0)
+            {
+                statement.ParameterMapId = $"{smartSqlMap.Scope}.{statement.ParameterMapId}";
+            }
+            if (statement.MultipleResultMapId?.IndexOf('.') < 0)
+            {
+                statement.MultipleResultMapId = $"{smartSqlMap.Scope}.{statement.MultipleResultMapId}";
+            }
+            #endregion
+            #region Init CommandType & SourceChoice & Transaction
             var cmdTypeStr = statementNode.Attributes["CommandType"]?.Value;
             var sourceChoiceStr = statementNode.Attributes["SourceChoice"]?.Value;
             var transactionStr = statementNode.Attributes["Transaction"]?.Value;
@@ -43,61 +73,18 @@ namespace SmartSql.Configuration
             {
                 statement.Transaction = isolationLevel;
             }
-            string cacheId = statementNode.Attributes["Cache"]?.Value;
-            #region Attribute For Cache & ResultMap & ParameterMap & MultipleResultMap
-            if (!String.IsNullOrEmpty(cacheId))
-            {
-                var cache = smartSqlMap.Caches.FirstOrDefault(m => m.Id == cacheId);
-                statement.Cache = cache ?? throw new SmartSqlException($"Statement.Id:{statement.Id} can not find Cache.Id:{cacheId}");
-            }
-
-            string resultMapId = statementNode.Attributes["ResultMap"]?.Value;
-            if (!String.IsNullOrEmpty(resultMapId))
-            {
-                var resultMap = smartSqlMap.ResultMaps.FirstOrDefault(r => r.Id == resultMapId);
-                statement.ResultMap = resultMap ?? throw new SmartSqlException($"Statement.Id:{statement.Id} can not find ResultMap.Id:{resultMapId}");
-            }
-
-            string parameterMapId = statementNode.Attributes["ParameterMap"]?.Value;
-            if (!String.IsNullOrEmpty(parameterMapId))
-            {
-                var parameterMap = smartSqlMap.ParameterMaps.FirstOrDefault(r => r.Id == parameterMapId);
-                statement.ParameterMap = parameterMap ?? throw new SmartSqlException($"Statement.Id:{statement.Id} can not find ParameterMap.Id:{parameterMapId}");
-            }
-
-            string multipleResultMapId = statementNode.Attributes["MultipleResultMap"]?.Value;
-            if (!String.IsNullOrEmpty(multipleResultMapId))
-            {
-                var multipleResultMap = smartSqlMap.MultipleResultMaps.FirstOrDefault(r => r.Id == multipleResultMapId);
-                statement.MultipleResultMap = multipleResultMap ?? throw new SmartSqlException($"Statement.Id:{statement.Id} can not find MultipleResultMap.Id:{multipleResultMapId}");
-            }
             #endregion
-            StringBuilder fullSqlTextBuilder = new StringBuilder();
+
             var tagNodes = statementNode.ChildNodes;
-            IList<Include> includes = new List<Include>();
             foreach (XmlNode tagNode in tagNodes)
             {
-                var tag = LoadTag(tagNode, includes, fullSqlTextBuilder);
+                var tag = LoadTag(tagNode, statement);
                 if (tag != null) { statement.SqlTags.Add(tag); }
             }
-            #region Init Include
-            foreach (var include in includes)
-            {
-                if (include.RefId == statement.Id)
-                {
-                    throw new SmartSqlException($"Statement.Load Include.RefId can not be self statement.id:{include.RefId}");
-                }
-                var refStatement = smartSqlMap.Statements.FirstOrDefault(m => m.Id == include.RefId);
-
-                include.Ref = refStatement ?? throw new SmartSqlException($"Statement.Load can not find statement.id:{include.RefId}");
-            }
-            #endregion
-            var fullSqlText = fullSqlTextBuilder.ToString();
-            statement.SqlCommandType = _sqlCommandAnalyzer.Analyse(fullSqlText);
             return statement;
         }
 
-        private ITag LoadTag(XmlNode xmlNode, IList<Include> includes, StringBuilder fullSqlTextBuilder)
+        private ITag LoadTag(XmlNode xmlNode, Statement statement)
         {
             ITag tag = null;
             var prepend = xmlNode.Attributes?["Prepend"]?.Value.Trim();
@@ -111,23 +98,27 @@ namespace SmartSql.Configuration
                     {
                         var innerText = xmlNode.InnerText;
                         var bodyText = innerText;
-                        fullSqlTextBuilder.Append(bodyText);
                         //bodyText += innerText.Trim().Replace("\r", " ").Replace("\n", " ");
                         //bodyText += " ";
                         return new SqlText
                         {
+                            Statement = statement,
                             BodyText = bodyText
                         };
                     }
                 case "Include":
                     {
                         var refId = xmlNode.Attributes?["RefId"]?.Value;
+                        if (refId.IndexOf('.') < 0)
+                        {
+                            refId = $"{statement.SmartSqlMap.Scope}.{refId}";
+                        }
                         var include_tag = new Include
                         {
                             RefId = refId,
                             Prepend = xmlNode.Attributes?["Prepend"]?.Value
                         };
-                        includes.Add(include_tag);
+                        statement.IncludeDependencies.Add(include_tag);
                         tag = include_tag;
                         break;
                     }
@@ -369,16 +360,17 @@ namespace SmartSql.Configuration
                         };
                         break;
                     }
-                case "#comment": { break; }
+                case "#comment": { return null; }
                 default:
                     {
                         throw new SmartSqlException($"Statement.LoadTag unkonw tagName:{xmlNode.Name}.");
                     };
             }
+            tag.Statement = statement;
             #endregion
             foreach (XmlNode childNode in xmlNode)
             {
-                ITag childTag = LoadTag(childNode, includes, fullSqlTextBuilder);
+                ITag childTag = LoadTag(childNode, statement);
                 if (childTag != null && tag != null)
                 {
                     childTag.Parent = tag;
@@ -387,6 +379,5 @@ namespace SmartSql.Configuration
             }
             return tag;
         }
-
     }
 }

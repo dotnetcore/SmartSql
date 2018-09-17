@@ -1,10 +1,5 @@
-﻿using SmartSql.Abstractions;
-using SmartSql.Abstractions.Config;
+﻿using SmartSql.Abstractions.Config;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Serialization;
-using System.Xml;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using System.Threading;
@@ -78,6 +73,7 @@ namespace SmartSql
                         }
                 }
             }
+            InitDependency();
             if (_logger.IsEnabled(LogLevel.Debug))
             {
                 _logger.LogDebug($"LocalFileConfigLoader Load: {_sqlMapConfigFilePath} End");

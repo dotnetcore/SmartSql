@@ -1,10 +1,7 @@
 ﻿using SmartSql.Abstractions;
+using SmartSql.Configuration.Statements;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Xml.Serialization;
 
 namespace SmartSql.Configuration.Tags
 {
@@ -15,6 +12,8 @@ namespace SmartSql.Configuration.Tags
         public abstract TagType Type { get; }
         public IList<ITag> ChildTags { get; set; }
         public ITag Parent { get; set; }
+        public Statement Statement { get; set; }
+
         public abstract bool IsCondition(RequestContext context);
         public virtual void BuildSql(RequestContext context)
         {

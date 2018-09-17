@@ -1,4 +1,5 @@
 ﻿using SmartSql.Abstractions;
+using SmartSql.Configuration.Statements;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +8,7 @@ namespace SmartSql.Configuration.Tags
 {
     public interface ITag
     {
+        Statement Statement { get; set; }
         TagType Type { get; }
         ITag Parent { get; set; }
         bool IsCondition(RequestContext context);

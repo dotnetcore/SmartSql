@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using SmartSql.Configuration;
 using SmartSql.Configuration.Statements;
 using SmartSql.Configuration.Maps;
+using System.Linq;
+using SmartSql.Exceptions;
+using SmartSql.Configuration.Tags;
+using System.Text;
+using SmartSql.Utils;
 
 namespace SmartSql.Abstractions.Config
 {
     public abstract class ConfigLoader : IConfigLoader
     {
         private StatementFactory _statementFactory = new StatementFactory();
-
+        private SqlCommandAnalyzer _sqlCommandAnalyzer = new SqlCommandAnalyzer();
         public SmartSqlMapConfig SqlMapConfig { get; set; }
 
         public abstract event OnChangedHandler OnChanged;
@@ -65,7 +68,7 @@ namespace SmartSql.Abstractions.Config
                 var cacheNodes = xmlDoc.SelectNodes("//ns:Caches/ns:Cache", xmlNsM);
                 foreach (XmlElement cacheNode in cacheNodes)
                 {
-                    var cache = CacheFactory.Load(cacheNode);
+                    var cache = CacheFactory.Load(cacheNode, sqlMap);
                     sqlMap.Caches.Add(cache);
                 }
                 #endregion
@@ -74,7 +77,7 @@ namespace SmartSql.Abstractions.Config
                 var resultMapsNodes = xmlDoc.SelectNodes("//ns:ResultMaps/ns:ResultMap", xmlNsM);
                 foreach (XmlElement xmlNode in resultMapsNodes)
                 {
-                    var resultMap = MapFactory.LoadResultMap(xmlNode, SqlMapConfig, xmlNsM);
+                    var resultMap = MapFactory.LoadResultMap(xmlNode, sqlMap, xmlNsM);
                     sqlMap.ResultMaps.Add(resultMap);
                 }
                 #endregion
@@ -82,7 +85,7 @@ namespace SmartSql.Abstractions.Config
                 var multipleResultMapsNode = xmlDoc.SelectNodes("//ns:MultipleResultMaps/ns:MultipleResultMap", xmlNsM);
                 foreach (XmlElement xmlNode in multipleResultMapsNode)
                 {
-                    var multipleResultMap = MapFactory.LoadMultipleResultMap(xmlNode, sqlMap.ResultMaps);
+                    var multipleResultMap = MapFactory.LoadMultipleResultMap(xmlNode, sqlMap);
                     sqlMap.MultipleResultMaps.Add(multipleResultMap);
                 }
                 #endregion
@@ -90,7 +93,7 @@ namespace SmartSql.Abstractions.Config
                 var parameterMaps = xmlDoc.SelectNodes("//ns:ParameterMaps/ns:ParameterMap", xmlNsM);
                 foreach (XmlElement xmlNode in parameterMaps)
                 {
-                    var parameterMap = MapFactory.LoadParameterMap(xmlNode, SqlMapConfig);
+                    var parameterMap = MapFactory.LoadParameterMap(xmlNode, sqlMap);
                     sqlMap.ParameterMaps.Add(parameterMap);
                 }
                 #endregion
@@ -103,7 +106,148 @@ namespace SmartSql.Abstractions.Config
                 return sqlMap;
             }
         }
+        private ResultMap GetResultMap(string fullMapId)
+        {
+            var scope = fullMapId.Split('.')[0];
+            var sqlMap = SqlMapConfig.SmartSqlMaps.FirstOrDefault(m => m.Scope == scope);
+            if (sqlMap == null) { throw new SmartSqlException($"ConfigLoader can not find SqlMap.Scoe:{scope}"); }
+            var resultMap = sqlMap.ResultMaps.FirstOrDefault(m => m.Id == fullMapId);
+            if (resultMap == null) { throw new SmartSqlException($"ConfigLoader can not find ResultMap.Id:{fullMapId}"); }
+            return resultMap;
+        }
+        private SmartSqlMap GetSmartSqlMap(string scope)
+        {
+            return SqlMapConfig.SmartSqlMaps.FirstOrDefault(m => m.Scope == scope);
+        }
+        public void InitDependency()
+        {
+            #region Init Statement.Include
+            foreach (var sqlMap in SqlMapConfig.SmartSqlMaps)
+            {
+                foreach (var statement in sqlMap.Statements)
+                {
+                    foreach (var include in statement.IncludeDependencies)
+                    {
+                        if (include.RefId == include.Statement.Id)
+                        {
+                            throw new SmartSqlException($"Include.RefId can not be self statement.id:{include.RefId}");
+                        }
+                        var scope = include.RefId.Split('.')[0];
+                        var refStatement = GetSmartSqlMap(scope).Statements.FirstOrDefault(m => m.FullSqlId == include.RefId);
+                        include.Ref = refStatement ?? throw new SmartSqlException($"Include can not find statement.id:{include.RefId}");
+                    }
+                }
+            }
+            #endregion
+            #region Check Statement.Include Cyclic Dependency
 
+            #endregion
+            foreach (var sqlMap in SqlMapConfig.SmartSqlMaps)
+            {
+                #region Init MultipleResultMaps
+                foreach (var mResult in sqlMap.MultipleResultMaps)
+                {
+                    if (!String.IsNullOrEmpty(mResult.Root?.MapId))
+                    {
+                        mResult.Root.Map = GetResultMap(mResult.Root.MapId);
+                    }
+                    foreach (var result in mResult.Results)
+                    {
+                        if (String.IsNullOrEmpty(result?.MapId))
+                        {
+                            continue;
+                        }
+                        result.Map = GetResultMap(result.MapId);
+                    }
+                }
+                #endregion
+                #region Init Statement Attribute For Cache & ResultMap & ParameterMap & MultipleResultMap
+                foreach (var statement in sqlMap.Statements)
+                {
+                    if (!String.IsNullOrEmpty(statement.CacheId))
+                    {
+                        var scope = statement.CacheId.Split('.')[0];
+                        var cache = GetSmartSqlMap(scope)?
+                            .Caches.FirstOrDefault(m => m.Id == statement.CacheId);
+                        statement.Cache = cache ?? throw new SmartSqlException($"Statement.Id:{statement.Id} can not find Cache.Id:{statement.CacheId}");
+                    }
+
+                    if (!String.IsNullOrEmpty(statement.ResultMapId))
+                    {
+                        var scope = statement.ResultMapId.Split('.')[0];
+                        var resultMap = GetSmartSqlMap(scope)?
+                            .ResultMaps.FirstOrDefault(m => m.Id == statement.ResultMapId);
+                        statement.ResultMap = resultMap ?? throw new SmartSqlException($"Statement.Id:{statement.Id} can not find ResultMap.Id:{statement.ResultMapId}");
+                    }
+
+                    if (!String.IsNullOrEmpty(statement.ParameterMapId))
+                    {
+                        var scope = statement.ParameterMapId.Split('.')[0];
+                        var parameterMap = GetSmartSqlMap(scope)?
+                            .ParameterMaps.FirstOrDefault(m => m.Id == statement.ParameterMapId);
+                        statement.ParameterMap = parameterMap ?? throw new SmartSqlException($"Statement.Id:{statement.Id} can not find ParameterMap.Id:{statement.ParameterMapId}");
+                    }
+
+                    if (!String.IsNullOrEmpty(statement.MultipleResultMapId))
+                    {
+                        var scope = statement.MultipleResultMapId.Split('.')[0];
+                        var multipleResultMap = GetSmartSqlMap(scope)?
+                                .MultipleResultMaps.FirstOrDefault(m => m.Id == statement.MultipleResultMapId);
+                        statement.MultipleResultMap = multipleResultMap ?? throw new SmartSqlException($"Statement.Id:{statement.Id} can not find MultipleResultMap.Id:{statement.MultipleResultMapId}");
+                    }
+                }
+                #endregion
+            }
+            #region Init Statement.SqlCommandType
+            foreach (var sqlMap in SqlMapConfig.SmartSqlMaps)
+            {
+                foreach (var statement in sqlMap.Statements)
+                {
+                    StringBuilder fullSqlTextBuilder = new StringBuilder();
+                    BuildStatementFullSql(statement, fullSqlTextBuilder);
+                    var fullSqlText = fullSqlTextBuilder.ToString();
+                    statement.SqlCommandType = _sqlCommandAnalyzer.Analyse(fullSqlText);
+                }
+            }
+            #endregion
+        }
+
+        private void CheckIncludeCyclicDependency()
+        {
+
+
+        }
+
+
+        private void BuildStatementFullSql(Statement statement, StringBuilder fullSqlTextBuilder)
+        {
+            foreach (var tag in statement.SqlTags)
+            {
+                if (tag is Include include)
+                {
+                    BuildStatementFullSql(include.Ref, fullSqlTextBuilder);
+                }
+                else
+                {
+                    BuildTagFullSql(tag, fullSqlTextBuilder);
+                }
+            }
+        }
+        private void BuildTagFullSql(ITag tag, StringBuilder fullSqlTextBuilder)
+        {
+            if (tag is SqlText sqlText)
+            {
+                fullSqlTextBuilder.Append(sqlText.BodyText);
+                return;
+            }
+            if (tag is Tag parentTag && parentTag.ChildTags != null)
+            {
+                foreach (var childTag in parentTag.ChildTags)
+                {
+                    BuildTagFullSql(childTag, fullSqlTextBuilder);
+                }
+            }
+        }
         private void LoadStatementInSqlMap(SmartSqlMap sqlMap, XmlNodeList statementNodes)
         {
             foreach (XmlElement statementNode in statementNodes)

@@ -1,4 +1,5 @@
-﻿using SmartSql.Exceptions;
+﻿using SmartSql.Configuration.Statements;
+using SmartSql.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,19 +11,23 @@ namespace SmartSql.Configuration.Maps
     public class MapFactory
     {
         #region ResultMap
-        public static ResultMap LoadResultMap(XmlElement xmlNode, SmartSqlMapConfig sqlMapConfig, XmlNamespaceManager xmlNsM)
+        public static ResultMap LoadResultMap(XmlElement xmlNode, SmartSqlMap sqlMap, XmlNamespaceManager xmlNsM)
         {
             ResultMap resultMap = new ResultMap
             {
                 Id = xmlNode.Attributes["Id"].Value,
                 Properties = new List<Property> { }
             };
-            LoadCtor(xmlNode, sqlMapConfig, xmlNsM, resultMap);
-            LoadProperty(xmlNode, sqlMapConfig, xmlNsM, resultMap);
+            if (resultMap.Id.IndexOf('.') < 0)
+            {
+                resultMap.Id = $"{sqlMap.Scope}.{resultMap.Id}";
+            }
+            LoadCtor(xmlNode, sqlMap, xmlNsM, resultMap);
+            LoadProperty(xmlNode, sqlMap, xmlNsM, resultMap);
             return resultMap;
         }
 
-        private static void LoadCtor(XmlElement xmlNode, SmartSqlMapConfig sqlMapConfig, XmlNamespaceManager xmlNsM, ResultMap resultMap)
+        private static void LoadCtor(XmlElement xmlNode, SmartSqlMap sqlMap, XmlNamespaceManager xmlNsM, ResultMap resultMap)
         {
             var ctorNode = xmlNode.SelectSingleNode("./ns:Constructor", xmlNsM);
             if (ctorNode != null)
@@ -45,7 +50,7 @@ namespace SmartSql.Configuration.Maps
                         arg.ArgType = ArgTypeConvert(arg.Type);
                         if (!String.IsNullOrEmpty(arg.TypeHandler))
                         {
-                            TypeHandler typeHandler = TypeHanderNotNull(sqlMapConfig, arg.TypeHandler);
+                            TypeHandler typeHandler = TypeHanderNotNull(sqlMap, arg.TypeHandler);
                             arg.Handler = typeHandler.Handler;
                         }
                         ctorMap.Args.Add(arg);
@@ -79,7 +84,7 @@ namespace SmartSql.Configuration.Maps
             }
         }
 
-        private static void LoadProperty(XmlElement xmlNode, SmartSqlMapConfig sqlMapConfig, XmlNamespaceManager xmlNsM, ResultMap resultMap)
+        private static void LoadProperty(XmlElement xmlNode, SmartSqlMap sqlMap, XmlNamespaceManager xmlNsM, ResultMap resultMap)
         {
             var resultNodes = xmlNode.SelectNodes("./ns:Result", xmlNsM);
             foreach (XmlNode resultNode in resultNodes)
@@ -92,7 +97,7 @@ namespace SmartSql.Configuration.Maps
                 };
                 if (!String.IsNullOrEmpty(property.TypeHandler))
                 {
-                    TypeHandler typeHandler = TypeHanderNotNull(sqlMapConfig, property.TypeHandler);
+                    TypeHandler typeHandler = TypeHanderNotNull(sqlMap, property.TypeHandler);
                     property.Handler = typeHandler.Handler;
                 }
                 resultMap.Properties.Add(property);
@@ -100,14 +105,17 @@ namespace SmartSql.Configuration.Maps
         }
         #endregion
         #region ParameterMap
-        public static ParameterMap LoadParameterMap(XmlElement xmlNode, SmartSqlMapConfig sqlMapConfig)
+        public static ParameterMap LoadParameterMap(XmlElement xmlNode, SmartSqlMap sqlMap)
         {
             ParameterMap parameterMap = new ParameterMap
             {
                 Id = xmlNode.Attributes["Id"].Value,
                 Parameters = new List<Parameter> { }
             };
-
+            if (parameterMap.Id.IndexOf('.') < 0)
+            {
+                parameterMap.Id = $"{sqlMap.Scope}.{parameterMap.Id}";
+            }
             foreach (XmlNode childNode in xmlNode.ChildNodes)
             {
                 var parameter = new Parameter
@@ -119,7 +127,7 @@ namespace SmartSql.Configuration.Maps
 
                 if (!String.IsNullOrEmpty(parameter.TypeHandler))
                 {
-                    TypeHandler typeHandler = TypeHanderNotNull(sqlMapConfig, parameter.TypeHandler);
+                    TypeHandler typeHandler = TypeHanderNotNull(sqlMap, parameter.TypeHandler);
                     parameter.Handler = typeHandler.Handler;
                 }
                 parameterMap.Parameters.Add(parameter);
@@ -128,9 +136,9 @@ namespace SmartSql.Configuration.Maps
             return parameterMap;
         }
 
-        private static TypeHandler TypeHanderNotNull(SmartSqlMapConfig sqlMapConfig, string typeHandlerName)
+        private static TypeHandler TypeHanderNotNull(SmartSqlMap sqlMap, string typeHandlerName)
         {
-            var typeHandler = sqlMapConfig.TypeHandlers.FirstOrDefault(th => th.Name == typeHandlerName);
+            var typeHandler = sqlMap.SqlMapConfig.TypeHandlers.FirstOrDefault(th => th.Name == typeHandlerName);
             if (typeHandler == null)
             {
                 throw new SmartSqlException($"Can not find TypeHandler.Name:{typeHandlerName}");
@@ -140,13 +148,17 @@ namespace SmartSql.Configuration.Maps
         #endregion
 
         #region MultipleResultMap
-        public static MultipleResultMap LoadMultipleResultMap(XmlElement xmlNode, IList<ResultMap> resultMaps)
+        public static MultipleResultMap LoadMultipleResultMap(XmlElement xmlNode, SmartSqlMap sqlMap)
         {
             MultipleResultMap multipleResultMap = new MultipleResultMap
             {
                 Id = xmlNode.Attributes["Id"].Value,
                 Results = new List<Result> { }
             };
+            if (multipleResultMap.Id.IndexOf('.') < 0)
+            {
+                multipleResultMap.Id = $"{sqlMap.Scope}.{multipleResultMap.Id}";
+            }
             int resultIndex = 0;
             foreach (XmlNode childNode in xmlNode.ChildNodes)
             {
@@ -156,15 +168,14 @@ namespace SmartSql.Configuration.Maps
                     Property = childNode.Attributes["Property"]?.Value,
                     MapId = childNode.Attributes["MapId"]?.Value,
                 };
+                if (result.MapId?.IndexOf('.') < 0)
+                {
+                    result.MapId = $"{sqlMap.Scope}.{result.MapId}";
+                }
                 var indexStr = childNode.Attributes["Index"]?.Value;
                 if (int.TryParse(indexStr, out int index))
                 {
                     result.Index = index;
-                }
-                if (!String.IsNullOrEmpty(result.MapId))
-                {
-                    var resultMap = resultMaps.FirstOrDefault(m => m.Id == result.MapId);
-                    result.Map = resultMap ?? throw new SmartSqlException($"Can not find ResultMap.Id:{result.MapId}");
                 }
                 if (childNode.Name == "Root")
                 {

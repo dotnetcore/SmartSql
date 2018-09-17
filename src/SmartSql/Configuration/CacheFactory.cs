@@ -1,5 +1,6 @@
 ﻿using SmartSql.Abstractions.Cache;
 using SmartSql.Cache;
+using SmartSql.Configuration.Maps;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,7 +11,7 @@ namespace SmartSql.Configuration
 {
     public class CacheFactory
     {
-        public static Cache Load(XmlElement cacheNode)
+        public static Cache Load(XmlElement cacheNode, SmartSqlMap sqlMap)
         {
             var cache = new Cache
             {
@@ -54,6 +55,10 @@ namespace SmartSql.Configuration
                             string statementId = childNode.Attributes["Statement"]?.Value;
                             if (!String.IsNullOrEmpty(statementId))
                             {
+                                if (statementId.IndexOf('.') < 0)
+                                {
+                                    statementId = $"{sqlMap.Scope}.{statementId}";
+                                }
                                 cache.FlushOnExecutes.Add(new FlushOnExecute
                                 {
                                     Statement = statementId
