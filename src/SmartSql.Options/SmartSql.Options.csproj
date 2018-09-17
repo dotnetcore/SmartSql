@@ -7,7 +7,7 @@
     <Product>SmartSq</Product>
     <Copyright>SmartSq</Copyright>
     <Title>SmartSql.Options</Title>
-    <Version>1.4.0</Version>
+    <Version>1.4.0-pre</Version>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>

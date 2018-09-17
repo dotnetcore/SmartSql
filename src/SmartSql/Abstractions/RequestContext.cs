@@ -117,6 +117,7 @@ namespace SmartSql.Abstractions
                 strBuilder.AppendFormat("&{0}={1}", key, val);
             }
         }
+        [Obsolete("Internal call")]
         public ITypeHandler GetTypeHandler(string typeHandlerName)
         {
             return SmartSqlContext.SqlMapConfig.TypeHandlers.FirstOrDefault(th => th.Name == typeHandlerName)?.Handler;
