@@ -20,6 +20,10 @@ namespace SmartSql.Configuration
                 Parameters = new Dictionary<String, String>(),
                 FlushOnExecutes = new List<FlushOnExecute>()
             };
+            if (cache.Id.IndexOf('.') < 0)
+            {
+                cache.Id = $"{sqlMap.Scope}.{cache.Id}";
+            }
             foreach (XmlNode childNode in cacheNode.ChildNodes)
             {
                 switch (childNode.Name)

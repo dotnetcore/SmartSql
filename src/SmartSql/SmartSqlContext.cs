@@ -68,16 +68,15 @@ namespace SmartSql
         {
             foreach (var statement in sqlmap.Statements)
             {
-                var statementId = $"{sqlmap.Scope}.{statement.Id}";
-                if (MappedStatement.ContainsKey(statementId))
+                if (MappedStatement.ContainsKey(statement.FullSqlId))
                 {
-                    MappedStatement.Remove(statementId);
+                    MappedStatement.Remove(statement.FullSqlId);
                     if (_logger.IsEnabled(LogLevel.Warning))
                     {
-                        _logger.LogWarning($"SmartSqlMapConfig Load MappedStatements: StatementId:{statementId}  already exists!");
+                        _logger.LogWarning($"SmartSqlMapConfig Load MappedStatements: StatementId:{statement.FullSqlId}  already exists!");
                     }
                 }
-                MappedStatement.Add(statementId, statement);
+                MappedStatement.Add(statement.FullSqlId, statement);
             }
         }
         public void InitCache()
