@@ -8,11 +8,10 @@ namespace SmartSql
     {
         private MapperContainer() { }
         public static MapperContainer Instance = new MapperContainer();
-
         /// <summary>
         /// Mapper容器
         /// </summary>
-        private IDictionary<String, ISmartSqlMapper> _mapperContainer = new Dictionary<String, ISmartSqlMapper>();
+        public IDictionary<String, ISmartSqlMapper> Container { get; private set; } = new Dictionary<String, ISmartSqlMapper>();
 
         public ISmartSqlMapper GetSqlMapper(String smartSqlMapConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH)
         {
@@ -25,26 +24,26 @@ namespace SmartSql
             {
                 smartSqlOptions.Alias = smartSqlOptions.ConfigPath;
             }
-            if (!_mapperContainer.ContainsKey(smartSqlOptions.Alias))
+            if (!Container.ContainsKey(smartSqlOptions.Alias))
             {
                 lock (this)
                 {
-                    if (!_mapperContainer.ContainsKey(smartSqlOptions.Alias))
+                    if (!Container.ContainsKey(smartSqlOptions.Alias))
                     {
                         ISmartSqlMapper _mapper = new SmartSqlMapper(smartSqlOptions);
-                        _mapperContainer.Add(smartSqlOptions.Alias, _mapper);
+                        Container.Add(smartSqlOptions.Alias, _mapper);
                     }
                 }
             }
-            return _mapperContainer[smartSqlOptions.Alias];
+            return Container[smartSqlOptions.Alias];
         }
         public void Dispose()
         {
-            foreach (var mapper in _mapperContainer)
+            foreach (var mapper in Container)
             {
                 mapper.Value.Dispose();
             }
-            _mapperContainer.Clear();
+            Container.Clear();
         }
     }
 }
