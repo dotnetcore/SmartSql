@@ -107,6 +107,7 @@
   </xs:element>
   <xs:element name="Parameter">
     <xs:complexType>
+      <xs:attribute name="Name" type="xs:string" />
       <xs:attribute name="Property" type="xs:string" use="required" />
       <xs:attribute name="TypeHandler" type="xs:string" />
     </xs:complexType>
