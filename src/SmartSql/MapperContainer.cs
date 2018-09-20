@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SmartSql.Abstractions;
+using SmartSql.Exceptions;
 
 namespace SmartSql
 {
@@ -36,6 +37,16 @@ namespace SmartSql
                 }
             }
             return Container[smartSqlOptions.Alias];
+        }
+
+        public ISmartSqlMapper GetSqlMapperByAlias(string alias)
+        {
+            if (!Container.ContainsKey(alias))
+            {
+                throw new SmartSqlException($"Can not find ISmartSqlMapper.Alias:{alias}!");
+            }
+            
+            return Container[alias];
         }
         public void Dispose()
         {
