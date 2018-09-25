@@ -40,5 +40,6 @@ namespace SmartSql.UTests
                               .GetField("Instance")
                               .GetValue(null) as DbProviderFactory;
         }
+
     }
 }

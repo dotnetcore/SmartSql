@@ -158,8 +158,21 @@ namespace SmartSql.UTests
                 SqlId = "GetRecord",
                 Request = new { FLongs = new long[] { 1, 2, 3 } }
             };
-            var total = _sqlMapper.ExecuteScalar<long>(context);
+            var total = _sqlMapper.ExecuteScalar<long?>(context);
         }
+
+        [Fact]
+        public void ExecuteScalar_NULL()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "ExecuteScalar_NULL",
+                Request = new { FLongs = new long[] { 1, 2, 3 } }
+            };
+            var total = _sqlMapper.ExecuteScalar<long?>(context);
+        }
+
         [Fact]
         public void ExecuteScalar_Bool_True()
         {

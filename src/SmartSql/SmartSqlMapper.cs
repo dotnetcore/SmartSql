@@ -147,7 +147,15 @@ namespace SmartSql
             return ExecuteWrap((dbSession) =>
             {
                 var result = CommandExecuter.ExecuteScalar(dbSession, context);
-                return (T)Convert.ChangeType(result, typeof(T));
+                if (result == null)
+                {
+                    var defaultTypedVal = default(T);
+                    if (defaultTypedVal != null) { throw new SmartSqlException($"Null can not convert to {typeof(T)}"); }
+                    return defaultTypedVal;
+                }
+                var resultType = typeof(T);
+                var convertType = Nullable.GetUnderlyingType(resultType) ?? resultType;
+                return (T)Convert.ChangeType(result, convertType);
             }, context);
         }
 
