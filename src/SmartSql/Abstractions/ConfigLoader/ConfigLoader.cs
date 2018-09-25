@@ -133,7 +133,7 @@ namespace SmartSql.Abstractions.Config
                             throw new SmartSqlException($"Include.RefId can not be self statement.id:{include.RefId}");
                         }
                         var scope = include.RefId.Split('.')[0];
-                        var refStatement = GetSmartSqlMap(scope).Statements.FirstOrDefault(m => m.FullSqlId == include.RefId);
+                        var refStatement = GetSmartSqlMap(scope)?.Statements?.FirstOrDefault(m => m.FullSqlId == include.RefId);
                         include.Ref = refStatement ?? throw new SmartSqlException($"Include can not find statement.id:{include.RefId}");
                     }
                 }
@@ -174,7 +174,7 @@ namespace SmartSql.Abstractions.Config
                     {
                         var scope = statement.CacheId.Split('.')[0];
                         var cache = GetSmartSqlMap(scope)?
-                            .Caches.FirstOrDefault(m => m.Id == statement.CacheId);
+                            .Caches?.FirstOrDefault(m => m.Id == statement.CacheId);
                         statement.Cache = cache ?? throw new SmartSqlException($"Statement.Id:{statement.FullSqlId} can not find Cache.Id:{statement.CacheId}");
                     }
 
@@ -182,7 +182,7 @@ namespace SmartSql.Abstractions.Config
                     {
                         var scope = statement.ResultMapId.Split('.')[0];
                         var resultMap = GetSmartSqlMap(scope)?
-                            .ResultMaps.FirstOrDefault(m => m.Id == statement.ResultMapId);
+                            .ResultMaps?.FirstOrDefault(m => m.Id == statement.ResultMapId);
                         statement.ResultMap = resultMap ?? throw new SmartSqlException($"Statement.Id:{statement.FullSqlId} can not find ResultMap.Id:{statement.ResultMapId}");
                     }
 
@@ -190,7 +190,7 @@ namespace SmartSql.Abstractions.Config
                     {
                         var scope = statement.ParameterMapId.Split('.')[0];
                         var parameterMap = GetSmartSqlMap(scope)?
-                            .ParameterMaps.FirstOrDefault(m => m.Id == statement.ParameterMapId);
+                            .ParameterMaps?.FirstOrDefault(m => m.Id == statement.ParameterMapId);
                         statement.ParameterMap = parameterMap ?? throw new SmartSqlException($"Statement.Id:{statement.FullSqlId} can not find ParameterMap.Id:{statement.ParameterMapId}");
                     }
 
@@ -198,7 +198,7 @@ namespace SmartSql.Abstractions.Config
                     {
                         var scope = statement.MultipleResultMapId.Split('.')[0];
                         var multipleResultMap = GetSmartSqlMap(scope)?
-                                .MultipleResultMaps.FirstOrDefault(m => m.Id == statement.MultipleResultMapId);
+                                .MultipleResultMaps?.FirstOrDefault(m => m.Id == statement.MultipleResultMapId);
                         statement.MultipleResultMap = multipleResultMap ?? throw new SmartSqlException($"Statement.Id:{statement.FullSqlId} can not find MultipleResultMap.Id:{statement.MultipleResultMapId}");
                     }
                 }
