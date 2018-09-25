@@ -155,7 +155,8 @@ namespace SmartSql.UTests
             RequestContext context = new RequestContext
             {
                 Scope = Scope,
-                SqlId = "GetRecord"
+                SqlId = "GetRecord",
+                Request = new { FLongs = new long[] { 1, 2, 3 } }
             };
             var total = _sqlMapper.ExecuteScalar<long>(context);
         }

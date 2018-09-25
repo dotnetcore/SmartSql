@@ -97,6 +97,9 @@
     </Statement>
     <Statement Id="QueryParams">
       <Where>
+        <IsNotEmpty Prepend="And" Property="FLongs">
+          T.FLong In $FLongs
+        </IsNotEmpty>
         <IsNotEmpty Prepend="And" Property="FString">
           T.FString=$FString
         </IsNotEmpty>
@@ -110,6 +113,7 @@
         <For Prepend="And" Key="Key" Open="T.FLong In (" Close=")" Property="Ids" Separator=",">
           @Key
         </For>
+        
       </Where>
     </Statement>
     <Statement Id="QueryId">

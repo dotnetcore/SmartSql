@@ -11,13 +11,10 @@
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Version>3.7.0</Version>
+    <Version>3.7.1</Version>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <PackageReleaseNotes>
-      1. Support cross SqlMap reference for https://github.com/Ahoo-Wang/SmartSql/issues/30
-      2. Modifying Statement.Ref for delay dependence
-      3. Optimize Analyse Statement.SqlCommandType
-      4. Optimize CheckIncludeCyclicDependency
+      1. fixed Log out put for In Params
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>
