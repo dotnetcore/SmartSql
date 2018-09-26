@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartSql.Abstractions.TypeHandler;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -24,5 +25,6 @@ namespace SmartSql
         public int? Size { get; set; }
         public DbType? DbType { get; set; }
         public ParameterDirection? Direction { get; set; }
+        public ITypeHandler TypeHandler { get; set; }
     }
 }

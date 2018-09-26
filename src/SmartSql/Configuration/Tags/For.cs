@@ -91,8 +91,15 @@ namespace SmartSql.Configuration.Tags
                 }
                 var item_sql = sqlParamsTokens.Replace(itemSqlStr, (match) =>
                 {
+                    string paramName = match.Groups[1].Value;
+                    var paramMap = context.Statement?.ParameterMap?.Parameters?.FirstOrDefault(p => p.Name == paramName);
                     string key_name = $"{Key}{FOR_KEY_SUFFIX}_{Property}_{item_index}";
-                    context.RequestParameters.Add(key_name, itemVal);
+                    context.RequestParameters.Add(new DbParameter
+                    {
+                        Name = key_name,
+                        Value = itemVal,
+                        TypeHandler = paramMap?.Handler
+                    });
                     return $"{dbPrefix}{key_name}";
                 });
                 context.Sql.AppendFormat("{0}", item_sql);
@@ -116,12 +123,19 @@ namespace SmartSql.Configuration.Tags
                 var item_sql = sqlParamsTokens.Replace(itemSqlStr, (match) =>
                 {
                     string paramName = match.Groups[1].Value;
+                    var paramMap = context.Statement?.ParameterMap?.Parameters?.FirstOrDefault(p => p.Name == paramName);
+                    var propertyName = paramMap != null ? paramMap.Property : paramName;
                     string key_name = $"{Key}{FOR_KEY_SUFFIX}_{Property}_{paramName}_{item_index}";
-                    if (!itemParams.TryGetValue(paramName, out DbParameter propertyVal))
+                    if (!itemParams.TryGetValue(propertyName, out DbParameter propertyVal))
                     {
                         return match.Value;
                     }
-                    context.RequestParameters.Add(key_name, propertyVal.Value);
+                    context.RequestParameters.Add(new DbParameter
+                    {
+                        Name = key_name,
+                        Value = propertyVal.Value,
+                        TypeHandler = paramMap?.Handler
+                    });
                     return $"{dbPrefix}{key_name}";
                 });
                 item_index++;

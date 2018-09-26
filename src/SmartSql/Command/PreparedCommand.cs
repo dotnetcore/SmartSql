@@ -62,7 +62,7 @@ namespace SmartSql.Command
                                       return GetParameterName(match.Value);
                                   }
                                   var dbParameter = context.RequestParameters.Get(propertyName);
-                                  ITypeHandler typeHandler = paramMap?.Handler;
+                                  ITypeHandler typeHandler = dbParameter.TypeHandler ?? paramMap?.Handler;
                                   if (typeHandler != null)
                                   {
                                       AddDbParameter(dbCommand, dbParameter, typeHandler);
