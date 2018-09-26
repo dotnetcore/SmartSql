@@ -13,6 +13,12 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class DyRepositoryExtensions
     {
+        /// <summary>
+        /// 注入SmartSql仓储工厂
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="scope_template">Scope模板，默认：I{Scope}Repository</param>
+        /// <param name="sqlIdNamingConvert">SqlId命名转换</param>
         public static void AddRepositoryFactory(this IServiceCollection services, string scope_template = "", Func<Type, MethodInfo, String> sqlIdNamingConvert = null)
         {
             services.AddSingleton<IRepositoryBuilder>((sp) =>
@@ -29,6 +35,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 return new RepositoryFactory(repositoryBuilder, logger);
             });
         }
+        /// <summary>
+        /// 注入单个仓储接口
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="getSmartSql">获取ISmartSqlMapper函数</param>
+        /// <param name="scope">SqlMaper.Scope</param>
         public static void AddRepository<T>(this IServiceCollection services, Func<IServiceProvider, ISmartSqlMapper> getSmartSql = null, string scope = "") where T : class
         {
             services.AddSingleton<T>(sp =>
@@ -43,6 +56,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 return factory.CreateInstance<T>(sqlMapper, scope);
             });
         }
+        /// <summary>
+        /// 注入仓储结构 By 程序集
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="setupOptions"></param>
         public static void AddRepositoryFromAssembly(this IServiceCollection services, Action<AssemblyAutoRegisterOptions> setupOptions)
         {
             var options = new AssemblyAutoRegisterOptions
@@ -74,7 +92,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
         }
         /// <summary>
-        /// AddSmartSql & AddRepositoryFactory
+        /// AddSmartSql And AddRepositoryFactory
         /// </summary>
         /// <param name="services"></param>
         /// <param name="scope_template"></param>
@@ -85,7 +103,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddRepositoryFactory(scope_template, sqlIdNamingConvert);
         }
         /// <summary>
-        /// AddSmartSqlRepositoryFactory & AddRepositoryFromAssembly
+        /// AddSmartSqlRepositoryFactory And AddRepositoryFromAssembly
         /// </summary>
         /// <param name="services"></param>
         /// <param name="setupOptions"></param>

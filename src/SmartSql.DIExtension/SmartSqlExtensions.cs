@@ -12,6 +12,10 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class SmartSqlExtensions
     {
+        /// <summary>
+        /// 注入默认 ISmartSqlMapper
+        /// </summary>
+        /// <param name="services"></param>
         public static void AddSmartSql(this IServiceCollection services)
         {
             services.AddSingleton(sp =>
@@ -22,7 +26,11 @@ namespace Microsoft.Extensions.DependencyInjection
             });
             AddOthers(services);
         }
-
+        /// <summary>
+        /// 注入 ISmartSqlMapper
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="setupOptions"></param>
         public static void AddSmartSql(this IServiceCollection services, Func<IServiceProvider, SmartSqlOptions> setupOptions)
         {
             services.AddSingleton((sp =>
