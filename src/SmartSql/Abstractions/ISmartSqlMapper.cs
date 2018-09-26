@@ -19,14 +19,42 @@ namespace SmartSql.Abstractions
     public interface ISmartSqlMapper : ISmartSqlMapperAsync, ISession, ITransaction, IDisposable
     {
         SmartSqlOptions SmartSqlOptions { get; }
+        /// <summary>
+        /// IDbCommand.ExecuteNonQuery
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         int Execute(RequestContext context);
+        /// <summary>
+        /// IDbCommand.ExecuteScalar
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="context"></param>
+        /// <returns></returns>
         T ExecuteScalar<T>(RequestContext context);
+        /// <summary>
+        /// 查询返回List
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="context"></param>
+        /// <returns></returns>
         IEnumerable<T> Query<T>(RequestContext context);
+        /// <summary>
+        /// 查询返回单个实体
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="context"></param>
+        /// <returns></returns>
         T QuerySingle<T>(RequestContext context);
         IMultipleResult FillMultiple(RequestContext context, IMultipleResult multipleResult);
         DataTable GetDataTable(RequestContext context);
         DataSet GetDataSet(RequestContext context);
-
+        /// <summary>
+        /// 获取多结果集嵌套对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="context"></param>
+        /// <returns></returns>
         T GetNested<T>(RequestContext context);
     }
 
