@@ -7,11 +7,14 @@ using System.Linq;
 using SmartSql.Abstractions;
 using SmartSql.Exceptions;
 using SmartSql.Utils;
+using SmartSql.Abstractions.TypeHandler;
 
 namespace SmartSql.Configuration.Tags
 {
     public class For : Tag
     {
+        private Regex _sqlParamsTokens;
+        private bool _ignoreParameterCase;
         public const string FOR_KEY_SUFFIX = "_For_";
         public override TagType Type => TagType.For;
         public string Open { get; set; }
@@ -59,70 +62,70 @@ namespace SmartSql.Configuration.Tags
             context.Sql.Append(Close);
         }
 
+        private Regex GetSqlParamsToken(RequestContext context)
+        {
+            if (_sqlParamsTokens == null || _ignoreParameterCase != context.SmartSqlContext.IgnoreParameterCase)
+            {
+                _ignoreParameterCase = context.SmartSqlContext.IgnoreParameterCase;
+                string dbPrefixs = $"{context.SmartSqlContext.DbPrefix}{context.SmartSqlContext.SmartDbPrefix}";
+                var regOptions = RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled;
+                if (context.SmartSqlContext.IgnoreParameterCase)
+                {
+                    regOptions = regOptions | RegexOptions.IgnoreCase;
+                }
+                _sqlParamsTokens = new Regex(@"[" + dbPrefixs + @"]([\p{L}\p{N}_.]+)", regOptions);
+            }
+            return _sqlParamsTokens;
+        }
         private void BuildItemSql_DirectValue(string itemSqlStr, RequestContext context)
         {
-            string dbPrefix = GetDbProviderPrefix(context);
-            string dbPrefixs = $"{context.SmartSqlContext.DbPrefix}{context.SmartSqlContext.SmartDbPrefix}";
-
-            var reqVal = GetPropertyValue(context) as IEnumerable;
+            var reqVal = (GetPropertyValue(context) as IEnumerable);
             int item_index = 0;
+            string dbPrefix = GetDbProviderPrefix(context);
+            var sqlParamsTokens = GetSqlParamsToken(context);
             foreach (var itemVal in reqVal)
             {
                 if (item_index > 0)
                 {
                     context.Sql.AppendFormat(" {0} ", Separator);
                 }
-                string patternStr = $"([{dbPrefixs}]{Regex.Escape(Key)})";
-                string key_name = $"{Key}{FOR_KEY_SUFFIX}_{Property}_{item_index}";
-                context.RequestParameters.Add(key_name, itemVal);
-                string key_name_dbPrefix = $"{dbPrefix}{key_name}";
-                string item_sql = Regex.Replace(itemSqlStr
-                                  , patternStr
-                                  , key_name_dbPrefix
-                                  , RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant);
-
+                var item_sql = sqlParamsTokens.Replace(itemSqlStr, (match) =>
+                {
+                    string key_name = $"{Key}{FOR_KEY_SUFFIX}_{Property}_{item_index}";
+                    context.RequestParameters.Add(key_name, itemVal);
+                    return $"{dbPrefix}{key_name}";
+                });
                 context.Sql.AppendFormat("{0}", item_sql);
                 item_index++;
             }
         }
         private void BuildItemSql_NotDirectValue(string itemSqlStr, RequestContext context)
         {
-            string dbPrefix = GetDbProviderPrefix(context);
-            string dbPrefixs = $"{context.SmartSqlContext.DbPrefix}{context.SmartSqlContext.SmartDbPrefix}";
             var reqVal = GetPropertyValue(context) as IEnumerable;
             int item_index = 0;
+            string dbPrefix = GetDbProviderPrefix(context);
+            var sqlParamsTokens = GetSqlParamsToken(context);
             foreach (var itemVal in reqVal)
             {
                 if (item_index > 0)
                 {
                     context.Sql.AppendFormat(" {0} ", Separator);
                 }
-                string item_sql = itemSqlStr;
+                var itemParams = ObjectUtils.ToDicDbParameters(itemVal, _ignoreParameterCase);
 
-                var itemParams = ObjectUtils.ToDicDbParameters(itemVal, false);
-
-                foreach (var propertyName in itemParams.Keys)
+                var item_sql = sqlParamsTokens.Replace(itemSqlStr, (match) =>
                 {
-                    string patternStr = $"([{dbPrefixs}]{Regex.Escape(propertyName)})";
-                    bool isHasParam = Regex.IsMatch(item_sql, patternStr);
-                    if (!isHasParam) { continue; }
-                    if (!itemParams.TryGetValue(propertyName, out DbParameter propertyVal))
+                    string paramName = match.Groups[1].Value;
+                    string key_name = $"{Key}{FOR_KEY_SUFFIX}_{Property}_{paramName}_{item_index}";
+                    if (!itemParams.TryGetValue(paramName, out DbParameter propertyVal))
                     {
-                        continue;
+                        return match.Value;
                     }
-                    string key_name = $"{Key}{FOR_KEY_SUFFIX}_{propertyName}_{item_index}";
-                    string key_name_dbPrefix = $"{dbPrefix}{key_name}";
                     context.RequestParameters.Add(key_name, propertyVal.Value);
-
-                    item_sql = Regex.Replace(item_sql
-                                      , (patternStr)
-                                      , key_name_dbPrefix
-                                      , RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant);
-                    item_index++;
-                }
-
+                    return $"{dbPrefix}{key_name}";
+                });
+                item_index++;
                 context.Sql.AppendFormat("{0}", item_sql);
-
             }
         }
         private bool IsDirectValue(object obj)
