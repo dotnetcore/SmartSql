@@ -51,11 +51,11 @@
       Select Top 10 T.* From T_Entity T
       Where FLong=@Root.Second.Id
     </Statement>
-    
+
     <Statement Id="Query_ReadDb2"  ReadDb="ReadDb-2">
       Select Top 10 T.* From T_Entity T
     </Statement>
-    
+
     <Statement Id="GetNested_Root" MultipleResultMap="GetNested_RootMReuslt">
       Select Count(1) As Total From T_Entity;
       Select Top 10 T.* From T_Entity T
@@ -64,7 +64,9 @@
       Select Count(1) From T_Entity;
       Select Top 10 T.* From T_Entity T
     </Statement>
-
+    <Statement Id="ExecuteScalar_NULL">
+      Select Top 1 T.FLong From T_Entity T Where T.FLong=-1
+    </Statement>
     <Statement Id="SP_QueryByPage" CommandType="StoredProcedure">
       SP_QueryByPage
     </Statement>
@@ -97,6 +99,9 @@
     </Statement>
     <Statement Id="QueryParams">
       <Where>
+        <IsNotEmpty Prepend="And" Property="FLongs">
+          T.FLong In $FLongs
+        </IsNotEmpty>
         <IsNotEmpty Prepend="And" Property="FString">
           T.FString=$FString
         </IsNotEmpty>
@@ -110,6 +115,7 @@
         <For Prepend="And" Key="Key" Open="T.FLong In (" Close=")" Property="Ids" Separator=",">
           @Key
         </For>
+
       </Where>
     </Statement>
     <Statement Id="QueryId">

@@ -62,7 +62,7 @@ namespace SmartSql.Command
                                       return GetParameterName(match.Value);
                                   }
                                   var dbParameter = context.RequestParameters.Get(propertyName);
-                                  ITypeHandler typeHandler = paramMap?.Handler;
+                                  ITypeHandler typeHandler = dbParameter.TypeHandler ?? paramMap?.Handler;
                                   if (typeHandler != null)
                                   {
                                       AddDbParameter(dbCommand, dbParameter, typeHandler);
@@ -78,8 +78,8 @@ namespace SmartSql.Command
                                       int item_Index = 0;
                                       foreach (var itemVal in enumParams)
                                       {
-                                          string itemParamName = $"{_smartSqlContext.DbPrefix}{paramName}_{item_Index}";
-                                          inParamSql.AppendFormat("{0},", itemParamName);
+                                          string itemParamName = $"{paramName}_{item_Index}";
+                                          inParamSql.AppendFormat("{0}{1},", _smartSqlContext.DbPrefix, itemParamName);
                                           AddDbParameter(dbCommand, new DbParameter
                                           {
                                               Name = itemParamName,
