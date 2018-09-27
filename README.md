@@ -1,39 +1,22 @@
 <p align="center">
-  <a href="https://doc.smartsql.net/" target="_blank"><img width="100"src="https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png"></a>
+  <a href="https://doc.smartsql.net/" target="_blank">
+    <img width="100"src="./SmartSql.png"/>
+  </a>
 </p>
 
 # 简介
 
-[![Join the chat at https://gitter.im/SmartSql-DotNet/Lobby](https://badges.gitter.im/SmartSql-DotNet/Lobby.svg)](https://gitter.im/SmartSql-DotNet/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
->[SmartSql-Starter](https://github.com/Ahoo-Wang/SmartSql-Starter)
-
-## Nuget Packages
-
-| Package | NuGet Stable |  Downloads |
-| ------- | -------- | ------- |
-| [SmartSql](https://www.nuget.org/packages/SmartSql/) | [![SmartSql](https://img.shields.io/nuget/v/SmartSql.svg)](https://www.nuget.org/packages/SmartSql/)  | [![SmartSql](https://img.shields.io/nuget/dt/SmartSql.svg)](https://www.nuget.org/packages/SmartSql/) |
-| [SmartSql.TypeHandler](https://www.nuget.org/packages/SmartSql.TypeHandler/) | [![SmartSql.TypeHandler](https://img.shields.io/nuget/v/SmartSql.TypeHandler.svg)](https://www.nuget.org/packages/SmartSql.TypeHandler/)  | [![SmartSql.TypeHandler](https://img.shields.io/nuget/dt/SmartSql.TypeHandler.svg)](https://www.nuget.org/packages/SmartSql.TypeHandler/) |
-| [SmartSql.DyRepository](https://www.nuget.org/packages/SmartSql.DyRepository/) | [![SmartSql.DyRepository](https://img.shields.io/nuget/v/SmartSql.DyRepository.svg)](https://www.nuget.org/packages/SmartSql.DyRepository/)  | [![SmartSql.DyRepository](https://img.shields.io/nuget/dt/SmartSql.DyRepository.svg)](https://www.nuget.org/packages/SmartSql.DyRepository/) |
-| [SmartSql.DIExtension](https://www.nuget.org/packages/SmartSql.DIExtension/) | [![SmartSql.DIExtension](https://img.shields.io/nuget/v/SmartSql.DIExtension.svg)](https://www.nuget.org/packages/SmartSql.DIExtension/)  | [![SmartSql.DIExtension](https://img.shields.io/nuget/dt/SmartSql.DIExtension.svg)](https://www.nuget.org/packages/SmartSql.DIExtension/) |
-| [SmartSql.Cache.Redis](https://www.nuget.org/packages/SmartSql.Cache.Redis/) | [![SmartSql.Cache.Redis](https://img.shields.io/nuget/v/SmartSql.Cache.Redis.svg)](https://www.nuget.org/packages/SmartSql.Cache.Redis/)  | [![SmartSql.Cache.Redis](https://img.shields.io/nuget/dt/SmartSql.Cache.Redis.svg)](https://www.nuget.org/packages/SmartSql.Cache.Redis/) |
-| [SmartSql.ZooKeeperConfig](https://www.nuget.org/packages/SmartSql.ZooKeeperConfig/) | [![SmartSql.ZooKeeperConfig](https://img.shields.io/nuget/v/SmartSql.ZooKeeperConfig.svg)](https://www.nuget.org/packages/SmartSql.ZooKeeperConfig/)  | [![SmartSql.ZooKeeperConfig](https://img.shields.io/nuget/dt/SmartSql.ZooKeeperConfig.svg)](https://www.nuget.org/packages/SmartSql.ZooKeeperConfig/) |
-
-## 0. Why
+## Why
 
 - 拥抱 跨平台 DotNet Core，是时候了。
-- 高性能、高生产力，超轻量级的ORM。**107kb**
+- 高性能、高生产力，超轻量级的ORM。**156kb** (Dapper:**168kb**)
 
----
-
-## 1. So SmartSql
+## So SmartSql
 
 - TargetFrameworks: .NETFramework 4.6 & .NETStandard 2.0
-- SmartSql = MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting + ......
+- SmartSql = SmartSql = MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting +Dynamic Repository + ......
 
----
-
-## 2. 主要特性
+## 主要特性
 
 - 1 ORM
   - 1.1 Sync
@@ -61,9 +44,7 @@
     - 7.3.1 Load SmartSqlMapSource Directory
   - 7.3 SmartSql.ZooKeeperConfig (ZooKeeper 分布式配置文件加载器)
 
----
-
-## 3. 性能评测
+## 性能评测
 
 ``` ini
 
@@ -72,9 +53,8 @@ Intel Core i7-6700K CPU 4.00GHz (Skylake), 1 CPU, 8 logical and 4 physical cores
 .NET Core SDK=2.1.201
   [Host]     : .NET Core 2.0.7 (CoreCLR 4.6.26328.01, CoreFX 4.6.26403.03), 64bit RyuJIT
   DefaultJob : .NET Core 2.0.7 (CoreCLR 4.6.26328.01, CoreFX 4.6.26403.03), 64bit RyuJIT
-
-
 ```
+
 |            ORM |                     Type |                  Method |        Return |      Mean |     Error |    StdDev | Rank |     Gen 0 |     Gen 1 |     Gen 2 | Allocated |
 |--------------- |------------------------- |------------------------ |-------------- |----------:|----------:|----------:|-----:|----------:|----------:|----------:|----------:|
 |         Native |         NativeBenchmarks |   Query_GetValue_DbNull | IEnumerable`1 |  78.39 ms | 0.8935 ms | 0.7921 ms |    1 | 3000.0000 | 1125.0000 |  500.0000 |  15.97 MB |
@@ -91,147 +71,35 @@ Intel Core i7-6700K CPU 4.00GHz (Skylake), 1 CPU, 8 logical and 4 physical cores
 
 ---
 
-## 4. 安装 (NuGet)
+## Nuget Packages
 
-``` csharp
-Install-Package SmartSql
-```
+| Package | NuGet Stable |  Downloads |
+| ------- | -------- | ------- |
+| [SmartSql](https://www.nuget.org/packages/SmartSql/) | [![SmartSql](https://img.shields.io/nuget/v/SmartSql.svg)](https://www.nuget.org/packages/SmartSql/)  | [![SmartSql](https://img.shields.io/nuget/dt/SmartSql.svg)](https://www.nuget.org/packages/SmartSql/) |
+| [SmartSql.TypeHandler](https://www.nuget.org/packages/SmartSql.TypeHandler/) | [![SmartSql.TypeHandler](https://img.shields.io/nuget/v/SmartSql.TypeHandler.svg)](https://www.nuget.org/packages/SmartSql.TypeHandler/)  | [![SmartSql.TypeHandler](https://img.shields.io/nuget/dt/SmartSql.TypeHandler.svg)](https://www.nuget.org/packages/SmartSql.TypeHandler/) |
+| [SmartSql.DyRepository](https://www.nuget.org/packages/SmartSql.DyRepository/) | [![SmartSql.DyRepository](https://img.shields.io/nuget/v/SmartSql.DyRepository.svg)](https://www.nuget.org/packages/SmartSql.DyRepository/)  | [![SmartSql.DyRepository](https://img.shields.io/nuget/dt/SmartSql.DyRepository.svg)](https://www.nuget.org/packages/SmartSql.DyRepository/) |
+| [SmartSql.DIExtension](https://www.nuget.org/packages/SmartSql.DIExtension/) | [![SmartSql.DIExtension](https://img.shields.io/nuget/v/SmartSql.DIExtension.svg)](https://www.nuget.org/packages/SmartSql.DIExtension/)  | [![SmartSql.DIExtension](https://img.shields.io/nuget/dt/SmartSql.DIExtension.svg)](https://www.nuget.org/packages/SmartSql.DIExtension/) |
+| [SmartSql.Cache.Redis](https://www.nuget.org/packages/SmartSql.Cache.Redis/) | [![SmartSql.Cache.Redis](https://img.shields.io/nuget/v/SmartSql.Cache.Redis.svg)](https://www.nuget.org/packages/SmartSql.Cache.Redis/)  | [![SmartSql.Cache.Redis](https://img.shields.io/nuget/dt/SmartSql.Cache.Redis.svg)](https://www.nuget.org/packages/SmartSql.Cache.Redis/) |
+| [SmartSql.ZooKeeperConfig](https://www.nuget.org/packages/SmartSql.ZooKeeperConfig/) | [![SmartSql.ZooKeeperConfig](https://img.shields.io/nuget/v/SmartSql.ZooKeeperConfig.svg)](https://www.nuget.org/packages/SmartSql.ZooKeeperConfig/)  | [![SmartSql.ZooKeeperConfig](https://img.shields.io/nuget/dt/SmartSql.ZooKeeperConfig.svg)](https://www.nuget.org/packages/SmartSql.ZooKeeperConfig/) |
+| [SmartSql.Options](https://www.nuget.org/packages/SmartSql.Options/) | [![SmartSql.Options](https://img.shields.io/nuget/v/SmartSql.Options.svg)](https://www.nuget.org/packages/SmartSql.Options/)  | [![SmartSql.Options](https://img.shields.io/nuget/dt/SmartSql.ZooKeeperConfig.svg)](https://www.nuget.org/packages/SmartSql.Options/) |
 
-## 5. 常规代码
+## 示例项目
 
-### 查询
+>[SmartSql-Starter](https://github.com/Ahoo-Wang/SmartSql-Starter)
 
-``` csharp
-            ISmartSqlMapper SqlMapper = MapperContainer.Instance.GetSqlMapper();
-            SqlMapper.Query<T_Test>(new RequestContext
-            {
-                Scope = "T_Test",
-                SqlId = "GetList",
-                Request = new { Ids = new long[] { 1, 2, 3, 4 } }
-            });
-```
-
-### 事务
-
-``` csharp
-            try
-            {
-                ISmartSqlMapper SqlMapper = MapperContainer.Instance.GetSqlMapper();
-                SqlMapper.BeginTransaction();
-                //BizCode
-                SqlMapper.CommitTransaction();
-            }
-            catch (Exception ex)
-            {
-                SqlMapper.RollbackTransaction();
-                throw ex;
-            }
-```
-
-## 6. 最佳实践
-
-### 6.1 安装 SmartSql.DIExtension
-
-``` chsarp
-Install-Package SmartSql.DIExtension
-```
-
-### 6.2 注入依赖
-
-``` csharp
- services.AddSmartSql();
- services.AddRepositoryFactory();
- services.AddRepositoryFromAssembly((options) =>
- {
-    options.AssemblyString = "SmartSql.Starter.Repository";
- });
-```
-
-### 6.3 定义仓储接口
-
-``` csharp
-    /// <summary>
-    /// 属性可选： [SqlMap(Scope = "User")] ,不设置 则默认 Scope 模板：I{Scope}Repository
-    /// 可传入自定义模板
-    /// RepositoryBuilder builder=new RepositoryBuilder("I{Scope}Repository");
-    /// </summary>
-    public interface IUserRepository
-    {
-        /// <summary>
-        /// 属性可选 [Statement(Execute = ExecuteBehavior.Auto,Id = "Query")]
-        /// 默认 Execute：Auto ，自动判断 执行类型
-        /// 默认 Id : 方法名
-        /// </summary>
-        /// <param name="reqParams"></param>
-        /// <returns></returns>
-        IEnumerable<User> Query(object reqParams);
-        int GetRecord(object reqParams);
-        User GetById([Param("Id")]long id);
-        long Insert(User entity);
-        int Update(User entity);
-        int Delete(User enttiy);
-        [Statement(Sql = "Select Top(@taken) T.* From T_User T With(NoLock);")]
-        Task<IEnumerable<User>> QueryBySqlAsync(int taken);
-        bool IsExist(object reqParams);
-    }
-```
-
-### 6.4 尽情享用
-
-``` csharp
-    public class UserService
-    {
-        private readonly ITransaction _transaction;
-        private readonly IUserRepository _userRepository;
-
-        public UserService(
-             ITransaction transaction
-            , IUserRepository userRepository)
-        {
-            _transaction = transaction;
-            _userRepository = userRepository;
-        }
-
-        public long Add(AddRequest request)
-        {
-            int existsNum = _userRepository.Exists(new { request.UserName });
-            if (existsNum > 0)
-            {
-                throw new ArgumentException($"{nameof(request.UserName)} has already existed!");
-            }
-            return _userRepository.Insert(new Entitiy.User
-            {
-                UserName = request.UserName,
-                Password = request.Password,
-                Status = Entitiy.UserStatus.Ok,
-                CreationTime = DateTime.Now,
-            });
-        }
-
-        public void UseTransaction()
-        {
-            try
-            {
-                _transaction.BeginTransaction();
-                //Biz();
-                _transaction.CommitTransaction();
-            }
-            catch (Exception ex)
-            {
-                _transaction.RollbackTransaction();
-                throw ex;
-            }
-        }
-    }
-```
-
-## 7. 文档地址
+## 文档地址
 
 - [在线阅读地址](https://doc.smartsql.net/)
 - [PDF](https://www.gitbook.com/download/pdf/book/ahoo-wang/smartsql-doc-cn)
 - [Mobi](https://www.gitbook.com/download/mobi/book/ahoo-wang/smartsql-doc-cn)
 - [ePub](https://www.gitbook.com/download/epub/book/ahoo-wang/smartsql-doc-cn)
 
-## 8. 技术交流
+## 文档贡献者
+
+- [Ahoo-Wang](https://github.com/Ahoo-Wang)
+- [RocherKong](https://github.com/RocherKong)
+- [ElderJames](https://github.com/ElderJames)
+
+## 技术交流
 
 点击链接加入QQ群【SmartSql 官方交流群】：[604762592](https://jq.qq.com/?_wv=1027&k=5Sy8Ahw)
