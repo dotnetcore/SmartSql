@@ -4,7 +4,7 @@
   </a>
 </p>
 
-# 简介
+# SmartSql
 
 ## Why
 
@@ -93,12 +93,6 @@ Intel Core i7-6700K CPU 4.00GHz (Skylake), 1 CPU, 8 logical and 4 physical cores
 - [PDF](https://www.gitbook.com/download/pdf/book/ahoo-wang/smartsql-doc-cn)
 - [Mobi](https://www.gitbook.com/download/mobi/book/ahoo-wang/smartsql-doc-cn)
 - [ePub](https://www.gitbook.com/download/epub/book/ahoo-wang/smartsql-doc-cn)
-
-## 文档贡献者
-
-- [Ahoo-Wang](https://github.com/Ahoo-Wang)
-- [RocherKong](https://github.com/RocherKong)
-- [ElderJames](https://github.com/ElderJames)
 
 ## 技术交流
 
