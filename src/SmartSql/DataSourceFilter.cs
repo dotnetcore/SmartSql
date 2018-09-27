@@ -48,13 +48,12 @@ namespace SmartSql
                 && readDataSources.Count > 0
                 )
             {
-                var statement = context.Statement;
-                if (statement != null && !String.IsNullOrEmpty(statement.ReadDb))
+                if (!String.IsNullOrEmpty(context.ReadDb))
                 {
-                    choiceDataSource = readDataSources.FirstOrDefault(readDb => readDb.Name == statement.ReadDb);
+                    choiceDataSource = readDataSources.FirstOrDefault(readDb => readDb.Name == context.ReadDb);
                     if (choiceDataSource == null)
                     {
-                        throw new SmartSqlException($"Statement.Id:{statement.FullSqlId},can not find ReadDb:{statement.ReadDb} .");
+                        throw new SmartSqlException($"Statement.Key:{context.StatementKey},can not find ReadDb:{context.ReadDb} .");
                     }
                 }
                 else

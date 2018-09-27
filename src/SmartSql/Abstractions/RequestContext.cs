@@ -19,6 +19,7 @@ namespace SmartSql.Abstractions
         public SmartSqlContext SmartSqlContext { get; internal set; }
         public DataSourceChoice DataSourceChoice { get; set; } = DataSourceChoice.Unknow;
         public CommandType CommandType { get; set; } = CommandType.Text;
+        public String ReadDb { get; set; }
         public Statement Statement { get; internal set; }
         public StringBuilder Sql { get; internal set; }
         public bool IsStatementSql { get; internal set; } = true;
@@ -87,6 +88,10 @@ namespace SmartSql.Abstractions
                 if (Statement.CommandType.HasValue)
                 {
                     CommandType = Statement.CommandType.Value;
+                }
+                if (!String.IsNullOrEmpty(ReadDb))
+                {
+                    ReadDb = Statement.ReadDb;
                 }
             }
         }
