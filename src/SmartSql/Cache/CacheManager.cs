@@ -76,8 +76,9 @@ namespace SmartSql.Cahce
         private void InitCacheMappedLastFlushTime()
         {
             _cacheMappedLastFlushTime = new Dictionary<string, DateTime>();
-            foreach (var cache in _smartSqlContext.Caches)
+            foreach (var cacheKV in _smartSqlContext.MappedCache)
             {
+                var cache = cacheKV.Value;
                 if (cache.FlushInterval == null) { continue; }
                 _cacheMappedLastFlushTime.Add(cache.Id, DateTime.Now);
             }
@@ -87,8 +88,9 @@ namespace SmartSql.Cahce
         {
             try
             {
-                foreach (var cache in _smartSqlContext.Caches)
+                foreach (var cacheKV in _smartSqlContext.MappedCache)
                 {
+                    var cache = cacheKV.Value;
                     if (cache.FlushInterval == null) { continue; }
                     var lastFlushTime = _cacheMappedLastFlushTime[cache.Id];
                     var nextFlushTime = lastFlushTime.Add(cache.FlushInterval.Interval);
@@ -147,20 +149,17 @@ namespace SmartSql.Cahce
         public bool TryGet<T>(RequestContext context, out T cachedResult)
         {
             cachedResult = default(T);
-            if (context.Statement == null) { return false; }
-            string fullSqlId = context.FullSqlId;
-            var statement = context.Statement;
-            if (statement.Cache == null) { return false; }
+            if (context.Cache == null) { return false; }
             var cacheKey = new CacheKey(context);
-            var cached = statement.Cache.Provider.Contains(cacheKey);
+            var cached = context.Cache.Provider.Contains(cacheKey);
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug($"CacheManager GetCache FullSqlId:{fullSqlId}，Success:{cached} !");
+                _logger.LogDebug($"CacheManager GetCache StatementKey:{context.StatementKey}，Success:{cached} !");
             }
             if (cached)
             {
                 var cachedType = typeof(T);
-                var cache = statement.Cache.Provider[cacheKey, cachedType];
+                var cache = context.Cache.Provider[cacheKey, cachedType];
                 cachedResult = (T)cache;
             }
             return cached;
@@ -168,16 +167,13 @@ namespace SmartSql.Cahce
 
         public void TryAdd<T>(RequestContext context, T cacheItem)
         {
-            if (context.Statement == null) { return; }
+            if (context.Cache == null) { return; }
             var cachedType = typeof(T);
-            string fullSqlId = context.FullSqlId;
-            var statement = context.Statement;
-            if (statement.Cache == null) { return; }
             var cacheKey = new CacheKey(context);
-            statement.Cache.Provider[cacheKey, cachedType] = cacheItem;
+            context.Cache.Provider[cacheKey, cachedType] = cacheItem;
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug($"CacheManager SetCache FullSqlId:{fullSqlId}");
+                _logger.LogDebug($"CacheManager SetCache StatementKey:{context.StatementKey}");
             }
         }
     }

@@ -92,7 +92,7 @@ namespace SmartSql.Configuration.Tags
                 var item_sql = sqlParamsTokens.Replace(itemSqlStr, (match) =>
                 {
                     string paramName = match.Groups[1].Value;
-                    var paramMap = context.Statement?.ParameterMap?.Parameters?.FirstOrDefault(p => p.Name == paramName);
+                    var paramMap = context.ParameterMap?.Parameters?.FirstOrDefault(p => p.Name == paramName);
                     string key_name = $"{Key}{FOR_KEY_SUFFIX}_{Property}_{item_index}";
                     context.RequestParameters.Add(new DbParameter
                     {
@@ -123,7 +123,7 @@ namespace SmartSql.Configuration.Tags
                 var item_sql = sqlParamsTokens.Replace(itemSqlStr, (match) =>
                 {
                     string paramName = match.Groups[1].Value;
-                    var paramMap = context.Statement?.ParameterMap?.Parameters?.FirstOrDefault(p => p.Name == paramName);
+                    var paramMap = context.ParameterMap?.Parameters?.FirstOrDefault(p => p.Name == paramName);
                     var propertyName = paramMap != null ? paramMap.Property : paramName;
                     string key_name = $"{Key}{FOR_KEY_SUFFIX}_{Property}_{paramName}_{item_index}";
                     if (!itemParams.TryGetValue(propertyName, out DbParameter propertyVal))

@@ -45,7 +45,7 @@ namespace SmartSql.DataReaderDeserializer
             var dynamicMethod = new DynamicMethod("NestedObjectConvert_" + Guid.NewGuid().ToString("N"), targetType, new[] { TypeUtils.RequestContextType, _dataReaderWrapperType, _deserType }, targetType, true);
             var iLGenerator = dynamicMethod.GetILGenerator();
             iLGenerator.DeclareLocal(targetType);
-            MultipleResultMap multipleResultMap = requestContext.Statement.MultipleResultMap;
+            MultipleResultMap multipleResultMap = requestContext.MultipleResultMap;
             if (multipleResultMap.Root != null)
             {
                 iLGenerator.Emit(OpCodes.Ldarg_2);

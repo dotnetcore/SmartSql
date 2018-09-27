@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Linq;
+using SmartSql.Configuration.Maps;
 
 namespace SmartSql.Abstractions
 {
@@ -15,7 +16,6 @@ namespace SmartSql.Abstractions
     /// </summary>
     public class RequestContext
     {
-        //public Guid Id { get; } = Guid.NewGuid();
         public SmartSqlContext SmartSqlContext { get; internal set; }
         public DataSourceChoice DataSourceChoice { get; set; } = DataSourceChoice.Unknow;
         public CommandType CommandType { get; set; } = CommandType.Text;
@@ -24,11 +24,30 @@ namespace SmartSql.Abstractions
         public bool IsStatementSql { get; internal set; } = true;
         internal bool IgnorePrepend { get; set; } = false;
         public String RealSql { get; set; }
+        /// <summary>
+        /// SmartSqlMap.Scope
+        /// </summary>
         public String Scope { get; set; }
+        /// <summary>
+        /// Statement.Id
+        /// </summary>
         public String SqlId { get; set; }
+        /// <summary>
+        /// Statement.FullSqlId
+        /// </summary>
         public String FullSqlId => $"{Scope}.{SqlId}";
         public DbParameterCollection RequestParameters { get; internal set; }
         public IDictionary<object, object> Items { get; set; }
+        #region Map
+        public String CacheId { get; set; }
+        public Configuration.Cache Cache { get; private set; }
+        public string ResultMapId { get; set; }
+        public ResultMap ResultMap { get; private set; }
+        public string ParameterMapId { get; set; }
+        public ParameterMap ParameterMap { get; private set; }
+        public string MultipleResultMapId { get; set; }
+        public MultipleResultMap MultipleResultMap { get; private set; }
+        #endregion
         public object Request { get; set; }
         [Obsolete("Internal call")]
         public void Setup(SmartSqlContext smartSqlContext)
@@ -36,6 +55,7 @@ namespace SmartSql.Abstractions
             SmartSqlContext = smartSqlContext;
             SetupStatement();
             SetupParameters();
+            SetupMap();
             if (Items == null)
             {
                 Items = new Dictionary<object, object>();
@@ -84,6 +104,49 @@ namespace SmartSql.Abstractions
                 RequestParameters = new DbParameterCollection(ignoreParameterCase, Request);
             }
         }
+        internal void SetupMap()
+        {
+            if (Statement != null)
+            {
+                SetupStatementMap();
+            }
+            else if (!String.IsNullOrEmpty(Scope))
+            {
+                if (String.IsNullOrEmpty(CacheId))
+                {
+                    var fullCacheId = $"{Scope}.{CacheId}";
+                    Cache = SmartSqlContext.GetCache(fullCacheId);
+                }
+                if (String.IsNullOrEmpty(ResultMapId))
+                {
+                    var fullResultMapId = $"{Scope}.{ResultMapId}";
+                    ResultMap = SmartSqlContext.GetResultMap(fullResultMapId);
+                }
+                if (String.IsNullOrEmpty(ParameterMapId))
+                {
+                    var fullParameterMapId = $"{Scope}.{ParameterMapId}";
+                    ParameterMap = SmartSqlContext.GetParameterMap(fullParameterMapId);
+                }
+                if (String.IsNullOrEmpty(MultipleResultMapId))
+                {
+                    var fullMultipleResultMapId = $"{Scope}.{MultipleResultMapId}";
+                    MultipleResultMap = SmartSqlContext.GetMultipleResultMap(fullMultipleResultMapId);
+                }
+            }
+        }
+
+        private void SetupStatementMap()
+        {
+            CacheId = Statement.CacheId;
+            Cache = Statement.Cache;
+            ResultMapId = Statement.ResultMapId;
+            ResultMap = Statement.ResultMap;
+            ParameterMapId = Statement.ParameterMapId;
+            ParameterMap = Statement.ParameterMap;
+            MultipleResultMapId = Statement.MultipleResultMapId;
+            MultipleResultMap = Statement.MultipleResultMap;
+        }
+
         public String StatementKey { get { return (!String.IsNullOrEmpty(SqlId) ? FullSqlId : RealSql); } }
         public String Key { get { return $"{StatementKey}:{RequestString}"; } }
         public String RequestString

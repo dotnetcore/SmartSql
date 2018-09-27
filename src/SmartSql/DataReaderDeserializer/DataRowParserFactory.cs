@@ -141,12 +141,10 @@ namespace SmartSql.DataReaderDeserializer
 
         private Func<IDataReader, RequestContext, object> CreateParserImpl(IDataReaderWrapper dataReader, RequestContext context, Type targetType)
         {
-            var statement = context.Statement;
-            var resultMap = statement?.ResultMap;
-            resultMap = resultMap ?? statement?.MultipleResultMap?.Results.FirstOrDefault(m => m.Index == dataReader.ResultIndex)?.Map;
+            var resultMap = context.ResultMap ?? context.MultipleResultMap?.Results.FirstOrDefault(m => m.Index == dataReader.ResultIndex)?.Map;
             if (resultMap == null)
             {
-                resultMap = statement?.MultipleResultMap?.Root?.Map;
+                resultMap = context.MultipleResultMap?.Root?.Map;
             }
             var constructorMap = resultMap?.Constructor;
 
