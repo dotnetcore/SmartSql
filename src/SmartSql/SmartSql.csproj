@@ -15,6 +15,7 @@
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <PackageReleaseNotes>
       1. Enhanced RequestContext
+      2. u DbConnectionSession.Dispose LogLevel
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>

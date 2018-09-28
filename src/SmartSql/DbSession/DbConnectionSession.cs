@@ -93,9 +93,9 @@ namespace SmartSql.DbSession
 
         public void Dispose()
         {
-            if (_logger.IsEnabled(LogLevel.Warning))
+            if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogWarning("Dispose.");
+                _logger.LogDebug("Dispose.");
             }
 
             if (Transaction != null)
