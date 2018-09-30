@@ -37,7 +37,6 @@ namespace SmartSql.Configuration.Tags
                         context.Sql.Append(" ");
                         context.IgnorePrepend = true;
                         childTag.BuildSql(context);
-                        context.IgnorePrepend = false;
                     }
                     else
                     {
