@@ -68,7 +68,7 @@ namespace SmartSql
             }
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug($"DataSourceManager GetDataSource Choice: {choiceDataSource.Name} .");
+                _logger.LogDebug($"DataSourceFilter GetDataSource Choice: {choiceDataSource.Name} .");
             }
             return choiceDataSource;
         }

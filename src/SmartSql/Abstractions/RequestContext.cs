@@ -89,7 +89,7 @@ namespace SmartSql.Abstractions
                 {
                     CommandType = Statement.CommandType.Value;
                 }
-                if (!String.IsNullOrEmpty(ReadDb))
+                if (String.IsNullOrEmpty(ReadDb))
                 {
                     ReadDb = Statement.ReadDb;
                 }
