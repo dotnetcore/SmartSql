@@ -4,7 +4,7 @@
   </a>
 </p>
 
-# SmartSql
+# SmartSql ([English-Document](https://doc-en.smartsql.net))
 
 ## Why
 
