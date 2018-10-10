@@ -197,6 +197,14 @@
       Where FLong=@FLong
     </Statement>
 
+    <Statement Id="QueryPs">
+      <Where>
+        T.FBool=0
+        <IsNotEmpty Prepend="And" Property="FString">
+          T.FString=$FString
+        </IsNotEmpty>
+      </Where>
+    </Statement>
     <!--获取数据列-->
     <Statement Id="Query">
       Select
@@ -207,7 +215,12 @@
         (10)
       </IsNull>-->
       T.* From T_Entity T With(NoLock)
-      <Include RefId="QueryParams"/>
+      <Include RefId="QueryPs"/>
+      <Switch Prepend="Order By" Property="OrderBy">
+        <Default>
+          T.FLong Desc
+        </Default>
+      </Switch>
     </Statement>
 
     <!--获取分页数据-->
