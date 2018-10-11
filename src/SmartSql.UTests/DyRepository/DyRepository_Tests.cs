@@ -30,6 +30,7 @@ namespace SmartSql.UTests.DyRepository
         [Fact]
         public void IsExist_False()
         {
+            var sqlMapper = _repository.SqlMapper;
             var isExist = _repository.IsExist(new { FString = Guid.NewGuid().ToString() });
             Assert.False(isExist);
         }

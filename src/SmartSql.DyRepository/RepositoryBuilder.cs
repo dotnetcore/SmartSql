@@ -73,10 +73,33 @@ namespace SmartSql.DyRepository
             }
             foreach (var methodInfo in interfaceMethods)
             {
-                BuildMethod(interfaceType, typeBuilder, methodInfo, sqlMapperField, smartSqlMapper, scope);
+                if (methodInfo.ReturnType == typeof(ISession)
+                    || methodInfo.ReturnType == typeof(ITransaction)
+                    || methodInfo.ReturnType == typeof(ISmartSqlMapper)
+                    || methodInfo.ReturnType == typeof(ISmartSqlMapperAsync)
+                    )
+                {
+                    BuildInternalGet(typeBuilder, methodInfo, sqlMapperField);
+                }
+                else
+                {
+                    BuildMethod(interfaceType, typeBuilder, methodInfo, sqlMapperField, smartSqlMapper, scope);
+                }
             }
             return typeBuilder.CreateTypeInfo();
         }
+        
+        private void BuildInternalGet(TypeBuilder typeBuilder, MethodInfo methodInfo, FieldBuilder sqlMapperField)
+        {
+            var implMehtod = typeBuilder.DefineMethod(methodInfo.Name
+            , MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Final
+            , methodInfo.ReturnType, Type.EmptyTypes);
+            var ilGenerator = implMehtod.GetILGenerator();
+            ilGenerator.Emit(OpCodes.Ldarg_0);
+            ilGenerator.Emit(OpCodes.Ldfld, sqlMapperField);
+            ilGenerator.Emit(OpCodes.Ret);
+        }
+
         private void EmitBuildCtor(string scope, TypeBuilder typeBuilder, FieldBuilder sqlMapperField, FieldBuilder scopeField)
         {
             var paramTypes = new Type[] { typeof(ISmartSqlMapper) };

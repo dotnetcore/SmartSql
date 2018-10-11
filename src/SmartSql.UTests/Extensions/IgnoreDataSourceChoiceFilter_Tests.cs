@@ -15,8 +15,9 @@ namespace SmartSql.UTests.Extensions
         public IgnoreDataSourceChoiceFilter_Tests()
         {
             var logger = Logging.NoneLoggerFactory.Instance.CreateLogger<IgnoreDataSourceChoiceFilter>();
-            _sqlMapper = new SmartSqlMapper(new SmartSqlOptions
+            _sqlMapper = MapperContainer.Instance.GetSqlMapper(new SmartSqlOptions
             {
+                Alias = "IgnoreDataSourceChoiceFilter",
                 ConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH,
                 DataSourceFilter = new IgnoreDataSourceChoiceFilter(logger)
             });

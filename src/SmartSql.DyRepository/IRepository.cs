@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartSql.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,9 @@ namespace SmartSql.DyRepository
 {
     public interface IRepository
     {
+        ISmartSqlMapper SqlMapper { get; }
+        ISession Session { get; }
+        ITransaction Transaction { get; }
     }
     /// <summary>
     /// 泛型仓储接口
