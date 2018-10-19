@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>3.7.8</Version>
+    <Version>3.7.10</Version>
     <Authors>Ahoo Wang</Authors>
     <Company>Ahoo Wang</Company>
     <Copyright>Ahoo Wang</Copyright>
@@ -16,7 +16,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>
     <PackageReleaseNotes>
-      1. adapt SmartSql V3.7.8
+      1. adapt SmartSql V3.7.10
     </PackageReleaseNotes>
   </PropertyGroup>
 
