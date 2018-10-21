@@ -19,12 +19,13 @@
   <ItemGroup>
     <ProjectReference Include="..\SmartSql.DIExtension\SmartSql.DIExtension.csproj" />
     <ProjectReference Include="..\SmartSql.Options\SmartSql.Options.csproj" />
+    <ProjectReference Include="..\SmartSql.TypeHandler\SmartSql.TypeHandler.csproj" />
     <ProjectReference Include="..\SmartSql.ZooKeeperConfig\SmartSql.ZooKeeperConfig.csproj" />
     <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Maps\T_Test.xml">
+    <None Update="Maps\T_Entity.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="NLog.config">

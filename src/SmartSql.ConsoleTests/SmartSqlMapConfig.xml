@@ -7,7 +7,15 @@
     <DbProvider Name="SqlClientFactory" ParameterPrefix="@" Type="System.Data.SqlClient.SqlClientFactory, System.Data.SqlClient"/>
     <Write Name="WriteDB" ConnectionString="Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True"/>
     <Read Name="ReadDB-0" ConnectionString="Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True" Weight="80"/>
+    <Read Name="ReadDb-1" ConnectionString="Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True" Weight="100"/>
+    <Read Name="ReadDb-2" ConnectionString="Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True" Weight="1"/>
+    <Read Name="ReadDb-3" ConnectionString="Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True" Weight="100"/>
+    <Read Name="ReadDb-4" ConnectionString="Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True" Weight="100"/>
   </Database>
+  <TypeHandlers>
+    <TypeHandler Name="Json" Type="SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"/>
+    <TypeHandler Name="Xml" Type="SmartSql.TypeHandler.XmlTypeHandler,SmartSql.TypeHandler"/>
+  </TypeHandlers>
   <SmartSqlMaps>
     <SmartSqlMap Path="Maps" Type="Directory"></SmartSqlMap>
   </SmartSqlMaps>

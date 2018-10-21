@@ -20,7 +20,7 @@ namespace SmartSql.ConsoleTests
 
             loggerFactory.AddConsole(LogLevel.Trace);
             loggerFactory.AddDebug(LogLevel.Trace);
-            OptionsConfig_Test();
+            //OptionsConfig_Test();
             Console.WriteLine("---------------------");
             LocalFileConfigLoader_Test();
 
@@ -53,10 +53,10 @@ namespace SmartSql.ConsoleTests
             while (true)
             {
                 string ipt = Console.ReadLine();
-                var list = sqlMapper.Query<T_Test>(new RequestContext
+                var list = sqlMapper.Query<T_Entity>(new RequestContext
                 {
-                    Scope = "T_Test",
-                    SqlId = "GetList",
+                    Scope = "Entity",
+                    SqlId = "Query",
                     Request = new { Ids = new long[] { 1, 2, 3, 4 } }
                 });
             }
@@ -81,10 +81,10 @@ namespace SmartSql.ConsoleTests
             for (i = 0; i < 10; i++)
             {
                 Console.ReadLine();
-                var list = SqlMapper.Query<T_Test>(new RequestContext
+                var list = SqlMapper.Query<T_Entity>(new RequestContext
                 {
-                    Scope = "T_Test",
-                    SqlId = "GetList",
+                    Scope = "Entity",
+                    SqlId = "Query",
                     Request = new { Ids = new long[] { 1, 2, 3, 4 } }
                 });
                 Console.WriteLine($"{list.Count()}");
@@ -93,14 +93,70 @@ namespace SmartSql.ConsoleTests
     }
 
 
-    public class T_Test
+    /// <summary>
+    ///T_Entity
+    /// </summary>	
+    public class T_Entity 
     {
-        public long Id { get; set; }
-        public String Name { get; set; }
+
+
+        private long PrivatePro { get; set; } = 88888;
+        /// <summary>
+        /// FLong
+        /// </summary>		
+        public virtual long FLong { get; set; }
+
+        /// <summary>
+        /// FDecimal
+        /// </summary>		
+        public virtual decimal FDecimal { get; set; }
+        /// <summary>
+        /// FNullDecimal
+        /// </summary>		
+        public virtual decimal? FNullDecimal { get; set; }
+
+        /// <summary>
+        /// FBool
+        /// </summary>		
+        public virtual bool FBool { get; set; }
+
+        /// <summary>
+        /// FNullBool
+        /// </summary>		
+        public virtual bool? FNullBool { get; set; }
+
+        /// <summary>
+        /// FTimestamp
+        /// </summary>		
+        ///public virtual DateTime FTimestamp { get; set; }
+
+        /// <summary>
+        /// Status
+        /// </summary>		
+        public virtual EntityStatus Status { get; set; }
+
+        /// <summary>
+        /// NullStatus
+        /// </summary>		
+        public virtual EntityStatus? NullStatus { get; set; }
+
+        /// <summary>
+        /// CreationTime
+        /// </summary>		
+        public virtual DateTime CreationTime { get; set; }
+
+        /// <summary>
+        /// LastUpdateTime
+        /// </summary>		
+        public virtual DateTime? LastUpdateTime { get; set; }
+
+        public virtual String JustMeString { get; set; }
     }
 
-    public enum TestStatus
+    public enum EntityStatus
     {
         Ok = 1
     }
+
+
 }

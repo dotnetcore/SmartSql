@@ -186,6 +186,7 @@ namespace SmartSql
                             oldSqlMap.Caches = newSqlMap.Caches;
                             oldSqlMap.Scope = newSqlMap.Scope;
                             oldSqlMap.Statements = newSqlMap.Statements;
+                            InitDependency();
                             OnChanged?.Invoke(this, new OnChangedEventArgs
                             {
                                 SqlMapConfig = SqlMapConfig,

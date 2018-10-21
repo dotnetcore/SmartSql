@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net46;</TargetFrameworks>
-    <Version>3.7.10</Version>
+    <Version>3.7.11</Version>
     <Authors>Ahoo Wang</Authors>
     <Company>Ahoo Wang</Company>
     <Copyright>Ahoo Wang</Copyright>
