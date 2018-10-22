@@ -17,9 +17,18 @@ namespace SmartSql.Utils
             return dicConvert(sourceObj);
         }
 
+        public static String GetTypeKey(Type type)
+        {
+            if (type.Name.StartsWith("<>f__AnonymousType"))
+            {
+                return type.GUID.ToString();
+            }
+            return type.FullName;
+        }
+
         public static Func<object, Dictionary<string, DbParameter>> GetDicDbParametersConvert(Type sourceType, bool ignorePropNameCase)
         {
-            string key = $"{sourceType.FullName}_{ignorePropNameCase}";
+            string key = $"{GetTypeKey(sourceType)}_{ignorePropNameCase}";
             if (!_cachedConvert.ContainsKey(key))
             {
                 lock (_syncObj)

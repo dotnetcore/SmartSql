@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net46;</TargetFrameworks>
-    <Version>3.7.11</Version>
+    <Version>3.7.12</Version>
     <Authors>Ahoo Wang</Authors>
     <Company>Ahoo Wang</Company>
     <Copyright>Ahoo Wang</Copyright>
@@ -16,7 +16,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>
     <PackageReleaseNotes>
-      1. add SmartSqlExtensions.SessionWrap
+      1. fix AnonymousType Cache type bug
     </PackageReleaseNotes>
   </PropertyGroup>
 

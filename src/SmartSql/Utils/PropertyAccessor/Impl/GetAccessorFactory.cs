@@ -58,7 +58,7 @@ namespace SmartSql.Utils.PropertyAccessor.Impl
 
         private string GetGetImplName(Type targetType, string propertyName, bool ignorePropertyCase)
         {
-            return $"SmartSql_Get_{targetType.FullName}_{propertyName}_{ignorePropertyCase}";
+            return $"SmartSql_Get_{ObjectUtils.GetTypeKey(targetType)}_{propertyName}_{ignorePropertyCase}";
         }
 
         private PropertyInfo GetProperty(Type targetType, string propertyName, bool ignorePropertyCase)
