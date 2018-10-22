@@ -6,12 +6,11 @@
     <Company>Ahoo Wang</Company>
     <Title>SmartSql.DyRepository</Title>
     <Description>SmartSql 动态代理仓储</Description>
-    <Version>3.7.10</Version>
+    <Version>3.7.13</Version>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageReleaseNotes>
-      1. add Build SmartSqlMapper Internal Get
-      1. add RepositoryExtensions SessionWrap and TransactionWrap
+      1. adapt SmartSql V3.7.13
     </PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <Copyright>Ahoo Wang</Copyright>
