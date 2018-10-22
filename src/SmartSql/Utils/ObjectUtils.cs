@@ -21,7 +21,8 @@ namespace SmartSql.Utils
         {
             if (type.Name.StartsWith("<>f__AnonymousType"))
             {
-                return type.GUID.ToString();
+                var props = type.GetProperties().Where(p => p.CanRead).OrderBy(m => m.Name).Select(m => $"({m.Name}:{GetTypeKey(m.PropertyType)})");
+                return String.Join("&", props);
             }
             return type.FullName;
         }
@@ -56,7 +57,7 @@ namespace SmartSql.Utils
             Type returnType = _dicType;
             var addItemMethod = _addItemDicMentod;
             var sourceProps = sourceType.GetProperties().Where(p => p.CanRead);
-            var dynamicMethod = new DynamicMethod("ObjToDic_" + Guid.NewGuid().ToString("N"), returnType, new[] { typeof(object) }, sourceType, true);
+            var dynamicMethod = new DynamicMethod("ObjToDic_" + Guid.NewGuid().ToString("N"), returnType, new[] { TypeUtils.ObjectType }, TypeUtils.ObjectType, true);
             var iLGenerator = dynamicMethod.GetILGenerator();
             iLGenerator.DeclareLocal(returnType);
             EmitUtils.LoadInt32(iLGenerator, sourceProps.Count());
