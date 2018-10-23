@@ -10,6 +10,8 @@ namespace SmartSql.TypeHandler
 {
     public class XmlTypeHandler : ITypeHandler
     {
+
+
         public object GetValue(IDataReader dataReader, string columnName, Type targetType)
         {
             int ordinal = dataReader.GetOrdinal(columnName);
@@ -22,18 +24,21 @@ namespace SmartSql.TypeHandler
             var xmlStr = dataReader.GetString(columnIndex);
             return XmlSerializeUtil.Deserialize(xmlStr, targetType);
         }
-
-        public void SetParameter(IDataParameter dataParameter, object parameterValue)
+        public object GetSetParameterValue(object parameterValue)
         {
             if (parameterValue == null)
             {
-                dataParameter.Value = DBNull.Value;
+                return DBNull.Value;
             }
             else
             {
-                var xmlStr = XmlSerializeUtil.Serializer(parameterValue);
-                dataParameter.Value = xmlStr;
+                return XmlSerializeUtil.Serializer(parameterValue);
             }
+        }
+        public object SetParameter(IDataParameter dataParameter, object parameterValue)
+        {
+            dataParameter.Value = GetSetParameterValue(parameterValue);
+            return dataParameter.Value;
         }
     }
 }

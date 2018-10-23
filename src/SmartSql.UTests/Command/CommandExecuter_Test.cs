@@ -16,26 +16,20 @@ namespace SmartSql.UTests.Command
 {
     public class CommandExecuter_Test : TestBase, IDisposable
     {
+        SmartSqlOptions _smartSqlOptions;
         IDbConnectionSessionStore _sessionStore;
-        IPreparedCommand _preparedCommand;
         ICommandExecuter _commandExecuter;
-        SmartSqlContext _smartSqlContext;
-        ISqlBuilder _sqlBuilder;
         public CommandExecuter_Test()
         {
-            _sessionStore = new DbConnectionSessionStore(LoggerFactory, DbProviderFactory);
-            var _configLoader = new LocalFileConfigLoader(SqlMapConfigFilePath, LoggerFactory);
-            var config = _configLoader.Load();
-            _smartSqlContext = new SmartSqlContext(LoggerFactory.CreateLogger<SmartSqlContext>(), config);
-
-            _sqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>(), _smartSqlContext, _configLoader);
-            _preparedCommand = new PreparedCommand(LoggerFactory.CreateLogger<PreparedCommand>(), _smartSqlContext);
-            _commandExecuter = new CommandExecuter(LoggerFactory.CreateLogger<CommandExecuter>(), _preparedCommand);
+            _smartSqlOptions = new SmartSqlOptions();
+            _smartSqlOptions.Setup();
+            _sessionStore = _smartSqlOptions.DbSessionStore;
+            _commandExecuter = new CommandExecuter(LoggerFactory.CreateLogger<CommandExecuter>(), _smartSqlOptions.PreparedCommand);
         }
 
         public void Dispose()
         {
-            _sessionStore.Dispose();
+            _smartSqlOptions.DbSessionStore.Dispose();
         }
         [Fact]
         public void ExecuteNonQuery()
@@ -46,10 +40,8 @@ namespace SmartSql.UTests.Command
                 SqlId = "Delete",
                 Request = new { Id = 3 }
             };
-            context.Setup(_smartSqlContext);
-            _sqlBuilder.BuildSql(context);
+            context.Setup(_smartSqlOptions);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
-
             var result = _commandExecuter.ExecuteNonQuery(dbSession, context);
             //Assert.Equal<int>(1, result);
         }
@@ -63,8 +55,7 @@ namespace SmartSql.UTests.Command
 
                 //Request = new { Id = 1, UserName = "SmartSql" },
             };
-            context.Setup(_smartSqlContext);
-            _sqlBuilder.BuildSql(context);
+            context.Setup(_smartSqlOptions);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteReader(dbSession, context);
             while (result.Read())
@@ -84,8 +75,7 @@ namespace SmartSql.UTests.Command
                 SqlId = "GetRecord",
                 Request = new { Id = 2 }
             };
-            context.Setup(_smartSqlContext);
-            _sqlBuilder.BuildSql(context);
+            context.Setup(_smartSqlOptions);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteScalar(dbSession, context);
             //Assert.Equal(1, result);
@@ -112,8 +102,7 @@ namespace SmartSql.UTests.Command
                     Status = EntityStatus.Ok
                 }
             };
-            context.Setup(_smartSqlContext);
-            _sqlBuilder.BuildSql(context);
+            context.Setup(_smartSqlOptions);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteScalar(dbSession, context);
 
@@ -139,8 +128,7 @@ namespace SmartSql.UTests.Command
                     Status = EntityStatus.Ok
                 }
             };
-            context.Setup(_smartSqlContext);
-            _sqlBuilder.BuildSql(context);
+            context.Setup(_smartSqlOptions);
             var dbSession = _sessionStore.GetOrAddDbSession(DataSource);
             dbSession.Begin();
             for (int i = 0; i < 10; i++)

@@ -72,6 +72,14 @@ namespace SmartSql.UTests.DyRepository
             var enttiy = _repository.GetById(3);
         }
         [Fact]
+        public void GetEntity()
+        {
+            var id = 10000;
+            var enttiy = _repository.GetEntity(new { Id = id });
+            var enttiy1 = _repository.GetEntity(new { Id = id });
+            Assert.Equal<long>(enttiy.Id, enttiy1.Id);
+        }
+        [Fact]
         public void QueryBySql()
         {
             var list = _repository.QueryBySql(10);

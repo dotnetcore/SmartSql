@@ -209,7 +209,7 @@ namespace SmartSql.Abstractions.Config
             {
                 foreach (var statement in sqlMap.Statements)
                 {
-                    StringBuilder fullSqlTextBuilder = new StringBuilder();
+                    var fullSqlTextBuilder = new StringBuilder();
                     BuildStatementFullSql(statement, fullSqlTextBuilder);
                     var fullSqlText = fullSqlTextBuilder.ToString();
                     statement.SqlCommandType = _sqlCommandAnalyzer.Analyse(fullSqlText);
@@ -242,11 +242,11 @@ namespace SmartSql.Abstractions.Config
                 }
                 else
                 {
-                    BuildTagFullSql(tag, fullSqlTextBuilder);
+                    BuildTagFullSql(statement, tag, fullSqlTextBuilder);
                 }
             }
         }
-        private void BuildTagFullSql(ITag tag, StringBuilder fullSqlTextBuilder)
+        private void BuildTagFullSql(Statement statement, ITag tag, StringBuilder fullSqlTextBuilder)
         {
             if (tag is SqlText sqlText)
             {
@@ -257,7 +257,7 @@ namespace SmartSql.Abstractions.Config
             {
                 foreach (var childTag in parentTag.ChildTags)
                 {
-                    BuildTagFullSql(childTag, fullSqlTextBuilder);
+                    BuildTagFullSql(statement, childTag, fullSqlTextBuilder);
                 }
             }
         }

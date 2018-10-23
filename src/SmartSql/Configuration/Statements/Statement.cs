@@ -5,6 +5,7 @@ using SmartSql.Configuration.Tags;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -37,6 +38,7 @@ namespace SmartSql.Configuration.Statements
         public String ReadDb { get; set; }
         public String FullSqlId => $"{SmartSqlMap.Scope}.{Id}";
         public IList<ITag> SqlTags { get; set; }
+        #region Map
         public String CacheId { get; set; }
         public Cache Cache { get; set; }
         public String ResultMapId { get; set; }
@@ -45,6 +47,7 @@ namespace SmartSql.Configuration.Statements
         public ParameterMap ParameterMap { get; set; }
         public String MultipleResultMapId { get; set; }
         public MultipleResultMap MultipleResultMap { get; set; }
+        #endregion
         internal IList<Include> IncludeDependencies { get; set; }
 
         public void BuildSql(RequestContext context)
@@ -54,7 +57,5 @@ namespace SmartSql.Configuration.Statements
                 tag.BuildSql(context);
             }
         }
-
-
     }
 }

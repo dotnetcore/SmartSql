@@ -14,7 +14,9 @@ namespace SmartSql
         private readonly IGetAccessorFactory _getAccessorFactory = GetAccessorFactory.Instance;
         public bool IgnoreParameterCase { get; }
         public object RequestParams { get; }
-
+        /// <summary>
+        /// Request参数属性名
+        /// </summary>
         public ICollection<string> ParameterNames { get { return _dbParameters.Keys; } }
         IDictionary<string, DbParameter> _dbParameters;
         public DbParameterCollection() : this(false)

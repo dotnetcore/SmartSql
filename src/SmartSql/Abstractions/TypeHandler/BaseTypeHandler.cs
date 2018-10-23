@@ -22,17 +22,21 @@ namespace SmartSql.Abstractions.TypeHandler
             }
             return val;
         }
-
-        public virtual void SetParameter(IDataParameter dataParameter, object parameterValue)
+        public object GetSetParameterValue(object parameterValue)
         {
             if (parameterValue == null)
             {
-                dataParameter.Value = DBNull.Value;
+                return DBNull.Value;
             }
             else
             {
-                dataParameter.Value = parameterValue;
+                return parameterValue;
             }
+        }
+        public object SetParameter(IDataParameter dataParameter, object parameterValue)
+        {
+            dataParameter.Value = GetSetParameterValue(parameterValue);
+            return dataParameter.Value;
         }
     }
 }

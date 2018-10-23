@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net46;</TargetFrameworks>
-    <Version>3.7.13</Version>
+    <Version>3.7.15-rc</Version>
     <Authors>Ahoo Wang</Authors>
     <Company>Ahoo Wang</Company>
     <Copyright>Ahoo Wang</Copyright>
@@ -16,7 +16,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>
     <PackageReleaseNotes>
-      1. support AnonymousType Cache type
+
     </PackageReleaseNotes>
   </PropertyGroup>
 

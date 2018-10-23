@@ -9,11 +9,11 @@ namespace SmartSql.Abstractions.Cache
         /// 缓存前缀
         /// </summary>
         public String Prefix { get; set; } = "SmartSql-Cache";
-        public RequestContext RequestContext { get; private set; }
-        public String Key { get { return $"{RequestContext.FullSqlId}:{RequestContext.RequestString}"; } }
+
+        public String Key { get; private set; }
         public CacheKey(RequestContext context)
         {
-            RequestContext = context;
+            Key = context.RequestIdentity.GetKey();
         }
         public override string ToString() => Key;
         public override int GetHashCode() => Key.GetHashCode();

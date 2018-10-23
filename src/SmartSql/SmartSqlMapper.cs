@@ -11,11 +11,8 @@ using SmartSql.Logging;
 using SmartSql.Abstractions.Command;
 using SmartSql.Abstractions.DataReaderDeserializer;
 using SmartSql.Exceptions;
-using System.Linq;
 using SmartSql.Abstractions.Cache;
-using System.Data.Common;
 using SmartSql.Utils;
-using System.Collections;
 using SmartSql.DataReaderDeserializer;
 
 namespace SmartSql
@@ -61,9 +58,8 @@ namespace SmartSql
         }
         private void SetupRequestContext(RequestContext context, DataSourceChoice sourceChoice)
         {
-            context.Setup(SmartSqlOptions.SmartSqlContext);
+            context.Setup(SmartSqlOptions);
             InitDataSource(context, sourceChoice);
-            SqlBuilder.BuildSql(context);
         }
         private void InitDataSource(RequestContext context, DataSourceChoice sourceChoice)
         {

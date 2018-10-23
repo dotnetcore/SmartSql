@@ -4,6 +4,7 @@ using SmartSql.Configuration;
 using SmartSql.Configuration.Maps;
 using SmartSql.Configuration.Statements;
 using SmartSql.Exceptions;
+using SmartSql.Utils;
 using System;
 using System.Collections.Generic;
 
@@ -29,6 +30,7 @@ namespace SmartSql
         public String DbPrefix { get { return Database.DbProvider.ParameterPrefix; } }
         public bool IgnoreParameterCase { get { return Settings.IgnoreParameterCase; } }
         public bool IsCacheEnabled { get { return Settings.IsCacheEnabled; } }
+        public SqlParamAnalyzer SqlParamAnalyzer { get; private set; }
         public Dictionary<String, Statement> MappedStatement { get; private set; }
         public Dictionary<string, Configuration.Cache> MappedCache { get; private set; }
         public Dictionary<string, IList<Statement>> ExecuteMappedCacheFlush { get; private set; }
@@ -85,7 +87,7 @@ namespace SmartSql
         }
         public MultipleResultMap GetMultipleResultMap(string fullMultipleResultMapId)
         {
-            if (!MappedMultipleResultMap.TryGetValue(fullMultipleResultMapId, out MultipleResultMap  multipleResultMap))
+            if (!MappedMultipleResultMap.TryGetValue(fullMultipleResultMapId, out MultipleResultMap multipleResultMap))
             {
                 if (_logger.IsEnabled(LogLevel.Error))
                 {
@@ -179,6 +181,7 @@ namespace SmartSql
         }
         public void Setup()
         {
+            SqlParamAnalyzer = new SqlParamAnalyzer(IgnoreParameterCase, DbPrefix);
             InitStatementMap();
             InitMap();
             InitExecuteMappedCacheFlush();

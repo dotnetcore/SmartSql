@@ -19,19 +19,14 @@ namespace SmartSql.UTests.DataReaderDeserializer
         IDataReaderDeserializerFactory _deserializerFactory;
         IDbConnectionSessionStore _sessionStore;
         ICommandExecuter _commandExecuter;
-        SmartSqlContext _smartSqlContext;
-        ISqlBuilder _sqlBuilder;
+        SmartSqlOptions _smartSqlOptions;
         public DapperDataReaderDeserializerFactory_Test()
         {
             _deserializerFactory = new DapperDataReaderDeserializerFactory();
-
-            _sessionStore = new DbConnectionSessionStore(LoggerFactory, DbProviderFactory);
-            var _configLoader = new LocalFileConfigLoader(SqlMapConfigFilePath, LoggerFactory);
-            var config = _configLoader.Load();
-            _smartSqlContext = new SmartSqlContext(LoggerFactory.CreateLogger<SmartSqlContext>(), config);
-            _sqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>(), _smartSqlContext, _configLoader);
-            var _preparedCommand = new PreparedCommand(LoggerFactory.CreateLogger<PreparedCommand>(), _smartSqlContext);
-            _commandExecuter = new CommandExecuter(LoggerFactory.CreateLogger<CommandExecuter>(), _preparedCommand);
+            _smartSqlOptions = new SmartSqlOptions { DataReaderDeserializerFactory = _deserializerFactory };
+            _smartSqlOptions.Setup();
+            _sessionStore = _smartSqlOptions.DbSessionStore;
+            _commandExecuter = new CommandExecuter(LoggerFactory.CreateLogger<CommandExecuter>(), _smartSqlOptions.PreparedCommand);
         }
 
         [Fact]
@@ -43,8 +38,7 @@ namespace SmartSql.UTests.DataReaderDeserializer
                 SqlId = "Query",
                 Request = new { Taken = 10 }
             };
-            context.Setup(_smartSqlContext);
-            _sqlBuilder.BuildSql(context);
+            context.Setup(_smartSqlOptions);
             var dbSession = _sessionStore.CreateDbSession(DataSource);
             var result = _commandExecuter.ExecuteReader(dbSession, context);
             var wrapper = new DataReaderWrapper(result);

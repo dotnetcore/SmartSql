@@ -19,18 +19,21 @@ namespace SmartSql.TypeHandler
             var jsonStr = dataReader.GetString(columnIndex);
             return JsonConvert.DeserializeObject(jsonStr, targetType);
         }
-
-        public virtual void SetParameter(IDataParameter dataParameter, object parameterValue)
+        public object GetSetParameterValue(object parameterValue)
         {
             if (parameterValue == null)
             {
-                dataParameter.Value = DBNull.Value;
+               return DBNull.Value;
             }
             else
             {
-                var jsonStr = JsonConvert.SerializeObject(parameterValue);
-                dataParameter.Value = jsonStr;
+               return JsonConvert.SerializeObject(parameterValue);
             }
+        }
+        public virtual object SetParameter(IDataParameter dataParameter, object parameterValue)
+        {
+            dataParameter.Value = GetSetParameterValue(parameterValue);
+            return dataParameter.Value;
         }
     }
 }

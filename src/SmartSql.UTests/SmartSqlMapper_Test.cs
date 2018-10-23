@@ -400,15 +400,16 @@ namespace SmartSql.UTests
             int exeNum = await _sqlMapper.ExecuteAsync(context);
         }
         [Fact]
-        public long ExecuteScalarAsync()
+        public async Task<long> ExecuteScalarAsync()
         {
             RequestContext context = new RequestContext
             {
                 Scope = Scope,
-                SqlId = "GetRecord"
+                SqlId = "GetRecord",
+                Request = new { FStrings = new string[] { "SmartSql", "SmartCode" } }
             };
 
-            var total = _sqlMapper.ExecuteScalarAsync<long>(context).GetAwaiter().GetResult();
+            var total = await _sqlMapper.ExecuteScalarAsync<long>(context);
             return total;
         }
         [Fact]
@@ -424,15 +425,23 @@ namespace SmartSql.UTests
         }
 
         [Fact]
-        public async Task QuerySingleAsync()
+        public void QuerySingleM()
         {
             RequestContext context = new RequestContext
             {
                 Scope = Scope,
                 SqlId = "GetEntity",
-                Request = new { Id = 2 }
+                Request = new { Id = 1000 }
             };
-            var user = await _sqlMapper.QuerySingleAsync<T_Entity>(context);
+            var user = _sqlMapper.QuerySingle<T_Entity>(context);
+            RequestContext context1 = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "GetEntity",
+                Request = new { Id = 1000 }
+            };
+            var user1 = _sqlMapper.QuerySingle<T_Entity>(context1);
+            Assert.Equal(user.Id, user1.Id);
         }
 
         [Fact]

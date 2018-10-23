@@ -50,10 +50,11 @@ namespace SmartSql.Abstractions
         public MultipleResultMap MultipleResultMap { get; private set; }
         #endregion
         public object Request { get; set; }
+        public RequestIdentity RequestIdentity { get; private set; }
         [Obsolete("Internal call")]
-        public void Setup(SmartSqlContext smartSqlContext)
+        public void Setup(SmartSqlOptions smartSqlOptions)
         {
-            SmartSqlContext = smartSqlContext;
+            SmartSqlContext = smartSqlOptions.SmartSqlContext;
             SetupStatement();
             SetupParameters();
             SetupMap();
@@ -61,6 +62,8 @@ namespace SmartSql.Abstractions
             {
                 Items = new Dictionary<object, object>();
             }
+            smartSqlOptions.SqlBuilder.BuildSql(this);
+            SetupKey();
         }
         internal void SetupStatement()
         {
@@ -140,6 +143,10 @@ namespace SmartSql.Abstractions
             }
         }
 
+        private void SetupKey()
+        {
+            RequestIdentity = new RequestIdentity(this);
+        }
         private void SetupStatementMap()
         {
             CacheId = Statement.CacheId;
@@ -151,40 +158,7 @@ namespace SmartSql.Abstractions
             MultipleResultMapId = Statement.MultipleResultMapId;
             MultipleResultMap = Statement.MultipleResultMap;
         }
-
-        public String StatementKey { get { return (!String.IsNullOrEmpty(SqlId) ? FullSqlId : RealSql); } }
-        public String Key { get { return $"{StatementKey}:{RequestString}"; } }
-        public String RequestString
-        {
-            get
-            {
-                if (RequestParameters == null) { return "Null"; }
-                StringBuilder strBuilder = new StringBuilder();
-                var reqParams = RequestParameters;
-                foreach (var reqParamName in reqParams.ParameterNames)
-                {
-                    var reqParamVal = reqParams.GetValue(reqParamName);
-                    BuildSqlQueryString(strBuilder, reqParamName, reqParamVal);
-                }
-                return strBuilder.ToString().Trim('&');
-            }
-        }
-        private void BuildSqlQueryString(StringBuilder strBuilder, string key, object val)
-        {
-            if (val is IEnumerable list && !(val is String))
-            {
-                strBuilder.AppendFormat("&{0}=(", key);
-                foreach (var item in list)
-                {
-                    strBuilder.AppendFormat("{0},", item);
-                }
-                strBuilder.Append(")");
-            }
-            else
-            {
-                strBuilder.AppendFormat("&{0}={1}", key, val);
-            }
-        }
+        public String StatementKey => RequestIdentity.StatementKey;
         [Obsolete("Internal call")]
         public ITypeHandler GetTypeHandler(string typeHandlerName)
         {

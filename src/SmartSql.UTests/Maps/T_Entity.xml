@@ -115,7 +115,9 @@
         <For Prepend="And" Key="Key" Open="T.FLong In (" Close=")" Property="Ids" Separator=",">
           @Key
         </For>
-
+        <For Prepend="And" Key="LikeKey" Open="(" Close=")" Property="FStrings" Separator="Or">
+          T.FString Like Concat(@LikeKey,'%')
+        </For>
       </Where>
     </Statement>
     <Statement Id="QueryId">
@@ -130,6 +132,7 @@
     <Statement Id="QueryNullStatus">
       SELECT Top(10) T.NullStatus From T_Entity T With(NoLock)
     </Statement>
+
     <!--新增-->
     <Statement Id="Insert">
       INSERT INTO T_Entity

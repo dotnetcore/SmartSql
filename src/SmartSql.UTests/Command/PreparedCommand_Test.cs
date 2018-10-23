@@ -15,20 +15,15 @@ namespace SmartSql.UTests.Command
 {
     public class PreparedCommand_Test : TestBase, IDisposable
     {
+        SmartSqlOptions _smartSqlOptions;
         IDbConnectionSessionStore _sessionStore;
         IPreparedCommand _preparedCommand;
-        SmartSqlContext _smartSqlContext;
-        ISqlBuilder _sqlBuilder;
         public PreparedCommand_Test()
         {
-            _sessionStore = new DbConnectionSessionStore(LoggerFactory, DbProviderFactory);
-            var _configLoader = new LocalFileConfigLoader(SqlMapConfigFilePath, LoggerFactory);
-            var config = _configLoader.Load();
-            _smartSqlContext = new SmartSqlContext(LoggerFactory.CreateLogger<SmartSqlContext>(), config);
-
-            _sqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>(), _smartSqlContext, _configLoader);
-
-            _preparedCommand = new PreparedCommand(LoggerFactory.CreateLogger<PreparedCommand>(),_smartSqlContext);
+            _smartSqlOptions = new SmartSqlOptions();
+            _smartSqlOptions.Setup();
+            _sessionStore = _smartSqlOptions.DbSessionStore;
+            _preparedCommand = new PreparedCommand(LoggerFactory.CreateLogger<PreparedCommand>(), _smartSqlOptions.SmartSqlContext);
         }
         [Fact]
         public void Prepare()
@@ -39,8 +34,7 @@ namespace SmartSql.UTests.Command
                 SqlId = "Query",
                 Request = new { Id = 1, UserName = "SmartSql", Ids = new long[] { 1, 2, 3, 4 } }
             };
-            context.Setup(_smartSqlContext);
-            _sqlBuilder.BuildSql(context);
+            context.Setup(_smartSqlOptions);
             var dbSession = _sessionStore.GetOrAddDbSession(DataSource);
             var dbCommand = _preparedCommand.Prepare(dbSession, context);
 

@@ -9,13 +9,15 @@ namespace SmartSql.UTests
     {
         public override string Scope => "SqlBuilder";
         ISqlBuilder _sqlBuilder;
-        IConfigLoader _configLoader;
-        SmartSqlContext _smartSqlContext;
+        SmartSqlOptions _smartSqlOptions;
         public SqlBuilder_Test()
         {
-            _configLoader = new LocalFileConfigLoader(SqlMapConfigFilePath, LoggerFactory);
-            _smartSqlContext = new SmartSqlContext(LoggerFactory.CreateLogger<SmartSqlContext>(), _configLoader.Load());
-            _sqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>(), _smartSqlContext, _configLoader);
+            _sqlBuilder = new SqlBuilder(LoggerFactory.CreateLogger<SqlBuilder>());
+            _smartSqlOptions = new SmartSqlOptions
+            {
+                SqlBuilder = _sqlBuilder
+            };
+            _smartSqlOptions.Setup();
         }
         [Fact]
         public void Placeholder_Test()
@@ -29,11 +31,11 @@ namespace SmartSql.UTests
                     OrderBy = "Id Desc"
                 }
             };
-            context.Setup(_smartSqlContext);
-            _sqlBuilder.BuildSql(context);
+            context.Setup(_smartSqlOptions);
+
             string sql = @"Select T.* From T_Entity T
       Order By Id Desc";
-             Assert.Equal<string>(context.RealSql, sql);
+            Assert.Equal<string>(context.RealSql, sql);
         }
 
         [Fact]
@@ -48,8 +50,7 @@ namespace SmartSql.UTests
                     OrderBy = "Id Desc"
                 }
             };
-            context.Setup(_smartSqlContext);
-            _sqlBuilder.BuildSql(context);
+            context.Setup(_smartSqlOptions);
             string sql = @"Select T.* From T_Entity T
       Order By Id Desc";
             Assert.Equal<string>(context.RealSql, sql);
@@ -65,11 +66,11 @@ namespace SmartSql.UTests
                 Request = new
                 {
                     Year = "2018",
-                    FString="Good Job"
+                    FString = "Good Job"
                 }
             };
-            context.Setup(_smartSqlContext);
-            _sqlBuilder.BuildSql(context);
+            context.Setup(_smartSqlOptions);
+
             string sql = @"Select T.* From T_Entity_2018 T
        Where   
           T.FString=@FString";
@@ -87,8 +88,7 @@ namespace SmartSql.UTests
                     Year = "2018"
                 }
             };
-            context.Setup(_smartSqlContext);
-            _sqlBuilder.BuildSql(context);
+            context.Setup(_smartSqlOptions);
             string sql = "Select T.* From T_Entity_2018 T";
             Assert.Equal<string>(context.RealSql, sql);
         }
@@ -104,12 +104,11 @@ namespace SmartSql.UTests
                     Year = "2018"
                 }
             };
-            context.Setup(_smartSqlContext);
-            _sqlBuilder.BuildSql(context);
+            context.Setup(_smartSqlOptions);
             string sql = "Select T.* From T_Entity_2018 T";
             Assert.Equal<string>(context.RealSql, sql);
         }
-        
+
     }
 
 
