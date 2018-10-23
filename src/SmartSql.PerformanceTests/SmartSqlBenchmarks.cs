@@ -50,7 +50,15 @@ namespace SmartSql.PerformanceTests
             });
             return list;
         }
-
+        [Benchmark]
+        public IEnumerable<T_Entity> SqlQuery()
+        {
+            var list = _sqlMapper.Query<T_Entity>(new RequestContext
+            {
+                RealSql = QueryString
+            });
+            return list;
+        }
         public override int Update()
         {
             throw new NotImplementedException();
