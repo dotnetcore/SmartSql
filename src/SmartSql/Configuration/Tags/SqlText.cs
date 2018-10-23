@@ -51,7 +51,7 @@ namespace SmartSql.Configuration.Tags
                           inParamSql.AppendFormat("{0}{1},", _dbPrefix, itemParamName);
                           if (!context.RequestParameters.Contains(itemParamName))
                           {
-                              context.RequestParameters.Add(itemParamName, item_Index);
+                              context.RequestParameters.Add(itemParamName, itemVal);
                           }
                           item_Index++;
                       }
