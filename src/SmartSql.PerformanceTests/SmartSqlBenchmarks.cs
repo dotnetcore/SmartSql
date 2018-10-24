@@ -3,11 +3,13 @@ using SmartSql.Abstractions;
 using SmartSql.DataReaderDeserializer;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
 namespace SmartSql.PerformanceTests
 {
+    [Description("SmartSql")]
     public class SmartSqlBenchmarks : BenchmarkBase
     {
         ISmartSqlMapper _sqlMapper;

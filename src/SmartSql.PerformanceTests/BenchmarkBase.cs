@@ -1,29 +1,16 @@
 ﻿using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Columns;
-using BenchmarkDotNet.Attributes.Exporters;
-using BenchmarkDotNet.Columns;
-using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Diagnosers;
-using BenchmarkDotNet.Horology;
-using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Order;
-using BenchmarkDotNet.Reports;
-using BenchmarkDotNet.Running;
-using SmartSql.PerformanceTests.Columns;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
 
 namespace SmartSql.PerformanceTests
 {
-    [OrderProvider(SummaryOrderPolicy.FastestToSlowest)]
-    [RankColumn]
-    [Config(typeof(Config))]
+    [Orderer(SummaryOrderPolicy.FastestToSlowest)]
+    [BenchmarkCategory("ORM")]
     public abstract class BenchmarkBase
     {
-        public const int ITERATIONS = 100;
         public const int QUERY_TAKEN = 10000;
         protected SqlConnection _connection;
         public static string ConnectionString { get; } = "Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True";
@@ -67,23 +54,6 @@ namespace SmartSql.PerformanceTests
                 NullStatus = EntityStatus.Ok,
                 Status = EntityStatus.Ok
             };
-        }
-    }
-    public class Config : ManualConfig
-    {
-        public Config()
-        {
-            Add(new MemoryDiagnoser());
-            Add(new ORMColum());
-            Add(new ReturnColum());
-            Add(Job.Default
-                //.WithUnrollFactor(BenchmarkBase.ITERATIONS)
-                //.WithIterationTime(new TimeInterval(10000, TimeUnit.Millisecond))
-                //.WithLaunchCount(1)
-                //.WithWarmupCount(1)
-                //.WithTargetCount(5)
-                //.WithRemoveOutliers(true)
-            );
         }
     }
 }

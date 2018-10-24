@@ -2,10 +2,12 @@
 using Chloe.SqlServer;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace SmartSql.PerformanceTests
 {
+    [Description("Chloe")]
     public class ChloeBenchmarks : BenchmarkBase
     {
         MsSqlContext _chloeContext;

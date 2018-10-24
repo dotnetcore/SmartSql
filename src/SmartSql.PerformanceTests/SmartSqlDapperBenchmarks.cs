@@ -2,11 +2,13 @@
 using SmartSql.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
 namespace SmartSql.PerformanceTests
 {
+    [Description("SmartSqlDapper")]
     public class SmartSqlDapperBenchmarks : BenchmarkBase
     {
         ISmartSqlMapper _sqlMapper;

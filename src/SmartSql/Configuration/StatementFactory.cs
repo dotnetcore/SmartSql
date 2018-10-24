@@ -98,10 +98,10 @@ namespace SmartSql.Configuration
                     {
                         var innerText = xmlNode.InnerText;
                         var bodyText = innerText.Replace(statement.SmartSqlMap.SqlMapConfig.Settings.ParameterPrefix, statement.SmartSqlMap.SqlMapConfig.Database.DbProvider.ParameterPrefix);
-                        return new SqlText(statement.SmartSqlMap.SqlMapConfig.Database.DbProvider.ParameterPrefix)
+                        return new SqlText(bodyText
+                            , statement.SmartSqlMap.SqlMapConfig.Database.DbProvider.ParameterPrefix)
                         {
-                            Statement = statement,
-                            BodyText = bodyText
+                            Statement = statement
                         };
                     }
                 case "Include":

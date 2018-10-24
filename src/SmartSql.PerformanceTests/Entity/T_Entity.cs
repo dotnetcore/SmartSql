@@ -1,4 +1,5 @@
-﻿using Chloe.Entity;
+﻿using Chloe.Annotations;
+using Chloe.Entity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

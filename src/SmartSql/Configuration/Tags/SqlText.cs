@@ -14,19 +14,21 @@ namespace SmartSql.Configuration.Tags
         private readonly string _dbPrefix;
 
         public TagType Type => TagType.SqlText;
-        public string BodyText { get; set; }
+        public string BodyText { get; private set; }
         public ITag Parent { get; set; }
         public Statement Statement { get; set; }
-
-        public SqlText(string dbPrefix)
+        private bool _hasInSyntax = false;
+        public SqlText(string bodyText, string dbPrefix)
         {
+            BodyText = bodyText;
             _dbPrefix = dbPrefix;
             _sqlInParamsTokens = new Regex(@"[i|I][n|N]\s*[" + dbPrefix + @"]([\p{L}\p{N}_.]+)");
+            _hasInSyntax = _sqlInParamsTokens.IsMatch(bodyText);
         }
 
         public void BuildSql(RequestContext context)
         {
-            if (!_sqlInParamsTokens.IsMatch(BodyText))
+            if (!_hasInSyntax)
             {
                 context.Sql.Append(BodyText);
                 return;

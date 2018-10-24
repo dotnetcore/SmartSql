@@ -1,10 +1,12 @@
 ﻿using BenchmarkDotNet.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace SmartSql.PerformanceTests
 {
+    [Description("Native")]
     public class NativeBenchmarks : BenchmarkBase
     {
         public override long Insert()

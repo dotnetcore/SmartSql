@@ -2,10 +2,12 @@
 using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace SmartSql.PerformanceTests
 {
+    [Description("SqlSugar")]
     public class SqlSugarBenchmarks : BenchmarkBase
     {
         SqlSugarClient _sqlSugarClient;
