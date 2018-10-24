@@ -36,9 +36,11 @@ namespace SmartSql.Configuration.Tags
             var sql = _sqlInParamsTokens.Replace(BodyText, match =>
               {
                   var paramName = match.Groups[1].Value;
-                  var paramMap = context.ParameterMap?.Parameters?.FirstOrDefault(p => p.Name == paramName);
-                  var propertyName = paramMap != null ? paramMap.Property : paramName;
-                  var dbParameter = context.RequestParameters.Get(propertyName);
+                  var dbParameter = context.GetDbParameter(paramName);
+                  if (dbParameter == null)
+                  {
+                      return match.Value;
+                  }
                   var paramVal = dbParameter.Value;
                   bool isString = paramVal is String;
                   if (paramVal is IEnumerable && !isString)

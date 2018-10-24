@@ -39,10 +39,10 @@ namespace SmartSql.Command
                     {
                         string sql = SqlParamAnalyzer.Replace(context.RealSql, (paramName, nameWithPrefix) =>
                         {
-                            var paramMap = context.ParameterMap?.Parameters?.FirstOrDefault(p => p.Name == paramName);
+                            var paramMap = context.GetParameterMap(paramName);
                             var propertyName = paramMap != null ? paramMap.Property : paramName;
-
-                            if (!context.RequestParameters.Contains(propertyName))
+                            var dbParameter = context.RequestParameters.Get(propertyName);
+                            if (dbParameter == null)
                             {
                                 if (_logger.IsEnabled(LogLevel.Warning))
                                 {
@@ -50,7 +50,7 @@ namespace SmartSql.Command
                                 }
                                 return GetParameterName(nameWithPrefix);
                             }
-                            var dbParameter = context.RequestParameters.Get(propertyName);
+
                             ITypeHandler typeHandler = dbParameter.TypeHandler ?? paramMap?.Handler;
                             AddDbParameter(dbCommand, dbParameter, typeHandler);
                             return GetParameterName(nameWithPrefix);

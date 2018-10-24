@@ -63,21 +63,21 @@ namespace SmartSql
             _dbParameters = ObjectUtils.ToDicDbParameters(reqParams, ignoreParameterCase);
         }
 
-        public DbParameter Get(string paramName)
+        public DbParameter Get(string propertyName)
         {
-            if (_dbParameters.TryGetValue(paramName, out DbParameter dbParameter))
+            if (_dbParameters.TryGetValue(propertyName, out DbParameter dbParameter))
             {
                 return dbParameter;
             }
-            if (paramName.IndexOf('.') > -1)
+            if (propertyName.IndexOf('.') > -1)
             {
-                var paramVal = GetOrAddNestedObject(paramName, out dbParameter);
+                var paramVal = GetOrAddNestedObject(propertyName, out dbParameter);
             }
             return dbParameter;
         }
-        public object GetValue(string paramName)
+        public object GetValue(string propertyName)
         {
-            var dbParameter = Get(paramName);
+            var dbParameter = Get(propertyName);
             if (dbParameter == null)
             {
                 return null;
@@ -85,9 +85,9 @@ namespace SmartSql
             return dbParameter.SourceParameter == null ? dbParameter.Value : dbParameter.SourceParameter.Value;
         }
 
-        public T GetValue<T>(string paramName)
+        public T GetValue<T>(string propertyName)
         {
-            var val = GetValue(paramName);
+            var val = GetValue(propertyName);
             if (val == DBNull.Value)
             {
                 if (default(T) != null)
@@ -99,11 +99,11 @@ namespace SmartSql
             return (T)val;
         }
 
-        public void Add(string paramName, object val)
+        public void Add(string propertyName, object val)
         {
             Add(new DbParameter
             {
-                Name = paramName,
+                Name = propertyName,
                 Value = val
             });
         }
@@ -117,44 +117,44 @@ namespace SmartSql
             _dbParameters.Add(dbParameter.Name, dbParameter);
         }
         private IDictionary<string, bool> _cachedNoFindProperty = new Dictionary<string, bool>();
-        public bool Contains(string paramName)
+        public bool Contains(string propertyName)
         {
-            if (_dbParameters.ContainsKey(paramName))
+            if (_dbParameters.ContainsKey(propertyName))
             {
                 return true;
             }
-            if (paramName.IndexOf('.') > -1)
+            if (propertyName.IndexOf('.') > -1)
             {
-                var paramVal = GetOrAddNestedObject(paramName, out DbParameter dbParameter);
+                var paramVal = GetOrAddNestedObject(propertyName, out DbParameter dbParameter);
                 return paramVal.Status == PropertyValue.GetStatus.Ok;
             }
             return false;
         }
 
-        private PropertyValue GetOrAddNestedObject(string paramName, out DbParameter dbParameter)
+        private PropertyValue GetOrAddNestedObject(string propertyName, out DbParameter dbParameter)
         {
             dbParameter = default(DbParameter);
-            if (_cachedNoFindProperty.ContainsKey(paramName))
+            if (_cachedNoFindProperty.ContainsKey(propertyName))
             {
                 return PropertyValue.NotFindProperty;
             }
 
-            var reqParamNames = paramName.Split('.');
+            var reqParamNames = propertyName.Split('.');
             var reqRootParamName = reqParamNames[0];
             if (!_dbParameters.ContainsKey(reqRootParamName))
             {
-                _cachedNoFindProperty.Add(paramName, true);
+                _cachedNoFindProperty.Add(propertyName, true);
                 return PropertyValue.NotFindProperty;
             }
             var reqRootParam = _dbParameters[reqRootParamName];
-            var nestedParamName = paramName.Substring(reqRootParamName.Length + 1);
+            var nestedParamName = propertyName.Substring(reqRootParamName.Length + 1);
             PropertyValue paramVal = GetAccessorUtil.GetValue(reqRootParam.Value, nestedParamName, IgnoreParameterCase);
             if (paramVal.Status != PropertyValue.GetStatus.Ok)
             {
-                _cachedNoFindProperty.Add(paramName, true);
+                _cachedNoFindProperty.Add(propertyName, true);
                 return PropertyValue.NotFindProperty;
             }
-            dbParameter = new DbParameter { Name = paramName, Value = paramVal.Value };
+            dbParameter = new DbParameter { Name = propertyName, Value = paramVal.Value };
             _dbParameters.Add(dbParameter.Name, dbParameter);
             return paramVal;
         }

@@ -164,5 +164,25 @@ namespace SmartSql.Abstractions
         {
             return SmartSqlContext.SqlMapConfig.TypeHandlers.FirstOrDefault(th => th.Name == typeHandlerName)?.Handler;
         }
+        internal Parameter GetParameterMap(string paramName)
+        {
+            return ParameterMap?.Parameters?.FirstOrDefault(p => p.Name == paramName);
+        }
+        /// <summary>
+        /// 根据参数名获取对应实体属性名
+        /// </summary>
+        /// <param name="paramName"></param>
+        /// <returns></returns>
+        internal string GetPropertyName(string paramName)
+        {
+            var paramMap = GetParameterMap(paramName);
+            return paramMap != null ? paramMap.Property : paramName;
+        }
+
+        internal DbParameter GetDbParameter(string paramName)
+        {
+            var propertyName = GetPropertyName(paramName);
+            return RequestParameters.Get(propertyName);
+        }
     }
 }
