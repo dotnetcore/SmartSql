@@ -22,15 +22,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DapperDeserializer", "src\SmartSql.DapperDeserializer\SmartSql.DapperDeserializer.csproj", "{F2169B5F-B215-42AA-8F62-DEEE596A6404}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{56A313A6-578F-42C7-9E39-7847C38F2EFE}"
-	ProjectSection(SolutionItems) = preProject
-		Performance1.psess = Performance1.psess
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DIExtension", "src\SmartSql.DIExtension\SmartSql.DIExtension.csproj", "{4481026A-DFA6-4D4C-9D56-9777F1235AF3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.TypeHandler", "src\SmartSql.TypeHandler\SmartSql.TypeHandler.csproj", "{9634AE6E-FCEF-4208-BE31-A7F3D5F86E0B}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalORM", "ExternalORM", "{8EC342B0-BDF1-442A-AC3D-2244C8E1D26D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DataAccess", "src\SmartSql.DataAccess\SmartSql.DataAccess.csproj", "{AFFE077F-7BA0-4E4B-8258-64F94AFFD906}"
 EndProject
