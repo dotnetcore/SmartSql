@@ -99,7 +99,6 @@ namespace SmartSql
         }
         private void InitStatementMap()
         {
-            IEnumerable<SmartSqlMap> smartSqlMaps = SqlMapConfig.SmartSqlMaps;
             lock (this)
             {
                 if (_logger.IsEnabled(LogLevel.Debug))
@@ -107,9 +106,9 @@ namespace SmartSql
                     _logger.LogDebug($"StatementMap: Path:{SqlMapConfig.Path} Load MappedStatements Start!");
                 }
                 MappedStatement = new Dictionary<string, Statement>();
-                foreach (var sqlmap in smartSqlMaps)
+                foreach (var sqlmapKV in SqlMapConfig.SmartSqlMaps)
                 {
-                    InitSqlMapStatementMap(sqlmap);
+                    InitSqlMapStatementMap(sqlmapKV.Value);
                 }
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
@@ -119,15 +118,12 @@ namespace SmartSql
         }
         private void InitSqlMapStatementMap(SmartSqlMap sqlmap)
         {
-            foreach (var statement in sqlmap.Statements)
+            foreach (var statementKV in sqlmap.Statements)
             {
+                var statement = statementKV.Value;
                 if (MappedStatement.ContainsKey(statement.FullSqlId))
                 {
-                    MappedStatement.Remove(statement.FullSqlId);
-                    if (_logger.IsEnabled(LogLevel.Warning))
-                    {
-                        _logger.LogWarning($"SmartSqlMapConfig Load MappedStatements: StatementId:{statement.FullSqlId}  already exists!");
-                    }
+                    throw new SmartSqlException($"SmartSqlMapConfig Load MappedStatements: StatementId:{statement.FullSqlId}  already exists!");
                 }
                 MappedStatement.Add(statement.FullSqlId, statement);
             }
@@ -138,23 +134,24 @@ namespace SmartSql
             MappedResultMap = new Dictionary<string, ResultMap>();
             MappedParameterMap = new Dictionary<string, ParameterMap>();
             MappedMultipleResultMap = new Dictionary<string, MultipleResultMap>();
-            foreach (var sqlMap in SqlMapConfig.SmartSqlMaps)
+            foreach (var sqlMapKV in SqlMapConfig.SmartSqlMaps)
             {
-                foreach (var cache in sqlMap.Caches)
+                var sqlMap = sqlMapKV.Value;
+                foreach (var cacheKV in sqlMap.Caches)
                 {
-                    MappedCache.Add(cache.Id, cache);
+                    MappedCache.Add(cacheKV.Key, cacheKV.Value);
                 }
-                foreach (var resultMap in sqlMap.ResultMaps)
+                foreach (var resultMapKV in sqlMap.ResultMaps)
                 {
-                    MappedResultMap.Add(resultMap.Id, resultMap);
+                    MappedResultMap.Add(resultMapKV.Key, resultMapKV.Value);
                 }
-                foreach (var parameterMap in sqlMap.ParameterMaps)
+                foreach (var parameterMapKV in sqlMap.ParameterMaps)
                 {
-                    MappedParameterMap.Add(parameterMap.Id, parameterMap);
+                    MappedParameterMap.Add(parameterMapKV.Key, parameterMapKV.Value);
                 }
-                foreach (var multipleResultMap in sqlMap.MultipleResultMaps)
+                foreach (var multipleResultMapKV in sqlMap.MultipleResultMaps)
                 {
-                    MappedMultipleResultMap.Add(multipleResultMap.Id, multipleResultMap);
+                    MappedMultipleResultMap.Add(multipleResultMapKV.Key, multipleResultMapKV.Value);
                 }
             }
         }
@@ -163,8 +160,9 @@ namespace SmartSql
             ExecuteMappedCacheFlush = new Dictionary<String, IList<Statement>>();
             foreach (var sqlMap in SqlMapConfig.SmartSqlMaps)
             {
-                foreach (var statement in sqlMap.Statements)
+                foreach (var statementKV in sqlMap.Value.Statements)
                 {
+                    var statement = statementKV.Value;
                     if (statement.Cache == null) { continue; }
                     if (statement.Cache.FlushOnExecutes == null) { continue; }
                     foreach (var triggerStatement in statement.Cache.FlushOnExecutes)

@@ -86,7 +86,7 @@ namespace SmartSql.ZooKeeperConfig
                     case SmartSqlMapSource.ResourceType.File:
                         {
                             var sqlmap = await LoadSmartSqlMapAsync(sqlmapSource.Path, config);
-                            config.SmartSqlMaps.Add(sqlmap);
+                            config.SmartSqlMaps.Add(sqlmap.Scope, sqlmap);
                             break;
                         }
                     case SmartSqlMapSource.ResourceType.Directory:
@@ -96,7 +96,7 @@ namespace SmartSql.ZooKeeperConfig
                             {
                                 var sqlmapPath = $"{sqlmapSource.Path}/{sqlmapChild}";
                                 var sqlmap = await LoadSmartSqlMapAsync(sqlmapPath, config);
-                                config.SmartSqlMaps.Add(sqlmap);
+                                config.SmartSqlMaps.Add(sqlmap.Scope, sqlmap);
                             }
                             break;
                         }

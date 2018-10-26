@@ -111,7 +111,7 @@ namespace SmartSql.ZooKeeperConfig
                 else
                 {
                     _logger.LogDebug($"ZooKeeperConfigLoader.SmartSqlMapWatcher Changed Reload SmartSqlMap: {path} Starting");
-                    var sqlmap = SmartSqlMapConfig.SmartSqlMaps.FirstOrDefault(m => m.Path == path);
+                    var sqlmap = SmartSqlMapConfig.SmartSqlMaps.Values.FirstOrDefault(m => m.Path == path);
                     var newSqlmap = await ConfigLoader.LoadSmartSqlMapAsync(path, SmartSqlMapConfig);
                     sqlmap.Scope = newSqlmap.Scope;
                     sqlmap.Statements = newSqlmap.Statements;

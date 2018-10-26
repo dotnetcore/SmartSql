@@ -16,15 +16,15 @@ namespace SmartSql.Configuration.Maps
         [XmlAttribute]
         public String Scope { get; set; }
         [XmlIgnore]
-        public IList<Cache> Caches { get; set; }
+        public IDictionary<String, Cache> Caches { get; set; }
         [XmlArray]
-        public IList<Statement> Statements { get; set; }
+        public IDictionary<String, Statement> Statements { get; set; }
         [XmlIgnore]
-        public IList<ResultMap> ResultMaps { get; set; }
+        public IDictionary<String, ResultMap> ResultMaps { get; set; }
         [XmlIgnore]
-        public IList<ParameterMap> ParameterMaps { get; set; }
+        public IDictionary<String, ParameterMap> ParameterMaps { get; set; }
         [XmlIgnore]
-        public IList<MultipleResultMap>  MultipleResultMaps { get; set; }
+        public IDictionary<String, MultipleResultMap> MultipleResultMaps { get; set; }
     }
 
 

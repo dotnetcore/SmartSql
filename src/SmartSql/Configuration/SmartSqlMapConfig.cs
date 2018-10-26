@@ -19,7 +19,7 @@ namespace SmartSql.Configuration
         [XmlArrayItem("SmartSqlMap")]
         public List<SmartSqlMapSource> SmartSqlMapSources { get; set; }
         [XmlIgnore]
-        public IList<SmartSqlMap> SmartSqlMaps { get; set; }
+        public IDictionary<String, SmartSqlMap> SmartSqlMaps { get; set; }
         [XmlArray("TypeHandlers")]
         public List<TypeHandler> TypeHandlers { get; set; }
     }

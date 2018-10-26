@@ -97,7 +97,7 @@ namespace SmartSql
         private void LoadSmartSqlMapAndInConfig(string sqlMapPath)
         {
             var sqlMap = LoadSmartSqlMap(sqlMapPath);
-            SqlMapConfig.SmartSqlMaps.Add(sqlMap);
+            SqlMapConfig.SmartSqlMaps.Add(sqlMap.Scope, sqlMap);
         }
 
         private SmartSqlMap LoadSmartSqlMap(String sqlMapPath)
@@ -162,8 +162,9 @@ namespace SmartSql
             });
             #endregion
             #region SmartSqlMaps File Watch
-            foreach (var sqlmap in SqlMapConfig.SmartSqlMaps)
+            foreach (var sqlmapKV in SqlMapConfig.SmartSqlMaps)
             {
+                var sqlmap = sqlmapKV.Value;
                 #region SqlMap File Watch
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
@@ -182,7 +183,7 @@ namespace SmartSql
                                 _logger.LogDebug($"LocalFileConfigLoader Changed Reload SmartSqlMap: {sqlmap.Path} Starting");
                             }
                             var newSqlMap = LoadSmartSqlMap(sqlmap.Path);
-                            var oldSqlMap = SqlMapConfig.SmartSqlMaps.First(s => s.Path == sqlmap.Path);
+                            var oldSqlMap = SqlMapConfig.SmartSqlMaps.Values.First(s => s.Path == sqlmap.Path);
                             oldSqlMap.Caches = newSqlMap.Caches;
                             oldSqlMap.Scope = newSqlMap.Scope;
                             oldSqlMap.Statements = newSqlMap.Statements;
