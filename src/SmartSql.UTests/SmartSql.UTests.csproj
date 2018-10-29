@@ -12,12 +12,17 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.0" />
+    <PackageReference Include="Npgsql" Version="4.0.3" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SmartSql.Batch.MySql\SmartSql.Batch.MySql.csproj" />
+    <ProjectReference Include="..\SmartSql.Batch.SqlServer\SmartSql.Batch.SqlServer.csproj" />
+    <ProjectReference Include="..\SmartSql.Batch.PostgreSql\SmartSql.Batch.PostgreSql.csproj" />
+    <ProjectReference Include="..\SmartSql.Batch\SmartSql.Batch.csproj" />
     <ProjectReference Include="..\SmartSql.Extensions\SmartSql.Extensions.csproj" />
     <ProjectReference Include="..\SmartSql.DapperDeserializer\SmartSql.DapperDeserializer.csproj" />
     <ProjectReference Include="..\SmartSql.DIExtension\SmartSql.DIExtension.csproj" />
@@ -35,6 +40,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Maps\T_Entity.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SmartSqlMapConfig-MySql.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SmartSqlMapConfig-PostgreSql.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SmartSqlMapConfig.xml">

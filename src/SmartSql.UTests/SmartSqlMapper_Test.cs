@@ -385,7 +385,34 @@ namespace SmartSql.UTests
         }
 
 
-
+        [Fact]
+        public void GetDbTable()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "MultiQuery",
+                Request = new
+                {
+                    Taken = 10
+                }
+            };
+            var dataTable = _sqlMapper.GetDbTable(context);
+        }
+        [Fact]
+        public void GetDbSet()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "MultiQuery",
+                Request = new
+                {
+                    Taken = 10
+                }
+            };
+            var dataSet = _sqlMapper.GetDbSet(context);
+        }
 
         #region Async
         [Fact]
@@ -485,7 +512,27 @@ namespace SmartSql.UTests
             };
             var dataSet = await _sqlMapper.GetDataSetAsync(context);
         }
+        [Fact]
+        public async Task GetDbTableAsync()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "MultiQuery"
+            };
+            var dataTable = await _sqlMapper.GetDbTableAsync(context);
+        }
 
+        [Fact]
+        public async Task GetDbSetAsync()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                SqlId = "MultiQuery"
+            };
+            var dataSet = await _sqlMapper.GetDbSetAsync(context);
+        }
         [Fact]
         public async Task TransactionAsync()
         {

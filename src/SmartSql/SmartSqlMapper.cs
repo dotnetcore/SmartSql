@@ -221,6 +221,40 @@ namespace SmartSql
                 }
             }, context, DataSourceChoice.Read);
         }
+        public DbTable GetDbTable(RequestContext context)
+        {
+            return ExecuteWrap((dbSession) =>
+            {
+                IDataReader dataReader = null;
+                try
+                {
+                    dataReader = CommandExecuter.ExecuteReader(dbSession, context);
+                    return DataReaderConvert.ToDbTable(dataReader);
+                }
+                finally
+                {
+                    DisposeReader(dataReader);
+                }
+
+            }, context, DataSourceChoice.Read);
+        }
+
+        public DbSet GetDbSet(RequestContext context)
+        {
+            return ExecuteWrap((dbSession) =>
+            {
+                IDataReader dataReader = null;
+                try
+                {
+                    dataReader = CommandExecuter.ExecuteReader(dbSession, context);
+                    return DataReaderConvert.ToDbSet(dataReader);
+                }
+                finally
+                {
+                    DisposeReader(dataReader);
+                }
+            }, context, DataSourceChoice.Read);
+        }
         public T GetNested<T>(RequestContext context)
         {
             return ExecuteWrap<T>((dbSession) =>
@@ -382,6 +416,39 @@ namespace SmartSql
                 }
             }, context, DataSourceChoice.Read);
         }
+        public async Task<DbTable> GetDbTableAsync(RequestContext context)
+        {
+            return await ExecuteWrapAsync(async (dbSession) =>
+            {
+                IDataReaderWrapper dataReader = null;
+                try
+                {
+                    dataReader = await CommandExecuter.ExecuteReaderAsync(dbSession, context);
+                    return await DataReaderConvert.ToDbTableAsync(dataReader);
+                }
+                finally
+                {
+                    DisposeReader(dataReader);
+                }
+            }, context, DataSourceChoice.Read);
+        }
+
+        public async Task<DbSet> GetDbSetAsync(RequestContext context)
+        {
+            return await ExecuteWrapAsync(async (dbSession) =>
+            {
+                IDataReaderWrapper dataReader = null;
+                try
+                {
+                    dataReader = await CommandExecuter.ExecuteReaderAsync(dbSession, context);
+                    return await DataReaderConvert.ToDbSetAsync(dataReader);
+                }
+                finally
+                {
+                    DisposeReader(dataReader);
+                }
+            }, context, DataSourceChoice.Read);
+        }
         public Task<T> GetNestedAsync<T>(RequestContext context)
         {
             return ExecuteWrapAsync<T>(async (dbSession) =>
@@ -529,7 +596,5 @@ namespace SmartSql
                 _logger.LogWarning($"SmartSqlMapper Dispose.");
             }
         }
-
-
     }
 }

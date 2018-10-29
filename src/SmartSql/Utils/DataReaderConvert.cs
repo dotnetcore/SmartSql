@@ -12,6 +12,7 @@ namespace SmartSql.Utils
 {
     public class DataReaderConvert
     {
+        #region DataTable
         public static DataTable ToDataTable(IDataReader dataReader)
         {
             DataTable dataTable = new DataTable();
@@ -74,5 +75,70 @@ namespace SmartSql.Utils
                 dataTable.Columns.Add(column);
             }
         }
+        #endregion
+        #region DbTable
+        public static DbTable ToDbTable(IDataReader dataReader)
+        {
+            DbTable dbTable = new DbTable();
+            InitDbTableColumns(dataReader, dbTable);
+            while (dataReader.Read())
+            {
+                var dbRow = dbTable.AddRow();
+                for (int i = 0; i < dataReader.FieldCount; i++)
+                {
+                    var colName = dataReader.GetName(i);
+                    dbRow[colName] = dataReader[colName];
+                }
+            }
+            return dbTable;
+        }
+        public static DbSet ToDbSet(IDataReader dataReader)
+        {
+            DbSet dbSet = new DbSet();
+            do
+            {
+                var dbTable = ToDbTable(dataReader);
+                dbSet.Tables.Add(dbTable);
+            }
+            while (dataReader.NextResult());
+            return dbSet;
+        }
+        public async static Task<DbTable> ToDbTableAsync(IDataReaderWrapper dataReader)
+        {
+            DbTable dbTable = new DbTable();
+            InitDbTableColumns(dataReader, dbTable);
+            while (await dataReader.ReadAsync())
+            {
+                var dbRow = dbTable.AddRow();
+                for (int i = 0; i < dataReader.FieldCount; i++)
+                {
+                    var colName = dataReader.GetName(i);
+                    dbRow[colName] = dataReader[colName];
+                }
+            }
+            return dbTable;
+        }
+        public async static Task<DbSet> ToDbSetAsync(IDataReaderWrapper dataReader)
+        {
+            DbSet dbSet = new DbSet();
+            do
+            {
+                var dbTable = await ToDbTableAsync(dataReader);
+                dbSet.Tables.Add(dbTable);
+            }
+            while (await dataReader.NextResultAsync());
+            return dbSet;
+        }
+
+        private static void InitDbTableColumns(IDataReader dataReader, DbTable dbTable)
+        {
+            for (int i = 0; i < dataReader.FieldCount; i++)
+            {
+                string colName = dataReader.GetName(i);
+                Type colType = dataReader.GetFieldType(i);
+                dbTable.AddColumn(colName, colType);
+            }
+        }
+        #endregion
     }
 }

@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net46;</TargetFrameworks>
-    <Version>3.8.0</Version>
+    <TargetFrameworks>netstandard2.0;</TargetFrameworks>
+    <Version>1.2.0</Version>
     <Authors>Ahoo Wang</Authors>
     <Company>Ahoo Wang</Company>
     <Copyright>Ahoo Wang</Copyright>
-    <Title>SmartSql</Title>
+    <Title>SmartSql.Batch.SqlServer</Title>
     <Description>SmartSql = MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting +Dynamic Repository ....</Description>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -15,21 +15,14 @@
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>
-    <PackageReleaseNotes>
-      1. add support GetDbTable/GetDbSet 
-    </PackageReleaseNotes>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard2.0\SmartSql.xml</DocumentationFile>
-  </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.2" />
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.5.1" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.0" />
-    <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
-    <PackageReference Include="System.Reflection.Emit.Lightweight " Version="4.3.0" />
+  <ItemGroup>
+    <ProjectReference Include="..\SmartSql.Batch\SmartSql.Batch.csproj" />
+    <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
   </ItemGroup>
+
 </Project>

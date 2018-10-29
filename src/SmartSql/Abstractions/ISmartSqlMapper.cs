@@ -56,6 +56,8 @@ namespace SmartSql.Abstractions
         /// <param name="context"></param>
         /// <returns></returns>
         T GetNested<T>(RequestContext context);
+        DbTable GetDbTable(RequestContext context);
+        DbSet GetDbSet(RequestContext context);
     }
 
     public enum DataSourceChoice

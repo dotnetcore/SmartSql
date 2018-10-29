@@ -17,5 +17,7 @@ namespace SmartSql.Abstractions
         Task<DataTable> GetDataTableAsync(RequestContext context);
         Task<DataSet> GetDataSetAsync(RequestContext context);
         Task<T> GetNestedAsync<T>(RequestContext context);
+        Task<DbTable> GetDbTableAsync(RequestContext context);
+        Task<DbSet> GetDbSetAsync(RequestContext context);
     }
 }
