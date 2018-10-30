@@ -41,9 +41,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Batch", "src\Smart
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Batch.PostgreSql", "src\SmartSql.Batch.PostgreSql\SmartSql.Batch.PostgreSql.csproj", "{13224C4C-F793-412F-9660-316AB59909F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.Batch.SqlServer", "src\SmartSql.Batch.SqlServer\SmartSql.Batch.SqlServer.csproj", "{AA664F95-D254-446E-88ED-53ED3E8AC6B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Batch.SqlServer", "src\SmartSql.Batch.SqlServer\SmartSql.Batch.SqlServer.csproj", "{AA664F95-D254-446E-88ED-53ED3E8AC6B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.Batch.MySql", "src\SmartSql.Batch.MySql\SmartSql.Batch.MySql.csproj", "{E7EDB9B4-DF80-46FC-B366-073689839AFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Batch.MySql", "src\SmartSql.Batch.MySql\SmartSql.Batch.MySql.csproj", "{E7EDB9B4-DF80-46FC-B366-073689839AFA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.TypeHandler.PostgreSql", "src\SmartSql.TypeHandler.PostgreSql\SmartSql.TypeHandler.PostgreSql.csproj", "{F3064623-46A8-4271-9F27-6EE0D36AF6FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -123,6 +125,10 @@ Global
 		{E7EDB9B4-DF80-46FC-B366-073689839AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7EDB9B4-DF80-46FC-B366-073689839AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7EDB9B4-DF80-46FC-B366-073689839AFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3064623-46A8-4271-9F27-6EE0D36AF6FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3064623-46A8-4271-9F27-6EE0D36AF6FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3064623-46A8-4271-9F27-6EE0D36AF6FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3064623-46A8-4271-9F27-6EE0D36AF6FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
