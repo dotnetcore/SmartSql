@@ -65,13 +65,17 @@ namespace SmartSql.Batch.MySql
                     var colMapping = colMappingKey.Value;
                     var col = Table.Columns[colMapping.Column];
                     if (colIndex != 0) dataBuilder.Append(_fieldTerminator);
-                    if (col.DataType == typeof(string) 
-                        && row[col.Name] != null 
+                    if (col.DataType == typeof(string)
+                        && row[col.Name] != null
                         && row[col.Name].ToString().Contains(_fieldTerminator))
                     {
                         dataBuilder.AppendFormat("\"{0}\"", row[col.Name].ToString().Replace("\"", "\"\""));
                     }
-                    else dataBuilder.Append(row[col.Name]?.ToString());
+                    else
+                    {
+                        var colValStr = (col.AutoIncrement.HasValue && col.AutoIncrement.Value) ? "" : row[col.Name]?.ToString();
+                        dataBuilder.Append(colValStr);
+                    }
                     colIndex++;
                 }
                 dataBuilder.Append(_lineTerminator);

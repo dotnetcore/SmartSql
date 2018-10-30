@@ -21,7 +21,12 @@ namespace SmartSql.UTests.Batch
         {
             var batchInsertNum = 1000000;
             var batchTable = new DbTable("t_test");
-            batchTable.AddColumn("id");
+            batchTable.AddColumn(new DbColumn
+            {
+                AutoIncrement = true,
+                DataType = typeof(long),
+                Name = "id"
+            });
             batchTable.AddColumn("name");
             batchTable.AddColumn("no");
             for (var i = 0; i < batchInsertNum; i++)
@@ -41,7 +46,12 @@ namespace SmartSql.UTests.Batch
         {
             var batchInsertNum = 1000000;
             var batchTable = new DbTable("t_test");
-            batchTable.AddColumn("id");
+            batchTable.AddColumn(new DbColumn
+            {
+                AutoIncrement = true,
+                DataType = typeof(long),
+                Name = "id"
+            });
             batchTable.AddColumn("name");
             batchTable.AddColumn("no");
             for (var i = 0; i < batchInsertNum; i++)

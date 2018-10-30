@@ -4,12 +4,11 @@
   <Database>
     <!--ParameterPrefix:[SqlServer:@ | MySQL:? |Oracle::] -->
     <DbProvider Name="MySqlClientFactory" ParameterPrefix="?" Type="MySql.Data.MySqlClient.MySqlClientFactory,MySql.Data"/>
-    <Write Name="WriteDB" ConnectionString="Data Source=localhost;database=SmartSqlStarterDB;uid=root;pwd=SmartSql.Net;CharSet=utf8;SslMode=None;Allow User Variables=True"/>  
+    <Write Name="WriteDB" ConnectionString="Data Source=localhost;database=SmartSqlStarterDB;uid=root;pwd=SmartSql.Net;CharSet=utf8;SslMode=None;"/>  
   </Database>
 
   <TypeHandlers>
     <TypeHandler Name="Json" Type="SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"/>
     <TypeHandler Name="Xml" Type="SmartSql.TypeHandler.XmlTypeHandler,SmartSql.TypeHandler"/>
   </TypeHandlers>
-
 </SmartSqlMapConfig>
