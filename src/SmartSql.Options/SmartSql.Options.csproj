@@ -7,14 +7,14 @@
     <Product>SmartSq</Product>
     <Copyright>SmartSq</Copyright>
     <Title>SmartSql.Options</Title>
-    <Version>3.7.16</Version>
+    <Version>3.7.18</Version>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/Ahoo-Wang/SmartSql</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
     <PackageReleaseNotes>
-      1. adapt SmartSql V3.7.16
+      1. fixed TypeHandler bug
     </PackageReleaseNotes>
 
   </PropertyGroup>

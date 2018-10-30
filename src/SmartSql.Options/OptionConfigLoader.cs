@@ -58,7 +58,13 @@ namespace SmartSql.Options
                 Settings = _options.Settings,
                 TypeHandlers = _options.TypeHandlers,
             };
-
+            if (SqlMapConfig.TypeHandlers != null)
+            {
+                foreach (var typeHandler in SqlMapConfig.TypeHandlers)
+                {
+                    typeHandler.Handler = TypeHandlerFactory.Create(typeHandler.Type);
+                }
+            }
             foreach (var sqlMapSource in SqlMapConfig.SmartSqlMapSources)
             {
                 switch (sqlMapSource.Type)
