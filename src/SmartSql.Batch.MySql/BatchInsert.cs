@@ -22,53 +22,59 @@ namespace SmartSql.Batch.MySql
             var dbSession = SessionStore.GetOrAddDbSession(dataSource);
             dbSession.OpenConnection();
             var conn = dbSession.Connection as MySqlConnection;
-            var bulkLoader = new MySqlBulkLoader(conn)
-            {
-                FieldTerminator = ",",
-                FieldQuotationCharacter = '"',
-                EscapeCharacter = '"',
-                LineTerminator = "\r\n",
-                FileName = ToCSV(),
-                NumberOfLinesToSkip = 0,
-                TableName = Table.Name,
-            };
+            MySqlBulkLoader bulkLoader = GetBulkLoader(conn);
             bulkLoader.Load();
         }
+        private string _fieldTerminator = ",";
+        private char _fieldQuotationCharacter = '"';
+        private char _escapeCharacter = '"';
+        private string _lineTerminator = "\r\n";
         public override async Task InsertAsync()
         {
             var dataSource = DataSourceFilter.Elect(new RequestContext { DataSourceChoice = DataSourceChoice.Write });
             var dbSession = SessionStore.GetOrAddDbSession(dataSource);
             await dbSession.OpenConnectionAsync();
             var conn = dbSession.Connection as MySqlConnection;
-            var bulkLoader = new MySqlBulkLoader(conn)
+            MySqlBulkLoader bulkLoader = GetBulkLoader(conn);
+            await bulkLoader.LoadAsync();
+        }
+
+        private MySqlBulkLoader GetBulkLoader(MySqlConnection conn)
+        {
+            return new MySqlBulkLoader(conn)
             {
-                FieldTerminator = ",",
-                FieldQuotationCharacter = '"',
-                EscapeCharacter = '"',
-                LineTerminator = "\r\n",
+                FieldTerminator = _fieldTerminator,
+                FieldQuotationCharacter = _fieldQuotationCharacter,
+                EscapeCharacter = _escapeCharacter,
+                LineTerminator = _lineTerminator,
                 FileName = ToCSV(),
                 NumberOfLinesToSkip = 0,
                 TableName = Table.Name,
             };
-            await bulkLoader.LoadAsync();
         }
 
         private string ToCSV()
         {
+            InitColumnMappings();
             StringBuilder dataBuilder = new StringBuilder();
             foreach (var row in Table.Rows)
             {
-                for (int i = 0; i < Table.Columns.Count; i++)
+                var colIndex = 0;
+                foreach (var colMappingKey in ColumnMappings)
                 {
-                    var col = Table.Columns[i];
-                    if (i != 0) dataBuilder.Append(",");
-                    if (col.DataType == typeof(string) && row[col.Name].ToString().Contains(","))
+                    var colMapping = colMappingKey.Value;
+                    var col = Table.Columns[colMapping.Column];
+                    if (colIndex != 0) dataBuilder.Append(_fieldTerminator);
+                    if (col.DataType == typeof(string) 
+                        && row[col.Name] != null 
+                        && row[col.Name].ToString().Contains(_fieldTerminator))
                     {
-                        dataBuilder.Append("\"" + row[col.Name].ToString().Replace("\"", "\"\"") + "\"");
+                        dataBuilder.AppendFormat("\"{0}\"", row[col.Name].ToString().Replace("\"", "\"\""));
                     }
                     else dataBuilder.Append(row[col.Name]?.ToString());
+                    colIndex++;
                 }
-                dataBuilder.AppendLine();
+                dataBuilder.Append(_lineTerminator);
             }
             var fileName = Guid.NewGuid().ToString("N") + ".csv";
             fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);

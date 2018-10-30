@@ -21,7 +21,12 @@ namespace SmartSql.UTests.Batch
         {
             var batchInsertNum = 1000000;
             var batchTable = new DbTable("t_test");
-            batchTable.AddColumn("id", typeof(long));
+            batchTable.AddColumn(new DbColumn
+            {
+                AutoIncrement = true,
+                DataType = typeof(long),
+                Name = "id"
+            });
             batchTable.AddColumn("name", typeof(string));
             batchTable.AddColumn("no", typeof(int));
             for (var i = 0; i < batchInsertNum; i++)
@@ -33,6 +38,21 @@ namespace SmartSql.UTests.Batch
             using (BatchInsert batchInsert = new BatchInsert(_sqlMapper))
             {
                 batchInsert.Table = batchTable;
+                batchInsert.AddColumnMapping(new ColumnMapping
+                {
+                    Column = "id",
+                    Mapping = "Id"
+                });
+                batchInsert.AddColumnMapping(new ColumnMapping
+                {
+                    Column = "name",
+                    Mapping = "Name"
+                });
+                batchInsert.AddColumnMapping(new ColumnMapping
+                {
+                    Column = "no",
+                    Mapping = "No"
+                });
                 batchInsert.Insert();
             }
         }
@@ -41,7 +61,12 @@ namespace SmartSql.UTests.Batch
         {
             var batchInsertNum = 1000000;
             var batchTable = new DbTable("t_test");
-            batchTable.AddColumn("id", typeof(long));
+            batchTable.AddColumn(new DbColumn
+            {
+                AutoIncrement = true,
+                DataType = typeof(long),
+                Name = "id"
+            });
             batchTable.AddColumn("name", typeof(string));
             batchTable.AddColumn("no", typeof(int));
             for (var i = 0; i < batchInsertNum; i++)
@@ -53,6 +78,21 @@ namespace SmartSql.UTests.Batch
             using (BatchInsert batchInsert = new BatchInsert(_sqlMapper))
             {
                 batchInsert.Table = batchTable;
+                batchInsert.AddColumnMapping(new ColumnMapping
+                {
+                    Column = "id",
+                    Mapping = "Id"
+                });
+                batchInsert.AddColumnMapping(new ColumnMapping
+                {
+                    Column = "name",
+                    Mapping = "Name"
+                });
+                batchInsert.AddColumnMapping(new ColumnMapping
+                {
+                    Column = "no",
+                    Mapping = "No"
+                });
                 await batchInsert.InsertAsync();
             }
         }

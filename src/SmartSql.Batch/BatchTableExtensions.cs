@@ -7,27 +7,43 @@ namespace SmartSql.Batch
 {
     public static class BatchTableExtensions
     {
-        public static DataTable ToDataTable(this DbTable dbTable)
+        public static DataTable ToDataTable(this DbTable dbTable, IDictionary<String, ColumnMapping> colMappings)
         {
             DataTable dataTable = new DataTable();
-            foreach (var col in dbTable.Columns)
+            foreach (var colMappingKV in colMappings)
             {
+                var colMapping = colMappingKV.Value;
                 var dataCol = new DataColumn
                 {
-                    ColumnName = col.Name
+                    ColumnName = colMapping.Mapping
                 };
-                if (col.DataType != null)
+                var dbColumn = dbTable.Columns[colMapping.Column];
+                if (dbColumn.DataType != null)
                 {
-                    dataCol.DataType = col.DataType;
+                    dataCol.DataType = dbColumn.DataType;
+                }
+                if (dbColumn.AutoIncrement != null)
+                {
+                    dataCol.AutoIncrement = dbColumn.AutoIncrement.Value;
+                }
+                if (dbColumn.AllowDBNull != null)
+                {
+                    dataCol.AllowDBNull = dbColumn.AllowDBNull.Value;
                 }
                 dataTable.Columns.Add(dataCol);
             }
             foreach (var row in dbTable.Rows)
             {
                 var dataRow = dataTable.NewRow();
-                foreach (var cell in row.Cells)
+                foreach (var colMappingKV in colMappings)
                 {
-                    dataRow[cell.Column.Name] = cell.Value;
+                    var colMapping = colMappingKV.Value;
+                    var dataCol = dataTable.Columns[colMapping.Mapping];
+                    if (dataCol.AutoIncrement && !row.Cells.ContainsKey(colMapping.Column))
+                    {
+                        continue;
+                    }
+                    dataRow[dataCol] = row[colMapping.Column];
                 }
                 dataTable.Rows.Add(dataRow);
             }

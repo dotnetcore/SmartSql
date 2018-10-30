@@ -19,7 +19,8 @@ namespace SmartSql.Batch.SqlServer
             using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(conn))
             {
                 sqlBulkCopy.DestinationTableName = Table.Name;
-                var dataTable = Table.ToDataTable();
+                InitColumnMappings();
+                var dataTable = Table.ToDataTable(ColumnMappings);
                 sqlBulkCopy.WriteToServer(dataTable);
             }
         }
@@ -32,7 +33,8 @@ namespace SmartSql.Batch.SqlServer
             using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(conn))
             {
                 sqlBulkCopy.DestinationTableName = Table.Name;
-                var dataTable = Table.ToDataTable();
+                InitColumnMappings();
+                var dataTable = Table.ToDataTable(ColumnMappings);
                 await sqlBulkCopy.WriteToServerAsync(dataTable);
             }
         }

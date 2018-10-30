@@ -19,13 +19,27 @@ namespace SmartSql.Batch.PostgreSql
             var dbSession = SessionStore.GetOrAddDbSession(dataSource);
             dbSession.OpenConnection();
             var conn = dbSession.Connection as NpgsqlConnection;
-            var colNames = String.Join(",", Table.ColumnNames);
+            InitColumnMappings();
+            var colNames = String.Join(",", ColumnMappings.Keys);
             var copyFromCommand = $"COPY {Table.Name} ({colNames}) FROM STDIN (FORMAT BINARY)";
             using (var writer = conn.BeginBinaryImport(copyFromCommand))
             {
                 foreach (var row in Table.Rows)
                 {
-                    writer.WriteRow(row.Values.ToArray());
+                    writer.StartRow();
+                    foreach (var mappingKey in ColumnMappings.Keys)
+                    {
+                        var colMapping = ColumnMappings[mappingKey];
+                        var dbCellVal = row[colMapping.Column];
+                        if (!String.IsNullOrEmpty(colMapping.DataTypeName))
+                        {
+                            writer.Write(dbCellVal, colMapping.DataTypeName);
+                        }
+                        else
+                        {
+                            writer.Write(dbCellVal);
+                        }
+                    }
                 }
                 writer.Complete();
             }
@@ -36,13 +50,27 @@ namespace SmartSql.Batch.PostgreSql
             var dbSession = SessionStore.GetOrAddDbSession(dataSource);
             await dbSession.OpenConnectionAsync();
             var conn = dbSession.Connection as NpgsqlConnection;
-            var colNames = String.Join(",", Table.ColumnNames);
+            InitColumnMappings();
+            var colNames = String.Join(",", ColumnMappings.Keys);
             var copyFromCommand = $"COPY {Table.Name} ({colNames}) FROM STDIN (FORMAT BINARY)";
             using (var writer = conn.BeginBinaryImport(copyFromCommand))
             {
                 foreach (var row in Table.Rows)
                 {
-                    writer.WriteRow(row.Values.ToArray());
+                    writer.StartRow();
+                    foreach (var mappingKey in ColumnMappings.Keys)
+                    {
+                        var colMapping = ColumnMappings[mappingKey];
+                        var dbCellVal = row[colMapping.Column];
+                        if (!String.IsNullOrEmpty(colMapping.DataTypeName))
+                        {
+                            writer.Write(dbCellVal, colMapping.DataTypeName);
+                        }
+                        else
+                        {
+                            writer.Write(dbCellVal);
+                        }
+                    }
                 }
                 writer.Complete();
             }
