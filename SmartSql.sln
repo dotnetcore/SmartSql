@@ -49,6 +49,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.TypeHandler.Postgr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TypeHandler", "TypeHandler", "{2E263F07-06E0-4C19-999A-A8E94223DA7C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.TypeHandler.Oracle", "src\SmartSql.TypeHandler.Oracle\SmartSql.TypeHandler.Oracle.csproj", "{0E6D3114-BD61-4499-BA7D-432962F8D676}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +133,10 @@ Global
 		{F3064623-46A8-4271-9F27-6EE0D36AF6FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3064623-46A8-4271-9F27-6EE0D36AF6FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3064623-46A8-4271-9F27-6EE0D36AF6FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E6D3114-BD61-4499-BA7D-432962F8D676}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E6D3114-BD61-4499-BA7D-432962F8D676}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E6D3114-BD61-4499-BA7D-432962F8D676}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E6D3114-BD61-4499-BA7D-432962F8D676}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -145,6 +151,7 @@ Global
 		{AA664F95-D254-446E-88ED-53ED3E8AC6B0} = {04BFB546-1EC7-4093-8549-F0AB787B55AB}
 		{E7EDB9B4-DF80-46FC-B366-073689839AFA} = {04BFB546-1EC7-4093-8549-F0AB787B55AB}
 		{F3064623-46A8-4271-9F27-6EE0D36AF6FE} = {2E263F07-06E0-4C19-999A-A8E94223DA7C}
+		{0E6D3114-BD61-4499-BA7D-432962F8D676} = {2E263F07-06E0-4C19-999A-A8E94223DA7C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BDD65F0C-A7A1-4326-85E6-BC4B0CB8A313}
