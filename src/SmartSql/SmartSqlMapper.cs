@@ -143,16 +143,25 @@ namespace SmartSql
             return ExecuteWrap((dbSession) =>
             {
                 var result = CommandExecuter.ExecuteScalar(dbSession, context);
-                if (result == null)
-                {
-                    var defaultTypedVal = default(T);
-                    if (defaultTypedVal != null) { throw new SmartSqlException($"Null can not convert to {typeof(T)}"); }
-                    return defaultTypedVal;
-                }
-                var resultType = typeof(T);
-                var convertType = Nullable.GetUnderlyingType(resultType) ?? resultType;
-                return (T)Convert.ChangeType(result, convertType);
+                return ReturnValue<T>(result);
             }, context);
+        }
+
+        private T ReturnValue<T>(object dbResult)
+        {
+            if (dbResult == null || dbResult == DBNull.Value)
+            {
+                var defaultTypedVal = default(T);
+                if (defaultTypedVal != null) { throw new SmartSqlException($"Null can not convert to {typeof(T)}"); }
+                return defaultTypedVal;
+            }
+            var resultType = typeof(T);
+            var convertType = Nullable.GetUnderlyingType(resultType) ?? resultType;
+            if (convertType == dbResult.GetType())
+            {
+                return (T)dbResult;
+            }
+            return (T)Convert.ChangeType(dbResult, convertType);
         }
 
         public IEnumerable<T> Query<T>(RequestContext context)
@@ -346,7 +355,7 @@ namespace SmartSql
             return await ExecuteWrapAsync(async (dbSession) =>
             {
                 var result = await CommandExecuter.ExecuteScalarAsync(dbSession, context);
-                return (T)Convert.ChangeType(result, typeof(T));
+                return ReturnValue<T>(result);
             }, context);
         }
         public async Task<IEnumerable<T>> QueryAsync<T>(RequestContext context)

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
+using System.Reflection.Emit;
 
 namespace SmartSql.Batch
 {
@@ -48,6 +50,12 @@ namespace SmartSql.Batch
                 dataTable.Rows.Add(dataRow);
             }
             return dataTable;
+        }
+
+        public static DbTable ToDbTable<T>(this IEnumerable<T> list)
+            where T : class
+        {
+            throw new NotImplementedException();
         }
     }
 }

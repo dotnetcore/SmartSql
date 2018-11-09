@@ -52,8 +52,42 @@ namespace SmartSql.UTests
             }
         }
 
-
-
+        [Fact]
+        public void QuerySingle_N_HasVal()
+        {
+            var result = _sqlMapper.QuerySingle<DateTime?>(new RequestContext
+            {
+                Scope = Scope,
+                RealSql = "Select GetDate();"
+            });
+        }
+        [Fact]
+        public void QuerySingle_N()
+        {
+            var result = _sqlMapper.QuerySingle<DateTime?>(new RequestContext
+            {
+                Scope = Scope,
+                RealSql = "Select NUll;"
+            });
+        }
+        [Fact]
+        public void ExecuteScalar_N_HasVal()
+        {
+            var result = _sqlMapper.ExecuteScalar<DateTime?>(new RequestContext
+            {
+                Scope = Scope,
+                RealSql = "Select GetDate();"
+            });
+        }
+        [Fact]
+        public void ExecuteScalar_N()
+        {
+            var result = _sqlMapper.ExecuteScalar<DateTime?>(new RequestContext
+            {
+                Scope = Scope,
+                RealSql = "Select NUll;"
+            });
+        }
         [Fact]
         public void Query_ReadDb2()
         {

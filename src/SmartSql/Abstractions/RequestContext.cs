@@ -120,22 +120,22 @@ namespace SmartSql.Abstractions
             }
             else if (!String.IsNullOrEmpty(Scope))
             {
-                if (String.IsNullOrEmpty(CacheId))
+                if (!String.IsNullOrEmpty(CacheId))
                 {
                     var fullCacheId = $"{Scope}.{CacheId}";
                     Cache = SmartSqlContext.GetCache(fullCacheId);
                 }
-                if (String.IsNullOrEmpty(ResultMapId))
+                if (!String.IsNullOrEmpty(ResultMapId))
                 {
                     var fullResultMapId = $"{Scope}.{ResultMapId}";
                     ResultMap = SmartSqlContext.GetResultMap(fullResultMapId);
                 }
-                if (String.IsNullOrEmpty(ParameterMapId))
+                if (!String.IsNullOrEmpty(ParameterMapId))
                 {
                     var fullParameterMapId = $"{Scope}.{ParameterMapId}";
                     ParameterMap = SmartSqlContext.GetParameterMap(fullParameterMapId);
                 }
-                if (String.IsNullOrEmpty(MultipleResultMapId))
+                if (!String.IsNullOrEmpty(MultipleResultMapId))
                 {
                     var fullMultipleResultMapId = $"{Scope}.{MultipleResultMapId}";
                     MultipleResultMap = SmartSqlContext.GetMultipleResultMap(fullMultipleResultMapId);
