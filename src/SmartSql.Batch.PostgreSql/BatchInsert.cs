@@ -33,7 +33,14 @@ namespace SmartSql.Batch.PostgreSql
                         var dbCellVal = row[colMapping.Column];
                         if (!String.IsNullOrEmpty(colMapping.DataTypeName))
                         {
-                            writer.Write(dbCellVal, colMapping.DataTypeName);
+                            if (colMapping.DataTypeName.ToUpper() == "JSONB")
+                            {
+                                writer.Write(dbCellVal, NpgsqlTypes.NpgsqlDbType.Jsonb);
+                            }
+                            else
+                            {
+                                writer.Write(dbCellVal, colMapping.DataTypeName);
+                            }
                         }
                         else
                         {
