@@ -21,7 +21,9 @@ namespace SmartSql.Utils
         {
             if (type.Name.StartsWith("<>f__AnonymousType"))
             {
-                var props = type.GetProperties().Where(p => p.CanRead).OrderBy(m => m.Name).Select(m => $"({m.Name}:{GetTypeKey(m.PropertyType)})");
+                var props = type.GetProperties().Where(p => p.CanRead)
+                    //.OrderBy(m => m.Name)
+                    .Select(m => $"({m.Name}:{GetTypeKey(m.PropertyType)})");
                 return String.Join("&", props);
             }
             return type.FullName;

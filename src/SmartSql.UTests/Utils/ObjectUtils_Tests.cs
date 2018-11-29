@@ -1,6 +1,7 @@
 ﻿using SmartSql.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Xunit;
 
@@ -26,20 +27,22 @@ namespace SmartSql.UTests.Utils
         {
             var req = new TestRequest
             {
-                TestId = 11111
+                TestId = 11111,
+                UUID = Guid.NewGuid()
             };
-            dynamic type0 = new { Id = 1 }.GetType();
-            var type = new { Id = 1 }.GetType();
-            var type1 = new { Id = 1 }.GetType();
-            var dic = ObjectUtils.ToDicDbParameters(new { FId = req.TestId, Name = "" }, false);
-            var dic1 = ObjectUtils.ToDicDbParameters(new { Id = req.TestId, Name = "" }, false);
-            var dic2 = ObjectUtils.ToDicDbParameters(new { Id = req.TestId, Name = "" }, false);
+
+            Trace.WriteLine("----- test---");
+
+            var dic1 = ObjectUtils.ToDicDbParameters(new { UUID = req.UUID, TestId = req.TestId }, true);
+            var dic11 = ObjectUtils.ToDicDbParameters(new { UUID = req.UUID, TestId = req.TestId }, true);
+            var dic2 = ObjectUtils.ToDicDbParameters(new { TestId = req.TestId, UUID = req.UUID }, true);
         }
     }
 
     public class TestRequest
     {
-        public long TestId { get; set; }
+        public long? TestId { get; set; }
+        public Guid UUID { get; set; }
     }
 
 }
