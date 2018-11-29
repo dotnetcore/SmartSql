@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Dynamic;
 using System.Text;
 using Xunit;
 
@@ -30,10 +31,9 @@ namespace SmartSql.UTests.Utils
                 TestId = 11111,
                 UUID = Guid.NewGuid()
             };
-
             Trace.WriteLine("----- test---");
-
-            var dic1 = ObjectUtils.ToDicDbParameters(new { UUID = req.UUID, TestId = req.TestId }, true);
+            
+            var dic1 = ObjectUtils.ToDicDbParameters(new  { UUID = req.UUID, TestId = req.TestId }, true);
             var dic11 = ObjectUtils.ToDicDbParameters(new { UUID = req.UUID, TestId = req.TestId }, true);
             var dic2 = ObjectUtils.ToDicDbParameters(new { TestId = req.TestId, UUID = req.UUID }, true);
         }

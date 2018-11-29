@@ -70,12 +70,15 @@ namespace SmartSql.Configuration.Tags
                 {
                     var paramMap = context.ParameterMap?.Parameters?.FirstOrDefault(p => p.Name == paramName);
                     string key_name = $"{Key}{FOR_KEY_SUFFIX}_{Property}_{item_index}";
-                    context.RequestParameters.Add(new DbParameter
+                    if (!context.RequestParameters.Contains(key_name))
                     {
-                        Name = key_name,
-                        Value = itemVal,
-                        TypeHandler = paramMap?.Handler
-                    });
+                        context.RequestParameters.Add(new DbParameter
+                        {
+                            Name = key_name,
+                            Value = itemVal,
+                            TypeHandler = paramMap?.Handler
+                        });
+                    }
                     return $"{dbPrefix}{key_name}";
                 });
                 context.Sql.AppendFormat("{0}", item_sql);
@@ -104,12 +107,15 @@ namespace SmartSql.Configuration.Tags
                     {
                         return nameWithPrefix;
                     }
-                    context.RequestParameters.Add(new DbParameter
+                    if (!context.RequestParameters.Contains(key_name))
                     {
-                        Name = key_name,
-                        Value = propertyVal.Value,
-                        TypeHandler = paramMap?.Handler
-                    });
+                        context.RequestParameters.Add(new DbParameter
+                        {
+                            Name = key_name,
+                            Value = propertyVal.Value,
+                            TypeHandler = paramMap?.Handler
+                        });
+                    }
                     return $"{dbPrefix}{key_name}";
                 });
                 item_index++;
