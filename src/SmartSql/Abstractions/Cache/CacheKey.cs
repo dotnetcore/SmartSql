@@ -5,11 +5,6 @@ namespace SmartSql.Abstractions.Cache
 {
     public class CacheKey
     {
-        /// <summary>
-        /// 缓存前缀
-        /// </summary>
-        public String Prefix { get; set; } = "SmartSql-Cache";
-
         public String Key { get; private set; }
         public CacheKey(RequestContext context)
         {

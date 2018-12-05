@@ -23,6 +23,7 @@
     <ProjectReference Include="..\SmartSql.Batch.SqlServer\SmartSql.Batch.SqlServer.csproj" />
     <ProjectReference Include="..\SmartSql.Batch.PostgreSql\SmartSql.Batch.PostgreSql.csproj" />
     <ProjectReference Include="..\SmartSql.Batch\SmartSql.Batch.csproj" />
+    <ProjectReference Include="..\SmartSql.Cache.Redis\SmartSql.Cache.Redis.csproj" />
     <ProjectReference Include="..\SmartSql.Extensions\SmartSql.Extensions.csproj" />
     <ProjectReference Include="..\SmartSql.DapperDeserializer\SmartSql.DapperDeserializer.csproj" />
     <ProjectReference Include="..\SmartSql.DIExtension\SmartSql.DIExtension.csproj" />

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SmartSql.Abstractions.Config;
+using System;
 using Xunit;
 
 namespace SmartSql.UTests

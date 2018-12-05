@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <Description>Redis Cache For SmartSql</Description>
     <Authors>Ahoo Wang</Authors>
     <Company>Ahoo Wang</Company>
@@ -10,11 +10,12 @@
     <RepositoryUrl>https://github.com/Ahoo-Wang/SmartSql</RepositoryUrl>
     <PackageTags>SmartSql Dapper MyBatis  ORM Redis Cache</PackageTags>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>3.1.0</Version>
+    <Version>3.2.0</Version>
     <PackageIconUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/SmartSql.png</PackageIconUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Ahoo-Wang/SmartSql/master/LICENSE</PackageLicenseUrl>
     <PackageReleaseNotes>
-      1. fix the cache penetration problem with the cache value of null
+      1. optimize Paramter.DatabaseId
+      2. add expiryInterval
     </PackageReleaseNotes>
   </PropertyGroup>
 
@@ -28,7 +29,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
-    <PackageReference Include="StackExchange.Redis" Version="1.2.1" />
+    <PackageReference Include="StackExchange.Redis" Version="2.0.519" />
   </ItemGroup>
 
   <ItemGroup>

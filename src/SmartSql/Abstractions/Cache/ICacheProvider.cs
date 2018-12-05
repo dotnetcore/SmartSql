@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SmartSql.Abstractions.Cache
 {
-    public interface ICacheProvider
+    public interface ICacheProvider : IDisposable
     {
         void Initialize(IDictionary properties);
         object this[CacheKey key, Type type]

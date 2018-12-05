@@ -14,7 +14,11 @@ namespace SmartSql.UTests
         ISmartSqlMapper _sqlMapper;
         public SmartSqlMapper_Test()
         {
-            _sqlMapper = MapperContainer.Instance.GetSqlMapper();
+            _sqlMapper = MapperContainer.Instance.GetSqlMapper(new SmartSqlOptions
+            {
+                Alias = "SmartSqlMapper_Test",
+                ConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH
+            });
         }
 
         public void Dispose()

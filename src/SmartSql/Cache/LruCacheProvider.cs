@@ -69,5 +69,9 @@ namespace SmartSql.Cache
             }
         }
 
+        public void Dispose()
+        {
+           
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace SmartSql.Configuration
             {
                 Id = cacheNode.Attributes["Id"].Value,
                 Type = cacheNode.Attributes["Type"].Value,
-                Parameters = new Dictionary<String, String>(),
+                Parameters = new Dictionary<String, Object>(),
                 FlushOnExecutes = new List<FlushOnExecute>()
             };
             if (cache.Id.IndexOf('.') < 0)
@@ -52,6 +52,8 @@ namespace SmartSql.Configuration
                                 Minutes = minutes,
                                 Seconds = seconds
                             };
+
+                            cache.Parameters.Add("FlushInterval", cache.FlushInterval);
                             break;
                         }
                     case "FlushOnExecute":
@@ -72,6 +74,7 @@ namespace SmartSql.Configuration
                         }
                 }
             }
+            cache.Parameters.Add("Cache.Id", cache.Id);
             cache.Provider = CreateCacheProvider(cache);
             return cache;
         }

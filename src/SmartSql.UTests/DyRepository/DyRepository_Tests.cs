@@ -7,18 +7,25 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Microsoft.Extensions.Logging;
+using SmartSql.Abstractions;
+
 namespace SmartSql.UTests.DyRepository
 {
     public class DyRepository_Tests : TestBase
     {
         IEntityRepository _repository;
+        ISmartSqlMapper _sqlMapper;
         public DyRepository_Tests()
         {
             string scope_template = "I{Scope}Repository";
             var builder = new RepositoryBuilder(scope_template, null, LoggerFactory.CreateLogger<RepositoryBuilder>());
             var factory = new RepositoryFactory(builder, LoggerFactory.CreateLogger<RepositoryFactory>());
-            var sqlMapper = MapperContainer.Instance.GetSqlMapper();
-            _repository = factory.CreateInstance<IEntityRepository>(sqlMapper);
+            _sqlMapper = MapperContainer.Instance.GetSqlMapper(new SmartSqlOptions
+            {
+                Alias = "DyRepository_Tests",
+                ConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH
+            });
+            _repository = factory.CreateInstance<IEntityRepository>(_sqlMapper);
         }
 
         [Fact]
@@ -238,7 +245,7 @@ namespace SmartSql.UTests.DyRepository
 
         public void Dispose()
         {
-            MapperContainer.Instance.Dispose();
+            _sqlMapper.Dispose();
         }
 
         public class QueryByPageRequest

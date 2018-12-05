@@ -19,6 +19,11 @@ namespace SmartSql.Cache
             return false;
         }
 
+        public void Dispose()
+        {
+
+        }
+
         public void Flush()
         {
            

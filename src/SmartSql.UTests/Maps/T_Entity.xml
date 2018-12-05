@@ -113,7 +113,7 @@
           </Switch>
         </IsNotEmpty>
         <For Prepend="And" Key="Key" Open="T.FLong In (" Close=")" Property="Ids" Separator=",">
-          @Key
+          @Key,@Key
         </For>
         <For Prepend="And" Key="LikeKey" Open="(" Close=")" Property="FStrings" Separator="Or">
           T.FString Like Concat(@LikeKey,'%')
@@ -218,7 +218,7 @@
         (10)
       </IsNull>-->
       T.* From T_Entity T With(NoLock)
-      <Include RefId="QueryPs"/>
+      <Include RefId="QueryParams"/>
       <Switch Prepend="Order By" Property="OrderBy">
         <Default>
           T.FLong Desc

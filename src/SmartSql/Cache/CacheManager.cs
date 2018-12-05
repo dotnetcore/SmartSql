@@ -108,9 +108,7 @@ namespace SmartSql.Cahce
             catch (Exception ex)
             {
                 _logger.LogError(new EventId(ex.HResult), ex, ex.Message);
-
             }
-
         }
 
         private void FlushOnExecute(RequestContext requestContext)
@@ -144,6 +142,10 @@ namespace SmartSql.Cahce
         public void Dispose()
         {
             _timer.Dispose();
+            foreach (var cacheKV in _smartSqlContext.MappedCache)
+            {
+                cacheKV.Value.Provider.Dispose();
+            }
         }
 
         public bool TryGet<T>(RequestContext context, out T cachedResult)

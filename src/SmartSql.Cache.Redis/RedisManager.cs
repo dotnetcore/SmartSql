@@ -14,18 +14,35 @@ namespace SmartSql.Cache.Redis
 
         public ConnectionMultiplexer GetRedis(String connStr)
         {
+            ConnectionMultiplexer redis;
             if (_redises.ContainsKey(connStr))
             {
-                return _redises[connStr];
+                redis = _redises[connStr];
+                if (redis.IsConnected)
+                {
+                    return redis;
+                }
             }
             lock (this)
             {
                 if (_redises.ContainsKey(connStr))
                 {
-                    return _redises[connStr];
+                    redis = _redises[connStr];
+                    if (redis.IsConnected)
+                    {
+                        return redis;
+                    }
                 }
-                var redis = ConnectionMultiplexer.Connect(connStr);
-                _redises.Add(connStr, redis);
+                redis = ConnectionMultiplexer.Connect(connStr);
+                if (_redises.ContainsKey(connStr))
+                {
+                    _redises[connStr] = redis;
+                }
+                else
+                {
+                    _redises.Add(connStr, redis);
+                }
+
                 return redis;
             }
         }
