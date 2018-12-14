@@ -7,7 +7,7 @@ namespace SmartSql.UTests.Entity
     /// <summary>
     ///T_Entity
     /// </summary>	
-    public class T_Entity: EntityBase
+    public class T_Entity : EntityBase
     {
 
 

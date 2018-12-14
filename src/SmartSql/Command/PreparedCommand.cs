@@ -145,7 +145,7 @@ namespace SmartSql.Command
                 {
                     if (paramVal is Enum)
                     {
-                        paramVal = paramVal.GetHashCode();
+                        paramVal = EnumUtils.ToRealValue(paramVal);
                     }
                     sourceParam.Value = paramVal;
                 }

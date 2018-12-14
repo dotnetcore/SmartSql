@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using SmartSql.Abstractions;
+using SmartSql.Utils;
 
 namespace SmartSql.Configuration.Tags
 {
@@ -44,7 +45,7 @@ namespace SmartSql.Configuration.Tags
                 string reqValStr = string.Empty;
                 if (reqVal is Enum)
                 {
-                    reqValStr = reqVal.GetHashCode().ToString();
+                    reqValStr = EnumUtils.ToRealValue(reqVal).ToString();
                 }
                 else
                 {

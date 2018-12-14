@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SmartSql.DIExtension</name>
+    </assembly>
+    <members>
+        <member name="P:SmartSql.DIExtension.AssemblyAutoRegisterOptions.GetSmartSql">
+            <summary>
+            获取 ISmartSqlMapper 实例函数
+            </summary>
+        </member>
+        <member name="P:SmartSql.DIExtension.AssemblyAutoRegisterOptions.AssemblyString">
+            <summary>
+            仓储接口程序集
+            </summary>
+        </member>
+        <member name="P:SmartSql.DIExtension.AssemblyAutoRegisterOptions.ScopeTemplate">
+            <summary>
+            Scope模板
+            默认：I{Scope}Repository
+            </summary>
+        </member>
+        <member name="P:SmartSql.DIExtension.AssemblyAutoRegisterOptions.Filter">
+            <summary>
+            仓储接口筛选器
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DyRepositoryExtensions.AddRepositoryFactory(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Func{System.Type,System.Reflection.MethodInfo,System.String})">
+            <summary>
+            注入SmartSql仓储工厂
+            </summary>
+            <param name="services"></param>
+            <param name="scope_template">Scope模板，默认：I{Scope}Repository</param>
+            <param name="sqlIdNamingConvert">SqlId命名转换</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DyRepositoryExtensions.AddRepository``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,SmartSql.Abstractions.ISmartSqlMapper},System.String)">
+            <summary>
+            注入单个仓储接口
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="services"></param>
+            <param name="getSmartSql">获取ISmartSqlMapper函数</param>
+            <param name="scope">SqlMaper.Scope</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DyRepositoryExtensions.AddRepositoryFromAssembly(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{SmartSql.DIExtension.AssemblyAutoRegisterOptions})">
+            <summary>
+            注入仓储结构 By 程序集
+            </summary>
+            <param name="services"></param>
+            <param name="setupOptions"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DyRepositoryExtensions.AddSmartSqlRepositoryFactory(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Func{System.Type,System.Reflection.MethodInfo,System.String})">
+            <summary>
+            AddSmartSql And AddRepositoryFactory
+            </summary>
+            <param name="services"></param>
+            <param name="scope_template"></param>
+            <param name="sqlIdNamingConvert"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DyRepositoryExtensions.AddSmartSqlRepositoryFromAssembly(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{SmartSql.DIExtension.AssemblyAutoRegisterOptions})">
+            <summary>
+            AddSmartSqlRepositoryFactory And AddRepositoryFromAssembly
+            </summary>
+            <param name="services"></param>
+            <param name="setupOptions"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SmartSqlExtensions.AddSmartSql(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            注入默认 ISmartSqlMapper
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SmartSqlExtensions.AddSmartSql(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Func{System.IServiceProvider,SmartSql.SmartSqlOptions})">
+            <summary>
+            注入 ISmartSqlMapper
+            </summary>
+            <param name="services"></param>
+            <param name="setupOptions"></param>
+        </member>
+    </members>
+</doc>

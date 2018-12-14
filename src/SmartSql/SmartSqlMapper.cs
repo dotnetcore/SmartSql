@@ -161,6 +161,7 @@ namespace SmartSql
             {
                 return (T)dbResult;
             }
+
             return (T)Convert.ChangeType(dbResult, convertType);
         }
 

@@ -121,7 +121,7 @@ namespace SmartSql.DataReaderDeserializer
                 return (dr, ctx) =>
                 {
                     var val = dr.GetValue(valIndex);
-                    if (val is float || val is double || val is decimal)
+                    if (val != null && val is float || val is double || val is decimal)
                     {
                         val = Convert.ChangeType(val, Enum.GetUnderlyingType(realType), CultureInfo.InvariantCulture);
                     }

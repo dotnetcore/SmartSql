@@ -1,4 +1,5 @@
 ﻿using SmartSql.Abstractions;
+using SmartSql.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,7 +17,7 @@ namespace SmartSql.Configuration.Tags
             string reqValStr = string.Empty;
             if (reqVal is Enum)
             {
-                reqValStr = reqVal.GetHashCode().ToString();
+                reqValStr = EnumUtils.ToRealValue(reqVal).ToString();
             }
             else
             {

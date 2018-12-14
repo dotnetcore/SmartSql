@@ -210,6 +210,18 @@ namespace SmartSql.UTests
             };
             var total = _sqlMapper.ExecuteScalar<long?>(context);
         }
+        [Fact]
+        public void ExecuteScalar_ENUM()
+        {
+            RequestContext context = new RequestContext
+            {
+                Scope = Scope,
+                RealSql = "Select 1;"
+            };
+            var obj = Enum.ToObject(typeof(EntityStatus), 1);
+            var eObj = Convert.ChangeType(EntityStatus.Ok, Enum.GetUnderlyingType(typeof(EntityStatus)));
+            var status = _sqlMapper.ExecuteScalar<EntityStatus>(context);
+        }
 
         [Fact]
         public void ExecuteScalar_Bool_True()

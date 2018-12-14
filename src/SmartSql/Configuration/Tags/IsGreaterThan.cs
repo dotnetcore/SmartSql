@@ -1,4 +1,5 @@
 ﻿using SmartSql.Abstractions;
+using SmartSql.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,7 +19,7 @@ namespace SmartSql.Configuration.Tags
             Decimal comVal = 0M;
             if (reqVal is Enum)
             {
-                reqValNum = reqVal.GetHashCode();
+                reqValNum = (Decimal)EnumUtils.ToRealValue(reqVal);
             }
             else
             {
