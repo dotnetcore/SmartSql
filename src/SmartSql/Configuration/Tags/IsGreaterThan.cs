@@ -19,7 +19,7 @@ namespace SmartSql.Configuration.Tags
             Decimal comVal = 0M;
             if (reqVal is Enum)
             {
-                reqValNum = (Decimal)EnumUtils.ToRealValue(reqVal);
+                reqValNum = Convert.ToDecimal(reqVal);
             }
             else
             {

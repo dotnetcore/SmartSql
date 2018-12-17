@@ -45,7 +45,7 @@ namespace SmartSql.Configuration.Tags
                 string reqValStr = string.Empty;
                 if (reqVal is Enum)
                 {
-                    reqValStr = EnumUtils.ToRealValue(reqVal).ToString();
+                    reqValStr = Convert.ToInt64(reqVal).ToString();
                 }
                 else
                 {
