@@ -53,6 +53,7 @@ namespace SmartSql.Cache.Redis
         {
             get
             {
+                
                 string cacheStr = CacheDB.StringGet(GetRedisCacheKey(key));
                 if (String.IsNullOrEmpty(cacheStr)) { return null; }
                 return JsonConvert.DeserializeObject(cacheStr, type);

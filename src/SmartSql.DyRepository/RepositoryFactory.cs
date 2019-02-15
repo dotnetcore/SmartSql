@@ -13,8 +13,6 @@ namespace SmartSql.DyRepository
     {
         private IDictionary<Type, object> _cachedRepository = new Dictionary<Type, object>();
 
-        private AssemblyBuilder _assemblyBuilder;
-        private ModuleBuilder _moduleBuilder;
         private readonly IRepositoryBuilder _repositoryBuilder;
         private readonly ILogger<RepositoryFactory> _logger;
 
@@ -22,18 +20,8 @@ namespace SmartSql.DyRepository
             , ILogger<RepositoryFactory> logger
             )
         {
-            Init();
             _repositoryBuilder = repositoryBuilder;
             _logger = logger;
-        }
-        private void Init()
-        {
-            string assemblyName = "SmartSql.RepositoryImpl" + this.GetHashCode();
-            _assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName
-            {
-                Name = assemblyName
-            }, AssemblyBuilderAccess.Run);
-            _moduleBuilder = _assemblyBuilder.DefineDynamicModule(assemblyName + ".dll");
         }
 
         public object CreateInstance(Type interfaceType, ISmartSqlMapper smartSqlMapper, string scope = "")
