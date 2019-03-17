@@ -1,6 +1,4 @@
-﻿using SmartSql.Abstractions;
-using SmartSql.Configuration.Statements;
-using System;
+﻿using System;
 using System.Collections;
 using System.Linq;
 using System.Text;
@@ -12,8 +10,6 @@ namespace SmartSql.Configuration.Tags
     {
         private Regex _sqlInParamsTokens;
         private readonly string _dbPrefix;
-
-        public TagType Type => TagType.SqlText;
         public string BodyText { get; private set; }
         public ITag Parent { get; set; }
         public Statement Statement { get; set; }
@@ -30,18 +26,17 @@ namespace SmartSql.Configuration.Tags
         {
             if (!_hasInSyntax)
             {
-                context.Sql.Append(BodyText);
+                context.SqlBuilder.Append(BodyText);
                 return;
             }
             var sql = _sqlInParamsTokens.Replace(BodyText, match =>
               {
                   var paramName = match.Groups[1].Value;
-                  var dbParameter = context.GetDbParameter(paramName);
-                  if (dbParameter == null)
+                  if (!context.Parameters.TryGetValue(paramName, out var sqlParameter))
                   {
                       return match.Value;
                   }
-                  var paramVal = dbParameter.Value;
+                  var paramVal = sqlParameter.Value;
                   bool isString = paramVal is String;
                   if (paramVal is IEnumerable && !isString)
                   {
@@ -53,10 +48,7 @@ namespace SmartSql.Configuration.Tags
                       {
                           string itemParamName = $"{paramName}_{item_Index}";
                           inParamSql.AppendFormat("{0}{1},", _dbPrefix, itemParamName);
-                          if (!context.RequestParameters.Contains(itemParamName))
-                          {
-                              context.RequestParameters.Add(itemParamName, itemVal);
-                          }
+                          context.Parameters.TryAdd(itemParamName, itemVal);
                           item_Index++;
                       }
                       if (item_Index > 0)
@@ -68,7 +60,7 @@ namespace SmartSql.Configuration.Tags
                   }
                   return match.Value;
               });
-            context.Sql.Append(sql);
+            context.SqlBuilder.Append(sql);
         }
 
         public bool IsCondition(RequestContext context)

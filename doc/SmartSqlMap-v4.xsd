@@ -1,0 +1,848 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://SmartSql.net/schemas/SmartSqlMap-v4.xsd"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://SmartSql.net/schemas/SmartSqlMap-v4.xsd"
+  xmlns:vs="http://schemas.microsoft.com/Visual-Studio-Intellisense" vs:friendlyname="SmartSqlMap Configuration Schema" vs:ishtmlschema="false" vs:iscasesensitive="true" vs:requireattributequotes="true" vs:defaultnamespacequalifier="" vs:defaultnsprefix="">
+
+  <xs:simpleType name="CSharpType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Boolean"/>
+      <xs:enumeration value="Char"/>
+      <xs:enumeration value="SByte"/>
+      <xs:enumeration value="Byte"/>
+      <xs:enumeration value="Int16"/>
+      <xs:enumeration value="UInt16"/>
+      <xs:enumeration value="Int32"/>
+      <xs:enumeration value="UInt32"/>
+      <xs:enumeration value="Int64"/>
+      <xs:enumeration value="UInt64"/>
+      <xs:enumeration value="Single"/>
+      <xs:enumeration value="Double"/>
+      <xs:enumeration value="Decimal"/>
+      <xs:enumeration value="DateTime"/>
+      <xs:enumeration value="String"/>
+      <xs:enumeration value="Guid"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CommandType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Text"/>
+      <xs:enumeration value="StoredProcedure"/>
+      <xs:enumeration value="TableDirect"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="DataSourceChoice">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Unknow"/>
+      <xs:enumeration value="Write"/>
+      <xs:enumeration value="Read"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Transaction">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Unspecified"/>
+      <xs:enumeration value="Chaos"/>
+      <xs:enumeration value="ReadUncommitted"/>
+      <xs:enumeration value="ReadCommitted"/>
+      <xs:enumeration value="RepeatableRead"/>
+      <xs:enumeration value="Serializable"/>
+      <xs:enumeration value="Snapshot"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Cache">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="Property">
+          <xs:complexType>
+            <xs:attribute name="Name" type="xs:string" use="required" />
+            <xs:attribute name="Value" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="FlushInterval" maxOccurs="1">
+          <xs:complexType>
+            <xs:attribute name="Hours" type="xs:unsignedByte" use="optional" />
+            <xs:attribute name="Minutes" type="xs:unsignedByte" use="optional" />
+            <xs:attribute name="Seconds" type="xs:unsignedByte" use="optional" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="FlushOnExecute">
+          <xs:complexType>
+            <xs:attribute name="Statement" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+      <xs:attribute name="Id" type="xs:string" use="required" />
+      <xs:attribute name="Type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="Lru"/>
+            <xs:enumeration value="Fifo"/>
+            <xs:enumeration value="SmartSql.Cache.Redis.RedisCacheProvider,SmartSql.Cache.Redis"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Caches">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Cache" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ResultMaps">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ResultMap" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResultMap">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Constructor" maxOccurs="1" minOccurs="0"></xs:element>
+        <xs:element ref="Result" maxOccurs="unbounded" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="Id" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Result">
+    <xs:complexType>
+      <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Column" type="xs:string" use="optional" />
+      <!--<xs:attribute name="CSharpType" type="xs:string" use="optional" />
+      <xs:attribute name="Handler" type="xs:string" use="optional" />-->
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Constructor">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Arg" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="Column" type="xs:string" use="required" />
+            <xs:attribute name="CSharpType" type="CSharpType" use="required"/>
+            <!--<xs:attribute name="Handler" type="xs:string" use="optional" />-->
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MultipleResultMaps">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="MultipleResultMap" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="1" minOccurs="0"  name="Root">
+                <xs:complexType>
+                  <xs:attribute name="MapId" type="xs:string" use="optional" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element maxOccurs="unbounded" name="Result">
+                <xs:complexType>
+                  <xs:attribute name="Property" type="xs:string" use="optional" />
+                  <xs:attribute name="MapId" type="xs:string" use="optional" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Id" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Include">
+    <xs:complexType mixed="true">
+      <xs:attribute name="RefId" type="xs:string" use="required" />
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Case">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="CompareValue" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Default">
+    <xs:complexType mixed="true">
+      <xs:choice maxOccurs="1" minOccurs="0">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Switch">
+    <xs:complexType mixed="true">
+      <xs:sequence minOccurs="1">
+        <xs:element ref="Case" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="Default" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsEmpty">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsEqual">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="CompareValue" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsGreaterEqual">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="CompareValue" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsGreaterThan">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="CompareValue" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsLessEqual">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="CompareValue" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsLessThan">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="CompareValue" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsNotEmpty">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsNotEqual">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="CompareValue" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsNotNull">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsNull">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsTrue">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsFalse">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsProperty">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Script">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Test" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Placeholder">
+    <xs:complexType mixed="true">
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Dynamic">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="Set" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Where">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Set">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="For">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="Set" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Open" type="xs:string" use="required" />
+      <xs:attribute name="Separator" type="xs:string" use="required" />
+      <xs:attribute name="Close" type="xs:string" use="required" />
+      <xs:attribute name="Key" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Env">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include"/>
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="Set" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="DbProvider" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IdGenerator">
+    <xs:complexType>
+      <xs:attribute name="Id" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Statement">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IdGenerator" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="Script" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="Set" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Id" type="xs:string" use="required" />
+      <xs:attribute name="Cache" type="xs:string" use="optional" />
+      <xs:attribute name="ResultMap" type="xs:string" use="optional" />
+      <xs:attribute name="MultipleResultMap" type="xs:string" use="optional" />
+      <xs:attribute name="CommandType" type="CommandType" use="optional"/>
+      <xs:attribute name="SourceChoice" type="DataSourceChoice" use="optional"/>
+      <xs:attribute name="Transaction" type="Transaction" use="optional"/>
+      <xs:attribute name="ReadDb" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Statements">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="Statement"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SmartSqlMap">
+    <xs:complexType mixed="true">
+      <xs:all>
+        <xs:element ref="Caches" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="ResultMaps" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="MultipleResultMaps" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="Statements" minOccurs="0" maxOccurs="1"/>
+      </xs:all>
+      <xs:attribute name="Scope" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

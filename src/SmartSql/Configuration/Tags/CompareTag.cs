@@ -4,8 +4,8 @@ using System.Text;
 
 namespace SmartSql.Configuration.Tags
 {
-    public abstract class CompareTag : Tag
+    public abstract class CompareTag<TCompareValue> : Tag
     {
-        public String CompareValue { get; set; }
+        public TCompareValue CompareValue { get; set; }
     }
 }

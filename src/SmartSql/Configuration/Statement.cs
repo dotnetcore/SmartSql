@@ -1,0 +1,41 @@
+﻿using SmartSql.Configuration.Tags;
+using SmartSql.DataSource;
+using System;
+using System.Collections.Generic;
+using System.Data;
+
+namespace SmartSql.Configuration
+{
+    public class Statement
+    {
+        public SqlMap SqlMap { get; internal set; }
+        public String Id { get; set; }
+        public StatementType StatementType { get; set; } = StatementType.Unknown;
+        public CommandType? CommandType { get; set; }
+        public DataSourceChoice? SourceChoice { get; set; }
+        [Obsolete("弃用")]
+        public IsolationLevel? Transaction { get; set; }
+        public String ReadDb { get; set; }
+        public String FullSqlId => $"{SqlMap.Scope}.{Id}";
+        public IList<ITag> SqlTags { get; set; }
+        #region Map
+        public String CacheId { get; set; }
+        public Cache Cache { get; set; }
+        //public String ParameterMapId { get; set; }
+        //public ParameterMap ParameterMap { get; set; }
+        public String ResultMapId { get; set; }
+        public ResultMap ResultMap { get; set; }
+        public String MultipleResultMapId { get; set; }
+        public MultipleResultMap MultipleResultMap { get; set; }
+        #endregion
+        internal IList<Include> IncludeDependencies { get; set; }
+
+        public void BuildSql(RequestContext context)
+        {
+            foreach (ITag tag in SqlTags)
+            {
+                tag.BuildSql(context);
+            }
+        }
+    }
+}

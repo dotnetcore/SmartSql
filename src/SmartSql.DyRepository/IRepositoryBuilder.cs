@@ -1,10 +1,11 @@
-﻿using SmartSql.Abstractions;
+﻿using SmartSql.Configuration;
+using SmartSql.DbSession;
 using System;
 
 namespace SmartSql.DyRepository
 {
     public interface IRepositoryBuilder
     {
-        Type BuildRepositoryImpl(Type interfaceType, ISmartSqlMapper smartSqlMapper, string scope = "");
+        Type Build(Type interfaceType, SmartSqlConfig smartSqlConfig, string scope = "");
     }
 }

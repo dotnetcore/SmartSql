@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\src\SmartSql.Test\Maps\User.xml" Link="Maps\User.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\src\SmartSql.Test\SmartSqlMapConfig.xml" Link="SmartSqlMapConfig.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SmartSql.Bulk.MySql\SmartSql.Bulk.MySql.csproj" />
+    <ProjectReference Include="..\..\src\SmartSql.Bulk.PostgreSql\SmartSql.Bulk.PostgreSql.csproj" />
+    <ProjectReference Include="..\..\src\SmartSql.Bulk.SqlServer\SmartSql.Bulk.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\SmartSql.Bulk\SmartSql.Bulk.csproj" />
+    <ProjectReference Include="..\..\src\SmartSql.Cache.Redis\SmartSql.Cache.Redis.csproj" />
+    <ProjectReference Include="..\..\src\SmartSql.DIExtension\SmartSql.DIExtension.csproj" />
+    <ProjectReference Include="..\..\src\SmartSql.DyRepository\SmartSql.DyRepository.csproj" />
+    <ProjectReference Include="..\..\src\SmartSql.ScriptTag\SmartSql.ScriptTag.csproj" />
+    <ProjectReference Include="..\..\src\SmartSql.Test\SmartSql.Test.csproj" />
+    <ProjectReference Include="..\..\src\SmartSql.TypeHandler.PostgreSql\SmartSql.TypeHandler.PostgreSql.csproj" />
+    <ProjectReference Include="..\..\src\SmartSql.TypeHandler\SmartSql.TypeHandler.csproj" />
+    <ProjectReference Include="..\..\src\SmartSql\SmartSql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Maps\" />
+  </ItemGroup>
+
+</Project>

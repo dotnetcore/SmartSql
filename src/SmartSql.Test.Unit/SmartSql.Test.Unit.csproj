@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="..\SmartSql.Test\Maps\User.xml" Link="Maps\User.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="2.10.0" />
+    <PackageReference Include="Jint" Version="2.11.58" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SmartSql.Bulk.MySql\SmartSql.Bulk.MySql.csproj" />
+    <ProjectReference Include="..\SmartSql.Bulk.PostgreSql\SmartSql.Bulk.PostgreSql.csproj" />
+    <ProjectReference Include="..\SmartSql.Bulk.SqlServer\SmartSql.Bulk.SqlServer.csproj" />
+    <ProjectReference Include="..\SmartSql.Cache.Redis\SmartSql.Cache.Redis.csproj" />
+    <ProjectReference Include="..\SmartSql.DIExtension\SmartSql.DIExtension.csproj" />
+    <ProjectReference Include="..\SmartSql.DyRepository\SmartSql.DyRepository.csproj" />
+    <ProjectReference Include="..\SmartSql.ScriptTag\SmartSql.ScriptTag.csproj" />
+    <ProjectReference Include="..\SmartSql.Test\SmartSql.Test.csproj" />
+    <ProjectReference Include="..\SmartSql.TypeHandler.PostgreSql\SmartSql.TypeHandler.PostgreSql.csproj" />
+    <ProjectReference Include="..\SmartSql.TypeHandler\SmartSql.TypeHandler.csproj" />
+    <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Maps\AllPrimitive.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Maps\T_Entity.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SmartSqlMapConfig.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

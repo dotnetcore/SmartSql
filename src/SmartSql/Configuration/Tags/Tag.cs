@@ -1,6 +1,4 @@
-﻿using SmartSql.Abstractions;
-using SmartSql.Configuration.Statements;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace SmartSql.Configuration.Tags
@@ -9,7 +7,6 @@ namespace SmartSql.Configuration.Tags
     {
         public virtual String Prepend { get; set; }
         public String Property { get; set; }
-        public abstract TagType Type { get; }
         public IList<ITag> ChildTags { get; set; }
         public ITag Parent { get; set; }
         public Statement Statement { get; set; }
@@ -19,16 +16,16 @@ namespace SmartSql.Configuration.Tags
         {
             if (IsCondition(context))
             {
-                context.Sql.Append(" ");
+                context.SqlBuilder.Append(" ");
                 if (!context.IgnorePrepend)
                 {
-                    context.Sql.Append(Prepend);
+                    context.SqlBuilder.Append(Prepend);
                 }
                 else
                 {
                     context.IgnorePrepend = false;
                 }
-                context.Sql.Append(" ");
+                context.SqlBuilder.Append(" ");
                 BuildChildSql(context);
             }
         }
@@ -45,12 +42,13 @@ namespace SmartSql.Configuration.Tags
         }
         protected virtual String GetDbProviderPrefix(RequestContext context)
         {
-            return context.SmartSqlContext.DbPrefix;
+            return context.ExecutionContext.SmartSqlConfig.Settings.ParameterPrefix;
         }
 
         protected virtual Object GetPropertyValue(RequestContext context)
         {
-            return context.RequestParameters.GetValue(Property);
+            context.Parameters.TryGetParameterValue(Property, out object paramVal);
+            return paramVal;
         }
     }
 }

@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+//*******************************
+// Create By Ahoo Wang
+// Date 2019-01-24 17:54
+// Code Generate By SmartCode
+// Code Generate Github : https://github.com/Ahoo-Wang/SmartCode
+//*******************************-->
+
+<SmartSqlMap Scope="AllPrimitive" xmlns="http://SmartSql.net/schemas/SmartSqlMap-v4.xsd">
+  <Caches>
+    <Cache Id="LruCache" Type="Lru">
+      <Property Name="CacheSize" Value="2"/>
+    </Cache>
+    <Cache Id="FifoCache" Type="Fifo">
+      <Property Name="CacheSize" Value="2"/>
+    </Cache>
+    <Cache Id="RedisCache" Type="${RedisCacheProvider}">
+      <Property Name="ConnectionString" Value="${Redis}" />
+      <FlushInterval Seconds="60"/>
+    </Cache>
+  </Caches>
+  <MultipleResultMaps>
+    <MultipleResultMap Id="GetByPage">
+      <Result Property="List"/>
+      <Result Property="Total"/>
+    </MultipleResultMap>
+  </MultipleResultMaps>
+  <Statements>
+    <Statement Id="QueryParams">
+      <Where>
+        <IsNotEmpty Prepend="And" Property="Id">
+          T.Id = @Id
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="Boolean">
+          T.Boolean = @Boolean
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="Char">
+          T.Char = @Char
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="Byte">
+          T.Byte = @Byte
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="Int16">
+          T.Int16 = @Int16
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="Int32">
+          T.Int32 = @Int32
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="Int64">
+          T.Int64 = @Int64
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="Single">
+          T.Single = @Single
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="Double">
+          T.Double = @Double
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="Decimal">
+          T.Decimal = @Decimal
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="DateTime">
+          T.DateTime = @DateTime
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="String">
+          T.String = @String
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="Guid">
+          T.Guid = @Guid
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="TimeSpan">
+          T.TimeSpan = @TimeSpan
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NumericalEnum">
+          T.NumericalEnum = @NumericalEnum
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullableBoolean">
+          T.NullableBoolean = @NullableBoolean
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullableChar">
+          T.NullableChar = @NullableChar
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullableByte">
+          T.NullableByte = @NullableByte
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullableInt16">
+          T.NullableInt16 = @NullableInt16
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullableInt32">
+          T.NullableInt32 = @NullableInt32
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullableInt64">
+          T.NullableInt64 = @NullableInt64
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullableSingle">
+          T.NullableSingle = @NullableSingle
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullableDouble">
+          T.NullableDouble = @NullableDouble
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullableDecimal">
+          T.NullableDecimal = @NullableDecimal
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullableDateTime">
+          T.NullableDateTime = @NullableDateTime
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullableGuid">
+          T.NullableGuid = @NullableGuid
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullableTimeSpan">
+          T.NullableTimeSpan = @NullableTimeSpan
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullableNumericalEnum">
+          T.NullableNumericalEnum = @NullableNumericalEnum
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullableString">
+          T.NullableString = @NullableString
+        </IsNotEmpty>
+
+      </Where>
+    </Statement>
+    <Statement Id="QueryByRedisCache"  Cache="RedisCache">
+      SELECT Top 6 T.* From T_AllPrimitive T;
+    </Statement>
+    <Statement Id="QueryByLruCache"  Cache="LruCache">
+      SELECT Top 6 T.* From T_AllPrimitive T;
+    </Statement>
+    <Statement Id="QueryByFifoCache"  Cache="FifoCache">
+      SELECT Top 6 T.* From T_AllPrimitive T;
+    </Statement>
+    <Statement Id="GetByPage" MultipleResultMap="GetByPage">
+      Select T.* From T_AllPrimitive T With(NoLock)
+      <Include RefId="QueryParams" />
+      Order By T.Id Desc
+      Offset ((@PageIndex-1)*@PageSize) Rows Fetch Next @PageSize Rows Only;
+
+      Select Count(1) From T_AllPrimitive T
+      <Include RefId="QueryParams" />;
+    </Statement>
+    <!--新增-->
+    <Statement Id="Insert">
+      INSERT INTO T_AllPrimitive
+      (
+      Boolean,
+      Char,
+      Byte,
+      Int16,
+      Int32,
+      Int64,
+      Single,
+      [Double],
+      Decimal,
+      DateTime,
+      String,
+      Guid,
+      TimeSpan,
+      NumericalEnum,
+      NullableBoolean,
+      NullableChar,
+      NullableByte,
+      NullableInt16,
+      NullableInt32,
+      NullableInt64,
+      NullableSingle,
+      NullableDouble,
+      NullableDecimal,
+      NullableDateTime,
+      NullableGuid,
+      NullableTimeSpan,
+      NullableNumericalEnum,
+      NullableString
+      )
+      VALUES
+      (
+      @Boolean,
+      @Char,
+      @Byte,
+      @Int16,
+      @Int32,
+      @Int64,
+      @Single,
+      @Double,
+      @Decimal,
+      @DateTime,
+      @String,
+      @Guid,
+      @TimeSpan,
+      @NumericalEnum,
+      @NullableBoolean,
+      @NullableChar,
+      @NullableByte,
+      @NullableInt16,
+      @NullableInt32,
+      @NullableInt64,
+      @NullableSingle,
+      @NullableDouble,
+      @NullableDecimal,
+      @NullableDateTime,
+      @NullableGuid,
+      @NullableTimeSpan,
+      @NullableNumericalEnum,
+      @NullableString
+      )
+      ;Select Scope_Identity();
+    </Statement>
+    <Statement Id="InsertByIdGen">
+      <IdGenerator Id="Int64"/>
+      INSERT INTO T_AllPrimitive
+      (
+      Boolean,
+      Char,
+      Byte,
+      Int16,
+      Int32,
+      Int64,
+      Single,
+      [Double],
+      Decimal,
+      DateTime,
+      String,
+      Guid,
+      TimeSpan,
+      NumericalEnum,
+      NullableBoolean,
+      NullableChar,
+      NullableByte,
+      NullableInt16,
+      NullableInt32,
+      NullableInt64,
+      NullableSingle,
+      NullableDouble,
+      NullableDecimal,
+      NullableDateTime,
+      NullableGuid,
+      NullableTimeSpan,
+      NullableNumericalEnum,
+      NullableString
+      )
+      VALUES
+      (
+      @Boolean,
+      @Char,
+      @Byte,
+      @Int16,
+      @Int32,
+      @Int64,
+      @Single,
+      @Double,
+      @Decimal,
+      @DateTime,
+      @String,
+      @Guid,
+      @TimeSpan,
+      @NumericalEnum,
+      @NullableBoolean,
+      @NullableChar,
+      @NullableByte,
+      @NullableInt16,
+      @NullableInt32,
+      @NullableInt64,
+      @NullableSingle,
+      @NullableDouble,
+      @NullableDecimal,
+      @NullableDateTime,
+      @NullableGuid,
+      @NullableTimeSpan,
+      @NullableNumericalEnum,
+      @NullableString
+      )
+      ;Select @Int64;
+    </Statement>
+    <!--删除-->
+    <Statement Id="Delete">
+      Delete From T_AllPrimitive
+      Where Id=@Id
+    </Statement>
+
+    <!--更新-->
+    <Statement Id="Update">
+      UPDATE T_AllPrimitive
+      <Set>
+        <IsProperty Prepend="," Property="Boolean">
+          Boolean = @Boolean
+        </IsProperty>
+        <IsProperty Prepend="," Property="Char">
+          Char = @Char
+        </IsProperty>
+        <IsProperty Prepend="," Property="Byte">
+          Byte = @Byte
+        </IsProperty>
+        <IsProperty Prepend="," Property="Int16">
+          Int16 = @Int16
+        </IsProperty>
+        <IsProperty Prepend="," Property="Int32">
+          Int32 = @Int32
+        </IsProperty>
+        <IsProperty Prepend="," Property="Int64">
+          Int64 = @Int64
+        </IsProperty>
+        <IsProperty Prepend="," Property="Single">
+          Single = @Single
+        </IsProperty>
+        <IsProperty Prepend="," Property="Double">
+          Double = @Double
+        </IsProperty>
+        <IsProperty Prepend="," Property="Decimal">
+          Decimal = @Decimal
+        </IsProperty>
+        <IsProperty Prepend="," Property="DateTime">
+          DateTime = @DateTime
+        </IsProperty>
+        <IsProperty Prepend="," Property="String">
+          String = @String
+        </IsProperty>
+        <IsProperty Prepend="," Property="Guid">
+          Guid = @Guid
+        </IsProperty>
+        <IsProperty Prepend="," Property="TimeSpan">
+          TimeSpan = @TimeSpan
+        </IsProperty>
+        <IsProperty Prepend="," Property="NumericalEnum">
+          NumericalEnum = @NumericalEnum
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullableBoolean">
+          NullableBoolean = @NullableBoolean
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullableChar">
+          NullableChar = @NullableChar
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullableByte">
+          NullableByte = @NullableByte
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullableInt16">
+          NullableInt16 = @NullableInt16
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullableInt32">
+          NullableInt32 = @NullableInt32
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullableInt64">
+          NullableInt64 = @NullableInt64
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullableSingle">
+          NullableSingle = @NullableSingle
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullableDouble">
+          NullableDouble = @NullableDouble
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullableDecimal">
+          NullableDecimal = @NullableDecimal
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullableDateTime">
+          NullableDateTime = @NullableDateTime
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullableGuid">
+          NullableGuid = @NullableGuid
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullableTimeSpan">
+          NullableTimeSpan = @NullableTimeSpan
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullableNumericalEnum">
+          NullableNumericalEnum = @NullableNumericalEnum
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullableString">
+          NullableString = @NullableString
+        </IsProperty>
+      </Set>
+      Where Id=@Id
+    </Statement>
+
+    <!--获取数据列-->
+    <Statement Id="Query" >
+      SELECT
+      <IsNotEmpty Prepend="Top" Property="Taken">
+        (@Taken)
+      </IsNotEmpty>
+      T.* From T_AllPrimitive T
+      <Include RefId="QueryParams" />
+      <Switch Prepend="Order By" Property="OrderBy">
+        <Default>
+          T.Id Desc
+        </Default>
+      </Switch>
+    </Statement>
+
+
+    <!--获取分页数据-->
+    <Statement Id="QueryByPage" >
+      Select T.* From T_AllPrimitive T With(NoLock)
+      <Include RefId="QueryParams" />
+      Order By T.Id Desc
+      Offset ((@PageIndex-1)*@PageSize) Rows Fetch Next @PageSize Rows Only;
+    </Statement>
+
+
+    <!--获取记录数-->
+    <Statement Id="GetRecord">
+      Select Count(1) From T_AllPrimitive T
+      <Include RefId="QueryParams" />
+    </Statement>
+
+    <!--获取表映射实体-->
+    <Statement Id="GetEntity" >
+      Select Top 1 T.* From T_AllPrimitive T With(NoLock)
+      <Where>
+        <IsNotEmpty Prepend="And" Property="Id">
+          T.Id=@Id
+        </IsNotEmpty>
+      </Where>
+    </Statement>
+
+
+    <!--是否存在该记录-->
+    <Statement Id="IsExist">
+      Select Count(1) From T_AllPrimitive T
+      <Include RefId="QueryParams" />
+    </Statement>
+
+    <Statement Id="GetDataSet" >
+      SELECT Top 6 T.* From T_AllPrimitive T;
+      SELECT Top 8 T.* From T_AllPrimitive T;
+    </Statement>
+
+
+  </Statements>
+</SmartSqlMap>

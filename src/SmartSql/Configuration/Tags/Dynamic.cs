@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using SmartSql.Abstractions;
 
 namespace SmartSql.Configuration.Tags
 {
     public class Dynamic : Tag
     {
-        public override TagType Type => TagType.Dynamic;
-
         public override bool IsCondition(RequestContext context)
         {
             return true;
@@ -32,10 +29,10 @@ namespace SmartSql.Configuration.Tags
                     if (isFirstChild)
                     {
                         isFirstChild = false;
-                        context.Sql.Append(" ");
-                        context.Sql.Append(Prepend);
-                        context.Sql.Append(" ");
-                        if (childTag.Type != TagType.SqlText)
+                        context.SqlBuilder.Append(" ");
+                        context.SqlBuilder.Append(Prepend);
+                        context.SqlBuilder.Append(" ");
+                        if (!(childTag is SqlText))
                         {
                             context.IgnorePrepend = true;
                         }

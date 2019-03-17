@@ -1,93 +1,75 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
-using SmartSql;
-using SmartSql.Abstractions;
-using SmartSql.Abstractions.Config;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using SmartSql;
+using SmartSql.Configuration;
+using SmartSql.DbSession;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class SmartSqlExtensions
     {
-        /// <summary>
-        /// 注入默认 ISmartSqlMapper
-        /// </summary>
-        /// <param name="services"></param>
-        public static void AddSmartSql(this IServiceCollection services)
+        public static IServiceCollection AddSmartSql(this IServiceCollection services, String alias = SmartSqlConfig.DEFAULT_ALIAS)
         {
-            services.AddSingleton(sp =>
+            services.AddSingleton<SmartSqlBuilder>(sp =>
             {
-                var options = new SmartSqlOptions();
-                InitOptions(sp, options);
-                return MapperContainer.Instance.GetSqlMapper(options);
+                var configPath = ResolveConfigPath(sp);
+                return SmartSqlBuilder.AddXmlConfig(SmartSql.ConfigBuilder.ResourceType.File, configPath)
+                 .UseAlias(alias)
+                 .UseLoggerFactory(sp.GetService<ILoggerFactory>())
+                 .Build();
             });
             AddOthers(services);
-        }
-        /// <summary>
-        /// 注入 ISmartSqlMapper
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="setupOptions"></param>
-        public static void AddSmartSql(this IServiceCollection services, Func<IServiceProvider, SmartSqlOptions> setupOptions)
-        {
-            services.AddSingleton((sp =>
-            {
-                var options = setupOptions(sp);
-                InitOptions(sp, options);
-                return MapperContainer.Instance.GetSqlMapper(options);
-            }));
-            AddOthers(services);
+            return services;
         }
 
-        private static void InitOptions(IServiceProvider sp, SmartSqlOptions options)
+        private static string ResolveConfigPath(IServiceProvider sp)
         {
-            if (String.IsNullOrEmpty(options.ConfigPath))
+            var env = sp.GetService<IHostingEnvironment>();
+            var configPath = SmartSqlBuilder.DEFAULT_SMARTSQL_CONFIG_PATH;
+            if (env != null && !env.IsProduction())
             {
-                var env = sp.GetService<IHostingEnvironment>();
-                if (env != null && !env.IsProduction())
-                {
-                    options.ConfigPath = $"SmartSqlMapConfig.{env.EnvironmentName}.xml";
-                }
-                if (!File.Exists(options.ConfigPath))
-                {
-                    options.ConfigPath = Consts.DEFAULT_SMARTSQL_CONFIG_PATH;
-                }
+                configPath = $"SmartSqlMapConfig.{env.EnvironmentName}.xml";
             }
-            if (String.IsNullOrEmpty(options.Alias))
+            if (!File.Exists(configPath))
             {
-                options.Alias = options.ConfigPath;
+                configPath = SmartSqlBuilder.DEFAULT_SMARTSQL_CONFIG_PATH;
             }
-            if (options.LoggerFactory == null)
-            {
-                options.LoggerFactory = sp.GetService<ILoggerFactory>();
-            }
-            if (options.ConfigLoader == null)
-            {
-                options.ConfigLoader = sp.GetService<IConfigLoader>();
-            }
+            return configPath;
         }
 
         private static void AddOthers(IServiceCollection services)
         {
-            services.AddSingleton<ISmartSqlMapperAsync>(sp =>
-            {
-                return sp.GetRequiredService<ISmartSqlMapper>();
-            });
-            services.AddSingleton<ITransaction>(sp =>
-            {
-                return sp.GetRequiredService<ISmartSqlMapper>();
-            });
-            services.AddSingleton<ISession>(sp =>
-            {
-                return sp.GetRequiredService<ISmartSqlMapper>();
-            });
+            services.AddSingleton<IDbSessionFactory>(sp => sp.GetRequiredService<SmartSqlBuilder>().DbSessionFactory);
+            services.AddSingleton<ISqlMapper>(sp => sp.GetRequiredService<SmartSqlBuilder>().SqlMapper);
+            services.AddSingleton<ITransaction>(sp => sp.GetRequiredService<SmartSqlBuilder>().SqlMapper);
         }
 
-        public static ISmartSqlMapper GetSmartSqlMapper(this IServiceProvider sp, string alias = Consts.DEFAULT_SMARTSQL_CONFIG_PATH)
+        public static IServiceCollection AddSmartSql(this IServiceCollection services, Func<IServiceProvider, SmartSqlBuilder> setup)
         {
-            return sp.GetServices<ISmartSqlMapper>().FirstOrDefault(m => m.SmartSqlOptions.Alias == alias);
+            services.AddSingleton<SmartSqlBuilder>(sp => setup(sp).Build());
+            AddOthers(services);
+            return services;
+        }
+        public static IServiceCollection AddSmartSql(this IServiceCollection services, Action<IServiceProvider, SmartSqlBuilder> setup)
+        {
+            services.AddSingleton<SmartSqlBuilder>(sp =>
+            {
+                var configPath = ResolveConfigPath(sp);
+                var smartSqlBuilder = SmartSqlBuilder.AddXmlConfig(SmartSql.ConfigBuilder.ResourceType.File, configPath)
+                 .UseLoggerFactory(sp.GetService<ILoggerFactory>());
+                setup(sp, smartSqlBuilder);
+                return smartSqlBuilder.Build();
+            });
+            AddOthers(services);
+            return services;
+        }
+        public static SmartSqlBuilder GetSmartSql(this IServiceProvider sp, string alias = SmartSqlConfig.DEFAULT_ALIAS)
+        {
+            return sp.GetServices<SmartSqlBuilder>().FirstOrDefault(m => m.SmartSqlConfig.Alias == alias);
         }
     }
 }

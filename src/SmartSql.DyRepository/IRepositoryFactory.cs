@@ -1,11 +1,10 @@
-﻿using SmartSql.Abstractions;
+﻿using SmartSql.DbSession;
 using System;
 
 namespace SmartSql.DyRepository
 {
     public interface IRepositoryFactory
     {
-        object CreateInstance(Type interfaceType, ISmartSqlMapper smartSqlMapper, string scope = "");
-        T CreateInstance<T>(ISmartSqlMapper smartSqlMapper, string scope = "");
+        object CreateInstance(Type interfaceType, ISqlMapper sqlMapper, string scope = "");
     }
 }

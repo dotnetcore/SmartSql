@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Collections;
-using SmartSql.Abstractions;
 
 namespace SmartSql.Configuration.Tags
 {
     public class IsEmpty : Tag
     {
-        public override TagType Type => TagType.IsEmpty;
-
         public override bool IsCondition(RequestContext context)
         {
             Object reqVal = GetPropertyValue(context);

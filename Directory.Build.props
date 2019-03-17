@@ -1,0 +1,33 @@
+<Project>
+
+  <Import Project="build\version.props" />
+
+  <PropertyGroup Label="Package">
+    <Product>SmartSql</Product>
+    <Copyright>2019 SmartSql, Inc.</Copyright>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Authors>Ahoo Wang</Authors>
+    <MaintainerEmail>ahoowang@qq.com</MaintainerEmail>
+    <RepositoryUrl>https://github.com/Smart-Kit/SmartSql</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
+    <PackageIconUrl>https://raw.githubusercontent.com/Smart-Kit/SmartSql/master/SmartSql.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/Smart-Kit/SmartSql</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageTags>orm sql read-write-separation cache  redis dotnet-core cross-platform high-performance distributed-computing zookeeper</PackageTags>
+    <Description>SmartSql = MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting +Dynamic Repository ....</Description>
+  </PropertyGroup>
+
+  <!-- Using SourceLink -->
+  <PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All"/>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,160 @@
+﻿using SmartSql.Exceptions;
+using SmartSql.Reflection;
+using SmartSql.Reflection.TypeConstants;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data.Common;
+
+namespace SmartSql.Data
+{
+    public class SqlParameterCollection : ISqlParameterCollection
+    {
+        private readonly IDictionary<string, SqlParameter> _sqlParameters;
+        public bool IgnoreCase { get; }
+        public IDictionary<string, DbParameter> DbParameters { get; private set; }
+        public ICollection<string> Keys => _sqlParameters.Keys;
+        public ICollection<SqlParameter> Values => _sqlParameters.Values;
+        public int Count => _sqlParameters.Count;
+        public bool IsReadOnly => _sqlParameters.IsReadOnly;
+
+        public SqlParameter this[string key] { get => _sqlParameters[key]; set => _sqlParameters[key] = value; }
+
+        public SqlParameterCollection() : this(false)
+        {
+
+        }
+        public SqlParameterCollection(bool ignoreCase)
+        {
+            IgnoreCase = ignoreCase;
+            var paramComparer = IgnoreCase ? StringComparer.CurrentCultureIgnoreCase : StringComparer.CurrentCulture;
+            _sqlParameters = new Dictionary<string, SqlParameter>(paramComparer);
+            DbParameters = new Dictionary<String, DbParameter>(paramComparer);
+        }
+
+        public static SqlParameterCollection Create(RequestContext requestContext)
+        {
+            var sourceRequest = requestContext.Request;
+            bool ignoreParameterCase = requestContext.ExecutionContext.SmartSqlConfig.Settings.IgnoreParameterCase;
+            switch (sourceRequest)
+            {
+                case null:
+                    return new SqlParameterCollection(ignoreParameterCase);
+                case SqlParameterCollection sourceRequestParams:
+                    return sourceRequestParams;
+                case IEnumerable<KeyValuePair<string, object>> reqKVs:
+                    {
+                        var sqlParameters = new SqlParameterCollection(ignoreParameterCase);
+                        foreach (var kv in reqKVs)
+                        {
+                            sqlParameters.TryAdd(kv.Key, kv.Value);
+                        }
+                        return sqlParameters;
+                    }
+                case IEnumerable<KeyValuePair<string, SqlParameter>> reqDbKVs:
+                    {
+                        var sqlParameters = new SqlParameterCollection(ignoreParameterCase);
+                        foreach (var kv in reqDbKVs)
+                        {
+                            sqlParameters.TryAdd(kv.Key, kv.Value);
+                        }
+                        return sqlParameters;
+                    }
+                default:
+                    return RequestConvert.Instance.ToSqlParameters(sourceRequest, ignoreParameterCase);
+            }
+        }
+        #region Add
+        public void Add(SqlParameter sqlParameter)
+        {
+            _sqlParameters.Add(sqlParameter.Name, sqlParameter);
+            sqlParameter.OnSetSourceParameter = (sqlParam) =>
+            {
+                if (!DbParameters.ContainsKey(sqlParam.SourceParameter.ParameterName))
+                {
+                    DbParameters.Add(sqlParam.SourceParameter.ParameterName, sqlParam.SourceParameter);
+                }
+            };
+        }
+        public void Add(string key, SqlParameter value)
+        {
+            Add(value);
+        }
+        public void Add(KeyValuePair<string, SqlParameter> item)
+        {
+            Add(item.Value);
+        }
+        public bool TryAdd(string propertyName, object paramVal)
+        {
+            return TryAdd(new SqlParameter(propertyName, paramVal,
+                paramVal == null ? CommonType.Object : paramVal.GetType()));
+        }
+        public bool TryAdd(SqlParameter sqlParameter)
+        {
+            if (ContainsKey(sqlParameter.Name))
+            {
+                return false;
+            }
+            Add(sqlParameter);
+            return true;
+        }
+        #endregion
+
+        #region Get
+        public bool TryGetValue(string key, out SqlParameter value) => _sqlParameters.TryGetValue(key, out value);
+
+        public bool TryGetParameterValue<T>(string propertyName, out T paramVal)
+        {
+            if (TryGetValue(propertyName, out var sqlParameter))
+            {
+                paramVal = (T)(
+                    sqlParameter.SourceParameter == null
+                    ? sqlParameter.Value : sqlParameter.SourceParameter.Value
+                    );
+                return true;
+            }
+            paramVal = default;
+            return false;
+        }
+
+        #endregion
+        #region Contains
+        public bool ContainsKey(string key) => _sqlParameters.ContainsKey(key);
+        public bool Contains(KeyValuePair<string, SqlParameter> item) => _sqlParameters.Contains(item);
+
+        #endregion
+        #region Remove
+        public bool Remove(string key)
+        {
+            DbParameters.Remove(key);
+            return _sqlParameters.Remove(key);
+        }
+        public bool Remove(KeyValuePair<string, SqlParameter> item)
+        {
+            DbParameters.Remove(item.Key);
+            return _sqlParameters.Remove(item);
+        }
+        #endregion
+
+        public void Clear()
+        {
+            DbParameters.Clear();
+            _sqlParameters.Clear();
+        }
+
+        public void CopyTo(KeyValuePair<string, SqlParameter>[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerator<KeyValuePair<string, SqlParameter>> GetEnumerator()
+        {
+            return _sqlParameters.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _sqlParameters.GetEnumerator();
+        }
+    }
+}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -17,7 +18,7 @@ namespace SmartSql.Utils
         /// <returns></returns>
         public WeightSource Elect(IEnumerable<WeightSource> inWeightSources)
         {
-            var random = new Random();
+            var random = new Random((int)Stopwatch.GetTimestamp());
             int totalWeight = inWeightSources.Sum(source => source.Weight);
             int position = random.Next(1, totalWeight);
             var sel_source = FindByPosition(inWeightSources, position);

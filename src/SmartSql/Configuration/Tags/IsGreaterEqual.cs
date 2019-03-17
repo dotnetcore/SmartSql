@@ -1,21 +1,17 @@
-﻿using SmartSql.Abstractions;
-using SmartSql.Utils;
+﻿using SmartSql.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SmartSql.Configuration.Tags
 {
-    public class IsGreaterEqual : CompareTag
+    public class IsGreaterEqual : NumericalCompareTag
     {
-        public override TagType Type => TagType.IsGreaterEqual;
-
         public override bool IsCondition(RequestContext context)
         {
             Object reqVal = GetPropertyValue(context);
             if (reqVal == null) { return false; }
             Decimal reqValNum = 0M;
-            Decimal comVal = 0M;
             if (reqVal is Enum)
             {
                 reqValNum = Convert.ToDecimal(reqVal);
@@ -24,8 +20,8 @@ namespace SmartSql.Configuration.Tags
             {
                 if (!Decimal.TryParse(reqVal.ToString(), out reqValNum)) { return false; }
             }
-            if (!Decimal.TryParse(CompareValue, out comVal)) { return false; }
-            return reqValNum >= comVal;
+
+            return reqValNum >= CompareValue;
         }
     }
 }

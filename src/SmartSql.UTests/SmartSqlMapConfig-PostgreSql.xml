@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
-  <Settings IsWatchConfigFile="false" IgnoreParameterCase="false" ParameterPrefix="$"  IsCacheEnabled="true"/>
-  <Database>
-    <DbProvider Name="PostgreSql" ParameterPrefix="@" Type="Npgsql.NpgsqlFactory,Npgsql"  />
-    <Write Name="WriteDB" ConnectionString="Server=localhost;Port=5432;User Id=postgres;Password=SmartSql; Database=smartsql_db;"/>
-  </Database>
-</SmartSqlMapConfig>

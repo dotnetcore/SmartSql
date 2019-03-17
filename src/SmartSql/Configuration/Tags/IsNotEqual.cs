@@ -1,15 +1,12 @@
-﻿using SmartSql.Abstractions;
-using SmartSql.Utils;
+﻿using SmartSql.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SmartSql.Configuration.Tags
 {
-    public class IsNotEqual : CompareTag
+    public class IsNotEqual : StringCompareTag
     {
-        public override TagType Type => TagType.IsNotEqual;
-
         public override bool IsCondition(RequestContext context)
         {
             Object reqVal = GetPropertyValue(context);

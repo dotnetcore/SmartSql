@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig-v4.xsd">
+  <Settings IgnoreParameterCase="false" ParameterPrefix="$" IsCacheEnabled="true"/>
+  <Properties>
+    <Property Name="Redis" Value="localhost"/>
+    <Property Name="ConnectionString" Value="Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True"/>
+    <Property Name="JsonTypeHandler" Value="SmartSql.TypeHandler.JsonTypeHandler`1,SmartSql.TypeHandler"/>
+    <Property Name="ScriptBuilder" Value="SmartSql.ScriptTag.ScriptBuilder,SmartSql.ScriptTag"/>
+    <Property Name="RedisCacheProvider" Value="SmartSql.Cache.Redis.RedisCacheProvider,SmartSql.Cache.Redis"/>
+  </Properties>
+  <Database>
+    <DbProvider Name="SqlServer"/>
+    <Write Name="WriteDB" ConnectionString="${ConnectionString}"/>
+    <Read Name="ReadDb-1" ConnectionString="${ConnectionString}" Weight="100"/>
+    <Read Name="ReadDb-2" ConnectionString="${ConnectionString}" Weight="100"/>
+  </Database>
+  <TypeHandlers>
+    <TypeHandler MappedType="SmartSql.Test.Entities.UserInfo,SmartSql.Test" Type="${JsonTypeHandler}">
+      <Properties>
+        <Property Name="DateFormat" Value="yyyy-MM-dd mm:ss"/>
+        <Property Name="NamingStrategy" Value="Camel"/>
+      </Properties>
+    </TypeHandler>
+  </TypeHandlers>
+  <TagBuilders>
+    <TagBuilder Name="Script" Type="${ScriptBuilder}"/>
+  </TagBuilders>
+  <IdGenerator Type="SnowflakeId">
+    <Properties>
+      <Property Name="WorkerIdBits" Value="10"/>
+      <Property Name="WorkerId" Value="888"/>
+      <Property Name="Sequence" Value="14"/>    
+    </Properties>
+  </IdGenerator>
+  <SmartSqlMaps>
+    <SmartSqlMap Path="Maps" Type="Directory"></SmartSqlMap>
+  </SmartSqlMaps>
+</SmartSqlMapConfig>

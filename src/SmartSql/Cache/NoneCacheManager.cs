@@ -1,36 +1,30 @@
-﻿using SmartSql.Abstractions;
-using SmartSql.Abstractions.Cache;
-using SmartSql.Abstractions.DbSession;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SmartSql.DbSession;
 
 namespace SmartSql.Cache
 {
     public class NoneCacheManager : ICacheManager
     {
-        public static ICacheManager Instance = new NoneCacheManager();
+        public void BindSessionEventHandler(IDbSession dbSession)
+        {
+
+        }
 
         public void Dispose()
         {
+            
         }
 
-        public void RequestCommitted(IDbConnectionSession dbSession)
-        {
-        }
-
-        public void RequestExecuted(IDbConnectionSession dbSession, RequestContext context)
-        {
-        }
-
-        public void TryAdd<T>(RequestContext context, T cacheItem)
+        public void ExecuteRequest(ExecutionContext executionContext)
         {
            
         }
 
-        public bool TryGet<T>(RequestContext context, out T cachedResult)
+        public bool TryGetValue(ExecutionContext executionContext, out object cacheItem)
         {
-            cachedResult = default(T);
+            cacheItem = null;
             return false;
         }
     }

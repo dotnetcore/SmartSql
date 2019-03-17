@@ -1,11 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using SmartSql.Reflection.TypeConstants;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Reflection;
-using System.Reflection.Emit;
-using SmartSql.Abstractions;
-using System.Collections;
-using Microsoft.Extensions.Logging;
 
 namespace SmartSql.DyRepository
 {
@@ -14,17 +11,17 @@ namespace SmartSql.DyRepository
         private IDictionary<Type, object> _cachedRepository = new Dictionary<Type, object>();
 
         private readonly IRepositoryBuilder _repositoryBuilder;
-        private readonly ILogger<RepositoryFactory> _logger;
+        private readonly ILogger _logger;
 
         public RepositoryFactory(IRepositoryBuilder repositoryBuilder
-            , ILogger<RepositoryFactory> logger
+            , ILogger logger
             )
         {
             _repositoryBuilder = repositoryBuilder;
             _logger = logger;
         }
 
-        public object CreateInstance(Type interfaceType, ISmartSqlMapper smartSqlMapper, string scope = "")
+        public object CreateInstance(Type interfaceType, ISqlMapper sqlMapper, string scope = "")
         {
             if (!_cachedRepository.ContainsKey(interfaceType))
             {
@@ -36,8 +33,10 @@ namespace SmartSql.DyRepository
                         {
                             _logger.LogDebug($"RepositoryFactory.CreateInstance :InterfaceType.FullName:[{interfaceType.FullName}] Start");
                         }
-                        var implType = _repositoryBuilder.BuildRepositoryImpl(interfaceType, smartSqlMapper, scope);
-                        var obj = Activator.CreateInstance(implType, new object[] { smartSqlMapper });
+                        var implType = _repositoryBuilder.Build(interfaceType, sqlMapper.SmartSqlConfig, scope);
+
+                        var obj = sqlMapper.SmartSqlConfig.ObjectFactoryBuilder
+                            .GetObjectFactory(implType, new Type[] { ISqlMapperType.Type })(new object[] { sqlMapper });
                         _cachedRepository.Add(interfaceType, obj);
                         if (_logger.IsEnabled(LogLevel.Debug))
                         {
@@ -49,11 +48,5 @@ namespace SmartSql.DyRepository
             return _cachedRepository[interfaceType];
         }
 
-
-        public T CreateInstance<T>(ISmartSqlMapper smartSqlMapper, string scope = "")
-        {
-            var interfaceType = typeof(T);
-            return (T)CreateInstance(interfaceType, smartSqlMapper, scope);
-        }
     }
 }

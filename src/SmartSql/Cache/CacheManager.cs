@@ -1,189 +1,226 @@
-﻿using SmartSql.Abstractions.Cache;
+﻿using SmartSql.Configuration;
+using SmartSql.DbSession;
 using System;
 using System.Collections.Generic;
-using SmartSql.Abstractions;
+using System.Threading;
+using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
-using SmartSql.Configuration.Statements;
-using SmartSql.Abstractions.DbSession;
 
-namespace SmartSql.Cahce
+namespace SmartSql.Cache
 {
+
     public class CacheManager : ICacheManager
     {
-        private readonly ILogger<CacheManager> _logger;
-        private readonly SmartSqlContext _smartSqlContext;
-        private readonly IDbConnectionSessionStore _dbSessionStore;
-        private readonly IDictionary<Guid, SessionRequest> _cachedSessionRequest = new Dictionary<Guid, SessionRequest>();
-        private IDictionary<string, DateTime> _cacheMappedLastFlushTime;
-        private readonly System.Threading.Timer _timer;
+        private readonly ConcurrentDictionary<Guid, Queue<ExecutionContext>> _sessionMappedExecutionQueue;
+        private ConcurrentDictionary<String, IList<Configuration.Cache>> _statementMappedFlushCache;
+        private ConcurrentDictionary<Configuration.Cache, DateTime> _cacheMappedLastFlushTime;
+        private readonly Timer _timer;
         private readonly TimeSpan _defaultDueTime = TimeSpan.FromMinutes(1);
         private readonly TimeSpan _defaultPeriodTime = TimeSpan.FromMinutes(1);
-        public CacheManager(
-            ILogger<CacheManager> logger
-            , SmartSqlContext smartSqlContext
-            , IDbConnectionSessionStore dbSessionStore)
+        private readonly SmartSqlConfig _smartSqlConfig;
+        private readonly ILogger _logger;
+        public CacheManager(SmartSqlConfig smartSqlConfig)
         {
-            _logger = logger;
-            _smartSqlContext = smartSqlContext;
-            _dbSessionStore = dbSessionStore;
-            InitCacheMappedLastFlushTime();
-            _timer = new System.Threading.Timer(Run, null, _defaultDueTime, _defaultPeriodTime);
+            _smartSqlConfig = smartSqlConfig;
+            _logger = _smartSqlConfig.LoggerFactory.CreateLogger<CacheManager>();
+            InitCacheMapped();
+            _sessionMappedExecutionQueue = new ConcurrentDictionary<Guid, Queue<ExecutionContext>>();
+            _timer = new Timer(FlushOnInterval, null, _defaultDueTime, _defaultPeriodTime);
         }
-
-        public void RequestExecuted(IDbConnectionSession dbSession, RequestContext context)
+        private void InitCacheMapped()
         {
-            var sessionId = dbSession.Id;
-            if (dbSession.Transaction == null)
+            _statementMappedFlushCache = new ConcurrentDictionary<String, IList<Configuration.Cache>>();
+            _cacheMappedLastFlushTime = new ConcurrentDictionary<Configuration.Cache, DateTime>();
+            foreach (var sqlMap in _smartSqlConfig.SqlMaps.Values)
             {
-                FlushOnExecute(context);
+                foreach (var cache in sqlMap.Caches.Values)
+                {
+                    if (cache.FlushOnExecutes != null)
+                    {
+                        foreach (var onExecute in cache.FlushOnExecutes)
+                        {
+                            if (!_statementMappedFlushCache.TryGetValue(onExecute.Statement, out var mappedCaches))
+                            {
+                                mappedCaches = new List<Configuration.Cache>();
+                            }
+                            mappedCaches.Add(cache);
+                        }
+                    }
+                    if (cache.FlushInterval != null && cache.FlushInterval.Interval != TimeSpan.MinValue)
+                    {
+                        _cacheMappedLastFlushTime.TryAdd(cache, DateTime.Now);
+                    }
+                }
+            }
+        }
+        public void ExecuteRequest(ExecutionContext executionContext)
+        {
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug("ExecuteRequest Start");
+            }
+            if (executionContext.DbSession.Transaction == null)
+            {
+                HandleCache(executionContext);
             }
             else
             {
-
-                if (_cachedSessionRequest.TryGetValue(sessionId, out SessionRequest sessionRequest))
+                if (!_sessionMappedExecutionQueue.TryGetValue(executionContext.DbSession.Id, out var executionQueue))
                 {
-                    sessionRequest.Requests.Add(context);
+                    executionQueue = new Queue<ExecutionContext>();
+                    _sessionMappedExecutionQueue.TryAdd(executionContext.DbSession.Id, executionQueue);
                 }
-                else
+                executionQueue.Enqueue(executionContext);
+            }
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug("ExecuteRequest End");
+            }
+        }
+
+        private void FlushOnExecuted(ExecutionContext executionContext)
+        {
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug($"FlushOnExecuted Start");
+            }
+            if (executionContext.Request.IsStatementSql)
+            {
+                if (_statementMappedFlushCache.TryGetValue(executionContext.Request.FullSqlId, out var caches))
                 {
-                    sessionRequest = new SessionRequest
+                    foreach (var cache in caches)
                     {
-                        SessionId = sessionId,
-                        Requests = new List<RequestContext> { context }
-                    };
-                    _cachedSessionRequest.Add(sessionId, sessionRequest);
-                }
-            }
-        }
-        public void RequestCommitted(IDbConnectionSession dbSession)
-        {
-            var sessionId = dbSession.Id;
-            if (_cachedSessionRequest.TryGetValue(sessionId, out SessionRequest sessionRequest))
-            {
-                foreach (var context in sessionRequest.Requests)
-                {
-                    FlushOnExecute(context);
-                }
-                _cachedSessionRequest.Remove(sessionId);
-            }
-        }
-
-        private void Run(object state)
-        {
-            FlushInterval();
-        }
-
-        private void InitCacheMappedLastFlushTime()
-        {
-            _cacheMappedLastFlushTime = new Dictionary<string, DateTime>();
-            foreach (var cacheKV in _smartSqlContext.MappedCache)
-            {
-                var cache = cacheKV.Value;
-                if (cache.FlushInterval == null) { continue; }
-                _cacheMappedLastFlushTime.Add(cache.Id, DateTime.Now);
-            }
-        }
-
-        private void FlushInterval()
-        {
-            try
-            {
-                foreach (var cacheKV in _smartSqlContext.MappedCache)
-                {
-                    var cache = cacheKV.Value;
-                    if (cache.FlushInterval == null) { continue; }
-                    var lastFlushTime = _cacheMappedLastFlushTime[cache.Id];
-                    var nextFlushTime = lastFlushTime.Add(cache.FlushInterval.Interval);
-                    if (DateTime.Now >= nextFlushTime)
-                    {
-                        cache.Provider.Flush();
-                        UpdateCacheFlushTime(cache.Id, DateTime.Now);
-                        if (_logger.IsEnabled(LogLevel.Debug))
-                        {
-                            _logger.LogDebug($"CacheManager FlushInterval Cache.Id:{cache.Id}");
-                        }
+                        FlushCache(cache);
                     }
                 }
             }
-            catch (Exception ex)
+            if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogError(new EventId(ex.HResult), ex, ex.Message);
+                _logger.LogDebug($"FlushOnExecuted End");
             }
         }
 
-        private void FlushOnExecute(RequestContext requestContext)
+        private void FlushCache(Configuration.Cache cache)
         {
-            try
+            if (_logger.IsEnabled(LogLevel.Debug))
             {
-                if (_smartSqlContext.ExecuteMappedCacheFlush.TryGetValue(requestContext.FullSqlId, out IList<Statement> needFlushStatements))
+                _logger.LogDebug($"FlushCache Cache.Id:{cache.Id} .");
+            }
+            cache.Provider.Flush();
+            if (_cacheMappedLastFlushTime.TryGetValue(cache, out var lastFlushTime))
+            {
+                _cacheMappedLastFlushTime[cache] = DateTime.Now;
+            }
+        }
+
+        private void FlushOnInterval(object state)
+        {
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug($"FlushOnInterval Start");
+            }
+            foreach (var cacheKV in _cacheMappedLastFlushTime)
+            {
+                var cache = cacheKV.Key;
+                var lastFlushTime = cacheKV.Value;
+                var nextFlushTime = lastFlushTime.Add(cache.FlushInterval.Interval);
+                if (DateTime.Now >= nextFlushTime)
                 {
-                    foreach (var needFlushStatement in needFlushStatements)
-                    {
-                        needFlushStatement.Cache.Provider.Flush();
-                        UpdateCacheFlushTime(needFlushStatement.Cache.Id, DateTime.Now);
-                    }
-                    if (_logger.IsEnabled(LogLevel.Debug))
-                    {
-                        _logger.LogDebug($"CacheManager FlushOnExecute FullSqlId:{requestContext.FullSqlId}");
-                    }
+                    FlushCache(cache);
                 }
             }
-            catch (Exception ex)
+            if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogError(new EventId(ex.HResult), ex, ex.Message);
+                _logger.LogDebug($"FlushOnInterval End");
+            }
+        }
+        public void BindSessionEventHandler(IDbSession dbSession)
+        {
+            dbSession.Committed += DbSession_Committed;
+            dbSession.Disposed += DbSession_Disposed;
+            dbSession.Rollbacked += DbSession_Rollbacked;
+        }
+
+        private void DbSession_Rollbacked(object sender, DbSessionEventArgs eventArgs)
+        {
+            var dbSession = sender as IDbSession;
+            _sessionMappedExecutionQueue.TryRemove(dbSession.Id, out var exeQueue);
+        }
+
+        private void DbSession_Disposed(object sender, DbSessionEventArgs eventArgs)
+        {
+            var dbSession = sender as IDbSession;
+            if (_sessionMappedExecutionQueue.TryGetValue(dbSession.Id, out var executionQueue))
+            {
+                _sessionMappedExecutionQueue.TryRemove(dbSession.Id, out var exeQueue);
             }
         }
 
-        private void UpdateCacheFlushTime(string cacheId, DateTime flushTime)
+        private void DbSession_Committed(object sender, DbSessionEventArgs eventArgs)
         {
-            _cacheMappedLastFlushTime[cacheId] = flushTime;
+            var dbSession = sender as IDbSession;
+            if (_sessionMappedExecutionQueue.TryGetValue(dbSession.Id, out var executionQueue))
+            {
+                HandleCacheQueue(executionQueue);
+                _sessionMappedExecutionQueue.TryRemove(dbSession.Id, out var exeQueue);
+            }
+        }
+
+        private void HandleCacheQueue(Queue<ExecutionContext> executionQueue)
+        {
+            while (executionQueue.Count > 0)
+            {
+                var executionContext = executionQueue.Dequeue();
+                HandleCache(executionContext);
+            }
+        }
+
+        private void HandleCache(ExecutionContext executionContext)
+        {
+            FlushOnExecuted(executionContext);
+            var cache = executionContext.Request.Cache;
+            if (cache != null)
+            {
+                var cacheKey = new CacheKey(executionContext.Request);
+                var isSuccess = cache.Provider.TryAdd(cacheKey, executionContext.Result.GetData());
+                if (_logger.IsEnabled(LogLevel.Debug))
+                {
+                    _logger.LogDebug($"HandleCache Cahce.Id:{cache.Id} try add from Cache.Key:{cacheKey.Key} ->{isSuccess}!");
+                }
+            }
+        }
+
+        public bool TryGetValue(ExecutionContext executionContext, out object cacheItem)
+        {
+            var cache = executionContext.Request.Cache;
+            if (cache == null)
+            {
+                cacheItem = default;
+                return false;
+            }
+            var cacheKey = new CacheKey(executionContext.Request);
+            bool isSuccess = cache.Provider.TryGetValue(cacheKey, out cacheItem);
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug($"TryGetValue Cache.Key:{cacheKey.Key}，Success:{isSuccess} !");
+            }
+            return isSuccess;
         }
 
         public void Dispose()
         {
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug("Dispose.");
+            }
             _timer.Dispose();
-            foreach (var cacheKV in _smartSqlContext.MappedCache)
+            foreach (var sqlMap in _smartSqlConfig.SqlMaps.Values)
             {
-                cacheKV.Value.Provider.Dispose();
+                foreach (var cache in sqlMap.Caches.Values)
+                {
+                    cache.Provider.Dispose();
+                }
             }
         }
-
-        public bool TryGet<T>(RequestContext context, out T cachedResult)
-        {
-            cachedResult = default(T);
-            if (context.Cache == null) { return false; }
-            var cacheKey = new CacheKey(context);
-            var cached = context.Cache.Provider.Contains(cacheKey);
-            if (_logger.IsEnabled(LogLevel.Debug))
-            {
-                _logger.LogDebug($"CacheManager GetCache StatementKey:{context.StatementKey}，Success:{cached} !");
-            }
-            if (cached)
-            {
-                var cachedType = typeof(T);
-                var cache = context.Cache.Provider[cacheKey, cachedType];
-                cachedResult = (T)cache;
-            }
-            return cached;
-        }
-
-        public void TryAdd<T>(RequestContext context, T cacheItem)
-        {
-            if (context.Cache == null) { return; }
-            var cachedType = typeof(T);
-            var cacheKey = new CacheKey(context);
-            context.Cache.Provider[cacheKey, cachedType] = cacheItem;
-            if (_logger.IsEnabled(LogLevel.Debug))
-            {
-                _logger.LogDebug($"CacheManager SetCache StatementKey:{context.StatementKey}");
-            }
-        }
-    }
-    public class SessionRequest
-    {
-        public Guid SessionId { get; set; }
-        public IList<RequestContext> Requests { get; set; }
     }
 }
-
-

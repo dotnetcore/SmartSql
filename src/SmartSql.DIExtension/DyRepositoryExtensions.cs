@@ -1,13 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using SmartSql.Abstractions;
+using SmartSql;
 using SmartSql.DIExtension;
 using SmartSql.DyRepository;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -19,68 +17,70 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="scope_template">Scope模板，默认：I{Scope}Repository</param>
         /// <param name="sqlIdNamingConvert">SqlId命名转换</param>
-        public static void AddRepositoryFactory(this IServiceCollection services, string scope_template = "", Func<Type, MethodInfo, String> sqlIdNamingConvert = null)
+        public static IServiceCollection AddRepositoryFactory(this IServiceCollection services, string scope_template = "", Func<Type, MethodInfo, String> sqlIdNamingConvert = null)
         {
-            services.AddSingleton<IRepositoryBuilder>((sp) =>
+            services.TryAddSingleton<IRepositoryBuilder>((sp) =>
             {
-                var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-                var logger = loggerFactory.CreateLogger<RepositoryBuilder>();
-                return new RepositoryBuilder(scope_template, sqlIdNamingConvert, logger);
+                var loggerFactory = sp.GetService<ILoggerFactory>() ?? Logging.Abstractions.NullLoggerFactory.Instance;
+                var logger = loggerFactory.CreateLogger<EmitRepositoryBuilder>();
+                return new EmitRepositoryBuilder(scope_template, sqlIdNamingConvert, logger);
             });
-            services.AddSingleton<IRepositoryFactory>((sp) =>
+            services.TryAddSingleton<IRepositoryFactory>((sp) =>
             {
-                var repositoryBuilder = sp.GetRequiredService<IRepositoryBuilder>();
-                var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+                var loggerFactory = sp.GetService<ILoggerFactory>() ?? Logging.Abstractions.NullLoggerFactory.Instance;
                 var logger = loggerFactory.CreateLogger<RepositoryFactory>();
+                var repositoryBuilder = sp.GetRequiredService<IRepositoryBuilder>();
                 return new RepositoryFactory(repositoryBuilder, logger);
             });
+            return services;
         }
         /// <summary>
         /// 注入单个仓储接口
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="services"></param>
-        /// <param name="getSmartSql">获取ISmartSqlMapper函数</param>
+        /// <param name="smartSqlAlias">SmartSql别名</param>
         /// <param name="scope">SqlMaper.Scope</param>
-        public static void AddRepository<T>(this IServiceCollection services, Func<IServiceProvider, ISmartSqlMapper> getSmartSql = null, string scope = "") where T : class
+        public static IServiceCollection AddRepository<T>(this IServiceCollection services, string smartSqlAlias, string scope = "") where T : class
         {
+            services.AddRepositoryFactory();
             services.AddSingleton<T>(sp =>
             {
-                ISmartSqlMapper sqlMapper = null;
-                if (getSmartSql != null)
+                ISqlMapper sqlMapper = sp.GetRequiredService<ISqlMapper>(); ;
+                if (!String.IsNullOrEmpty(smartSqlAlias))
                 {
-                    sqlMapper = getSmartSql(sp);
+                    sqlMapper = sp.GetSmartSql(smartSqlAlias).SqlMapper;
                 }
-                sqlMapper = sqlMapper ?? sp.GetRequiredService<ISmartSqlMapper>();
                 var factory = sp.GetRequiredService<IRepositoryFactory>();
-                return factory.CreateInstance<T>(sqlMapper, scope);
+                return factory.CreateInstance(typeof(T), sqlMapper, scope) as T;
             });
+            return services;
         }
         /// <summary>
         /// 注入仓储结构 By 程序集
         /// </summary>
         /// <param name="services"></param>
         /// <param name="setupOptions"></param>
-        public static void AddRepositoryFromAssembly(this IServiceCollection services, Action<AssemblyAutoRegisterOptions> setupOptions)
+        public static IServiceCollection AddRepositoryFromAssembly(this IServiceCollection services, Action<AssemblyAutoRegisterOptions> setupOptions)
         {
+            services.AddRepositoryFactory();
             var options = new AssemblyAutoRegisterOptions
             {
-                Filter = (type) => { return type.IsInterface; }
+                Filter = (type) => type.IsInterface
             };
             setupOptions(options);
             ScopeTemplateParser templateParser = new ScopeTemplateParser(options.ScopeTemplate);
             var assembly = Assembly.Load(options.AssemblyString);
             var allTypes = assembly.GetTypes().Where(options.Filter);
-            ISmartSqlMapper sqlMapper = null;
             foreach (var type in allTypes)
             {
                 services.AddSingleton(type, sp =>
                 {
-                    if (sqlMapper == null && options.GetSmartSql != null)
+                    ISqlMapper sqlMapper = sp.GetRequiredService<ISqlMapper>(); ;
+                    if (!String.IsNullOrEmpty(options.SmartSqlAlias))
                     {
-                        sqlMapper = options.GetSmartSql(sp);
+                        sqlMapper = sp.GetSmartSql(options.SmartSqlAlias).SqlMapper;
                     }
-                    sqlMapper = sqlMapper ?? sp.GetRequiredService<ISmartSqlMapper>();
                     var factory = sp.GetRequiredService<IRepositoryFactory>();
                     var scope = string.Empty;
                     if (!String.IsNullOrEmpty(options.ScopeTemplate))
@@ -90,6 +90,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     return factory.CreateInstance(type, sqlMapper, scope);
                 });
             }
+            return services;
         }
         /// <summary>
         /// AddSmartSql And AddRepositoryFactory
@@ -97,20 +98,22 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="scope_template"></param>
         /// <param name="sqlIdNamingConvert"></param>
-        public static void AddSmartSqlRepositoryFactory(this IServiceCollection services, string scope_template = "", Func<Type, MethodInfo, String> sqlIdNamingConvert = null)
+        public static IServiceCollection AddSmartSqlRepositoryFactory(this IServiceCollection services, string scope_template = "", Func<Type, MethodInfo, String> sqlIdNamingConvert = null)
         {
             services.AddSmartSql();
             services.AddRepositoryFactory(scope_template, sqlIdNamingConvert);
+            return services;
         }
         /// <summary>
         /// AddSmartSqlRepositoryFactory And AddRepositoryFromAssembly
         /// </summary>
         /// <param name="services"></param>
         /// <param name="setupOptions"></param>
-        public static void AddSmartSqlRepositoryFromAssembly(this IServiceCollection services, Action<AssemblyAutoRegisterOptions> setupOptions)
+        public static IServiceCollection AddSmartSqlRepositoryFromAssembly(this IServiceCollection services, Action<AssemblyAutoRegisterOptions> setupOptions)
         {
             services.AddSmartSqlRepositoryFactory();
             services.AddRepositoryFromAssembly(setupOptions);
+            return services;
         }
 
     }

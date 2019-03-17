@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+*******************************
+ Create By Ahoo Wang 
+ Date 2019-02-02 15:27
+*******************************
+-->
+<SmartSqlMap Scope="User"  xmlns="http://SmartSql.net/schemas/SmartSqlMap-v4.xsd">
+  <ResultMaps>
+    <ResultMap Id="User">
+      <Result Column="ExtendedInfo" Property="Info"/>
+    </ResultMap>
+  </ResultMaps>
+  <MultipleResultMaps>
+    <MultipleResultMap Id="GetByPage">
+      <Result Property="List" MapId="User"/>
+      <Result Property="Total"/>
+    </MultipleResultMap>
+  </MultipleResultMaps>
+  <Statements>
+    <Statement Id="GetById" ResultMap="User">
+      Select Top 1 T.* From T_User T With(NoLock)
+      <Where>
+        T.Id=@Id
+      </Where>
+    </Statement>
+    <Statement Id="QueryParams">
+
+    </Statement>
+    <!--获取数据列-->
+    <Statement Id="Query" >
+      SELECT
+      <IsNotEmpty Prepend="Top" Property="Taken">
+        (@Taken)
+      </IsNotEmpty>
+      T.* From T_User T
+      <Include RefId="QueryParams" />
+      <Switch Prepend="Order By" Property="OrderBy">
+        <Default>
+          T.Id Desc
+        </Default>
+      </Switch>
+    </Statement>
+    <Statement Id="Insert">
+      <IdGenerator Id="Id"/>
+      INSERT INTO [T_User]
+      ([Id]
+      ,[UserName]
+      ,[ExtendedInfo])
+      VALUES
+      (@Id
+      ,@UserName
+      ,@Info);
+      Select @Id;
+    </Statement>
+    <Statement Id="GetByPage" MultipleResultMap="GetByPage">
+      Select T.* From T_User T With(NoLock)
+      <Include RefId="QueryParams" />
+      Order By T.Id Desc
+      Offset ((@PageIndex-1)*@PageSize) Rows Fetch Next @PageSize Rows Only;
+
+      Select Count(1) From T_User T
+      <Include RefId="QueryParams" />;
+    </Statement>
+  </Statements>
+</SmartSqlMap>

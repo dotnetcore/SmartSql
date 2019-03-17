@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig-v4.xsd">
+  <Settings IgnoreParameterCase="false" ParameterPrefix="$" IsCacheEnabled="true"/>
+  <Database>
+    <DbProvider Name="SqlServer"/>
+    <Write Name="WriteDB" ConnectionString="Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True"/>
+    <Read Name="ReadDb-1" ConnectionString="Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True" Weight="100"/>
+    <Read Name="ReadDb-2" ConnectionString="Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True" Weight="100"/>
+  </Database>
+  <TypeHandlers>
+    <TypeHandler MappedType="SmartSql.Test.Entities.UserInfo,SmartSql.Test" Type="SmartSql.TypeHandler.JsonTypeHandler`1,SmartSql.TypeHandler">
+      <Properties>
+        <Property Name="DateFormat" Value="yyyy-MM-dd mm:ss"/>
+        <Property Name="NamingStrategy" Value="Camel"/>
+      </Properties>
+    </TypeHandler>
+    <TypeHandler MappedType="SmartSql.Test.Entities.NumericalEnum,SmartSql.Test" Type="SmartSql.TypeHandlers.EnumTypeHandler`1, SmartSql"/>
+  </TypeHandlers>
+  <TagBuilders>
+    <TagBuilder Name="Script" Type="SmartSql.ScriptTag.ScriptBuilder,SmartSql.ScriptTag"/>
+  </TagBuilders>
+  <IdGenerator Type="SnowflakeId">
+    <Properties>
+      <Property Name="WorkerIdBits" Value="10"/>
+      <Property Name="WorkerId" Value="888"/>
+      <Property Name="Sequence" Value="14"/>
+    </Properties>
+  </IdGenerator>
+  <SmartSqlMaps>
+    <SmartSqlMap Path="Maps" Type="Directory"></SmartSqlMap>
+  </SmartSqlMaps>
+</SmartSqlMapConfig>

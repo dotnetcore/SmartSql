@@ -1,41 +1,29 @@
-﻿using SmartSql.Abstractions.TypeHandler;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
-using Newtonsoft.Json;
 
 namespace SmartSql.TypeHandler.PostgreSql
 {
-    public class JsonTypeHandler : ITypeHandler
+    public class JsonTypeHandler<T> : TypeHandler.JsonTypeHandler<T>
     {
-        public virtual object GetValue(IDataReader dataReader, string columnName, Type targetType)
+        private const string DATA_TYPE_NAME = "DataTypeName";
+        private string _dataTypeName = "json";
+        public override void Initialize(IDictionary<string, object> parameters)
         {
-            int ordinal = dataReader.GetOrdinal(columnName);
-            return GetValue(dataReader, ordinal, targetType);
-        }
-
-        public virtual object GetValue(IDataReader dataReader, int columnIndex, Type targetType)
-        {
-            if (dataReader.IsDBNull(columnIndex)) { return null; }
-            var jsonStr = dataReader.GetString(columnIndex);
-            return JsonConvert.DeserializeObject(jsonStr, targetType);
-        }
-        public object GetSetParameterValue(object parameterValue)
-        {
-            if (parameterValue == null)
+            base.Initialize(parameters);
+            if (parameters.Value<string, object, string>(DATA_TYPE_NAME, out var dataTypeName))
             {
-                return DBNull.Value;
-            }
-            else
-            {
-                return JsonConvert.SerializeObject(parameterValue);
+                _dataTypeName = dataTypeName;
             }
         }
-        public virtual object SetParameter(IDataParameter dataParameter, object parameterValue)
+        public override void SetParameter(IDataParameter dataParameter, object parameterValue)
         {
+            base.SetParameter(dataParameter, parameterValue);
             var npgParam = dataParameter as Npgsql.NpgsqlParameter;
-            npgParam.Value = GetSetParameterValue(parameterValue);
-            npgParam.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Json;
-            return dataParameter.Value;
+            if (!String.IsNullOrEmpty(_dataTypeName))
+            {
+                npgParam.DataTypeName = _dataTypeName;
+            }
         }
     }
 }
