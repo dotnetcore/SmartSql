@@ -226,7 +226,7 @@ namespace SmartSql.DbSession
                 #region Impl
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
-                    _logger.LogDebug($"Dispose :{DataSource.Name}. ");
+                    _logger.LogDebug($"Dispose. ");
                 }
 
                 if (Connection != null)
