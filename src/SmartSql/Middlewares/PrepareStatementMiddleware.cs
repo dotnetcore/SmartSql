@@ -122,10 +122,10 @@ namespace SmartSql.Middlewares
             requestContext.RealSql = requestContext.SqlBuilder.ToString().Trim();
         }
         #endregion
-        public Task InvokeAsync<TResult>(ExecutionContext executionContext)
+        public async Task InvokeAsync<TResult>(ExecutionContext executionContext)
         {
             InitParameters(executionContext);
-            return Next.InvokeAsync<TResult>(executionContext);
+            await Next.InvokeAsync<TResult>(executionContext);
         }
     }
 }

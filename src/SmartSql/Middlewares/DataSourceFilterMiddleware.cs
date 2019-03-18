@@ -1,8 +1,5 @@
 ﻿using SmartSql.Configuration;
 using SmartSql.DataSource;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SmartSql.Middlewares
@@ -20,10 +17,10 @@ namespace SmartSql.Middlewares
             SetDataSource(executionContext);
             Next.Invoke<TResult>(executionContext);
         }
-        public Task InvokeAsync<TResult>(ExecutionContext executionContext)
+        public async Task InvokeAsync<TResult>(ExecutionContext executionContext)
         {
             SetDataSource(executionContext);
-            return Next.InvokeAsync<TResult>(executionContext);
+            await Next.InvokeAsync<TResult>(executionContext);
         }
         private void SetDataSource(ExecutionContext executionContext)
         {

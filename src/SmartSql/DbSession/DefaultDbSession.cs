@@ -80,9 +80,9 @@ namespace SmartSql.DbSession
                 throw new SmartSqlException($"OpenConnection Unable to open connection to { DataSource.Name }.", ex);
             }
         }
-        public Task OpenAsync()
+        public async Task OpenAsync()
         {
-            return OpenAsync(CancellationToken.None);
+            await OpenAsync(CancellationToken.None);
         }
         public async Task OpenAsync(CancellationToken cancellationToken)
         {
@@ -339,20 +339,20 @@ namespace SmartSql.DbSession
         {
             requestContext.ExecutionType = ExecutionType.Execute;
             var executionContext = Invoke<int>(requestContext);
-            return ((SingleResultContext<int>) executionContext.Result).Data;
+            return ((SingleResultContext<int>)executionContext.Result).Data;
         }
 
         public TResult ExecuteScalar<TResult>(RequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.ExecuteScalar;
             var executionContext = Invoke<TResult>(requestContext);
-            return ((SingleResultContext<TResult>) executionContext.Result).Data;
+            return ((SingleResultContext<TResult>)executionContext.Result).Data;
         }
         public TResult QuerySingle<TResult>(RequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.QuerySingle;
             var executionContext = Invoke<TResult>(requestContext);
-            return ((SingleResultContext<TResult>) executionContext.Result).Data;
+            return ((SingleResultContext<TResult>)executionContext.Result).Data;
         }
 
         public DataSet GetDataSet(RequestContext requestContext)
@@ -379,14 +379,14 @@ namespace SmartSql.DbSession
         {
             requestContext.ExecutionType = ExecutionType.Execute;
             var executionContext = await InvokeAsync<int>(requestContext);
-            return ((SingleResultContext<int>) executionContext.Result).Data;
+            return ((SingleResultContext<int>)executionContext.Result).Data;
         }
 
         public async Task<TResult> ExecuteScalarAsync<TResult>(RequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.ExecuteScalar;
             var executionContext = await InvokeAsync<TResult>(requestContext);
-            return ((SingleResultContext<TResult>) executionContext.Result).Data;
+            return ((SingleResultContext<TResult>)executionContext.Result).Data;
         }
 
         public async Task<IEnumerable<TResult>> QueryAsync<TResult>(RequestContext requestContext)
@@ -400,7 +400,7 @@ namespace SmartSql.DbSession
         {
             requestContext.ExecutionType = ExecutionType.QuerySingle;
             var executionContext = await InvokeAsync<TResult>(requestContext);
-            return ((SingleResultContext<TResult>) executionContext.Result).Data;
+            return ((SingleResultContext<TResult>)executionContext.Result).Data;
         }
 
         public async Task<DataSet> GetDataSetAsync(RequestContext requestContext)

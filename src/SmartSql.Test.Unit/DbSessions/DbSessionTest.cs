@@ -111,7 +111,18 @@ namespace SmartSql.Test.Unit.DbSessions
                 }
             });
         }
-        
+
+        [Fact]
+        public async Task QueryAsync()
+        {
+            var list = await DbSession.QueryAsync<dynamic>(new RequestContext
+            {
+                RealSql = "SELECT Top (5) T.* From T_AllPrimitive T With(NoLock)"
+            });
+
+            Assert.NotNull(list);
+        }
+
         [Fact]
         public async Task InsertAsync()
         {
