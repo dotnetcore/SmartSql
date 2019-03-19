@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartSql.Exceptions;
+using System;
 using System.Collections.Generic;
 
 namespace SmartSql.Configuration.Tags
@@ -7,6 +8,7 @@ namespace SmartSql.Configuration.Tags
     {
         public virtual String Prepend { get; set; }
         public String Property { get; set; }
+        public bool Required { get; set; }
         public IList<ITag> ChildTags { get; set; }
         public ITag Parent { get; set; }
         public Statement Statement { get; set; }
@@ -45,9 +47,13 @@ namespace SmartSql.Configuration.Tags
             return context.ExecutionContext.SmartSqlConfig.Settings.ParameterPrefix;
         }
 
-        protected virtual Object GetPropertyValue(RequestContext context)
+        protected virtual Object EnsurePropertyValue(RequestContext context)
         {
-            context.Parameters.TryGetParameterValue(Property, out object paramVal);
+            var existProperty = context.Parameters.TryGetParameterValue(Property, out object paramVal);
+            if (Required && !existProperty)
+            {
+                throw new SmartSqlException($"Statement:{Statement.FullSqlId} Tag:{Property} Required fail.");
+            }
             return paramVal;
         }
     }

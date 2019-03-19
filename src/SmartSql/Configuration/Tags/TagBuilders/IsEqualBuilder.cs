@@ -13,6 +13,7 @@ namespace SmartSql.Configuration.Tags.TagBuilders
             {
                 Property = GetProperty(xmlNode),
                 Prepend = GetPrepend(xmlNode),
+                Required = GetRequired(xmlNode),
                 CompareValue = GetCompareValue(xmlNode),
                 ChildTags = new List<ITag>(),
                 Statement = statement

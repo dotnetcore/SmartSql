@@ -12,6 +12,7 @@ namespace SmartSql.Configuration.Tags.TagBuilders
             return new Placeholder
             {
                 Property = GetProperty(xmlNode),
+                Required = GetRequired(xmlNode),
                 Prepend = GetPrepend(xmlNode),
                 ChildTags = new List<ITag>(),
                 Statement = statement

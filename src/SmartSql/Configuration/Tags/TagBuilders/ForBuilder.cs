@@ -13,6 +13,7 @@ namespace SmartSql.Configuration.Tags.TagBuilders
             {
                 Property = GetProperty(xmlNode),
                 Prepend = GetPrepend(xmlNode),
+                Required = GetRequired(xmlNode),
                 Open = GetXmlAttributeValue(xmlNode, nameof(For.Open)),
                 Close = GetXmlAttributeValue(xmlNode, nameof(For.Close)),
                 Separator = GetXmlAttributeValue(xmlNode, nameof(For.Separator)),

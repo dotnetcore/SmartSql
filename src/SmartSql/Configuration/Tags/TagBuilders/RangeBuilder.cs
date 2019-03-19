@@ -13,6 +13,7 @@ namespace SmartSql.Configuration.Tags.TagBuilders
             {
                 Property = GetProperty(xmlNode),
                 Prepend = GetPrepend(xmlNode),
+                Required = GetRequired(xmlNode),
                 Min = GetXmlAttributeValueAsDecimal(xmlNode, nameof(Range.Min)),
                 Max = GetXmlAttributeValueAsDecimal(xmlNode, nameof(Range.Max)),
                 ChildTags = new List<ITag>(),

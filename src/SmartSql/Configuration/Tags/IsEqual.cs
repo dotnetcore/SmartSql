@@ -9,7 +9,7 @@ namespace SmartSql.Configuration.Tags
     {
         public override bool IsCondition(RequestContext context)
         {
-            var reqVal = GetPropertyValue(context);
+            var reqVal = EnsurePropertyValue(context);
             if (reqVal == null) { return false; }
             string reqValStr = string.Empty;
             if (reqVal is Enum)

@@ -16,7 +16,7 @@ namespace SmartSql.Configuration.Tags
 
         public override bool IsCondition(RequestContext context)
         {
-            var reqVal = GetPropertyValue(context);
+            var reqVal = EnsurePropertyValue(context);
             if (reqVal == null) { return false; }
             if (reqVal is IEnumerable)
             {
@@ -27,7 +27,7 @@ namespace SmartSql.Configuration.Tags
         public override void BuildChildSql(RequestContext context)
         {
             context.SqlBuilder.Append(Open);
-            var reqVal = (GetPropertyValue(context) as IEnumerable).GetEnumerator();
+            var reqVal = (EnsurePropertyValue(context) as IEnumerable).GetEnumerator();
             reqVal.MoveNext();
             if (string.IsNullOrEmpty(Key))
             {
@@ -47,7 +47,7 @@ namespace SmartSql.Configuration.Tags
         }
         private void BuildItemSql(string itemSqlStr, RequestContext context)
         {
-            var reqVal = (GetPropertyValue(context) as IEnumerable);
+            var reqVal = (EnsurePropertyValue(context) as IEnumerable);
             int item_index = 0;
             string dbPrefix = GetDbProviderPrefix(context);
             foreach (var itemVal in reqVal)

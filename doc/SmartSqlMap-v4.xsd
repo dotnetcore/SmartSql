@@ -221,6 +221,7 @@
       </xs:sequence>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="IsEmpty">
@@ -250,6 +251,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="IsEqual">
@@ -279,6 +281,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
       <xs:attribute name="CompareValue" type="xs:string" use="required" />
     </xs:complexType>
   </xs:element>
@@ -309,6 +312,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
       <xs:attribute name="CompareValue" type="xs:string" use="required" />
     </xs:complexType>
   </xs:element>
@@ -339,6 +343,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
       <xs:attribute name="CompareValue" type="xs:string" use="required" />
     </xs:complexType>
   </xs:element>
@@ -369,6 +374,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
       <xs:attribute name="CompareValue" type="xs:string" use="required" />
     </xs:complexType>
   </xs:element>
@@ -399,6 +405,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
       <xs:attribute name="CompareValue" type="xs:string" use="required" />
     </xs:complexType>
   </xs:element>
@@ -429,6 +436,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="IsNotEqual">
@@ -458,6 +466,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
       <xs:attribute name="CompareValue" type="xs:string" use="required" />
     </xs:complexType>
   </xs:element>
@@ -488,6 +497,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="IsNull">
@@ -517,6 +527,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="IsTrue">
@@ -546,6 +557,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="IsFalse">
@@ -575,6 +587,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="IsProperty">
@@ -638,6 +651,7 @@
     <xs:complexType mixed="true">
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="Dynamic">
@@ -748,6 +762,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Required" type="xs:boolean" use="optional" />
       <xs:attribute name="Open" type="xs:string" use="required" />
       <xs:attribute name="Separator" type="xs:string" use="required" />
       <xs:attribute name="Close" type="xs:string" use="required" />
