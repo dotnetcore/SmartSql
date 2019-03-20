@@ -14,13 +14,13 @@ namespace SmartSql.ConfigBuilder
             _smartSqlConfig = smartSqlConfig;
         }
 
-        public SmartSqlConfig Build(IDictionary<string, string> importProperties)
+        public SmartSqlConfig Build(IEnumerable<KeyValuePair<string, string>> importProperties)
         {
             ImportProperties(importProperties);
             return _smartSqlConfig;
         }
 
-        private void ImportProperties(IDictionary<string, string> importProperties)
+        private void ImportProperties(IEnumerable<KeyValuePair<string, string>> importProperties)
         {
             if (importProperties != null) { _smartSqlConfig.Properties.Import(importProperties); }
         }

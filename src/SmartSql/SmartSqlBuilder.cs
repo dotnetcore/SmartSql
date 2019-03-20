@@ -23,14 +23,19 @@ namespace SmartSql
         /// 默认 XML 配置文件地址
         /// </summary>
         public const string DEFAULT_SMARTSQL_CONFIG_PATH = "SmartSqlMapConfig.xml";
+        public ILoggerFactory LoggerFactory { get; } = NullLoggerFactory.Instance;
         public IConfigBuilder ConfigBuilder { get; }
         public SmartSqlConfig SmartSqlConfig { get; private set; }
         public IDbSessionFactory DbSessionFactory { get; private set; }
         public ISqlMapper SqlMapper { get; private set; }
         public bool Built { get; private set; }
 
-        private SmartSqlBuilder(IConfigBuilder configBuilder)
+        private SmartSqlBuilder(IConfigBuilder configBuilder, ILoggerFactory loggerFactory = null)
         {
+            if (loggerFactory != null)
+            {
+                LoggerFactory = loggerFactory;
+            }
             ConfigBuilder = configBuilder;
         }
 
@@ -56,18 +61,8 @@ namespace SmartSql
         private void BeforeBuildInitService()
         {
             SmartSqlConfig = ConfigBuilder.Build(_importProperties);
-            if (_loggerFactory != null)
-            {
-                SmartSqlConfig.LoggerFactory = _loggerFactory;
-            }
-            if (_dataSourceFilter != null)
-            {
-                SmartSqlConfig.DataSourceFilter = _dataSourceFilter;
-            }
-            else
-            {
-                SmartSqlConfig.DataSourceFilter = new DataSourceFilter(SmartSqlConfig.LoggerFactory);
-            }
+            SmartSqlConfig.LoggerFactory = LoggerFactory;
+            SmartSqlConfig.DataSourceFilter = _dataSourceFilter ?? new DataSourceFilter(SmartSqlConfig.LoggerFactory);
             if (_isCacheEnabled.HasValue)
             {
                 SmartSqlConfig.Settings.IsCacheEnabled = _isCacheEnabled.Value;
@@ -111,15 +106,11 @@ namespace SmartSql
 
         #region Instance
 
-        private ILoggerFactory _loggerFactory = NullLoggerFactory.Instance;
         private IDataSourceFilter _dataSourceFilter;
         private bool? _isCacheEnabled;
         private string _alias;
-        private IDictionary<string, string> _importProperties;
-        public SmartSqlBuilder UseLoggerFactory(ILoggerFactory loggerFactory)
-        {
-            _loggerFactory = loggerFactory; return this;
-        }
+        private IEnumerable<KeyValuePair<string, string>> _importProperties;
+
         public SmartSqlBuilder UseDataSourceFilter(IDataSourceFilter dataSourceFilter)
         {
             _dataSourceFilter = dataSourceFilter; return this;
@@ -132,51 +123,53 @@ namespace SmartSql
         {
             _alias = alias; return this;
         }
-        public SmartSqlBuilder UseProperties(IDictionary<string, string> importProperties)
+        public SmartSqlBuilder UseProperties(IEnumerable<KeyValuePair<string, string>> importProperties)
         {
             _importProperties = importProperties; return this;
         }
         #endregion
 
         #region Static Config
-        public static SmartSqlBuilder AddConfigBuilder(IConfigBuilder configBuilder)
+        public static SmartSqlBuilder AddConfigBuilder(IConfigBuilder configBuilder, ILoggerFactory loggerFactory = null)
         {
             if (configBuilder == null)
             {
                 throw new ArgumentNullException(nameof(configBuilder));
             }
-            return new SmartSqlBuilder(configBuilder);
+            return new SmartSqlBuilder(configBuilder, loggerFactory);
         }
         /// <summary>
         /// SmartSqlMapConfig 配置方式构建
         /// </summary>
         /// <param name="smartSqlConfig"></param>
         /// <returns></returns>
-        public static SmartSqlBuilder AddNativeConfig(SmartSqlConfig smartSqlConfig)
+        public static SmartSqlBuilder AddNativeConfig(SmartSqlConfig smartSqlConfig, ILoggerFactory loggerFactory = null)
         {
             if (smartSqlConfig == null)
             {
                 throw new ArgumentNullException(nameof(smartSqlConfig));
             }
             var configBuilder = new NativeConfigBuilder(smartSqlConfig);
-            return AddConfigBuilder(configBuilder);
+            return AddConfigBuilder(configBuilder, loggerFactory);
         }
         /// <summary>
         /// Xml 配置方式构建
         /// </summary>
         /// <param name="smartSqlMapConfig"></param>
         /// <returns></returns>
-        public static SmartSqlBuilder AddXmlConfig(ResourceType resourceType = ResourceType.File, String smartSqlMapConfig = DEFAULT_SMARTSQL_CONFIG_PATH)
+        public static SmartSqlBuilder AddXmlConfig(ResourceType resourceType = ResourceType.File
+            , String smartSqlMapConfig = DEFAULT_SMARTSQL_CONFIG_PATH
+            , ILoggerFactory loggerFactory = null)
         {
-            var configBuilder = new XmlConfigBuilder(resourceType, smartSqlMapConfig);
-            return AddConfigBuilder(configBuilder);
+            var configBuilder = new XmlConfigBuilder(resourceType, smartSqlMapConfig, loggerFactory);
+            return AddConfigBuilder(configBuilder, loggerFactory);
         }
         /// <summary>
         /// 数据源方式构建
         /// </summary>
         /// <param name="writeDataSource"></param>
         /// <returns></returns>
-        public static SmartSqlBuilder AddDataSource(WriteDataSource writeDataSource)
+        public static SmartSqlBuilder AddDataSource(WriteDataSource writeDataSource, ILoggerFactory loggerFactory = null)
         {
             if (writeDataSource == null)
             {
@@ -190,10 +183,10 @@ namespace SmartSql
                     Write = writeDataSource
                 }
             };
-            return AddNativeConfig(smartSqlConfig);
+            return AddNativeConfig(smartSqlConfig, loggerFactory);
         }
 
-        public static SmartSqlBuilder AddDataSource(String dbProviderName, String connectionString)
+        public static SmartSqlBuilder AddDataSource(String dbProviderName, String connectionString, ILoggerFactory loggerFactory = null)
         {
             if (string.IsNullOrEmpty(dbProviderName))
             {
@@ -214,7 +207,7 @@ namespace SmartSql
                 ConnectionString = connectionString,
                 DbProvider = dbProvider
             };
-            return AddDataSource(writeDataSource);
+            return AddDataSource(writeDataSource, loggerFactory);
         }
         #endregion
     }

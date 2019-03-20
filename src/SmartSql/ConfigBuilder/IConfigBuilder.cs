@@ -7,6 +7,6 @@ namespace SmartSql.ConfigBuilder
 {
     public interface IConfigBuilder : IDisposable
     {
-        SmartSqlConfig Build(IDictionary<string, string> importProperties);
+        SmartSqlConfig Build(IEnumerable<KeyValuePair<string, string>> importProperties);
     }
 }

@@ -18,14 +18,14 @@ namespace SmartSql.Configuration
             _propertyTokens = new Regex(@"^\$\{([\p{L}\p{N}_]+)\}", regOptions);
         }
 
-        public void Import(IDictionary<string, object> properties)
+        public void Import(IEnumerable<KeyValuePair<string, object>> properties)
         {
             foreach (var property in properties)
             {
                 _properties.Add(property.Key, property.Value.ToString());
             }
         }
-        public void Import(IDictionary<string, string> properties)
+        public void Import(IEnumerable<KeyValuePair<string, string>> properties)
         {
             foreach (var property in properties)
             {

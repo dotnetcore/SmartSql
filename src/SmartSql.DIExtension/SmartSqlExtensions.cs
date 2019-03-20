@@ -17,15 +17,34 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<SmartSqlBuilder>(sp =>
             {
                 var configPath = ResolveConfigPath(sp);
-                return SmartSqlBuilder.AddXmlConfig(SmartSql.ConfigBuilder.ResourceType.File, configPath)
+                var loggerFactory = sp.GetService<ILoggerFactory>();
+                return SmartSqlBuilder.AddXmlConfig(SmartSql.ConfigBuilder.ResourceType.File, configPath, loggerFactory)
                  .UseAlias(alias)
-                 .UseLoggerFactory(sp.GetService<ILoggerFactory>())
                  .Build();
             });
             AddOthers(services);
             return services;
         }
-
+        public static IServiceCollection AddSmartSql(this IServiceCollection services, Func<IServiceProvider, SmartSqlBuilder> setup)
+        {
+            services.AddSingleton<SmartSqlBuilder>(sp => setup(sp).Build());
+            AddOthers(services);
+            return services;
+        }
+        public static IServiceCollection AddSmartSql(this IServiceCollection services, Action<IServiceProvider, SmartSqlBuilder> setup)
+        {
+            services.AddSingleton<SmartSqlBuilder>(sp =>
+            {
+                var configPath = ResolveConfigPath(sp);
+                var loggerFactory = sp.GetService<ILoggerFactory>();
+                var smartSqlBuilder =
+                    SmartSqlBuilder.AddXmlConfig(SmartSql.ConfigBuilder.ResourceType.File, configPath, loggerFactory);
+                setup(sp, smartSqlBuilder);
+                return smartSqlBuilder.Build();
+            });
+            AddOthers(services);
+            return services;
+        }
         private static string ResolveConfigPath(IServiceProvider sp)
         {
             var env = sp.GetService<IHostingEnvironment>();
@@ -48,25 +67,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<ITransaction>(sp => sp.GetRequiredService<SmartSqlBuilder>().SqlMapper);
         }
 
-        public static IServiceCollection AddSmartSql(this IServiceCollection services, Func<IServiceProvider, SmartSqlBuilder> setup)
-        {
-            services.AddSingleton<SmartSqlBuilder>(sp => setup(sp).Build());
-            AddOthers(services);
-            return services;
-        }
-        public static IServiceCollection AddSmartSql(this IServiceCollection services, Action<IServiceProvider, SmartSqlBuilder> setup)
-        {
-            services.AddSingleton<SmartSqlBuilder>(sp =>
-            {
-                var configPath = ResolveConfigPath(sp);
-                var smartSqlBuilder = SmartSqlBuilder.AddXmlConfig(SmartSql.ConfigBuilder.ResourceType.File, configPath)
-                 .UseLoggerFactory(sp.GetService<ILoggerFactory>());
-                setup(sp, smartSqlBuilder);
-                return smartSqlBuilder.Build();
-            });
-            AddOthers(services);
-            return services;
-        }
         public static SmartSqlBuilder GetSmartSql(this IServiceProvider sp, string alias = SmartSqlConfig.DEFAULT_ALIAS)
         {
             return sp.GetServices<SmartSqlBuilder>().FirstOrDefault(m => m.SmartSqlConfig.Alias == alias);

@@ -23,7 +23,7 @@ namespace SmartSql.Sample.AspNetCore
             services
                 .AddSmartSql((sp, builder) =>
                 {
-                    builder.UseProperties(Configuration.AsProperties());
+                    builder.UseProperties(Configuration);
                 })
                 .AddRepositoryFromAssembly(o =>
                 {

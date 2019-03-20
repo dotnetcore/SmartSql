@@ -9,12 +9,18 @@ using SmartSql.DataSource;
 using SmartSql.Exceptions;
 using SmartSql.Reflection;
 using System.IO;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using SmartSql.IdGenerator;
 
 namespace SmartSql.ConfigBuilder
 {
     public class XmlConfigBuilder : IConfigBuilder
     {
+        private readonly ResourceType _resourceType;
+        private readonly string _resourcePath;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger _logger;
         public const String SMART_SQL_CONFIG_NAMESPACE = "http://SmartSql.net/schemas/SmartSqlMapConfig-v4.xsd";
         public const String CONFIG_PREFIX = "Config";
         public const String TYPE_ATTRIBUTE = "Type";
@@ -23,8 +29,12 @@ namespace SmartSql.ConfigBuilder
         protected XmlNode XmlConfigRoot { get; }
         protected SmartSqlConfig SmartSqlConfig { get; }
         private readonly IIdGeneratorBuilder _idGeneratorBuilder = new IdGeneratorBuilder();
-        public XmlConfigBuilder(ResourceType resourceType, string resourcePath)
+        public XmlConfigBuilder(ResourceType resourceType, string resourcePath, ILoggerFactory loggerFactory = null)
         {
+            _resourceType = resourceType;
+            _resourcePath = resourcePath;
+            _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
+            _logger = _loggerFactory.CreateLogger<XmlConfigBuilder>();
             XmlConfig = ResourceUtil.LoadAsXml(resourceType, resourcePath);
             XmlNsManager = new XmlNamespaceManager(XmlConfig.NameTable);
             XmlNsManager.AddNamespace(CONFIG_PREFIX, SMART_SQL_CONFIG_NAMESPACE);
@@ -36,12 +46,16 @@ namespace SmartSql.ConfigBuilder
         {
 
         }
-        private void ImportProperties(IDictionary<string, string> importProperties)
+        private void ImportProperties(IEnumerable<KeyValuePair<string, string>> importProperties)
         {
             if (importProperties != null) { SmartSqlConfig.Properties.Import(importProperties); }
         }
-        public SmartSqlConfig Build(IDictionary<string, string> importProperties)
+        public SmartSqlConfig Build(IEnumerable<KeyValuePair<string, string>> importProperties)
         {
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug($"XmlConfigBuilder Build ->> ResourceType:[{_resourceType}] , Path :[{_resourcePath}] Starting.");
+            }
             ImportProperties(importProperties);
             BuildSettings();
             BuildProperties();
@@ -59,6 +73,10 @@ namespace SmartSql.ConfigBuilder
                 SmartSqlConfig.SqlParamAnalyzer = new SqlParamAnalyzer(SmartSqlConfig.Settings.IgnoreParameterCase, SmartSqlConfig.Database.DbProvider.ParameterPrefix);
             }
             EnsureDependency();
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug($"XmlConfigBuilder Build ->> ResourceType:[{_resourceType}] , Path :[{_resourcePath}] End.");
+            }
             return SmartSqlConfig;
         }
         #region  0. Settings
@@ -332,10 +350,14 @@ namespace SmartSql.ConfigBuilder
             if (!sqlMapNode.Attributes.TryGetValueAsString(TYPE_ATTRIBUTE, out string type, SmartSqlConfig.Properties)
             )
             {
-                throw new SmartSqlException("TagBuilder.Type can not be null.");
+                throw new SmartSqlException("SmartSqlMap.Type can not be null.");
             }
             ResourceType resourceType = ResourceType.File;
             Enum.TryParse<ResourceType>(type, out resourceType);
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug($"XmlConfigBuilder BuildSqlMap ->> ResourceType:[{resourceType}] , Path :[{path}] Starting.");
+            }
             switch (resourceType)
             {
                 case ResourceType.Embedded:
@@ -357,11 +379,19 @@ namespace SmartSql.ConfigBuilder
                         var childSqlMapSources = Directory.EnumerateFiles(dicPath, "*.xml", searchOption);
                         foreach (var sqlMapPath in childSqlMapSources)
                         {
+                            if (_logger.IsEnabled(LogLevel.Debug))
+                            {
+                                _logger.LogDebug($"XmlConfigBuilder BuildSqlMap.Child ->> Path :[{sqlMapPath}].");
+                            }
                             var sqlMapXml = ResourceUtil.LoadFileAsXml(sqlMapPath);
                             BuildSqlMap(sqlMapXml, SmartSqlConfig);
                         }
                         break;
                     }
+            }
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug($"XmlConfigBuilder BuildSqlMap ->> ResourceType:[{resourceType}] , Path :[{path}] End.");
             }
         }
         private void BuildSqlMap(XmlDocument sqlMapXml, SmartSqlConfig smartSqlConfig)
