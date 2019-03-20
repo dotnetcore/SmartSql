@@ -12,7 +12,7 @@ namespace SmartSql.Test.Unit.ConfigBuilder
         public void GetPropertyValueWithName()
         {
             Properties properties = new Properties();
-            properties.Load(new Dictionary<string, string> {
+            properties.Import(new Dictionary<string, string> {
                 { "Goodjob","Yes"}
             });
             var propVal = properties.GetPropertyValue("${Goodjob}-yes");
@@ -23,7 +23,7 @@ namespace SmartSql.Test.Unit.ConfigBuilder
         public void GetPropertyValue()
         {
             Properties properties = new Properties();
-            properties.Load(new Dictionary<string, string> {
+            properties.Import(new Dictionary<string, string> {
                 { "Goodjob","Yes"}
             });
             var propVal = properties.GetPropertyValue("goodjob-yes");

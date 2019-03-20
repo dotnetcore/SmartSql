@@ -58,6 +58,7 @@ namespace SmartSql.Configuration
             ObjectFactoryBuilder = new ExpressionObjectFactoryBuilder();
             TagBuilderFactory = new TagBuilderFactory();
             TypeHandlerFactory = new TypeHandlerFactory();
+            Properties = new Properties();
             IdGenerator = SnowflakeId.Default;
         }
     }

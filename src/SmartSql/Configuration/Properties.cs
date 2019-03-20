@@ -13,22 +13,26 @@ namespace SmartSql.Configuration
         private Regex _propertyTokens;
         public Properties()
         {
+            _properties = new Dictionary<string, string>();
             var regOptions = RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled;
             _propertyTokens = new Regex(@"^\$\{([\p{L}\p{N}_]+)\}", regOptions);
         }
 
-        public void Load(IDictionary<string, string> properties)
+        public void Import(IDictionary<string, object> properties)
         {
-            _properties = properties;
-        }
-        public void Load(IDictionary<string, object> properties)
-        {
-            _properties = new Dictionary<string, string>();
             foreach (var property in properties)
             {
                 _properties.Add(property.Key, property.Value.ToString());
             }
         }
+        public void Import(IDictionary<string, string> properties)
+        {
+            foreach (var property in properties)
+            {
+                _properties.Add(property.Key, property.Value);
+            }
+        }
+
         public string GetPropertyValue(string propExp)
         {
             if (!_propertyTokens.IsMatch(propExp)) { return propExp; }

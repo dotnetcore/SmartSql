@@ -91,9 +91,8 @@ namespace SmartSql.ConfigBuilder
         #region 1. Properties
         private void BuildProperties()
         {
-            SmartSqlConfig.Properties = new Properties();
             var properties = ParseProperties(XmlConfigRoot);
-            SmartSqlConfig.Properties.Load(properties);
+            SmartSqlConfig.Properties.Import(properties);
         }
         #endregion
         #region 2. IdGen
