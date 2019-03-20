@@ -45,6 +45,11 @@ namespace Microsoft.Extensions.DependencyInjection
             AddOthers(services);
             return services;
         }
+        public static IServiceCollection AddSmartSql(this IServiceCollection services, Action<SmartSqlBuilder> setup)
+        {
+            services.AddSmartSql((sp, builder) => { setup(builder); });
+            return services;
+        }
         private static string ResolveConfigPath(IServiceProvider sp)
         {
             var env = sp.GetService<IHostingEnvironment>();
