@@ -4,15 +4,24 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using SmartSql.Utils;
+using Microsoft.Extensions.Logging;
 
 namespace SmartSql.DataSource
 {
     public class DataSourceFilter : IDataSourceFilter
     {
+        private readonly ILogger _logger;
+        public DataSourceFilter(ILoggerFactory loggerFactory)
+        {
+            _logger = loggerFactory.CreateLogger<DataSourceFilter>();
+        }
+
         /// <summary>
         /// 权重筛选器
         /// </summary>
         private WeightFilter<AbstractDataSource> _weightFilter = new WeightFilter<AbstractDataSource>();
+        private readonly ILoggerFactory _loggerFactory;
+
         public AbstractDataSource Elect(RequestContext context)
         {
             if (context.ExecutionContext.SmartSqlConfig.SessionStore.LocalSession != null)
@@ -46,10 +55,10 @@ namespace SmartSql.DataSource
                 });
                 choiceDataSource = _weightFilter.Elect(seekList).Source;
             }
-            //if (_logger.IsEnabled(LogLevel.Debug))
-            //{
-            //    _logger.LogDebug($"DataSourceFilter GetDataSource Choice: {choiceDataSource.Name} .");
-            //}
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug($"DataSourceFilter GetDataSource Choice: {choiceDataSource.Name} .");
+            }
             return choiceDataSource;
         }
     }

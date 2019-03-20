@@ -11,6 +11,7 @@ using SmartSql.Exceptions;
 using SmartSql.DbSession;
 using SmartSql.Cache;
 using SmartSql.IdGenerator;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace SmartSql.Configuration
 {
@@ -58,8 +59,13 @@ namespace SmartSql.Configuration
             ObjectFactoryBuilder = new ExpressionObjectFactoryBuilder();
             TagBuilderFactory = new TagBuilderFactory();
             TypeHandlerFactory = new TypeHandlerFactory();
+            LoggerFactory = NullLoggerFactory.Instance;
+            DeserializerFactory = new DeserializerFactory();
             Properties = new Properties();
             IdGenerator = SnowflakeId.Default;
+            DbSessionFactory = new DbSessionFactory(this);
+            SessionStore = new DbSessionStore(DbSessionFactory);
+            StatementAnalyzer = new StatementAnalyzer();
         }
     }
     public class Settings

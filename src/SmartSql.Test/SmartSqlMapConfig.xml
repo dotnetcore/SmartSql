@@ -3,9 +3,9 @@
   <Settings IgnoreParameterCase="false" ParameterPrefix="$" IsCacheEnabled="true"/>
   <Database>
     <DbProvider Name="SqlServer"/>
-    <Write Name="WriteDB" ConnectionString="Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True"/>
-    <Read Name="ReadDb-1" ConnectionString="Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True" Weight="100"/>
-    <Read Name="ReadDb-2" ConnectionString="Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True" Weight="100"/>
+    <Write Name="WriteDB" ConnectionString="${ConnectionString}"/>
+    <Read Name="ReadDb-1" ConnectionString="${ConnectionString}" Weight="100"/>
+    <Read Name="ReadDb-2" ConnectionString="${ConnectionString}" Weight="100"/>
   </Database>
   <TypeHandlers>
     <TypeHandler MappedType="SmartSql.Test.Entities.UserInfo,SmartSql.Test" Type="SmartSql.TypeHandler.JsonTypeHandler`1,SmartSql.TypeHandler">

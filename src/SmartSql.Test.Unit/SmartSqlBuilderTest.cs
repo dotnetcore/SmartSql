@@ -28,7 +28,7 @@ namespace SmartSql.Test.Unit
         {
             DbProviderManager.Instance.TryGet(DbProvider.SQLSERVER, out var dbProvider);
             var dbSessionFactory = SmartSqlBuilder
-               .AddConfig(new Configuration.SmartSqlConfig
+               .AddNativeConfig(new Configuration.SmartSqlConfig
                {
                    Database = new Database
                    {

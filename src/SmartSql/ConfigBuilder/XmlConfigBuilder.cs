@@ -21,7 +21,7 @@ namespace SmartSql.ConfigBuilder
         protected XmlDocument XmlConfig { get; }
         protected XmlNamespaceManager XmlNsManager { get; }
         protected XmlNode XmlConfigRoot { get; }
-        protected SmartSqlConfig SmartSqlConfig { get; set; }
+        protected SmartSqlConfig SmartSqlConfig { get; }
         private readonly IIdGeneratorBuilder _idGeneratorBuilder = new IdGeneratorBuilder();
         public XmlConfigBuilder(ResourceType resourceType, string resourcePath)
         {
@@ -29,21 +29,20 @@ namespace SmartSql.ConfigBuilder
             XmlNsManager = new XmlNamespaceManager(XmlConfig.NameTable);
             XmlNsManager.AddNamespace(CONFIG_PREFIX, SMART_SQL_CONFIG_NAMESPACE);
             XmlConfigRoot = XmlConfig.SelectSingleNode($"/{CONFIG_PREFIX}:SmartSqlMapConfig", XmlNsManager);
+            SmartSqlConfig = new SmartSqlConfig();
         }
 
         public void Dispose()
         {
 
         }
-
-        protected void InitDefault()
+        private void ImportProperties(IDictionary<string, string> importProperties)
         {
-            SmartSqlConfig = new SmartSqlConfig();
+            if (importProperties != null) { SmartSqlConfig.Properties.Import(importProperties); }
         }
-
-        public SmartSqlConfig Build()
+        public SmartSqlConfig Build(IDictionary<string, string> importProperties)
         {
-            InitDefault();
+            ImportProperties(importProperties);
             BuildSettings();
             BuildProperties();
             BuildIdGenerator();

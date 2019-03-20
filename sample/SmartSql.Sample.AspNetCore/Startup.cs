@@ -21,7 +21,10 @@ namespace SmartSql.Sample.AspNetCore
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services
-                .AddSmartSql()
+                .AddSmartSql((sp, builder) =>
+                {
+                    builder.UseProperties(Configuration.AsProperties());
+                })
                 .AddRepositoryFromAssembly(o =>
                 {
                     o.AssemblyString = "SmartSql.Sample.AspNetCore";
