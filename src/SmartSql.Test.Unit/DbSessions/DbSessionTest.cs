@@ -1,4 +1,5 @@
-﻿using SmartSql.Reflection;
+﻿using SmartSql.Configuration.Tags;
+using SmartSql.Reflection;
 using SmartSql.Test.Entities;
 using System;
 using System.Threading.Tasks;
@@ -181,6 +182,40 @@ namespace SmartSql.Test.Unit.DbSessions
                     String = "SmartSql",
                 }
             });
+        }
+        [Fact]
+        public void DeleteCheckIncludeRequired()
+        {
+            try
+            {
+                var id = DbSession.ExecuteScalar<int>(new RequestContext
+                {
+                    Scope = nameof(AllPrimitive),
+                    SqlId = "DeleteCheckIncludeRequired",
+                    Request = new { }
+                });
+            }
+            catch (TagRequiredFailException ex)
+            {
+                Assert.True(true);
+            }
+        }
+        [Fact]
+        public void DeleteCheckIsNotEmptyRequired()
+        {
+            try
+            {
+                var id = DbSession.ExecuteScalar<int>(new RequestContext
+                {
+                    Scope = nameof(AllPrimitive),
+                    SqlId = "DeleteCheckIsNotEmptyRequired",
+                    Request = new { }
+                });
+            }
+            catch (TagRequiredFailException ex)
+            {
+                Assert.True(true);
+            }
         }
 
     }

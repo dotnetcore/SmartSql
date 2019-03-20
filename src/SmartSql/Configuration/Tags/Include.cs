@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartSql.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,11 +11,33 @@ namespace SmartSql.Configuration.Tags
         public Statement Ref { get; set; }
         public override void BuildSql(RequestContext context)
         {
-            context.SqlBuilder.Append(Prepend);
-            Ref.BuildSql(context);
+            if (IsCondition(context))
+            {
+                context.SqlBuilder.Append(Prepend);
+                Ref.BuildSql(context);
+            }
         }
         public override bool IsCondition(RequestContext context)
         {
+            if (!Required)
+            {
+                return true;
+            }
+
+            bool passed = false;
+
+            foreach (var childTag in Ref.SqlTags)
+            {
+                if (childTag.IsCondition(context))
+                {
+                    passed = true;
+                    break;
+                }
+            }
+            if (!passed)
+            {
+                throw new TagRequiredFailException(this);
+            }
             return true;
         }
     }

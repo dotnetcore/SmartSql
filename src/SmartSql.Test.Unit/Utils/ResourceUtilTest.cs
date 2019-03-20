@@ -13,7 +13,7 @@ namespace SmartSql.Test.Unit.Utils
         public void LoadUriAsXml()
         {
             var smartSqlConfig_github =
-                "https://raw.githubusercontent.com/Smart-Kit/SmartSql/master/doc/Xml.Template/SmartSqlMapConfig.xml";
+                "https://raw.githubusercontent.com/Smart-Kit/SmartSql/master/src/SmartSql.Test.Unit/SmartSqlMapConfig.xml";
             Uri uri=new Uri(smartSqlConfig_github);
             var xml = ResourceUtil.LoadUriAsXml(uri);
             Assert.NotNull(xml);

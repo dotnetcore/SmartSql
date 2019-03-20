@@ -12,6 +12,7 @@ namespace SmartSql.Configuration.Tags.TagBuilders
             return new Dynamic
             {
                 Prepend = GetPrepend(xmlNode),
+                Required = GetRequired(xmlNode),
                 Statement = statement,
                 ChildTags = new List<ITag>()
             };

@@ -419,7 +419,27 @@
       SELECT Top 6 T.* From T_AllPrimitive T;
       SELECT Top 8 T.* From T_AllPrimitive T;
     </Statement>
-
-
+    <Statement Id="DeleteQueryParams">
+      <Where>
+        <IsNotEmpty Prepend="And" Property="Id">
+          Id=@Id
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="Name">
+          Name=@Name
+        </IsNotEmpty>
+      </Where>
+    </Statement>
+    <Statement Id="DeleteCheckIncludeRequired">
+      Delete From T_AllPrimitive
+      <Include RefId="DeleteQueryParams" Required="true"/>
+    </Statement>
+    <Statement Id="DeleteCheckIsNotEmptyRequired">
+      Delete From T_AllPrimitive
+      <Where>
+        <IsNotEmpty Prepend="And" Property="Id" Required="true">
+          Id=@Id
+        </IsNotEmpty>
+      </Where>
+    </Statement>
   </Statements>
 </SmartSqlMap>

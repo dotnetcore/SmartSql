@@ -18,6 +18,7 @@ namespace SmartSql.Configuration.Tags.TagBuilders
             {
                 RefId = refId,
                 Prepend = GetPrepend(xmlNode),
+                Required = GetRequired(xmlNode),
                 Statement = statement
             };
             statement.IncludeDependencies.Add(includeTag);

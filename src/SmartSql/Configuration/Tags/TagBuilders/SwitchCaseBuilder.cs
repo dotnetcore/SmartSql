@@ -14,7 +14,6 @@ namespace SmartSql.Configuration.Tags.TagBuilders
             {
                 Property = GetProperty(switchNode),
                 Prepend = GetPrepend(switchNode),
-                Required = GetRequired(xmlNode),
                 CompareValue = GetCompareValue(xmlNode),
                 ChildTags = new List<ITag>(),
                 Statement = statement

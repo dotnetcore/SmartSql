@@ -213,7 +213,7 @@
         (10)
       </IsNull>-->
       T.* From T_Entity T With(NoLock)
-      <Include RefId="QueryParams"/>
+      <Include RefId="QueryParams" />
       <Switch Prepend="Order By" Property="OrderBy">
         <Default>
           T.FLong Desc

@@ -52,7 +52,7 @@ namespace SmartSql.Configuration.Tags
             var existProperty = context.Parameters.TryGetParameterValue(Property, out object paramVal);
             if (Required && !existProperty)
             {
-                throw new SmartSqlException($"Statement:{Statement.FullSqlId} Tag:{Property} Required fail.");
+                throw new TagRequiredFailException(this);
             }
             return paramVal;
         }
