@@ -9,6 +9,6 @@ namespace SmartSql.Configuration
         public String Name { get; set; }
         public Type MappedType { get; set; }
         public Type HandlerType { get; set; }
-        public IDictionary<String,Object> Parameters { get; set; }
+        public IDictionary<String,Object> Properties { get; set; }
     }
 }

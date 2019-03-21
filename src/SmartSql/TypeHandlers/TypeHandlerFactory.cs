@@ -158,8 +158,8 @@ namespace SmartSql.TypeHandlers
         {
             ITypeHandler typeHandler;
             typeHandler = typeHandlerConfig.HandlerType.IsGenericType 
-                ? _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.MappedType, typeHandlerConfig.Parameters) 
-                : _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.Parameters);
+                ? _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.MappedType, typeHandlerConfig.Properties) 
+                : _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.Properties);
             Register(typeHandler);
         }
     }

@@ -3,14 +3,10 @@ using Microsoft.Extensions.Logging.Abstractions;
 using SmartSql.Cache;
 using SmartSql.ConfigBuilder;
 using SmartSql.Configuration;
-using SmartSql.Configuration.Tags;
 using SmartSql.DataSource;
 using SmartSql.DbSession;
-using SmartSql.Deserializer;
 using SmartSql.Exceptions;
 using SmartSql.Middlewares;
-using SmartSql.Reflection.ObjectFactoryBuilder;
-using SmartSql.TypeHandlers;
 using SmartSql.Utils;
 using System;
 using System.Collections.Generic;
@@ -28,22 +24,12 @@ namespace SmartSql
         /// </summary>
         public const string DEFAULT_SMARTSQL_CONFIG_PATH = "SmartSqlMapConfig.xml";
         public string Alias { get; private set; } = DEFAULT_ALIAS;
-        public ILoggerFactory LoggerFactory { get; } = NullLoggerFactory.Instance;
-        public IConfigBuilder ConfigBuilder { get; }
+        public ILoggerFactory LoggerFactory { get; private set; } = NullLoggerFactory.Instance;
+        public IConfigBuilder ConfigBuilder { get; private set; }
         public SmartSqlConfig SmartSqlConfig { get; private set; }
         public IDbSessionFactory DbSessionFactory { get; private set; }
         public ISqlMapper SqlMapper { get; private set; }
         public bool Built { get; private set; }
-
-        private SmartSqlBuilder(IConfigBuilder configBuilder, ILoggerFactory loggerFactory = null)
-        {
-            if (loggerFactory != null)
-            {
-                LoggerFactory = loggerFactory;
-            }
-            ConfigBuilder = configBuilder;
-        }
-
         public SmartSqlBuilder Build()
         {
             if (Built) return this;
@@ -132,16 +118,57 @@ namespace SmartSql
         {
             _importProperties = importProperties; return this;
         }
+        public SmartSqlBuilder UseLoggerFactory(ILoggerFactory loggerFactory)
+        {
+            LoggerFactory = loggerFactory; return this;
+        }
+        public SmartSqlBuilder UseConfigBuilder(IConfigBuilder configBuilder, ILoggerFactory loggerFactory = null)
+        {
+            ConfigBuilder = configBuilder;
+            LoggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
+            return this;
+        }
+        /// <summary>
+        /// SmartSqlMapConfig 配置方式构建
+        /// </summary>
+        /// <param name="smartSqlConfig"></param>
+        /// <returns></returns>
+        public SmartSqlBuilder UseNativeConfig(SmartSqlConfig smartSqlConfig, ILoggerFactory loggerFactory = null)
+        {
+            if (smartSqlConfig == null)
+            {
+                throw new ArgumentNullException(nameof(smartSqlConfig));
+            }
+            var configBuilder = new NativeConfigBuilder(smartSqlConfig);
+            ConfigBuilder = configBuilder;
+            LoggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
+            return this;
+        }
+        /// <summary>
+        /// Xml 配置方式构建
+        /// </summary>
+        /// <param name="smartSqlMapConfig"></param>
+        /// <returns></returns>
+        public SmartSqlBuilder UseXmlConfig(ResourceType resourceType = ResourceType.File
+            , String smartSqlMapConfig = DEFAULT_SMARTSQL_CONFIG_PATH
+            , ILoggerFactory loggerFactory = null)
+        {
+            var configBuilder = new XmlConfigBuilder(resourceType, smartSqlMapConfig, loggerFactory);
+            ConfigBuilder = configBuilder;
+            LoggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
+            return this;
+        }
         #endregion
 
         #region Static Config
+
         public static SmartSqlBuilder AddConfigBuilder(IConfigBuilder configBuilder, ILoggerFactory loggerFactory = null)
         {
             if (configBuilder == null)
             {
                 throw new ArgumentNullException(nameof(configBuilder));
             }
-            return new SmartSqlBuilder(configBuilder, loggerFactory);
+            return new SmartSqlBuilder().UseConfigBuilder(configBuilder, loggerFactory);
         }
         /// <summary>
         /// SmartSqlMapConfig 配置方式构建
