@@ -7,48 +7,42 @@ using Microsoft.Extensions.Logging;
 using SmartSql;
 using SmartSql.Configuration;
 using SmartSql.DbSession;
+using SmartSql.DIExtension;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class SmartSqlExtensions
     {
-        public static IServiceCollection AddSmartSql(this IServiceCollection services, String alias = SmartSqlConfig.DEFAULT_ALIAS)
-        {
-            services.AddSingleton<SmartSqlBuilder>(sp =>
-            {
-                var configPath = ResolveConfigPath(sp);
-                var loggerFactory = sp.GetService<ILoggerFactory>();
-                return SmartSqlBuilder.AddXmlConfig(SmartSql.ConfigBuilder.ResourceType.File, configPath, loggerFactory)
-                 .UseAlias(alias)
-                 .Build();
-            });
-            AddOthers(services);
-            return services;
-        }
-        public static IServiceCollection AddSmartSql(this IServiceCollection services, Func<IServiceProvider, SmartSqlBuilder> setup)
+        public static SmartSqlDIBuilder AddSmartSql(this IServiceCollection services, Func<IServiceProvider, SmartSqlBuilder> setup)
         {
             services.AddSingleton<SmartSqlBuilder>(sp => setup(sp).Build());
             AddOthers(services);
-            return services;
+            return new SmartSqlDIBuilder(services);
         }
-        public static IServiceCollection AddSmartSql(this IServiceCollection services, Action<IServiceProvider, SmartSqlBuilder> setup)
+
+        public static SmartSqlDIBuilder AddSmartSql(this IServiceCollection services, Action<IServiceProvider, SmartSqlBuilder> setup)
         {
-            services.AddSingleton<SmartSqlBuilder>(sp =>
+            return services.AddSmartSql(sp =>
+             {
+                 var configPath = ResolveConfigPath(sp);
+                 var loggerFactory = sp.GetService<ILoggerFactory>();
+                 var smartSqlBuilder =
+                     SmartSqlBuilder.AddXmlConfig(SmartSql.ConfigBuilder.ResourceType.File, configPath, loggerFactory);
+                 setup(sp, smartSqlBuilder);
+                 return smartSqlBuilder;
+             });
+        }
+
+        public static SmartSqlDIBuilder AddSmartSql(this IServiceCollection services, String alias = SmartSqlConfig.DEFAULT_ALIAS)
+        {
+            return services.AddSmartSql((sp, builder) =>
             {
-                var configPath = ResolveConfigPath(sp);
-                var loggerFactory = sp.GetService<ILoggerFactory>();
-                var smartSqlBuilder =
-                    SmartSqlBuilder.AddXmlConfig(SmartSql.ConfigBuilder.ResourceType.File, configPath, loggerFactory);
-                setup(sp, smartSqlBuilder);
-                return smartSqlBuilder.Build();
+                builder.UseAlias(alias);
             });
-            AddOthers(services);
-            return services;
         }
-        public static IServiceCollection AddSmartSql(this IServiceCollection services, Action<SmartSqlBuilder> setup)
+        public static SmartSqlDIBuilder AddSmartSql(this IServiceCollection services, Action<SmartSqlBuilder> setup)
         {
-            services.AddSmartSql((sp, builder) => { setup(builder); });
-            return services;
+            return services.AddSmartSql((sp, builder) => { setup(builder); });
         }
         private static string ResolveConfigPath(IServiceProvider sp)
         {

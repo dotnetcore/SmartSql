@@ -14,37 +14,39 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// 注入SmartSql仓储工厂
         /// </summary>
-        /// <param name="services"></param>
+        /// <param name="builder"></param>
         /// <param name="scope_template">Scope模板，默认：I{Scope}Repository</param>
         /// <param name="sqlIdNamingConvert">SqlId命名转换</param>
-        public static IServiceCollection AddRepositoryFactory(this IServiceCollection services, string scope_template = "", Func<Type, MethodInfo, String> sqlIdNamingConvert = null)
+        /// <returns></returns>
+        public static SmartSqlDIBuilder AddRepositoryFactory(this SmartSqlDIBuilder builder, string scope_template = "", Func<Type, MethodInfo, String> sqlIdNamingConvert = null)
         {
-            services.TryAddSingleton<IRepositoryBuilder>((sp) =>
+            builder.Services.TryAddSingleton<IRepositoryBuilder>((sp) =>
             {
                 var loggerFactory = sp.GetService<ILoggerFactory>() ?? Logging.Abstractions.NullLoggerFactory.Instance;
                 var logger = loggerFactory.CreateLogger<EmitRepositoryBuilder>();
                 return new EmitRepositoryBuilder(scope_template, sqlIdNamingConvert, logger);
             });
-            services.TryAddSingleton<IRepositoryFactory>((sp) =>
+            builder.Services.TryAddSingleton<IRepositoryFactory>((sp) =>
             {
                 var loggerFactory = sp.GetService<ILoggerFactory>() ?? Logging.Abstractions.NullLoggerFactory.Instance;
                 var logger = loggerFactory.CreateLogger<RepositoryFactory>();
                 var repositoryBuilder = sp.GetRequiredService<IRepositoryBuilder>();
                 return new RepositoryFactory(repositoryBuilder, logger);
             });
-            return services;
+            return builder;
         }
         /// <summary>
         /// 注入单个仓储接口
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="services"></param>
-        /// <param name="smartSqlAlias">SmartSql别名</param>
-        /// <param name="scope">SqlMaper.Scope</param>
-        public static IServiceCollection AddRepository<T>(this IServiceCollection services, string smartSqlAlias, string scope = "") where T : class
+        /// <param name="builder"></param>
+        /// <param name="smartSqlAlias"></param>
+        /// <param name="scope"></param>
+        /// <returns></returns>
+        public static SmartSqlDIBuilder AddRepository<T>(this SmartSqlDIBuilder builder, string smartSqlAlias, string scope = "") where T : class
         {
-            services.AddRepositoryFactory();
-            services.AddSingleton<T>(sp =>
+            builder.AddRepositoryFactory();
+            builder.Services.AddSingleton<T>(sp =>
             {
                 ISqlMapper sqlMapper = sp.GetRequiredService<ISqlMapper>(); ;
                 if (!String.IsNullOrEmpty(smartSqlAlias))
@@ -54,16 +56,17 @@ namespace Microsoft.Extensions.DependencyInjection
                 var factory = sp.GetRequiredService<IRepositoryFactory>();
                 return factory.CreateInstance(typeof(T), sqlMapper, scope) as T;
             });
-            return services;
+            return builder;
         }
         /// <summary>
         /// 注入仓储结构 By 程序集
         /// </summary>
-        /// <param name="services"></param>
+        /// <param name="builder"></param>
         /// <param name="setupOptions"></param>
-        public static IServiceCollection AddRepositoryFromAssembly(this IServiceCollection services, Action<AssemblyAutoRegisterOptions> setupOptions)
+        /// <returns></returns>
+        public static SmartSqlDIBuilder AddRepositoryFromAssembly(this SmartSqlDIBuilder builder, Action<AssemblyAutoRegisterOptions> setupOptions)
         {
-            services.AddRepositoryFactory();
+            builder.AddRepositoryFactory();
             var options = new AssemblyAutoRegisterOptions
             {
                 Filter = (type) => type.IsInterface
@@ -74,7 +77,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var allTypes = assembly.GetTypes().Where(options.Filter);
             foreach (var type in allTypes)
             {
-                services.AddSingleton(type, sp =>
+                builder.Services.AddSingleton(type, sp =>
                 {
                     ISqlMapper sqlMapper = sp.GetRequiredService<ISqlMapper>(); ;
                     if (!String.IsNullOrEmpty(options.SmartSqlAlias))
@@ -90,32 +93,8 @@ namespace Microsoft.Extensions.DependencyInjection
                     return factory.CreateInstance(type, sqlMapper, scope);
                 });
             }
-            return services;
+            return builder;
         }
-        /// <summary>
-        /// AddSmartSql And AddRepositoryFactory
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="scope_template"></param>
-        /// <param name="sqlIdNamingConvert"></param>
-        public static IServiceCollection AddSmartSqlRepositoryFactory(this IServiceCollection services, string scope_template = "", Func<Type, MethodInfo, String> sqlIdNamingConvert = null)
-        {
-            services.AddSmartSql();
-            services.AddRepositoryFactory(scope_template, sqlIdNamingConvert);
-            return services;
-        }
-        /// <summary>
-        /// AddSmartSqlRepositoryFactory And AddRepositoryFromAssembly
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="setupOptions"></param>
-        public static IServiceCollection AddSmartSqlRepositoryFromAssembly(this IServiceCollection services, Action<AssemblyAutoRegisterOptions> setupOptions)
-        {
-            services.AddSmartSqlRepositoryFactory();
-            services.AddRepositoryFromAssembly(setupOptions);
-            return services;
-        }
-
     }
 
 }
