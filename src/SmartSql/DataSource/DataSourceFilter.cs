@@ -44,7 +44,7 @@ namespace SmartSql.DataSource
                 {
                     throw new SmartSqlException($"Can not find ReadDb:{context.ReadDb} .");
                 }
-                return readDataSource;
+                choiceDataSource = readDataSource;
             }
             else
             {
