@@ -17,14 +17,12 @@ namespace SmartSql.Configuration
 {
     public class SmartSqlConfig
     {
-        public const string DEFAULT_ALIAS = "SmartSql";
         public static Settings DefaultSettings = new Settings
         {
             IgnoreParameterCase = false,
             IsCacheEnabled = false,
             ParameterPrefix = "$"
         };
-        public String Alias { get; set; }
         public Settings Settings { get; set; }
         public Database Database { get; set; }
         public Properties Properties { get; set; }
@@ -53,7 +51,6 @@ namespace SmartSql.Configuration
 
         public SmartSqlConfig()
         {
-            Alias = DEFAULT_ALIAS;
             Settings = DefaultSettings;
             SqlMaps = new Dictionary<string, SqlMap>();
             ObjectFactoryBuilder = new ExpressionObjectFactoryBuilder();

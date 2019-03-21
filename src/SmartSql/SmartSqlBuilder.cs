@@ -20,9 +20,14 @@ namespace SmartSql
     public class SmartSqlBuilder
     {
         /// <summary>
+        /// 默认 SmartSql 实例别名
+        /// </summary>
+        public const string DEFAULT_ALIAS = "SmartSql";
+        /// <summary>
         /// 默认 XML 配置文件地址
         /// </summary>
         public const string DEFAULT_SMARTSQL_CONFIG_PATH = "SmartSqlMapConfig.xml";
+        public string Alias { get; private set; } = DEFAULT_ALIAS;
         public ILoggerFactory LoggerFactory { get; } = NullLoggerFactory.Instance;
         public IConfigBuilder ConfigBuilder { get; }
         public SmartSqlConfig SmartSqlConfig { get; private set; }
@@ -46,7 +51,7 @@ namespace SmartSql
             BeforeBuildInitService();
             DbSessionFactory = SmartSqlConfig.DbSessionFactory;
             SqlMapper = new SqlMapper(SmartSqlConfig);
-            SmartSqlContainer.Instance.TryRegister(SmartSqlConfig.Alias, this);
+            SmartSqlContainer.Instance.TryRegister(Alias, this);
             return this;
         }
         public IDbSessionFactory GetDbSessionFactory()
@@ -66,10 +71,6 @@ namespace SmartSql
             if (_isCacheEnabled.HasValue)
             {
                 SmartSqlConfig.Settings.IsCacheEnabled = _isCacheEnabled.Value;
-            }
-            if (!String.IsNullOrEmpty(_alias))
-            {
-                SmartSqlConfig.Alias = _alias;
             }
             SmartSqlConfig.SqlParamAnalyzer = new SqlParamAnalyzer(SmartSqlConfig.Settings.IgnoreParameterCase, SmartSqlConfig.Database.DbProvider.ParameterPrefix);
             BuildPipeline();
@@ -108,7 +109,6 @@ namespace SmartSql
 
         private IDataSourceFilter _dataSourceFilter;
         private bool? _isCacheEnabled;
-        private string _alias;
         private IEnumerable<KeyValuePair<string, string>> _importProperties;
 
         public SmartSqlBuilder UseDataSourceFilter(IDataSourceFilter dataSourceFilter)
@@ -121,7 +121,12 @@ namespace SmartSql
         }
         public SmartSqlBuilder UseAlias(String alias)
         {
-            _alias = alias; return this;
+            if (String.IsNullOrEmpty(alias))
+            {
+                throw new ArgumentNullException(nameof(alias));
+            }
+            Alias = alias;
+            return this;
         }
         public SmartSqlBuilder UseProperties(IEnumerable<KeyValuePair<string, string>> importProperties)
         {

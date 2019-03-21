@@ -33,7 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection
              });
         }
 
-        public static SmartSqlDIBuilder AddSmartSql(this IServiceCollection services, String alias = SmartSqlConfig.DEFAULT_ALIAS)
+        public static SmartSqlDIBuilder AddSmartSql(this IServiceCollection services, String alias = SmartSqlBuilder.DEFAULT_ALIAS)
         {
             return services.AddSmartSql((sp, builder) =>
             {
@@ -66,9 +66,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<ITransaction>(sp => sp.GetRequiredService<SmartSqlBuilder>().SqlMapper);
         }
 
-        public static SmartSqlBuilder GetSmartSql(this IServiceProvider sp, string alias = SmartSqlConfig.DEFAULT_ALIAS)
+        public static SmartSqlBuilder GetSmartSql(this IServiceProvider sp, string alias = SmartSqlBuilder.DEFAULT_ALIAS)
         {
-            return sp.GetServices<SmartSqlBuilder>().FirstOrDefault(m => m.SmartSqlConfig.Alias == alias);
+            return sp.GetServices<SmartSqlBuilder>().FirstOrDefault(m => m.Alias == alias);
         }
     }
 }
