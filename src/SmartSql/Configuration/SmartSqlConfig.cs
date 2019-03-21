@@ -17,12 +17,6 @@ namespace SmartSql.Configuration
 {
     public class SmartSqlConfig
     {
-        public static Settings DefaultSettings = new Settings
-        {
-            IgnoreParameterCase = false,
-            IsCacheEnabled = false,
-            ParameterPrefix = "$"
-        };
         public Settings Settings { get; set; }
         public Database Database { get; set; }
         public Properties Properties { get; set; }
@@ -51,7 +45,7 @@ namespace SmartSql.Configuration
 
         public SmartSqlConfig()
         {
-            Settings = DefaultSettings;
+            Settings = Settings.Defalut;
             SqlMaps = new Dictionary<string, SqlMap>();
             ObjectFactoryBuilder = new ExpressionObjectFactoryBuilder();
             TagBuilderFactory = new TagBuilderFactory();
@@ -67,6 +61,12 @@ namespace SmartSql.Configuration
     }
     public class Settings
     {
+        public static Settings Defalut = new Settings
+        {
+            IgnoreParameterCase = false,
+            IsCacheEnabled = false,
+            ParameterPrefix = "$"
+        };
         public bool IgnoreParameterCase { get; set; }
         public bool IsCacheEnabled { get; set; }
         public string ParameterPrefix { get; set; }
