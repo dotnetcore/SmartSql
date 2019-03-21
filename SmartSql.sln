@@ -70,6 +70,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Schema", "Schema", "{2F1070
 		doc\Schema\SmartSqlMapConfig-v4.xsd = doc\Schema\SmartSqlMapConfig-v4.xsd
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{E52317A9-2812-4B9E-8A9B-B9576BC6BD95}"
+	ProjectSection(SolutionItems) = preProject
+		doc\Config\Entity.xml = doc\Config\Entity.xml
+		doc\Config\SmartSql.Config.nuspec = doc\Config\SmartSql.Config.nuspec
+		doc\Config\SmartSqlMapConfig.xml = doc\Config\SmartSqlMapConfig.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -166,6 +173,7 @@ Global
 		{71B93091-C0FD-4D1A-B383-A8C616BCD0FB} = {E0AF1B38-B6B1-471B-9493-B84B066109F6}
 		{79F47225-6996-44A0-82BF-F82E9ECBFEFD} = {4F0EEDDD-0300-4F32-A8E8-D4121AE83F23}
 		{2F107069-A721-4EC2-84CC-C7E0940A6124} = {E32377D3-40D5-4158-904C-2BA6DEE1FA45}
+		{E52317A9-2812-4B9E-8A9B-B9576BC6BD95} = {E32377D3-40D5-4158-904C-2BA6DEE1FA45}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6942F9AB-D574-4C16-8CF7-0D10B637237B}
