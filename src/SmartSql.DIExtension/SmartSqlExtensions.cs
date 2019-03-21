@@ -23,14 +23,15 @@ namespace Microsoft.Extensions.DependencyInjection
         public static SmartSqlDIBuilder AddSmartSql(this IServiceCollection services, Action<IServiceProvider, SmartSqlBuilder> setup)
         {
             return services.AddSmartSql(sp =>
-             {
-                 var configPath = ResolveConfigPath(sp);
-                 var loggerFactory = sp.GetService<ILoggerFactory>();
-                 var smartSqlBuilder =
-                     SmartSqlBuilder.AddXmlConfig(SmartSql.ConfigBuilder.ResourceType.File, configPath, loggerFactory);
-                 setup(sp, smartSqlBuilder);
-                 return smartSqlBuilder;
-             });
+            {
+                var configPath = ResolveConfigPath(sp);
+                var loggerFactory = sp.GetService<ILoggerFactory>();
+                var smartSqlBuilder = new SmartSqlBuilder()
+                .UseLoggerFactory(loggerFactory)
+                .UseXmlConfig(SmartSql.ConfigBuilder.ResourceType.File, configPath);
+                setup(sp, smartSqlBuilder);
+                return smartSqlBuilder;
+            });
         }
 
         public static SmartSqlDIBuilder AddSmartSql(this IServiceCollection services, String alias = SmartSqlBuilder.DEFAULT_ALIAS)

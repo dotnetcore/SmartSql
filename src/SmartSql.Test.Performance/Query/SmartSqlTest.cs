@@ -17,7 +17,7 @@ namespace SmartSql.Test.Performance.Query
         public void Setup()
         {
             Scope = nameof(AllPrimitive);
-            DbSessionFactory = SmartSqlBuilder.AddXmlConfig().UseCache(false).Build().GetDbSessionFactory();
+            DbSessionFactory = new SmartSqlBuilder().UseXmlConfig().UseCache(false).Build().GetDbSessionFactory();
             WriteDataSource = DbSessionFactory.SmartSqlConfig.Database.Write;
             Query_1();
         }

@@ -13,7 +13,7 @@ namespace SmartSql.Test.Unit
         public IDbSession DbSession { get; }
         public AbstractXmlConfigBuilderTest()
         {
-            SmartSqlBuilder = SmartSqlBuilder.AddXmlConfig().Build();
+            SmartSqlBuilder = new SmartSqlBuilder().UseXmlConfig().Build();
             DbSessionFactory = SmartSqlBuilder.GetDbSessionFactory();
             DbSession = DbSessionFactory.Open();
         }

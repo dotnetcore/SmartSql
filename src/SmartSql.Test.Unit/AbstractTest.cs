@@ -13,7 +13,7 @@ namespace SmartSql.Test.Unit
         protected IDbSessionFactory DbSessionFactory { get; }
         public AbstractTest()
         {
-            DbSessionFactory = SmartSqlBuilder.AddDataSource(DbProvider.SQLSERVER, ConnectionString)
+            DbSessionFactory = new SmartSqlBuilder().UseDataSource(DbProvider.SQLSERVER, ConnectionString)
                 .UseCache().Build().GetDbSessionFactory();
         }
 

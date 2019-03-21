@@ -28,9 +28,9 @@ namespace SmartSql.Test.Unit
 
             services.AddSmartSql((sp) =>
             {
-                var options = sp.GetRequiredService<IOptionsSnapshot<SmartSqlConfigOptions>>().Get("SmartSql");
                 return new SmartSqlBuilder()
-                .UseOptions(options, sp.GetService<ILoggerFactory>());
+                .UseAlias("SmartSql")
+                .UseOptions(sp);
             });
             var serviceProvider = services.BuildServiceProvider();
             var sqlMapper = serviceProvider.GetRequiredService<ISqlMapper>();

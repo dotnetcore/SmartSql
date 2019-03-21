@@ -35,7 +35,7 @@ namespace SmartSql.Test.Unit.DI
             IServiceCollection services = new ServiceCollection();
             services.AddSmartSql(sp =>
             {
-                return SmartSqlBuilder.AddDataSource(DbProvider.SQLSERVER, ConnectionString);
+                return new SmartSqlBuilder().UseDataSource(DbProvider.SQLSERVER, ConnectionString);
             });
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);

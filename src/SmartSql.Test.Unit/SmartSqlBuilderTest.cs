@@ -13,8 +13,8 @@ namespace SmartSql.Test.Unit
         [Fact]
         public void Build_By_DataSource()
         {
-            var dbSessionFactory = SmartSqlBuilder
-                .AddDataSource(DbProvider.SQLSERVER, ConnectionString)
+            var dbSessionFactory = new SmartSqlBuilder()
+                .UseDataSource(DbProvider.SQLSERVER, ConnectionString)
                 .Build().GetDbSessionFactory();
 
             using (var dbSession = dbSessionFactory.Open())
@@ -27,8 +27,8 @@ namespace SmartSql.Test.Unit
         public void Build_By_Config()
         {
             DbProviderManager.Instance.TryGet(DbProvider.SQLSERVER, out var dbProvider);
-            var dbSessionFactory = SmartSqlBuilder
-               .AddNativeConfig(new Configuration.SmartSqlConfig
+            var dbSessionFactory = new SmartSqlBuilder()
+               .UseNativeConfig(new Configuration.SmartSqlConfig
                {
                    Database = new Database
                    {
@@ -48,16 +48,16 @@ namespace SmartSql.Test.Unit
         [Fact]
         public void Build_By_Xml()
         {
-            var dbSessionFactory = SmartSqlBuilder
-               .AddXmlConfig()
+            var dbSessionFactory = new SmartSqlBuilder()
+               .UseXmlConfig()
                .Build();
             SmartSqlContainer.Instance.Dispose();
         }
         [Fact]
         public void Build_As_Mapper()
         {
-            var sqlMapper = SmartSqlBuilder
-               .AddXmlConfig()
+            var sqlMapper = new SmartSqlBuilder()
+               .UseXmlConfig()
                .Build()
                .GetSqlMapper();
             SmartSqlContainer.Instance.Dispose();
