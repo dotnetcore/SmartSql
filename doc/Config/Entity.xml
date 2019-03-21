@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMap Scope="Entity"  xmlns="http://SmartSql.net/schemas/SmartSqlMap-v4.xsd">
+  <Statements>
+    <Statement Id="">
+      
+    </Statement>
+  </Statements>
+</SmartSqlMap>

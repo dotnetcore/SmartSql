@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>SmartSql.Config</id>
+    <title>SmartSql Config Template</title>
+    <version>4.0.0-rc6</version>
+    <authors>Ahoo Wang</authors>
+    <owners>Ahoo Wang</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <language>en-US</language>
+    <license type="expression">Apache-2.0</license>
+    <projectUrl>https://github.com/Smart-Kit/SmartSql</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/Smart-Kit/SmartSql/master/SmartSql.png</iconUrl>
+    <repository type="git" url="https://github.com/Smart-Kit/SmartSql"/>
+    <summary>SmartSql-config Template.</summary>
+    <description>
+      SmartSql-config Template.
+    </description>
+    <tags>SmartSql, Config</tags>
+    <dependencies>
+      <dependency id="SmartSql.Schema" version="4.0.0-rc6" />
+    </dependencies>
+    <contentFiles>
+      <files include="**/*.*" buildAction="None" copyToOutput="true" flatten="true" />
+    </contentFiles>
+  </metadata>
+  <files>
+    <file src=".\SmartSqlMapConfig.xml" target="contentFiles\any\any" />
+    <file src=".\SmartSqlMapConfig.xml" target="content\" />
+    <file src=".\Entity.xml" target="contentFiles\any\any\Maps" />
+    <file src=".\Entity.xml" target="content\Maps" />
+  </files>
+</package>

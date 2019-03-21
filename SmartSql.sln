@@ -53,8 +53,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE = LICENSE
 		README.md = README.md
 		SmartSql.sln.DotSettings.user = SmartSql.sln.DotSettings.user
-		doc\SmartSqlMap-v4.xsd = doc\SmartSqlMap-v4.xsd
-		doc\SmartSqlMapConfig-v4.xsd = doc\SmartSqlMapConfig-v4.xsd
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6DDF0BFB-B7B7-4ABE-8346-E99D1E01670C}"
@@ -64,6 +62,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Sample.AspNetCore", "sample\SmartSql.Sample.AspNetCore\SmartSql.Sample.AspNetCore.csproj", "{71B93091-C0FD-4D1A-B383-A8C616BCD0FB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Options", "src\SmartSql.Options\SmartSql.Options.csproj", "{79F47225-6996-44A0-82BF-F82E9ECBFEFD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Schema", "Schema", "{2F107069-A721-4EC2-84CC-C7E0940A6124}"
+	ProjectSection(SolutionItems) = preProject
+		doc\Schema\SmartSql.Schema.nuspec = doc\Schema\SmartSql.Schema.nuspec
+		doc\Schema\SmartSqlMap-v4.xsd = doc\Schema\SmartSqlMap-v4.xsd
+		doc\Schema\SmartSqlMapConfig-v4.xsd = doc\Schema\SmartSqlMapConfig-v4.xsd
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -160,6 +165,7 @@ Global
 		{B3F8B542-78C2-4C0A-B72F-944038955D07} = {6DDF0BFB-B7B7-4ABE-8346-E99D1E01670C}
 		{71B93091-C0FD-4D1A-B383-A8C616BCD0FB} = {E0AF1B38-B6B1-471B-9493-B84B066109F6}
 		{79F47225-6996-44A0-82BF-F82E9ECBFEFD} = {4F0EEDDD-0300-4F32-A8E8-D4121AE83F23}
+		{2F107069-A721-4EC2-84CC-C7E0940A6124} = {E32377D3-40D5-4158-904C-2BA6DEE1FA45}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6942F9AB-D574-4C16-8CF7-0D10B637237B}
