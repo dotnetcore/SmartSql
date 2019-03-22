@@ -21,6 +21,7 @@ namespace SmartSql.Configuration.Tags
             _tagBuilderMap.Add(nameof(IsGreaterEqual), new IsGreaterEqualBuilder());
             _tagBuilderMap.Add(nameof(IsGreaterThan), new IsGreaterThanBuilder());
             _tagBuilderMap.Add(nameof(IsLessEqual), new IsLessEqualBuilder());
+            _tagBuilderMap.Add(nameof(IsLessThan), new IsLessThanBuilder());
             _tagBuilderMap.Add(nameof(IsNotEmpty), new IsNotEmptyBuilder());
             _tagBuilderMap.Add(nameof(IsNotEqual), new IsNotEqualBuilder());
             _tagBuilderMap.Add(nameof(IsNotNull), new IsNotNullBuilder());

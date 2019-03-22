@@ -46,8 +46,7 @@ namespace SmartSql.Configuration.Tags
         {
             return context.ExecutionContext.SmartSqlConfig.Settings.ParameterPrefix;
         }
-
-        protected virtual Object EnsurePropertyValue(RequestContext context)
+        protected virtual object EnsurePropertyValue(RequestContext context)
         {
             var existProperty = context.Parameters.TryGetParameterValue(Property, out object paramVal);
             if (Required && !existProperty)

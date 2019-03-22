@@ -53,9 +53,6 @@
         <IsNotEmpty Prepend="And" Property="Single">
           T.Single = @Single
         </IsNotEmpty>
-        <IsNotEmpty Prepend="And" Property="Double">
-          T.Double = @Double
-        </IsNotEmpty>
         <IsNotEmpty Prepend="And" Property="Decimal">
           T.Decimal = @Decimal
         </IsNotEmpty>
@@ -148,7 +145,6 @@
       Int32,
       Int64,
       Single,
-      [Double],
       Decimal,
       DateTime,
       String,
@@ -179,7 +175,6 @@
       @Int32,
       @Int64,
       @Single,
-      @Double,
       @Decimal,
       @DateTime,
       @String,
@@ -214,7 +209,6 @@
       Int32,
       Int64,
       Single,
-      [Double],
       Decimal,
       DateTime,
       String,
@@ -245,7 +239,6 @@
       @Int32,
       @Int64,
       @Single,
-      @Double,
       @Decimal,
       @DateTime,
       @String,

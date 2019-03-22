@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+//*******************************
+// Create By Ahoo Wang
+// Date 2019-01-24 17:54
+// Code Generate By SmartCode
+// Code Generate Github : https://github.com/Ahoo-Wang/SmartCode
+//*******************************-->
+
+<SmartSqlMap Scope="IsNotEmptyTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap-v4.xsd">
+  <Statements>
+    <Statement Id="IsNotEmpty">
+      <IsNotEmpty Property="Name">
+        Select 'Name IsNotEmpty'
+      </IsNotEmpty>
+    </Statement>
+    <Statement Id="IsNotEmpty_Required">
+      <IsNotEmpty Property="Name" Required="true">
+        Select 'Name IsNotEmpty'
+      </IsNotEmpty>
+    </Statement>
+  </Statements>
+</SmartSqlMap>

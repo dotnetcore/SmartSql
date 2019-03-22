@@ -7,7 +7,7 @@ namespace SmartSql.Options
 {
     public class SmartSqlConfigOptions
     {
-        public Settings Settings { get; set; } = SmartSqlConfig.DefaultSettings;
+        public Settings Settings { get; set; } = Settings.Defalut;
         public IDictionary<String, string> Properties { get; set; } = new Dictionary<string, string>();
         public Database Database { get; set; }
         public List<TypeHandler> TypeHandlers { get; set; } = new List<TypeHandler>();

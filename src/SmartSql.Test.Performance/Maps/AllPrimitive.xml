@@ -21,7 +21,6 @@
       Int32,
       Int64,
       Single,
-      [Double],
       Decimal,
       DateTime,
       String,
@@ -52,7 +51,6 @@
       @Int32,
       @Int64,
       @Single,
-      @Double,
       @Decimal,
       @DateTime,
       @String,
@@ -100,9 +98,6 @@
         </IsProperty>
         <IsProperty Prepend="," Property="Single">
           Single = @Single
-        </IsProperty>
-        <IsProperty Prepend="," Property="Double">
-          Double = @Double
         </IsProperty>
         <IsProperty Prepend="," Property="Decimal">
           Decimal = @Decimal

@@ -31,7 +31,7 @@ namespace SmartSql.Test.Entities
         public Int64 Int64 { get; set; }
         //public UInt64 UInt64 { get; set; }
         public Single Single { get; set; }
-        public Double Double { get; set; }
+        //public Double Double { get; set; }
         public Decimal Decimal { get; set; }
         public DateTime DateTime { get; set; }
         public String String { get; set; }

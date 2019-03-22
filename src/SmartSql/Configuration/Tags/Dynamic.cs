@@ -19,7 +19,10 @@ namespace SmartSql.Configuration.Tags
         }
         public override void BuildSql(RequestContext context)
         {
-            BuildChildSql(context);
+            if (IsCondition(context))
+            {
+                BuildChildSql(context);
+            }
         }
 
         public override void BuildChildSql(RequestContext context)

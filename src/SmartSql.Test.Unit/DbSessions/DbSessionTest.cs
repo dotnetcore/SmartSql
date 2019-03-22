@@ -18,7 +18,6 @@ namespace SmartSql.Test.Unit.DbSessions
               ,[Int32]
               ,[Int64]
               ,[Single]
-              ,[Double]
               ,[Decimal]
               ,[DateTime]
               ,[String]
@@ -47,7 +46,6 @@ namespace SmartSql.Test.Unit.DbSessions
               ,@Int32 
               ,@Int64
               ,@Single
-              ,@Double
               ,@Decimal
               ,@DateTime
               ,@String
@@ -137,6 +135,7 @@ namespace SmartSql.Test.Unit.DbSessions
                     String = "SmartSql",
                 }
             });
+            Assert.NotEqual(0, id);
         }
 
         [Fact]
@@ -153,6 +152,7 @@ namespace SmartSql.Test.Unit.DbSessions
                 RealSql = INSERT_SQL,
                 Request = insertParamters
             });
+            Assert.NotEqual(0, id);
         }
 
         //[Fact]

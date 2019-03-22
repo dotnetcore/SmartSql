@@ -42,6 +42,21 @@
     <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Maps\IsLessThanTest.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Maps\IsNotEmptyTest.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Maps\IsGreaterThanTest.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Maps\WhereTest.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Maps\RangeTest.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Maps\AllPrimitive.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
