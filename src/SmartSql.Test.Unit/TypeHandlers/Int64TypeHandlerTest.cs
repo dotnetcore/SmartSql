@@ -12,7 +12,7 @@ namespace SmartSql.Test.Unit.TypeHandlers
 
             var typeHandler = new Int64TypeHandler();
 
-            var val = typeHandler.GetValue(dataReader, 1);
+            var val = typeHandler.GetValue(dataReader, 1, typeof(long));
 
         }
     }

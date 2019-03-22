@@ -20,13 +20,7 @@ namespace SmartSql.TypeHandlers
             Name = MappedType.Name;
         }
 
-        public abstract T GetValue(DataReaderWrapper dataReader, int columnIndex);
-
-        public virtual T GetValue(DataReaderWrapper dataReader, string columnName)
-        {
-            var columnIndex = dataReader.GetOrdinal(columnName);
-            return GetValue(dataReader, columnIndex);
-        }
+        public abstract T GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType);
 
         public virtual void Initialize(IDictionary<string, object> parameters)
         {

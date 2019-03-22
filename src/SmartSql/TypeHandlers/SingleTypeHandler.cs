@@ -8,7 +8,7 @@ namespace SmartSql.TypeHandlers
 {
     public class SingleTypeHandler : AbstractNullableTypeHandler<Single>
     {
-        public override Single GetValue(DataReaderWrapper dataReader, int columnIndex)
+        public override Single GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             return dataReader.GetFloat(columnIndex);
         }

@@ -8,7 +8,7 @@ namespace SmartSql.TypeHandlers
 {
     public class TimeSpanTypeHandler : AbstractTypeHandler<TimeSpan>
     {
-        public override TimeSpan GetValue(DataReaderWrapper dataReader, int columnIndex)
+        public override TimeSpan GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             return dataReader.GetFieldValue<TimeSpan>(columnIndex);
         }

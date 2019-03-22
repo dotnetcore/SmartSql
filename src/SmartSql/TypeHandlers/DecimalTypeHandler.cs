@@ -8,7 +8,7 @@ namespace SmartSql.TypeHandlers
 {
     public class DecimalTypeHandler : AbstractTypeHandler<Decimal>
     {
-        public override Decimal GetValue(DataReaderWrapper dataReader, int columnIndex)
+        public override Decimal GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             return dataReader.GetDecimal(columnIndex);
         }

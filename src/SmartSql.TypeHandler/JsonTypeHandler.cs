@@ -49,17 +49,11 @@ namespace SmartSql.TypeHandler
             }
             base.Initialize(parameters);
         }
-        public override T GetValue(DataReaderWrapper dataReader, int columnIndex)
+        public override T GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             if (dataReader.IsDBNull(columnIndex)) { return default(T); }
             var jsonStr = dataReader.GetString(columnIndex);
             return JsonConvert.DeserializeObject<T>(jsonStr, JsonSerializerSettings);
-        }
-
-        public override T GetValue(DataReaderWrapper dataReader, string columnName)
-        {
-            int ordinal = dataReader.GetOrdinal(columnName);
-            return GetValue(dataReader, ordinal);
         }
 
         public override void SetParameter(IDataParameter dataParameter, object parameterValue)

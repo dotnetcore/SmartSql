@@ -8,7 +8,7 @@ namespace SmartSql.TypeHandlers
 {
     public class ByteArrayTypeHandler : AbstractTypeHandler<Byte[]>
     {
-        public override byte[] GetValue(DataReaderWrapper dataReader, int columnIndex)
+        public override byte[] GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             int bufferLength = (int)dataReader.GetBytes(columnIndex, 0, null, 0, 0);
             byte[] byteArray = new byte[bufferLength];

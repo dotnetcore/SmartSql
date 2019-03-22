@@ -8,7 +8,7 @@ namespace SmartSql.TypeHandlers
 {
     public class DoubleTypeHandler : AbstractTypeHandler<Double>
     {
-        public override Double GetValue(DataReaderWrapper dataReader, int columnIndex)
+        public override Double GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             return dataReader.GetDouble(columnIndex);
         }

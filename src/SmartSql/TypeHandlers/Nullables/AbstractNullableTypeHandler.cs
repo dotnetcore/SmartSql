@@ -7,7 +7,7 @@ namespace SmartSql.TypeHandlers
 {
     public abstract class AbstractNullableTypeHandler<T> : AbstractTypeHandler<T>
     {
-        public override T GetValue(DataReaderWrapper dataReader, int columnIndex)
+        public override T GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             if (dataReader.IsDBNull(columnIndex)) { return Default; }
             return GetValueWhenNotNull(dataReader, columnIndex);

@@ -155,6 +155,7 @@ namespace SmartSql.Deserializer
         {
             ilGen.LoadArg(0);
             ilGen.LoadInt32(colIndex);
+            ilGen.LoadType(propertyType);
             var getValMethod = TypeHandlerCacheType.GetGetValueMethod(propertyType);
             ilGen.Call(getValMethod);
         }

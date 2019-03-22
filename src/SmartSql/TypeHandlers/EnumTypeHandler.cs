@@ -16,7 +16,7 @@ namespace SmartSql.TypeHandlers
             dataParameter.Value = Convert.ChangeType(parameterValue, _enumUnderlyingType);
         }
 
-        public override TEnum GetValue(DataReaderWrapper dataReader, int columnIndex)
+        public override TEnum GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             return (TEnum)Enum.ToObject(MappedType, dataReader.GetValue(columnIndex));
         }
