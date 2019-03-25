@@ -90,8 +90,7 @@ namespace SmartSql.Deserializer
             var resultType = typeof(TReuslt);
             var dataReader = executionContext.DataReaderWrapper;
 
-            var resultMap = (executionContext.Request.ResultMap ?? executionContext.Request.MultipleResultMap?.Results.FirstOrDefault(m => m.Index == dataReader.ResultIndex)?.Map) ??
-                            executionContext.Request.MultipleResultMap?.Root?.Map;
+            var resultMap = executionContext.Request.GetCurrentResultMap();
 
             var constructorMap = resultMap?.Constructor;
             var columns = Enumerable.Range(0, dataReader.FieldCount)

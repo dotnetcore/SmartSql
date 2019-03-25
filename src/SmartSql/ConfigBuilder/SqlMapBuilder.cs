@@ -339,14 +339,12 @@ namespace SmartSql.ConfigBuilder
             {
                 multipleResultMap.Id = $"{SqlMap.Scope}.{multipleResultMap.Id}";
             }
-            int resultIndex = 0;
             foreach (XmlNode childNode in mulResultNode.ChildNodes)
             {
                 childNode.Attributes.TryGetValueAsString("Property", out var property, SmartSqlConfig.Properties);
                 childNode.Attributes.TryGetValueAsString("MapId", out var mapId, SmartSqlConfig.Properties);
                 var result = new Result
                 {
-                    Index = resultIndex,
                     Property = property,
                     MapId = mapId,
                 };
@@ -355,10 +353,6 @@ namespace SmartSql.ConfigBuilder
                     result.MapId = $"{SqlMap.Scope}.{result.MapId}";
                 }
 
-                if (childNode.Attributes.TryGetValueAsInt32(nameof(Result.Index), out int index, SmartSqlConfig.Properties))
-                {
-                    result.Index = index;
-                }
                 if (childNode.Name == "Root")
                 {
                     multipleResultMap.Root = result;
@@ -367,8 +361,6 @@ namespace SmartSql.ConfigBuilder
                 {
                     multipleResultMap.Results.Add(result);
                 }
-
-                resultIndex++;
             }
             SqlMap.MultipleResultMaps.Add(multipleResultMap.Id, multipleResultMap);
         }

@@ -28,10 +28,7 @@ namespace SmartSql.Sample.AspNetCore
                 .AddRepositoryFromAssembly(o =>
                 {
                     o.AssemblyString = "SmartSql.Sample.AspNetCore";
-                    o.Filter = (type) =>
-                    {
-                        return type.Namespace == "SmartSql.Sample.AspNetCore.DyRepositories";
-                    };
+                    o.Filter = (type) => type.Namespace == "SmartSql.Sample.AspNetCore.DyRepositories";
                 });
             RegisterConfigureSwagger(services);
         }

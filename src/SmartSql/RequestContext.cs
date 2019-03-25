@@ -47,15 +47,15 @@ namespace SmartSql
         public object Request { get; set; }
         public SqlParameterCollection Parameters { get; set; }
 
+        public ResultMap GetCurrentResultMap()
+        {
+            return MultipleResultMap != null ? 
+                MultipleResultMap.Results[ExecutionContext.DataReaderWrapper.ResultIndex]?.Map : ResultMap;
+        }
+
         public ITypeHandler GetPropertyHandler(string columnName)
         {
-            var currentResultMap = ResultMap;
-            if (MultipleResultMap != null)
-            {
-                var resultMap = MultipleResultMap.Results[ExecutionContext.DataReaderWrapper.ResultIndex];
-                currentResultMap = resultMap.Map;
-            }
-            return currentResultMap.GetHandler(columnName);
+            return GetCurrentResultMap()?.GetHandler(columnName);
         }
     }
 }
