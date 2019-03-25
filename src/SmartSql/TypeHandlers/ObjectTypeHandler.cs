@@ -7,7 +7,7 @@ namespace SmartSql.TypeHandlers
 {
     public class ObjectTypeHandler : AbstractTypeHandler<Object>
     {
-        public override object GetValue(DataReaderWrapper dataReader, int columnIndex)
+        public override object GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             return dataReader.GetValue(columnIndex);
         }

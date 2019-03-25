@@ -75,17 +75,26 @@ namespace SmartSql.Middlewares
             var dbParameterNames = _sqlParamAnalyzer.Analyse(reqConetxt.RealSql);
             foreach (var paramName in dbParameterNames)
             {
-                if (!reqConetxt.Parameters.TryGetValue(paramName, out var sqlParameter))
+                var parameter = reqConetxt.ParameterMap?.GetParameter(paramName);
+               var propertyName = paramName;
+                ITypeHandler typeHandler = null;
+                if (parameter != null)
+                {
+                    propertyName = parameter.Property;
+                    typeHandler = parameter.Handler;
+                }
+                if (!reqConetxt.Parameters.TryGetValue(propertyName, out var sqlParameter))
                 {
                     continue;
                 }
                 var sourceParam = _dbProviderFactory.CreateParameter();
                 sourceParam.ParameterName = paramName;
-                if (sqlParameter.TypeHandler == null)
+               
+                if (typeHandler == null)
                 {
-                    sqlParameter.TypeHandler = _typeHandlerFactory.Get(sqlParameter.ParameterType);
+                    typeHandler = sqlParameter.TypeHandler?? _typeHandlerFactory.Get(sqlParameter.ParameterType);
                 }
-                var typeHandler = sqlParameter.TypeHandler;
+
                 typeHandler.SetParameter(sourceParam, sqlParameter.Value);
                 sqlParameter.SourceParameter = sourceParam;
                 if (sqlParameter.DbType.HasValue)

@@ -21,8 +21,8 @@ namespace SmartSql.Configuration
         #region Map
         public String CacheId { get; set; }
         public Cache Cache { get; set; }
-        //public String ParameterMapId { get; set; }
-        //public ParameterMap ParameterMap { get; set; }
+        public String ParameterMapId { get; set; }
+        public ParameterMap ParameterMap { get; set; }
         public String ResultMapId { get; set; }
         public ResultMap ResultMap { get; set; }
         public String MultipleResultMapId { get; set; }

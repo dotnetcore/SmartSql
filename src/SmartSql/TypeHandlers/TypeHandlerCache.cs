@@ -25,9 +25,9 @@ namespace SmartSql.TypeHandlers
         {
             Handler.SetParameter(dataParameter, parameterValue);
         }
-        public static TMappedType GetValue(DataReaderWrapper dataReader, int columnIndex)
+        public static TMappedType GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
-            return Handler.GetValue(dataReader, columnIndex);
+            return Handler.GetValue(dataReader, columnIndex, targetType);
         }
         internal static void SetHandler(ITypeHandler<TMappedType> handler)
         {

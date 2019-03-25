@@ -18,6 +18,10 @@ namespace SmartSql.Reflection.TypeConstants
             public static readonly MethodInfo SetSqlId = Type.GetMethod("set_SqlId");
             public static readonly MethodInfo SetRequest = Type.GetMethod("set_Request");
             public static readonly MethodInfo SetRealSql = Type.GetMethod("set_RealSql");
+            public static readonly MethodInfo GetResultMap = Type.GetMethod("get_ResultMap");
+            public static readonly MethodInfo GetPropertyHandler = Type.GetMethod("GetPropertyHandler");
+
+            
         }
     }
 }

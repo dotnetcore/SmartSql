@@ -15,7 +15,7 @@ namespace SmartSql.Configuration
         {
             _properties = new Dictionary<string, string>();
             var regOptions = RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled;
-            _propertyTokens = new Regex(@"^\$\{([\p{L}\p{N}_]+)\}", regOptions);
+            _propertyTokens = new Regex(@"^\$\{([\p{L}\p{N}_`]+)\}", regOptions);
         }
 
         public void Import(IEnumerable<KeyValuePair<string, object>> properties)

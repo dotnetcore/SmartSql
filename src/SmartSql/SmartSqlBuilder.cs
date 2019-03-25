@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace SmartSql
 {
-    public class SmartSqlBuilder
+    public class SmartSqlBuilder : IDisposable
     {
         /// <summary>
         /// 默认 SmartSql 实例别名
@@ -143,7 +143,7 @@ namespace SmartSql
             {
                 throw new ArgumentNullException(nameof(smartSqlConfig));
             }
-            ConfigBuilder = new NativeConfigBuilder(smartSqlConfig); 
+            ConfigBuilder = new NativeConfigBuilder(smartSqlConfig);
             return this;
         }
         /// <summary>
@@ -201,6 +201,12 @@ namespace SmartSql
                 DbProvider = dbProvider
             };
             return UseDataSource(writeDataSource);
+        }
+
+        public void Dispose()
+        {
+            SmartSqlConfig.SessionStore.Dispose();
+            SmartSqlConfig.CacheManager.Dispose();
         }
         #endregion
     }

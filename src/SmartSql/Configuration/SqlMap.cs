@@ -11,7 +11,7 @@ namespace SmartSql.Configuration
         public String Scope { get; set; }
         public IDictionary<String, Cache> Caches { get; set; }
         public IDictionary<String, Statement> Statements { get; set; }
-        //public IDictionary<String, ParameterMap> ParameterMaps { get; set; }
+        public IDictionary<String, ParameterMap> ParameterMaps { get; set; }
         public IDictionary<String, ResultMap> ResultMaps { get; set; }
         public IDictionary<String, MultipleResultMap> MultipleResultMaps { get; set; }
 
@@ -31,14 +31,14 @@ namespace SmartSql.Configuration
             }
             return cache;
         }
-        //public ParameterMap GetParameterMap(string parameterMapId)
-        //{
-        //    if (!ParameterMaps.TryGetValue(parameterMapId, out var parameterMap))
-        //    {
-        //        throw new SmartSqlException($"Can not find ParameterMap.Id:{parameterMapId}");
-        //    }
-        //    return parameterMap;
-        //}
+        public ParameterMap GetParameterMap(string parameterMapId)
+        {
+            if (!ParameterMaps.TryGetValue(parameterMapId, out var parameterMap))
+            {
+                throw new SmartSqlException($"Can not find ParameterMap.Id:{parameterMapId}");
+            }
+            return parameterMap;
+        }
         public ResultMap GetResultMap(string resultMapId)
         {
             if (!ResultMaps.TryGetValue(resultMapId, out var resultMap))

@@ -8,7 +8,7 @@ namespace SmartSql.TypeHandlers
 {
     public class CharArrayTypeHandler : AbstractTypeHandler<Char[]>
     {
-        public override Char[] GetValue(DataReaderWrapper dataReader, int columnIndex)
+        public override Char[] GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             int bufferLength = (int)dataReader.GetChars(columnIndex, 0, null, 0, 0);
             Char[] charArray = new Char[bufferLength];

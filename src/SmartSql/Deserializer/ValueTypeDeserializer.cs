@@ -13,7 +13,7 @@ namespace SmartSql.Deserializer
             var dataReader = executionContext.DataReaderWrapper;
             if (!dataReader.HasRows) return default(TResult);
             dataReader.Read();
-            return TypeHandlerCache<TResult>.Handler.GetValue(dataReader, VALUE_ORDINAL); ;
+            return TypeHandlerCache<TResult>.Handler.GetValue(dataReader, VALUE_ORDINAL,executionContext.Result.ResultType); ;
         }
         public IList<TResult> ToList<TResult>(ExecutionContext executionContext)
         {
@@ -24,7 +24,7 @@ namespace SmartSql.Deserializer
             var typeHandler = TypeHandlerCache<TResult>.Handler;
             while (dataReader.Read())
             {
-                var val = typeHandler.GetValue(dataReader, VALUE_ORDINAL);
+                var val = typeHandler.GetValue(dataReader, VALUE_ORDINAL, executionContext.Result.ResultType);
                 list.Add(val);
             }
             return list;
@@ -35,7 +35,7 @@ namespace SmartSql.Deserializer
             var dataReader = executionContext.DataReaderWrapper;
             if (!dataReader.HasRows) return default(TResult);
             await dataReader.ReadAsync();
-            return TypeHandlerCache<TResult>.Handler.GetValue(dataReader, VALUE_ORDINAL); 
+            return TypeHandlerCache<TResult>.Handler.GetValue(dataReader, VALUE_ORDINAL, executionContext.Result.ResultType); 
         }
 
         public async Task<IList<TResult>> ToListAsync<TResult>(ExecutionContext executionContext)
@@ -46,7 +46,7 @@ namespace SmartSql.Deserializer
             var typeHandler = TypeHandlerCache<TResult>.Handler;
             while (await dataReader.ReadAsync())
             {
-                var val = typeHandler.GetValue(dataReader, VALUE_ORDINAL);
+                var val = typeHandler.GetValue(dataReader, VALUE_ORDINAL, executionContext.Result.ResultType);
                 list.Add(val);
             }
             return list;

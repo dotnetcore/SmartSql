@@ -37,8 +37,7 @@ namespace SmartSql
         {
             foreach (var smartSqlBuilder in Container.Values)
             {
-                smartSqlBuilder.SmartSqlConfig.SessionStore.Dispose();
-                smartSqlBuilder.SmartSqlConfig.CacheManager.Dispose();
+                smartSqlBuilder.Dispose();
             }
             Container.Clear();
         }

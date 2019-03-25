@@ -66,8 +66,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Schema", "Schema", "{2F107069-A721-4EC2-84CC-C7E0940A6124}"
 	ProjectSection(SolutionItems) = preProject
 		doc\Schema\SmartSql.Schema.nuspec = doc\Schema\SmartSql.Schema.nuspec
-		doc\Schema\SmartSqlMap-v4.xsd = doc\Schema\SmartSqlMap-v4.xsd
-		doc\Schema\SmartSqlMapConfig-v4.xsd = doc\Schema\SmartSqlMapConfig-v4.xsd
+		doc\Schema\SmartSqlMap.xsd = doc\Schema\SmartSqlMap.xsd
+		doc\Schema\SmartSqlMapConfig.xsd = doc\Schema\SmartSqlMapConfig.xsd
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{E52317A9-2812-4B9E-8A9B-B9576BC6BD95}"

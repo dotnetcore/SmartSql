@@ -6,6 +6,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using SmartSql.Data;
+using SmartSql.TypeHandlers;
 
 namespace SmartSql
 {
@@ -36,6 +37,8 @@ namespace SmartSql
         #region Map
         public String CacheId { get; set; }
         public Configuration.Cache Cache { get; internal set; }
+        public string ParameterMapId { get; set; }
+        public ParameterMap ParameterMap { get; internal set; }
         public string ResultMapId { get; set; }
         public ResultMap ResultMap { get; internal set; }
         public string MultipleResultMapId { get; set; }
@@ -43,5 +46,16 @@ namespace SmartSql
         #endregion
         public object Request { get; set; }
         public SqlParameterCollection Parameters { get; set; }
+
+        public ITypeHandler GetPropertyHandler(string columnName)
+        {
+            var currentResultMap = ResultMap;
+            if (MultipleResultMap != null)
+            {
+                var resultMap = MultipleResultMap.Results[ExecutionContext.DataReaderWrapper.ResultIndex];
+                currentResultMap = resultMap.Map;
+            }
+            return currentResultMap.GetHandler(columnName);
+        }
     }
 }

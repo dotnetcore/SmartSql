@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig-v4.xsd">
+<SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
   <Settings IgnoreParameterCase="false" ParameterPrefix="$" IsCacheEnabled="false"/>
   <Database>
     <DbProvider Name="SqlServer"/>

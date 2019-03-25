@@ -17,7 +17,7 @@ namespace SmartSql.ConfigBuilder
         private readonly ResourceType _resourceType;
         private readonly string _resourcePath;
         private readonly ILoggerFactory _loggerFactory;
-        public const String SMART_SQL_CONFIG_NAMESPACE = "http://SmartSql.net/schemas/SmartSqlMapConfig-v4.xsd";
+        public const String SMART_SQL_CONFIG_NAMESPACE = "http://SmartSql.net/schemas/SmartSqlMapConfig.xsd";
         public const String CONFIG_PREFIX = "Config";
         public const String TYPE_ATTRIBUTE = "Type";
         protected XmlDocument XmlConfig { get; }

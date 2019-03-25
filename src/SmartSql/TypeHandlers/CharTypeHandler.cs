@@ -8,7 +8,7 @@ namespace SmartSql.TypeHandlers
 {
     public class CharTypeHandler : AbstractTypeHandler<Char>
     {
-        public override Char GetValue(DataReaderWrapper dataReader, int columnIndex)
+        public override Char GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             return dataReader.GetString(columnIndex)[0];
         }

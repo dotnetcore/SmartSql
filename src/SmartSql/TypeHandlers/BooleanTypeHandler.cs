@@ -8,7 +8,7 @@ namespace SmartSql.TypeHandlers
 {
     public class BooleanTypeHandler : AbstractTypeHandler<Boolean>
     {
-        public override Boolean GetValue(DataReaderWrapper dataReader, int columnIndex)
+        public override Boolean GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             return dataReader.GetBoolean(columnIndex);
         }

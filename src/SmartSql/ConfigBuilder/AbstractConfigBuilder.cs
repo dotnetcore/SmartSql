@@ -202,6 +202,16 @@ namespace SmartSql.ConfigBuilder
                         statement.Cache = cache;
                     }
 
+                    if (!String.IsNullOrEmpty(statement.ParameterMapId))
+                    {
+                        var scope = statement.ParameterMapId.Split('.')[0];
+                        if (!EnsureSqlMap(scope).ParameterMaps.TryGetValue(statement.ParameterMapId, out ParameterMap parameterMap))
+                        {
+                            throw new SmartSqlException($"Statement.Id:{statement.FullSqlId} can not find ParameterMap.Id:{statement.ParameterMapId}");
+                        }
+                        statement.ParameterMap = parameterMap;
+                    }
+
                     if (!String.IsNullOrEmpty(statement.ResultMapId))
                     {
                         var scope = statement.ResultMapId.Split('.')[0];

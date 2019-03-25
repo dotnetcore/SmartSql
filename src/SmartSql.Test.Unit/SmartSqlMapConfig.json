@@ -35,6 +35,10 @@
       {
         "MappedType": "SmartSql.Test.Entities.UserInfo,SmartSql.Test",
         "Type": "SmartSql.TypeHandler.JsonTypeHandler`1,SmartSql.TypeHandler"
+      },
+      {
+        "Name": "Json",
+        "Type": "SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"
       }
     ]
   }

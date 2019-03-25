@@ -19,7 +19,6 @@ namespace SmartSql.Test.Unit.DI
             services.AddSmartSql();
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);
-            SmartSqlContainer.Instance.Dispose();
         }
 
         private void GetSmartSqlService(IServiceProvider serviceProvider)
@@ -39,7 +38,6 @@ namespace SmartSql.Test.Unit.DI
             });
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);
-            SmartSqlContainer.Instance.Dispose();
         }
         [Fact]
         public void AddSmartSql_Action()
@@ -51,7 +49,6 @@ namespace SmartSql.Test.Unit.DI
             });
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);
-            SmartSqlContainer.Instance.Dispose();
         }
         [Fact]
         public void AddRepositoryFromAssembly()
@@ -69,7 +66,6 @@ namespace SmartSql.Test.Unit.DI
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);
             IAllPrimitiveRepository allPrimitiveRepository = serviceProvider.GetRequiredService<IAllPrimitiveRepository>();
-            SmartSqlContainer.Instance.Dispose();
         }
         [Fact]
         public void AddRepositoryFromAssembly_Alias()
@@ -88,7 +84,6 @@ namespace SmartSql.Test.Unit.DI
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);
             IAllPrimitiveRepository allPrimitiveRepository = serviceProvider.GetRequiredService<IAllPrimitiveRepository>();
-            SmartSqlContainer.Instance.Dispose();
         }
     }
 }

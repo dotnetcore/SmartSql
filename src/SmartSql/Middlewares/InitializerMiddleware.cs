@@ -78,8 +78,8 @@ namespace SmartSql.Middlewares
             }
             requestContext.CacheId = requestContext.Statement.CacheId;
             requestContext.Cache = requestContext.Statement.Cache;
-            //requestContext.ParameterMapId = requestContext.Statement.ParameterMapId;
-            //requestContext.ParameterMap = requestContext.Statement.ParameterMap;
+            requestContext.ParameterMapId = requestContext.Statement.ParameterMapId;
+            requestContext.ParameterMap = requestContext.Statement.ParameterMap;
             requestContext.ResultMapId = requestContext.Statement.ResultMapId;
             requestContext.ResultMap = requestContext.Statement.ResultMap;
             requestContext.MultipleResultMapId = requestContext.Statement.MultipleResultMapId;
@@ -92,11 +92,11 @@ namespace SmartSql.Middlewares
                 var fullCacheId = $"{requestContext.Scope}.{requestContext.CacheId}";
                 requestContext.Cache = sqlMap.GetCache(fullCacheId);
             }
-            //if (!String.IsNullOrEmpty(requestContext.ParameterMapId))
-            //{
-            //    var fullParameterMapIdId = $"{requestContext.Scope}.{requestContext.ParameterMapId}";
-            //    requestContext.ParameterMap = sqlMap.GetParameterMap(fullParameterMapIdId);
-            //}
+            if (!String.IsNullOrEmpty(requestContext.ParameterMapId))
+            {
+                var fullParameterMapIdId = $"{requestContext.Scope}.{requestContext.ParameterMapId}";
+                requestContext.ParameterMap = sqlMap.GetParameterMap(fullParameterMapIdId);
+            }
             if (!String.IsNullOrEmpty(requestContext.ResultMapId))
             {
                 var fullResultMapId = $"{requestContext.Scope}.{requestContext.ResultMapId}";
