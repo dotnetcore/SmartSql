@@ -12,7 +12,6 @@ namespace SmartSql.Configuration
     }
     public class Result
     {
-        public int Index { get; set; }
         public string Property { get; set; }
         public string MapId { get; set; }
         public ResultMap Map { get; set; }
