@@ -5,7 +5,7 @@
  Date 2018-05-07 10:07
 *******************************
 -->
-<SmartSqlMap Scope="Entity"  xmlns="http://SmartSql.net/schemas/SmartSqlMap-v4.xsd">
+<SmartSqlMap Scope="Entity"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Caches>
     <Cache Id="LRU" Type="Lru">
       <FlushInterval Hours="1"/>

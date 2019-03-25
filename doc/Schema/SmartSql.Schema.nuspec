@@ -3,7 +3,7 @@
   <metadata>
     <id>SmartSql.Schema</id>
     <title>SmartSql Schema for Intellisense(TM)</title>
-    <version>4.0.0-rc93</version>
+    <version>4.0.0-rc95</version>
     <authors>Ahoo Wang</authors>
     <owners>Ahoo Wang</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

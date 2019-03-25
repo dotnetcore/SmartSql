@@ -15,7 +15,7 @@ namespace SmartSql.ConfigBuilder
 {
     public class SqlMapBuilder
     {
-        public const String SMART_SQL_MAP_NAMESPACE = "http://SmartSql.net/schemas/SmartSqlMap-v4.xsd";
+        public const String SMART_SQL_MAP_NAMESPACE = "http://SmartSql.net/schemas/SmartSqlMap.xsd";
         public const String SQLMAP_PREFIX = "SqlMap";
         public const String TYPE_ATTRIBUTE = "Type";
         protected SmartSqlConfig SmartSqlConfig { get; }

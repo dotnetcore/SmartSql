@@ -5,7 +5,7 @@
  Date 2019-02-02 15:27
 *******************************
 -->
-<SmartSqlMap Scope="User"  xmlns="http://SmartSql.net/schemas/SmartSqlMap-v4.xsd">
+<SmartSqlMap Scope="User"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <ParameterMaps>
     <ParameterMap Id="User">
       <Parameter Column="ExtendedInfo" Property="Info" TypeHandler="Json"/>

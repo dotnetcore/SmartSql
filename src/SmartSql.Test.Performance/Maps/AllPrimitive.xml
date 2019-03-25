@@ -7,7 +7,7 @@
 // Code Generate Github : https://github.com/Ahoo-Wang/SmartCode
 //*******************************-->
 
-<SmartSqlMap Scope="AllPrimitive" xmlns="http://SmartSql.net/schemas/SmartSqlMap-v4.xsd">
+<SmartSqlMap Scope="AllPrimitive" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
     <Statement Id="QueryParams"></Statement>
     <!--新增-->
