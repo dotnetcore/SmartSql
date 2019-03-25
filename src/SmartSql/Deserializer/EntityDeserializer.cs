@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using SmartSql.Configuration;
 
 namespace SmartSql.Deserializer
 {
@@ -21,7 +22,7 @@ namespace SmartSql.Deserializer
             if (!dataReader.HasRows) return default;
             var deser = GetDeserialize<TResult>(executionContext);
             dataReader.Read();
-            return deser(dataReader);
+            return deser(dataReader, executionContext.Request);
         }
 
         public IList<TResult> ToList<TResult>(ExecutionContext executionContext)
@@ -32,7 +33,7 @@ namespace SmartSql.Deserializer
             var deser = GetDeserialize<TResult>(executionContext);
             while (dataReader.Read())
             {
-                var result = deser(dataReader);
+                var result = deser(dataReader, executionContext.Request);
                 var entity = result;
                 list.Add(entity);
             }
@@ -46,7 +47,7 @@ namespace SmartSql.Deserializer
             {
                 var deser = GetDeserialize<TResult>(executionContext);
                 await dataReader.ReadAsync();
-                return deser(dataReader);
+                return deser(dataReader, executionContext.Request);
             }
             return default;
         }
@@ -60,7 +61,7 @@ namespace SmartSql.Deserializer
                 var deser = GetDeserialize<TResult>(executionContext);
                 while (await dataReader.ReadAsync())
                 {
-                    var result = deser(dataReader);
+                    var result = deser(dataReader, executionContext.Request);
                     var entity = result;
                     list.Add(entity);
                 }
@@ -68,7 +69,7 @@ namespace SmartSql.Deserializer
             return list;
         }
 
-        private Func<DataReaderWrapper, TReuslt> GetDeserialize<TReuslt>(ExecutionContext executionContext)
+        private Func<DataReaderWrapper, RequestContext, TReuslt> GetDeserialize<TReuslt>(ExecutionContext executionContext)
         {
             var key = GenerateKey(executionContext);
             if (!_deserCache.TryGetValue(key, out var deser))
@@ -77,12 +78,12 @@ namespace SmartSql.Deserializer
                 {
                     if (!_deserCache.TryGetValue(key, out deser))
                     {
-                    deser = CreateDeserialize<TReuslt>(executionContext);
+                        deser = CreateDeserialize<TReuslt>(executionContext);
                         _deserCache.TryAdd(key, deser);
                     }
                 }
             }
-            return deser as Func<DataReaderWrapper, TReuslt>;
+            return deser as Func<DataReaderWrapper, RequestContext, TReuslt>;
         }
         private Delegate CreateDeserialize<TReuslt>(ExecutionContext executionContext)
         {
@@ -91,12 +92,13 @@ namespace SmartSql.Deserializer
 
             var resultMap = (executionContext.Request.ResultMap ?? executionContext.Request.MultipleResultMap?.Results.FirstOrDefault(m => m.Index == dataReader.ResultIndex)?.Map) ??
                             executionContext.Request.MultipleResultMap?.Root?.Map;
+
             var constructorMap = resultMap?.Constructor;
             var columns = Enumerable.Range(0, dataReader.FieldCount)
                 .Select(i => new { Index = i, Name = dataReader.GetName(i) })
                 .ToDictionary((col) => col.Name);
 
-            var deserFunc = new DynamicMethod("Deserialize" + Guid.NewGuid().ToString("N"), resultType, new[] { DataType.DataReaderWrapper }, resultType, true);
+            var deserFunc = new DynamicMethod("Deserialize" + Guid.NewGuid().ToString("N"), resultType, new[] { DataType.DataReaderWrapper, RequestContextType.Type }, resultType, true);
             var ilGen = deserFunc.GetILGenerator();
             ilGen.DeclareLocal(resultType);
             #region New
@@ -114,7 +116,7 @@ namespace SmartSql.Deserializer
                 foreach (var arg in constructorMap.Args)
                 {
                     var col = columns[arg.Column];
-                    LoadPropertyValue(ilGen, col.Index, arg.CSharpType);
+                    LoadPropertyValue(ilGen, col.Index, arg.CSharpType, null);
                 }
             }
             if (resultCtor == null)
@@ -129,9 +131,10 @@ namespace SmartSql.Deserializer
                 var colName = col.Key;
                 var propertyName = colName;
                 var colIndex = col.Value.Index;
-                if (resultMap?.Properties != null && resultMap.Properties.TryGetValue(colName, out var result))
+                Property resultProperty = null;
+                if (resultMap?.Properties != null && resultMap.Properties.TryGetValue(colName, out resultProperty))
                 {
-                    propertyName = result.Name;
+                    propertyName = resultProperty.Name;
                 }
                 var property = resultType.GetProperty(propertyName);
                 if (property == null) { continue; }
@@ -139,25 +142,48 @@ namespace SmartSql.Deserializer
                 var propertyType = property.PropertyType;
                 ilGen.LoadLocalVar(0);
                 #region Check Enum
-                executionContext.SmartSqlConfig.TypeHandlerFactory.Get(propertyType);
+                if ((Nullable.GetUnderlyingType(propertyType) ?? propertyType).IsEnum)
+                {
+                    executionContext.SmartSqlConfig.TypeHandlerFactory.Get(propertyType);
+                }
                 #endregion
-                LoadPropertyValue(ilGen, colIndex, propertyType);
-
+                LoadPropertyValue(ilGen, colIndex, propertyType, resultProperty);
                 ilGen.Call(property.SetMethod);
             }
 
             ilGen.LoadLocalVar(0);
             ilGen.Return();
-            return deserFunc.CreateDelegate(typeof(Func<DataReaderWrapper, TReuslt>));
+            return deserFunc.CreateDelegate(typeof(Func<DataReaderWrapper, RequestContext, TReuslt>));
+        }
+        private void LoadPropertyValue(ILGenerator ilGen, int colIndex, Type propertyType, Property resultProperty)
+        {
+            MethodInfo getValMethod = null;
+            if (resultProperty?.Handler == null)
+            {
+                LoadTypeHanlderInvokeArgs(ilGen, colIndex, propertyType);
+                getValMethod = TypeHandlerCacheType.GetGetValueMethod(propertyType);
+            }
+            else
+            {
+                LoadTypeHanlder(ilGen, resultProperty);
+                LoadTypeHanlderInvokeArgs(ilGen, colIndex, propertyType);
+                getValMethod = resultProperty.Handler.GetType().GetMethod("GetValue");
+            }
+            ilGen.Call(getValMethod);
         }
 
-        private void LoadPropertyValue(ILGenerator ilGen, int colIndex, Type propertyType)
+        private void LoadTypeHanlder(ILGenerator ilGen, Property resultProperty)
+        {
+            ilGen.LoadArg(1);
+            ilGen.LoadString(resultProperty.Column);
+            ilGen.Call(RequestContextType.Method.GetPropertyHandler);
+        }
+
+        private void LoadTypeHanlderInvokeArgs(ILGenerator ilGen, int colIndex, Type propertyType)
         {
             ilGen.LoadArg(0);
             ilGen.LoadInt32(colIndex);
             ilGen.LoadType(propertyType);
-            var getValMethod = TypeHandlerCacheType.GetGetValueMethod(propertyType);
-            ilGen.Call(getValMethod);
         }
 
         public String GenerateKey(ExecutionContext executionContext)

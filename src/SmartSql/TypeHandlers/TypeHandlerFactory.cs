@@ -150,17 +150,27 @@ namespace SmartSql.TypeHandlers
         public void Register(ITypeHandler typeHandler)
         {
             _type_Handler_Map.AddOrUpdate(typeHandler.MappedType, typeHandler, (type, handler) => typeHandler);
-            _name_Handler_Map.AddOrUpdate(typeHandler.Name, typeHandler, (handlerName, handler) => typeHandler);
             TypeHandlerCacheType.SetHandler(typeHandler);
+        }
+        private void Register(string handlerName, ITypeHandler typeHandler)
+        {
+            _name_Handler_Map.AddOrUpdate(handlerName, typeHandler, (type, handler) => typeHandler);
         }
 
         public void Register(TypeHandler typeHandlerConfig)
         {
-            ITypeHandler typeHandler;
-            typeHandler = typeHandlerConfig.HandlerType.IsGenericType 
-                ? _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.MappedType, typeHandlerConfig.Properties) 
+            var isGenericType = typeHandlerConfig.HandlerType.IsGenericType;
+            ITypeHandler typeHandler = isGenericType
+                ? _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.MappedType, typeHandlerConfig.Properties)
                 : _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.Properties);
-            Register(typeHandler);
+            if (isGenericType)
+            {
+                Register(typeHandler);
+            }
+            else
+            {
+                Register(typeHandlerConfig.Name, typeHandler);
+            }
         }
     }
 }

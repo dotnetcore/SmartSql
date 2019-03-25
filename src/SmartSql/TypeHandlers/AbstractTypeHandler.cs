@@ -7,7 +7,6 @@ namespace SmartSql.TypeHandlers
 {
     public abstract class AbstractTypeHandler<T> : ITypeHandler<T>
     {
-        public virtual string Name { get; }
         public Type MappedType { get; }
         public T Default { get; }
         public bool IsNullable { get; }
@@ -17,7 +16,6 @@ namespace SmartSql.TypeHandlers
             MappedType = typeof(T);
             Default = default(T);
             IsNullable = Default == null;
-            Name = MappedType.Name;
         }
 
         public abstract T GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType);

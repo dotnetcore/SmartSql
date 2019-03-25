@@ -13,6 +13,18 @@ namespace SmartSql.Configuration
         /// Key:Column
         /// </summary>
         public IDictionary<String, Property> Properties { get; set; }
+        public Property GetProperty(string columnName)
+        {
+            if (Properties.TryGetValue(columnName, out var property))
+            {
+                return property;
+            }
+            return null;
+        }
+        public ITypeHandler GetHandler(string columnName)
+        {
+            return GetProperty(columnName)?.Handler;
+        }
     }
 
     public class Constructor
@@ -24,11 +36,13 @@ namespace SmartSql.Configuration
     {
         public string Column { get; set; }
         public Type CSharpType { get; set; }
+        public ITypeHandler Handler { get; set; }
     }
 
     public class Property
     {
         public string Name { get; set; }
         public string Column { get; set; }
+        public ITypeHandler Handler { get; set; }
     }
 }

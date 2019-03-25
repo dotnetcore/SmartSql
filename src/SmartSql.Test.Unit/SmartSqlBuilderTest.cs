@@ -21,7 +21,6 @@ namespace SmartSql.Test.Unit
             {
 
             }
-            SmartSqlContainer.Instance.Dispose();
         }
         [Fact]
         public void Build_By_Config()
@@ -43,7 +42,6 @@ namespace SmartSql.Test.Unit
                    }
                })
                .Build();
-            SmartSqlContainer.Instance.Dispose();
         }
         [Fact]
         public void Build_By_Xml()
@@ -51,7 +49,6 @@ namespace SmartSql.Test.Unit
             var dbSessionFactory = new SmartSqlBuilder()
                .UseXmlConfig()
                .Build();
-            SmartSqlContainer.Instance.Dispose();
         }
         [Fact]
         public void Build_As_Mapper()
@@ -60,7 +57,6 @@ namespace SmartSql.Test.Unit
                .UseXmlConfig()
                .Build()
                .GetSqlMapper();
-            SmartSqlContainer.Instance.Dispose();
         }
 
     }

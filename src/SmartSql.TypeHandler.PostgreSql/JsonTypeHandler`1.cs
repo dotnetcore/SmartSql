@@ -4,7 +4,7 @@ using System.Data;
 
 namespace SmartSql.TypeHandler.PostgreSql
 {
-    public class JsonTypeHandler : JsonTypeHandler<Object>
+    public class JsonTypeHandler<T> : TypeHandler.JsonTypeHandler<T>
     {
         private const string DATA_TYPE_NAME = "DataTypeName";
         private string _dataTypeName = "json";

@@ -91,6 +91,29 @@
     </xs:complexType>
   </xs:element>
 
+  <xs:element name="ParameterMaps">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ParameterMap" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ParameterMap">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Parameter" maxOccurs="unbounded" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="Id" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Parameter">
+    <xs:complexType>
+      <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Column" type="xs:string" use="optional" />
+      <xs:attribute name="TypeHandler" type="xs:string" use="optional" />
+    </xs:complexType>
+  </xs:element>
+  
   <xs:element name="ResultMaps">
     <xs:complexType>
       <xs:sequence>
@@ -111,8 +134,7 @@
     <xs:complexType>
       <xs:attribute name="Property" type="xs:string" use="required" />
       <xs:attribute name="Column" type="xs:string" use="optional" />
-      <!--<xs:attribute name="CSharpType" type="xs:string" use="optional" />
-      <xs:attribute name="Handler" type="xs:string" use="optional" />-->
+      <xs:attribute name="TypeHandler" type="xs:string" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="Constructor">
@@ -122,7 +144,7 @@
           <xs:complexType>
             <xs:attribute name="Column" type="xs:string" use="required" />
             <xs:attribute name="CSharpType" type="CSharpType" use="required"/>
-            <!--<xs:attribute name="Handler" type="xs:string" use="optional" />-->
+            <xs:attribute name="TypeHandler" type="xs:string" use="optional" />
           </xs:complexType>
         </xs:element>
       </xs:sequence>
@@ -891,6 +913,7 @@
       </xs:choice>
       <xs:attribute name="Id" type="xs:string" use="required" />
       <xs:attribute name="Cache" type="xs:string" use="optional" />
+      <xs:attribute name="ParameterMap" type="xs:string" use="optional" />
       <xs:attribute name="ResultMap" type="xs:string" use="optional" />
       <xs:attribute name="MultipleResultMap" type="xs:string" use="optional" />
       <xs:attribute name="CommandType" type="CommandType" use="optional"/>
@@ -911,6 +934,7 @@
     <xs:complexType mixed="true">
       <xs:all>
         <xs:element ref="Caches" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="ParameterMaps" minOccurs="0" maxOccurs="1"/>
         <xs:element ref="ResultMaps" minOccurs="0" maxOccurs="1"/>
         <xs:element ref="MultipleResultMaps" minOccurs="0" maxOccurs="1"/>
         <xs:element ref="Statements" minOccurs="0" maxOccurs="1"/>

@@ -67,6 +67,7 @@ namespace SmartSql.Options
             {
                 var typeHandlerConfig = new Configuration.TypeHandler
                 {
+                    Name = typeHander.Name,
                     Properties = typeHander.Properties
                 };
                 typeHandlerConfig.HandlerType = TypeUtils.GetType(typeHander.Type);

@@ -8,7 +8,6 @@ namespace SmartSql.TypeHandlers
 {
     public interface ITypeHandler : IInitialize
     {
-        String Name { get; }
         Type MappedType { get; }
         void SetParameter(IDataParameter dataParameter, object parameterValue);
     }

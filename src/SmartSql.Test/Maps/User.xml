@@ -6,9 +6,14 @@
 *******************************
 -->
 <SmartSqlMap Scope="User"  xmlns="http://SmartSql.net/schemas/SmartSqlMap-v4.xsd">
+  <ParameterMaps>
+    <ParameterMap Id="User">
+      <Parameter Column="ExtendedInfo" Property="Info" TypeHandler="Json"/>
+    </ParameterMap>
+  </ParameterMaps>
   <ResultMaps>
     <ResultMap Id="User">
-      <Result Column="ExtendedInfo" Property="Info"/>
+      <Result Column="ExtendedInfo" Property="Info" TypeHandler="Json"/>
     </ResultMap>
   </ResultMaps>
   <MultipleResultMaps>
@@ -28,7 +33,7 @@
 
     </Statement>
     <!--获取数据列-->
-    <Statement Id="Query" >
+    <Statement Id="Query" ParameterMap="User" >
       SELECT
       <IsNotEmpty Prepend="Top" Property="Taken">
         (@Taken)
@@ -41,7 +46,7 @@
         </Default>
       </Switch>
     </Statement>
-    <Statement Id="Insert">
+    <Statement Id="Insert" ParameterMap="User">
       <IdGenerator Id="Id"/>
       INSERT INTO [T_User]
       ([Id]
@@ -50,7 +55,7 @@
       VALUES
       (@Id
       ,@UserName
-      ,@Info);
+      ,@ExtendedInfo);
       Select @Id;
     </Statement>
     <Statement Id="GetByPage" MultipleResultMap="GetByPage">

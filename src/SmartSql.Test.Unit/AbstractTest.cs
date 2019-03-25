@@ -19,7 +19,7 @@ namespace SmartSql.Test.Unit
 
         public void Dispose()
         {
-            SmartSqlContainer.Instance.Dispose();
+            
         }
     }
 }
