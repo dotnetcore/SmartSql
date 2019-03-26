@@ -70,7 +70,7 @@ namespace SmartSql.Middlewares
         {
             var singleResult = executionContext.Result as SingleResultContext<TResult>;
             var dbResult = _commandExecuter.ExecuteScalar(executionContext);
-            if (dbResult == DBNull.Value)
+            if (dbResult == null || dbResult == DBNull.Value)
             {
                 singleResult.SetData(default(TResult));
             }
@@ -78,7 +78,7 @@ namespace SmartSql.Middlewares
             {
                 var convertType = singleResult.ResultType;
                 convertType = Nullable.GetUnderlyingType(convertType) ?? convertType;
-                
+
                 if (convertType.IsEnum)
                 {
                     singleResult.SetData(Enum.ToObject(convertType, dbResult));

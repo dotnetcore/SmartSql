@@ -44,7 +44,7 @@ namespace SmartSql.Configuration.Tags
         }
         protected virtual String GetDbProviderPrefix(RequestContext context)
         {
-            return context.ExecutionContext.SmartSqlConfig.Settings.ParameterPrefix;
+            return context.ExecutionContext.SmartSqlConfig.Database.DbProvider.ParameterPrefix;
         }
         protected virtual object EnsurePropertyValue(RequestContext context)
         {

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using SmartSql.Data;
 using SmartSql.Exceptions;
+using SmartSql.Reflection;
 
 namespace SmartSql.Configuration.Tags
 {
@@ -29,6 +30,7 @@ namespace SmartSql.Configuration.Tags
             context.SqlBuilder.Append(Open);
             var reqVal = (EnsurePropertyValue(context) as IEnumerable).GetEnumerator();
             reqVal.MoveNext();
+            bool isDirectValue = IsDirectValue(reqVal.Current);
             if (string.IsNullOrEmpty(Key))
             {
                 throw new SmartSqlException("[For] tag [Key] is required!");
@@ -42,10 +44,17 @@ namespace SmartSql.Configuration.Tags
                 throw new SmartSqlException("[For] ChildTag only support SqlText!");
             }
             var itemSqlStr = childText.BodyText;
-            BuildItemSql(itemSqlStr, context);
+            if (isDirectValue)
+            {
+                BuildItemSql_DirectValue(itemSqlStr, context);
+            }
+            else
+            {
+                BuildItemSql_NotDirectValue(itemSqlStr, context);
+            }
             context.SqlBuilder.Append(Close);
         }
-        private void BuildItemSql(string itemSqlStr, RequestContext context)
+        private void BuildItemSql_DirectValue(string itemSqlStr, RequestContext context)
         {
             var reqVal = (EnsurePropertyValue(context) as IEnumerable);
             int item_index = 0;
@@ -66,6 +75,53 @@ namespace SmartSql.Configuration.Tags
                 context.SqlBuilder.AppendFormat("{0}", item_sql);
                 item_index++;
             }
+        }
+        private void BuildItemSql_NotDirectValue(string itemSqlStr, RequestContext context)
+        {
+            var reqVal = (EnsurePropertyValue(context) as IEnumerable);
+            int item_index = 0;
+            string dbPrefix = GetDbProviderPrefix(context);
+            foreach (var itemVal in reqVal)
+            {
+                if (item_index > 0)
+                {
+                    context.SqlBuilder.AppendFormat(" {0} ", Separator);
+                }
+                var itemParams = RequestConvert.Instance.ToSqlParameters(itemVal, context.ExecutionContext.SmartSqlConfig.Settings.IgnoreParameterCase);
+
+                var item_sql = context.ExecutionContext.SmartSqlConfig.SqlParamAnalyzer
+                    .Replace(itemSqlStr, (paramName, nameWithPrefix) =>
+                {
+                    Parameter paramMap = null;
+                    context.ParameterMap?.Parameters?.TryGetValue(paramName, out paramMap);
+                    var propertyName = paramMap != null ? paramMap.Property : paramName;
+                    string key_name = $"{Key}{FOR_KEY_SUFFIX}_{Property}_{paramName}_{item_index}";
+                    if (!itemParams.TryGetValue(propertyName, out SqlParameter propertyVal))
+                    {
+                        return nameWithPrefix;
+                    }
+                    if (!context.Parameters.ContainsKey(key_name))
+                    {
+                        var itemSqlParameter = new SqlParameter(key_name, propertyVal.Value, propertyVal.ParameterType)
+                        {
+                            TypeHandler = paramMap?.Handler ?? propertyVal.TypeHandler
+                        };
+                        context.Parameters.Add(itemSqlParameter);
+                    }
+                    return $"{dbPrefix}{key_name}";
+                });
+                item_index++;
+                context.SqlBuilder.AppendFormat("{0}", item_sql);
+            }
+        }
+
+        private bool IsDirectValue(object obj)
+        {
+            bool isString = obj is String;
+            if (isString) { return true; }
+            bool isValueType = obj is ValueType;
+            if (isValueType) { return true; }
+            return false;
         }
     }
 }
