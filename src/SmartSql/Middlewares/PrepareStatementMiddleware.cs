@@ -16,7 +16,7 @@ namespace SmartSql.Middlewares
         private readonly ILogger _logger;
         private readonly SqlParamAnalyzer _sqlParamAnalyzer;
         private readonly DbProviderFactory _dbProviderFactory;
-        private readonly ITypeHandlerFactory _typeHandlerFactory;
+        private readonly TypeHandlerFactory _typeHandlerFactory;
         public IMiddleware Next { get; set; }
         public PrepareStatementMiddleware(SmartSqlConfig smartSqlConfig)
         {

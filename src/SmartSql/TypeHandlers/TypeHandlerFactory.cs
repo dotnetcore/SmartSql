@@ -6,7 +6,7 @@ using SmartSql.Reflection.TypeConstants;
 
 namespace SmartSql.TypeHandlers
 {
-    public class TypeHandlerFactory : ITypeHandlerFactory
+    public class TypeHandlerFactory 
     {
         private static readonly Type ENUM_TYPE_HANDLER_TYPE = typeof(EnumTypeHandler<>);
         private static readonly Type NULLABLE_ENUM_TYPE_HANDLER_TYPE = typeof(NullableEnumTypeHandler<>);
@@ -144,38 +144,22 @@ namespace SmartSql.TypeHandlers
 
             handler = new UInt16TypeHandler();
             this.Register(handler);
-            handler = new UInt16AnyTypeHandler();
-            this.Register(handler);
             handler = new NullableUInt16TypeHandler();
-            this.Register(handler);
-            handler = new NullableUInt16AnyTypeHandler();
             this.Register(handler);
 
             handler = new UInt32TypeHandler();
             this.Register(handler);
-            handler = new UInt32AnyTypeHandler();
-            this.Register(handler);
             handler = new NullableUInt32TypeHandler();
-            this.Register(handler);
-            handler = new NullableUInt32AnyTypeHandler();
             this.Register(handler);
 
             handler = new UInt64TypeHandler();
             this.Register(handler);
-            handler = new UInt64AnyTypeHandler();
-            this.Register(handler);
             handler = new NullableUInt64TypeHandler();
-            this.Register(handler);
-            handler = new NullableUInt64AnyTypeHandler();
             this.Register(handler);
 
             handler = new SByteTypeHandler();
             this.Register(handler);
-            handler = new SByteAnyTypeHandler();
-            this.Register(handler);
             handler = new NullableSByteTypeHandler();
-            this.Register(handler);
-            handler = new NullableSByteAnyTypeHandler();
             this.Register(handler);
             #endregion
         }
@@ -200,7 +184,7 @@ namespace SmartSql.TypeHandlers
             return typeHandler;
         }
 
-        private bool TryRegisterEnum(Type enumType, out ITypeHandler typeHandler)
+        public bool TryRegisterEnum(Type enumType, out ITypeHandler typeHandler)
         {
             if (_type_Handler_Map.TryGetValue(enumType, out typeHandler))
             {
@@ -217,7 +201,7 @@ namespace SmartSql.TypeHandlers
         {
             if (typeHandler.FieldType != AnyFieldTypeType.Type)
             {
-                _type_Handler_Map.AddOrUpdate(typeHandler.MappedType, typeHandler, (type, handler) => typeHandler);
+                _type_Handler_Map.TryAdd(typeHandler.MappedType, typeHandler);
             }
             TypeHandlerCacheType.SetHandler(typeHandler);
         }

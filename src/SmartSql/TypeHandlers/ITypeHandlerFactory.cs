@@ -3,6 +3,7 @@ using System;
 
 namespace SmartSql.TypeHandlers
 {
+    [Obsolete]
     public interface ITypeHandlerFactory
     {
         #region MappedType

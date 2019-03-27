@@ -150,14 +150,14 @@ namespace SmartSql.Deserializer
             ilGen.Return();
             return deserFunc.CreateDelegate(typeof(Func<DataReaderWrapper, RequestContext, TResult>));
         }
-        private void LoadPropertyValue(ILGenerator ilGen, ITypeHandlerFactory typeHandlerFactory, int colIndex, Type propertyType, Type fieldType, Property resultProperty)
+        private void LoadPropertyValue(ILGenerator ilGen, TypeHandlerFactory typeHandlerFactory, int colIndex, Type propertyType, Type fieldType, Property resultProperty)
         {
             var propertyUnderType = (Nullable.GetUnderlyingType(propertyType) ?? propertyType);
             var isEnum = propertyUnderType.IsEnum;
             #region Check Enum
             if (isEnum)
             {
-                typeHandlerFactory.Get(propertyType);
+                typeHandlerFactory.TryRegisterEnum(propertyType, out var typeHandler);
             }
             #endregion
             MethodInfo getValMethod = null;

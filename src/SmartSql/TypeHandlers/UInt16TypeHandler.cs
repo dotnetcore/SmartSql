@@ -6,14 +6,7 @@ using System.Text;
 
 namespace SmartSql.TypeHandlers
 {
-    public class UInt16TypeHandler : AbstractTypeHandler<UInt16, UInt16>
-    {
-        public override UInt16 GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
-        {
-            return dataReader.GetFieldValue<UInt16>(columnIndex);
-        }
-    }
-    public class UInt16AnyTypeHandler : AbstractTypeHandler<UInt16, AnyFieldType>
+    public class UInt16TypeHandler : AbstractTypeHandler<UInt16, AnyFieldType>
     {
         public override UInt16 GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {

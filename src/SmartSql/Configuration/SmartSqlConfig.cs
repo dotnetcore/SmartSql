@@ -24,7 +24,7 @@ namespace SmartSql.Configuration
         public ILoggerFactory LoggerFactory { get; set; }
         public IObjectFactoryBuilder ObjectFactoryBuilder { get; set; }
         public IDeserializerFactory DeserializerFactory { get; set; }
-        public ITypeHandlerFactory TypeHandlerFactory { get; set; }
+        public TypeHandlerFactory TypeHandlerFactory { get; set; }
         public ITagBuilderFactory TagBuilderFactory { get; set; }
         public StatementAnalyzer StatementAnalyzer { get; set; }
         public SqlParamAnalyzer SqlParamAnalyzer { get; set; }
