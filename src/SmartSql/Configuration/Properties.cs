@@ -9,8 +9,8 @@ namespace SmartSql.Configuration
 {
     public class Properties
     {
-        private IDictionary<string, string> _properties;
-        private Regex _propertyTokens;
+        private readonly IDictionary<string, string> _properties;
+        private readonly Regex _propertyTokens;
         public Properties()
         {
             _properties = new Dictionary<string, string>();

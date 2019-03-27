@@ -8,7 +8,7 @@ namespace SmartSql.DyRepository
     public class ScopeTemplateParser
     {
         private const string DEFAULT_SCOPE_TEMPLATE = "I{Scope}Repository";
-        private Regex _repositoryScope;
+        private readonly Regex _repositoryScope;
         public ScopeTemplateParser(string template = "")
         {
             if (String.IsNullOrEmpty(template))

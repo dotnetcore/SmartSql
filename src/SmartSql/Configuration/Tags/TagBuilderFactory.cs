@@ -8,7 +8,7 @@ namespace SmartSql.Configuration.Tags
 {
     public class TagBuilderFactory : ITagBuilderFactory
     {
-        private IDictionary<String, ITagBuilder> _tagBuilderMap = new Dictionary<String, ITagBuilder>();
+        private readonly IDictionary<String, ITagBuilder> _tagBuilderMap = new Dictionary<String, ITagBuilder>();
         public TagBuilderFactory()
         {
             _tagBuilderMap.Add(nameof(Dynamic), new DynamicBuilder());

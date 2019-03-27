@@ -21,7 +21,7 @@ namespace SmartSql.Test.Performance.Query
         [Benchmark(Baseline = true)]
         public AllPrimitive Query_1()
         {
-            using (IDbConnection connection = new SqlConnection(ConnectionString))
+            using (IDbConnection connection = new SqlConnection(CONNECTION_STRING))
             {
                 return connection.QueryFirstOrDefault<AllPrimitive>(QUERY_SQL, new { Taken = TAKEN_1 });
             }
@@ -30,7 +30,7 @@ namespace SmartSql.Test.Performance.Query
         [Benchmark(Baseline = true)]
         public List<AllPrimitive> Query_10()
         {
-            using (IDbConnection connection = new SqlConnection(ConnectionString))
+            using (IDbConnection connection = new SqlConnection(CONNECTION_STRING))
             {
                 return connection.Query<AllPrimitive>(QUERY_SQL, new { Taken = TAKEN_10 }).ToList();
             }
@@ -39,7 +39,7 @@ namespace SmartSql.Test.Performance.Query
         [Benchmark(Baseline = true)]
         public List<AllPrimitive> Query_100()
         {
-            using (IDbConnection connection = new SqlConnection(ConnectionString))
+            using (IDbConnection connection = new SqlConnection(CONNECTION_STRING))
             {
                 return connection.Query<AllPrimitive>(QUERY_SQL, new { Taken = TAKEN_100 }).ToList();
             }
@@ -48,7 +48,7 @@ namespace SmartSql.Test.Performance.Query
         [Benchmark(Baseline = true)]
         public List<AllPrimitive> Query_1000()
         {
-            using (IDbConnection connection = new SqlConnection(ConnectionString))
+            using (IDbConnection connection = new SqlConnection(CONNECTION_STRING))
             {
                 return connection.Query<AllPrimitive>(QUERY_SQL, new { Taken = TAKEN_1000 }).ToList();
             }
@@ -57,7 +57,7 @@ namespace SmartSql.Test.Performance.Query
         [Benchmark()]
         public List<dynamic> Query_Dynamic_1000()
         {
-            using (IDbConnection connection = new SqlConnection(ConnectionString))
+            using (IDbConnection connection = new SqlConnection(CONNECTION_STRING))
             {
                 return connection.Query<dynamic>(QUERY_SQL, new { Taken = TAKEN_1000 }).ToList();
             }

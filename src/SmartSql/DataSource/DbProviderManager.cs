@@ -9,7 +9,7 @@ namespace SmartSql.DataSource
 {
     public class DbProviderManager
     {
-        private IDictionary<string, DbProvider> _dbProviders = new Dictionary<string, DbProvider>(StringComparer.CurrentCultureIgnoreCase);
+        private readonly IDictionary<string, DbProvider> _dbProviders = new Dictionary<string, DbProvider>(StringComparer.CurrentCultureIgnoreCase);
 
         public static readonly DbProvider SQLSERVER_DBPROVIDER = new DbProvider
         {

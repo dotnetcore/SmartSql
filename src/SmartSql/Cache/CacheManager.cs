@@ -184,7 +184,7 @@ namespace SmartSql.Cache
                 var isSuccess = cache.Provider.TryAdd(cacheKey, executionContext.Result.GetData());
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
-                    _logger.LogDebug($"HandleCache Cahce.Id:{cache.Id} try add from Cache.Key:{cacheKey.Key} ->{isSuccess}!");
+                    _logger.LogDebug($"HandleCache Cache.Id:{cache.Id} try add from Cache.Key:{cacheKey.Key} ->{isSuccess}!");
                 }
             }
         }

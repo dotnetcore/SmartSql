@@ -7,6 +7,6 @@ namespace SmartSql.Configuration.Tags
 {
     public class Where : Dynamic
     {
-        public override string Prepend { get { return "Where"; } }
+        public override string Prepend => "Where";
     }
 }

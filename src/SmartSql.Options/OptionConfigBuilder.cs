@@ -63,25 +63,25 @@ namespace SmartSql.Options
 
         protected override void BuildTypeHandlers()
         {
-            foreach (var typeHander in _configOptions.TypeHandlers)
+            foreach (var typeHandler in _configOptions.TypeHandlers)
             {
                 var typeHandlerConfig = new Configuration.TypeHandler
                 {
-                    Name = typeHander.Name,
-                    Properties = typeHander.Properties
+                    Name = typeHandler.Name,
+                    Properties = typeHandler.Properties
                 };
-                typeHandlerConfig.HandlerType = TypeUtils.GetType(typeHander.Type);
+                typeHandlerConfig.HandlerType = TypeUtils.GetType(typeHandler.Type);
 
                 if (typeHandlerConfig.HandlerType.IsGenericType)
                 {
-                    var csharpTypeStr = typeHander.MappedType;
+                    var csharpTypeStr = typeHandler.MappedType;
                     if (String.IsNullOrEmpty(csharpTypeStr))
                     {
                         throw new SmartSqlException("TypeHandler.MappedType can not be null.");
                     }
                     typeHandlerConfig.MappedType = TypeUtils.GetType(csharpTypeStr);
                 }
-                RegisterTypeHander(typeHandlerConfig);
+                RegisterTypeHandler(typeHandlerConfig);
             }
         }
 

@@ -21,11 +21,11 @@
     </ResultMap>
   </ResultMaps>
   <MultipleResultMaps>
-    <MultipleResultMap Id="QueryByPageMReuslt">
+    <MultipleResultMap Id="QueryByPageMResult">
       <Result Property="Total"/>
       <Result Property="List"/>
     </MultipleResultMap>
-    <MultipleResultMap Id="GetNested_RootMReuslt">
+    <MultipleResultMap Id="GetNested_RootMResult">
       <Root/>
       <Result Property="List"/>
     </MultipleResultMap>
@@ -51,11 +51,11 @@
       Select Top 10 T.* From T_Entity T
     </Statement>
 
-    <Statement Id="GetNested_Root" MultipleResultMap="GetNested_RootMReuslt">
+    <Statement Id="GetNested_Root" MultipleResultMap="GetNested_RootMResult">
       Select Count(1) As Total From T_Entity;
       Select Top 10 T.* From T_Entity T
     </Statement>
-    <Statement Id="MQueryByPage" MultipleResultMap="QueryByPageMReuslt">
+    <Statement Id="MQueryByPage" MultipleResultMap="QueryByPageMResult">
       Select Count(1) From T_Entity;
       Select Top 10 T.* From T_Entity T
     </Statement>

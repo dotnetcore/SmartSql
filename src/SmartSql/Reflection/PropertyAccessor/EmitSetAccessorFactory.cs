@@ -10,7 +10,7 @@ namespace SmartSql.Reflection.PropertyAccessor
 {
     public class EmitSetAccessorFactory : ISetAccessorFactory
     {
-        private Dictionary<PropertyInfo, Action<object, object>> _cachedSet = new Dictionary<PropertyInfo, Action<object, object>>();
+        private readonly Dictionary<PropertyInfo, Action<object, object>> _cachedSet = new Dictionary<PropertyInfo, Action<object, object>>();
 
         public Action<object, object> Create(Type targetType, string propertyName)
         {

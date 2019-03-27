@@ -141,7 +141,7 @@ namespace SmartSql.Test.Unit.DbSessions
         [Fact]
         public void InsertFromSqlParameters()
         {
-            var insertParamters = RequestConvert.Instance.ToSqlParameters(new AllPrimitive
+            var insertParameters = RequestConvert.Instance.ToSqlParameters(new AllPrimitive
             {
                 DateTime = DateTime.Now,
                 String = "SmartSql",
@@ -150,7 +150,7 @@ namespace SmartSql.Test.Unit.DbSessions
             var id = DbSession.ExecuteScalar<long>(new RequestContext
             {
                 RealSql = INSERT_SQL,
-                Request = insertParamters
+                Request = insertParameters
             });
             Assert.NotEqual(0, id);
         }

@@ -21,8 +21,8 @@ namespace SmartSql
                 throw new ArgumentNullException(nameof(alias));
             }
 
-            Container.TryGetValue(alias, out var smartSqlConfig);
-            return smartSqlConfig;
+            Container.TryGetValue(alias, out var smartSqlBuilder);
+            return smartSqlBuilder;
         }
         public bool TryRegister(string alias, SmartSqlBuilder smartSqlBuilder)
         {

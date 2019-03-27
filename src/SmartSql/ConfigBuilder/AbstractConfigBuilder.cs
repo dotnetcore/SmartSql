@@ -60,7 +60,7 @@ namespace SmartSql.ConfigBuilder
             if (importProperties != null) { SmartSqlConfig.Properties.Import(importProperties); }
         }
 
-        protected void RegisterTypeHander(TypeHandler typeHandlerConfig)
+        protected void RegisterTypeHandler(TypeHandler typeHandlerConfig)
         {
             SmartSqlConfig.TypeHandlerFactory.Register(typeHandlerConfig);
         }

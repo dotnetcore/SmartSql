@@ -8,8 +8,8 @@ namespace SmartSql.TypeHandlers
 {
     public class TypeHandlerFactory : ITypeHandlerFactory
     {
-        private readonly static Type ENUM_TYPE_HANDLER_TYPE = typeof(EnumTypeHandler<>);
-        private readonly static Type NULLABLE_ENUM_TYPE_HANDLER_TYPE = typeof(NullableEnumTypeHandler<>);
+        private static readonly Type ENUM_TYPE_HANDLER_TYPE = typeof(EnumTypeHandler<>);
+        private static readonly Type NULLABLE_ENUM_TYPE_HANDLER_TYPE = typeof(NullableEnumTypeHandler<>);
 
         private readonly ConcurrentDictionary<Type, ITypeHandler> _type_Handler_Map = new ConcurrentDictionary<Type, ITypeHandler>();
         private readonly ConcurrentDictionary<String, ITypeHandler> _name_Handler_Map = new ConcurrentDictionary<String, ITypeHandler>();

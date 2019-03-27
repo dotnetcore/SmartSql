@@ -11,19 +11,17 @@ namespace SmartSql.Configuration.Tags
         public override bool IsCondition(RequestContext context)
         {
             Object reqVal = EnsurePropertyValue(context);
-            if (reqVal == null)
+            switch (reqVal)
             {
-                return false;
+                case null:
+                    return false;
+                case string reqStr:
+                    return !String.IsNullOrEmpty(reqStr);
+                case IEnumerable reqEnum:
+                    return reqEnum.GetEnumerator().MoveNext();
+                default:
+                    return reqVal.ToString().Length > 0;
             }
-            if (reqVal is string)
-            {
-                return !String.IsNullOrEmpty(reqVal as string);
-            }
-            if (reqVal is IEnumerable)
-            {
-                return (reqVal as IEnumerable).GetEnumerator().MoveNext();
-            }
-            return reqVal.ToString().Length > 0;
         }
     }
 }

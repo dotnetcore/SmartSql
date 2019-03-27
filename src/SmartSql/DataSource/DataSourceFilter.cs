@@ -19,7 +19,7 @@ namespace SmartSql.DataSource
         /// <summary>
         /// 权重筛选器
         /// </summary>
-        private WeightFilter<AbstractDataSource> _weightFilter = new WeightFilter<AbstractDataSource>();
+        private readonly WeightFilter<AbstractDataSource> _weightFilter = new WeightFilter<AbstractDataSource>();
 
         public AbstractDataSource Elect(RequestContext context)
         {

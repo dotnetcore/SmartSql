@@ -127,14 +127,12 @@ namespace SmartSql.ConfigBuilder
             database.Write = ParseWriteDataSource(writeDataSourceNode);
             database.Write.DbProvider = database.DbProvider;
             var readDataSourceNodes = databaseNode.SelectNodes($"{CONFIG_PREFIX}:Read", XmlNsManager);
-            if (readDataSourceNodes != null)
+            if (readDataSourceNodes == null) return;
+            foreach (XmlNode readNode in readDataSourceNodes)
             {
-                foreach (XmlNode readNode in readDataSourceNodes)
-                {
-                    var readDb = ParseReadDataSource(readNode);
-                    readDb.DbProvider = database.DbProvider;
-                    database.Reads.Add(readDb.Name, readDb);
-                }
+                var readDb = ParseReadDataSource(readNode);
+                readDb.DbProvider = database.DbProvider;
+                database.Reads.Add(readDb.Name, readDb);
             }
         }
 
@@ -268,7 +266,7 @@ namespace SmartSql.ConfigBuilder
                 }
                 typeHandlerConfig.MappedType = TypeUtils.GetType(csharpTypeStr);
             }
-            RegisterTypeHander(typeHandlerConfig);
+            RegisterTypeHandler(typeHandlerConfig);
         }
 
 
@@ -278,12 +276,10 @@ namespace SmartSql.ConfigBuilder
         {
             var tagBuilderXPath = $"{CONFIG_PREFIX}:TagBuilders/{CONFIG_PREFIX}:TagBuilder";
             var tagBuilderNodes = XmlConfigRoot.SelectNodes(tagBuilderXPath, XmlNsManager);
-            if (tagBuilderNodes != null)
+            if (tagBuilderNodes == null) return;
+            foreach (XmlNode tagBuilderNode in tagBuilderNodes)
             {
-                foreach (XmlNode tagBuilderNode in tagBuilderNodes)
-                {
-                    BuildTagBuilder(tagBuilderNode);
-                }
+                BuildTagBuilder(tagBuilderNode);
             }
         }
         private void BuildTagBuilder(XmlNode tagBuilderNode)
@@ -308,12 +304,10 @@ namespace SmartSql.ConfigBuilder
         {
             var sqlMapXPath = $"{CONFIG_PREFIX}:SmartSqlMaps/{CONFIG_PREFIX}:SmartSqlMap";
             var sqlMapNodes = XmlConfigRoot.SelectNodes(sqlMapXPath, XmlNsManager);
-            if (sqlMapNodes != null)
+            if (sqlMapNodes == null) return;
+            foreach (XmlNode sqlMapNode in sqlMapNodes)
             {
-                foreach (XmlNode sqlMapNode in sqlMapNodes)
-                {
-                    BuildSqlMap(sqlMapNode);
-                }
+                BuildSqlMap(sqlMapNode);
             }
         }
         protected void BuildSqlMap(XmlNode sqlMapNode)

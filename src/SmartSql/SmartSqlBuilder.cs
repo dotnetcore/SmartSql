@@ -146,9 +146,11 @@ namespace SmartSql
             ConfigBuilder = new NativeConfigBuilder(smartSqlConfig);
             return this;
         }
+
         /// <summary>
         /// Xml 配置方式构建
         /// </summary>
+        /// <param name="resourceType"></param>
         /// <param name="smartSqlMapConfig"></param>
         /// <returns></returns>
         public SmartSqlBuilder UseXmlConfig(ResourceType resourceType = ResourceType.File

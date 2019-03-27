@@ -8,10 +8,10 @@ namespace SmartSql.Reflection.TypeConstants
 {
     public static class TypeHandlerFactoryType
     {
-        public readonly static Type Type = typeof(ITypeHandlerFactory);
+        public static readonly Type Type = typeof(ITypeHandlerFactory);
         public static class Method
         {
-            public readonly static MethodInfo Get = Type.GetMethod(nameof(ITypeHandlerFactory.Get), new Type[] { TypeType.Type });
+            public static readonly MethodInfo Get = Type.GetMethod(nameof(ITypeHandlerFactory.Get), new Type[] { TypeType.Type });
         }
     }
 }

@@ -17,21 +17,21 @@ namespace SmartSql.DyRepository
 {
     public class EmitRepositoryBuilder : IRepositoryBuilder
     {
-        private ScopeTemplateParser _templateParser;
+        private readonly ScopeTemplateParser _templateParser;
         private AssemblyBuilder _assemblyBuilder;
         private ModuleBuilder _moduleBuilder;
-        private Func<Type, MethodInfo, String> _sqlIdNamingConvert;
+        private readonly Func<Type, MethodInfo, String> _sqlIdNamingConvert;
         private readonly ILogger _logger;
         private readonly StatementAnalyzer _statementAnalyzer;
         public EmitRepositoryBuilder(
-             string scope_template
+             string scopeTemplate
             , Func<Type, MethodInfo, String> sqlIdNamingConvert
             , ILogger logger
             )
         {
             _sqlIdNamingConvert = sqlIdNamingConvert;
             _logger = logger;
-            _templateParser = new ScopeTemplateParser(scope_template);
+            _templateParser = new ScopeTemplateParser(scopeTemplate);
             _statementAnalyzer = new StatementAnalyzer();
             InitAssembly();
         }
@@ -63,10 +63,10 @@ namespace SmartSql.DyRepository
         }
         private void BuildInternalGet(TypeBuilder typeBuilder, MethodInfo methodInfo, FieldBuilder sqlMapperField)
         {
-            var implMehtod = typeBuilder.DefineMethod(methodInfo.Name
+            var implMethod = typeBuilder.DefineMethod(methodInfo.Name
             , MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Final
             , methodInfo.ReturnType, Type.EmptyTypes);
-            var ilGen = implMehtod.GetILGenerator();
+            var ilGen = implMethod.GetILGenerator();
             ilGen.LoadArg(0);
             ilGen.FieldGet(sqlMapperField);
             ilGen.Return();
@@ -82,7 +82,7 @@ namespace SmartSql.DyRepository
             }
             var returnType = methodInfo.ReturnType;
 
-            var implMehtod = typeBuilder.DefineMethod(methodInfo.Name
+            var implMethod = typeBuilder.DefineMethod(methodInfo.Name
                 , MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Final
                 , returnType, paramTypes);
 
@@ -92,7 +92,7 @@ namespace SmartSql.DyRepository
             {
                 var genericArgs = methodInfo.GetGenericArguments();
                 var gArgNames = genericArgs.Select(gArg => gArg.Name).ToArray();
-                var defineGenericArgs = implMehtod.DefineGenericParameters(gArgNames);
+                var defineGenericArgs = implMethod.DefineGenericParameters(gArgNames);
                 for (int i = 0; i < gArgNames.Length; i++)
                 {
                     var genericArg = genericArgs[i];
@@ -102,7 +102,7 @@ namespace SmartSql.DyRepository
             }
 
             StatementAttribute statementAttr = PreStatement(interfaceType, scope, methodInfo, returnType, isTaskReturnType, smartSqlConfig);
-            var ilGen = implMehtod.GetILGenerator();
+            var ilGen = implMethod.GetILGenerator();
             ilGen.DeclareLocal(RequestContextType.Type);
             ilGen.DeclareLocal(SqlParameterType.SqlParameterCollection);
             if (paramTypes.Length == 1 && paramTypes.First() == RequestContextType.Type)
@@ -417,7 +417,7 @@ namespace SmartSql.DyRepository
         #endregion
         public Type Build(Type interfaceType, SmartSqlConfig smartSqlConfig, string scope = "")
         {
-            string implName = $"{interfaceType.Name.TrimStart('I')}_Impl_{Guid.NewGuid().ToString("N")}";
+            string implName = $"{interfaceType.Name.TrimStart('I')}_Impl_{Guid.NewGuid():N}";
             var typeBuilder = _moduleBuilder.DefineType(implName, TypeAttributes.Public);
             typeBuilder.AddInterfaceImplementation(interfaceType);
             var sqlMapperField = typeBuilder.DefineField("sqlMapper", ISqlMapperType.Type, FieldAttributes.Family);

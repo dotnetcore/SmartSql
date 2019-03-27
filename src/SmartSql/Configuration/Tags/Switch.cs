@@ -14,21 +14,14 @@ namespace SmartSql.Configuration.Tags
         {
             var matchedTag = ChildTags.FirstOrDefault(tag =>
             {
-                if (tag is Case)
+                if (tag is Case caseTag)
                 {
-                    var caseTag = tag as Case;
                     return caseTag.IsCondition(context);
                 }
                 return false;
-            });
-            if (matchedTag == null)
-            {
-                matchedTag = ChildTags.FirstOrDefault(tag => tag is Default);
-            }
-            if (matchedTag != null)
-            {
-                matchedTag.BuildSql(context);
-            }
+            }) ?? ChildTags.FirstOrDefault(tag => tag is Default);
+
+            matchedTag?.BuildSql(context);
 
         }
 
@@ -38,15 +31,8 @@ namespace SmartSql.Configuration.Tags
             {
                 var reqVal = EnsurePropertyValue(context);
                 if (reqVal == null) { return false; }
-                string reqValStr = string.Empty;
-                if (reqVal is Enum)
-                {
-                    reqValStr = Convert.ToInt64(reqVal).ToString();
-                }
-                else
-                {
-                    reqValStr = reqVal.ToString();
-                }
+
+                var reqValStr = reqVal is Enum ? Convert.ToInt64(reqVal).ToString() : reqVal.ToString();
                 return reqValStr.Equals(CompareValue);
             }
         }

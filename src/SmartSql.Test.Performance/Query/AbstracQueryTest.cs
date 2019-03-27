@@ -12,7 +12,7 @@ namespace SmartSql.Test.Performance.Query
     public abstract class AbstracQueryTest
     {
         public const String DbType = "SqlServer";
-        public const String ConnectionString = "Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True";
+        public const String CONNECTION_STRING = "Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True";
         public const int TAKEN_1 = 1;
         public const int TAKEN_10 = 10;
         public const int TAKEN_100 = 100;

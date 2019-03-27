@@ -8,7 +8,7 @@ namespace SmartSql.Utils
 {
     public class StatementAnalyzer
     {
-        private ConcurrentDictionary<String, StatementType> _statementTypeCache = new ConcurrentDictionary<String, StatementType>();
+        private readonly ConcurrentDictionary<String, StatementType> _statementTypeCache = new ConcurrentDictionary<String, StatementType>();
         public StatementType Analyse(string realSql)
         {
             return _statementTypeCache.GetOrAdd(realSql, AnalyseImpl);

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using SmartSql.Configuration;
 using SmartSql.DbSession;
 using SmartSql.Exceptions;

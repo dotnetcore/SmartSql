@@ -34,12 +34,10 @@ namespace SmartSql.Configuration.Tags
 
         public virtual void BuildChildSql(RequestContext context)
         {
-            if (ChildTags != null && ChildTags.Count > 0)
+            if (ChildTags == null || ChildTags.Count <= 0) return;
+            foreach (var childTag in ChildTags)
             {
-                foreach (var childTag in ChildTags)
-                {
-                    childTag.BuildSql(context);
-                }
+                childTag.BuildSql(context);
             }
         }
         protected virtual String GetDbProviderPrefix(RequestContext context)

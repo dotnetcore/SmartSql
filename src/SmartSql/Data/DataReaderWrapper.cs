@@ -95,7 +95,6 @@ namespace SmartSql.Data
 
         public override bool Read() => SourceDataReader.Read();
         public override void Close() => SourceDataReader.Close();
-        public override int VisibleFieldCount => base.VisibleFieldCount;
         public override bool Equals(object obj) => SourceDataReader.Equals(obj);
         public override T GetFieldValue<T>(int ordinal) => SourceDataReader.GetFieldValue<T>(ordinal);
         public override Task<T> GetFieldValueAsync<T>(int ordinal, CancellationToken cancellationToken) => SourceDataReader.GetFieldValueAsync<T>(ordinal, cancellationToken);

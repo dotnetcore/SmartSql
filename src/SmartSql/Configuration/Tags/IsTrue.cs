@@ -7,9 +7,9 @@ namespace SmartSql.Configuration.Tags
         public override bool IsCondition(RequestContext context)
         {
             Object reqVal = EnsurePropertyValue(context);
-            if (reqVal is Boolean)
+            if (reqVal is bool val)
             {
-                return (bool)reqVal == true;
+                return val == true;
             }
             return false;
         }

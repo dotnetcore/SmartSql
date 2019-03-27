@@ -15,7 +15,7 @@ namespace SmartSql.DbSession
 {
     public class DefaultDbSession : IDbSession
     {
-        private ILogger<DefaultDbSession> _logger;
+        private readonly ILogger<DefaultDbSession> _logger;
 
         public event DbSessionEventHandler Opened;
         public event DbSessionEventHandler TransactionBegan;

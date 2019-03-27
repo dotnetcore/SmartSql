@@ -89,7 +89,7 @@ namespace SmartSql
             var columns = EntityMetaDataCache<TEntity>.Columns;
             var isFirst = true;
             var columnBuilder = new StringBuilder();
-            var paramBuidler = new StringBuilder();
+            var paramBuilder = new StringBuilder();
 
             foreach (var paramKV in dyParams)
             {
@@ -98,14 +98,14 @@ namespace SmartSql
                 if (!isFirst)
                 {
                     columnBuilder.Append(",");
-                    paramBuidler.Append(",");
+                    paramBuilder.Append(",");
                 }
                 isFirst = false;
                 AppendColumnName(columnBuilder, dbProvider, column.Name);
-                AppendParameterName(paramBuidler, dbProvider, column.Name);
+                AppendParameterName(paramBuilder, dbProvider, column.Name);
             }
             var sqlBuilder = new StringBuilder();
-            sqlBuilder.AppendFormat("Insert Into {0} ({1}) Values ({2})", tableName, columnBuilder.ToString(), paramBuidler.ToString());
+            sqlBuilder.AppendFormat("Insert Into {0} ({1}) Values ({2})", tableName, columnBuilder.ToString(), paramBuilder.ToString());
             return sqlBuilder;
         }
         #region Delete

@@ -8,7 +8,7 @@ namespace SmartSql.DyRepository
 {
     public class RepositoryFactory : IRepositoryFactory
     {
-        private IDictionary<Type, object> _cachedRepository = new Dictionary<Type, object>();
+        private readonly IDictionary<Type, object> _cachedRepository = new Dictionary<Type, object>();
 
         private readonly IRepositoryBuilder _repositoryBuilder;
         private readonly ILogger _logger;

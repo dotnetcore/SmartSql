@@ -19,10 +19,10 @@ namespace SmartSql.Utils
         public WeightSource Elect(IEnumerable<WeightSource> inWeightSources)
         {
             var random = new Random((int)Stopwatch.GetTimestamp());
-            int totalWeight = inWeightSources.Sum(source => source.Weight);
+            var weightSources = inWeightSources.ToList();
+            int totalWeight = weightSources.Sum(source => source.Weight);
             int position = random.Next(1, totalWeight);
-            var sel_source = FindByPosition(inWeightSources, position);
-            return sel_source;
+            return FindByPosition(weightSources, position);
         }
 
         private WeightSource FindByPosition(IEnumerable<WeightSource> sources, int position)

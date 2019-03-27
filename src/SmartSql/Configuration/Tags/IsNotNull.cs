@@ -8,8 +8,7 @@ namespace SmartSql.Configuration.Tags
     {
         public override bool IsCondition(RequestContext context)
         {
-            Object reqVal = EnsurePropertyValue(context);
-            return reqVal != null;
+            return EnsurePropertyValue(context) != null;
         }
     }
 }

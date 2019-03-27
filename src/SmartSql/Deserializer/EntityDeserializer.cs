@@ -69,7 +69,7 @@ namespace SmartSql.Deserializer
             return list;
         }
 
-        private Func<DataReaderWrapper, RequestContext, TReuslt> GetDeserialize<TReuslt>(ExecutionContext executionContext)
+        private Func<DataReaderWrapper, RequestContext, TResult> GetDeserialize<TResult>(ExecutionContext executionContext)
         {
             var key = GenerateKey(executionContext);
             if (!_deserCache.TryGetValue(key, out var deser))
@@ -78,16 +78,16 @@ namespace SmartSql.Deserializer
                 {
                     if (!_deserCache.TryGetValue(key, out deser))
                     {
-                        deser = CreateDeserialize<TReuslt>(executionContext);
+                        deser = CreateDeserialize<TResult>(executionContext);
                         _deserCache.TryAdd(key, deser);
                     }
                 }
             }
-            return deser as Func<DataReaderWrapper, RequestContext, TReuslt>;
+            return deser as Func<DataReaderWrapper, RequestContext, TResult>;
         }
-        private Delegate CreateDeserialize<TReuslt>(ExecutionContext executionContext)
+        private Delegate CreateDeserialize<TResult>(ExecutionContext executionContext)
         {
-            var resultType = typeof(TReuslt);
+            var resultType = typeof(TResult);
             var dataReader = executionContext.DataReaderWrapper;
 
             var resultMap = executionContext.Request.GetCurrentResultMap();
@@ -152,33 +152,33 @@ namespace SmartSql.Deserializer
 
             ilGen.LoadLocalVar(0);
             ilGen.Return();
-            return deserFunc.CreateDelegate(typeof(Func<DataReaderWrapper, RequestContext, TReuslt>));
+            return deserFunc.CreateDelegate(typeof(Func<DataReaderWrapper, RequestContext, TResult>));
         }
         private void LoadPropertyValue(ILGenerator ilGen, int colIndex, Type propertyType, Property resultProperty)
         {
             MethodInfo getValMethod = null;
             if (resultProperty?.Handler == null)
             {
-                LoadTypeHanlderInvokeArgs(ilGen, colIndex, propertyType);
+                LoadTypeHandlerInvokeArgs(ilGen, colIndex, propertyType);
                 getValMethod = TypeHandlerCacheType.GetGetValueMethod(propertyType);
             }
             else
             {
-                LoadTypeHanlder(ilGen, resultProperty);
-                LoadTypeHanlderInvokeArgs(ilGen, colIndex, propertyType);
+                LoadTypeHandler(ilGen, resultProperty);
+                LoadTypeHandlerInvokeArgs(ilGen, colIndex, propertyType);
                 getValMethod = resultProperty.Handler.GetType().GetMethod("GetValue");
             }
             ilGen.Call(getValMethod);
         }
 
-        private void LoadTypeHanlder(ILGenerator ilGen, Property resultProperty)
+        private void LoadTypeHandler(ILGenerator ilGen, Property resultProperty)
         {
             ilGen.LoadArg(1);
             ilGen.LoadString(resultProperty.Column);
             ilGen.Call(RequestContextType.Method.GetPropertyHandler);
         }
 
-        private void LoadTypeHanlderInvokeArgs(ILGenerator ilGen, int colIndex, Type propertyType)
+        private void LoadTypeHandlerInvokeArgs(ILGenerator ilGen, int colIndex, Type propertyType)
         {
             ilGen.LoadArg(0);
             ilGen.LoadInt32(colIndex);

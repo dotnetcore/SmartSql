@@ -40,8 +40,8 @@ namespace SmartSql.Cache.Redis
         public void Flush()
         {
             var serverEndPoint = _redis.GetEndPoints()[0];
-            var servier = _redis.GetServer(serverEndPoint);
-            var keys = servier.Keys(_databaseId, pattern: $"{_prefix}*").ToArray();
+            var server = _redis.GetServer(serverEndPoint);
+            var keys = server.Keys(_databaseId, pattern: $"{_prefix}*").ToArray();
             if (keys.Length > 0)
             {
                 _database.KeyDelete(keys.ToArray());

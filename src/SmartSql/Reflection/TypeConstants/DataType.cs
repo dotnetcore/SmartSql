@@ -8,10 +8,10 @@ namespace SmartSql.Reflection.TypeConstants
 {
     public static class DataType
     {
-        public readonly static Type Enumerable = typeof(IEnumerable);
-        public readonly static Type DataSet = typeof(DataSet);
-        public readonly static Type DataTable = typeof(DataTable);
-        public readonly static Type Dictionary = typeof(IDictionary);
-        public readonly static Type DataReaderWrapper = typeof(DataReaderWrapper);
+        public static readonly Type Enumerable = typeof(IEnumerable);
+        public static readonly Type DataSet = typeof(DataSet);
+        public static readonly Type DataTable = typeof(DataTable);
+        public static readonly Type Dictionary = typeof(IDictionary);
+        public static readonly Type DataReaderWrapper = typeof(DataReaderWrapper);
     }
 }

@@ -64,10 +64,11 @@ namespace SmartSql
         /// <param name="requestContext"></param>
         /// <returns></returns>
         Task<IEnumerable<TResult>> QueryAsync<TResult>(RequestContext requestContext);
+
         /// <summary>
         /// 查询返回单个实体
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
         Task<TResult> QuerySingleAsync<TResult>(RequestContext requestContext);
