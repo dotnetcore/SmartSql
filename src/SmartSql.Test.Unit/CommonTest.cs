@@ -23,7 +23,7 @@ namespace SmartSql.Test.Unit
             IDictionary<string, object> exObj = new ExpandoObject();
             exObj.Add("1", 2);
             list.Add(exObj);
-            var type = typeof(ITypeHandler<>);
+            var type = typeof(ITypeHandler<,>);
             var typeStr = Assembly.Load("SmartSql").GetType("SmartSql.TypeHandlers.ITypeHandler`1");
         }
     }

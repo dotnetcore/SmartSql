@@ -51,7 +51,7 @@ namespace SmartSql.Reflection.Convert
                 ilGen.LoadType(prop.PropertyType);
                 ilGen.New(SqlParameterType.Ctor.SqlParameter);
                 ilGen.Dup();
-                var getHandlerMethod = TypeHandlerCacheType.GetHandlerMethod(prop.PropertyType);
+                var getHandlerMethod = TypeHandlerCacheType.GetHandlerMethod(prop.PropertyType, AnyFieldTypeType.Type);
                 ilGen.Call(getHandlerMethod);
                 ilGen.Call(SqlParameterType.Method.SetTypeHandler);
                 ilGen.Call(SqlParameterType.Method.Add);

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SmartSql.TypeHandlers
 {
-    public class NullableDateTimeTypeHandler : AbstractNullableTypeHandler<DateTime?>
+    public class NullableDateTimeTypeHandler : AbstractNullableTypeHandler<DateTime?, DateTime>
     {
         protected override DateTime? GetValueWhenNotNull(DataReaderWrapper dataReader, int columnIndex)
         {

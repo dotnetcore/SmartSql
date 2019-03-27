@@ -4,7 +4,7 @@ using System.Data;
 
 namespace SmartSql.TypeHandlers
 {
-    public class EnumTypeHandler<TEnum> : AbstractTypeHandler<TEnum>
+    public class EnumTypeHandler<TEnum> : AbstractTypeHandler<TEnum, AnyFieldType>
     {
         private readonly Type _enumUnderlyingType;
         public EnumTypeHandler()

@@ -13,7 +13,7 @@ namespace SmartSql.Deserializer
             var dataReader = executionContext.DataReaderWrapper;
             if (!dataReader.HasRows) return default(TResult);
             dataReader.Read();
-            return TypeHandlerCache<TResult>.Handler.GetValue(dataReader, VALUE_ORDINAL,executionContext.Result.ResultType); ;
+            return TypeHandlerCache<TResult, AnyFieldType>.Handler.GetValue(dataReader, VALUE_ORDINAL, executionContext.Result.ResultType); ;
         }
         public IList<TResult> ToList<TResult>(ExecutionContext executionContext)
         {
@@ -21,7 +21,7 @@ namespace SmartSql.Deserializer
             var dataReader = executionContext.DataReaderWrapper;
             if (!dataReader.HasRows) return list;
 
-            var typeHandler = TypeHandlerCache<TResult>.Handler;
+            var typeHandler = TypeHandlerCache<TResult, AnyFieldType>.Handler;
             while (dataReader.Read())
             {
                 var val = typeHandler.GetValue(dataReader, VALUE_ORDINAL, executionContext.Result.ResultType);
@@ -35,7 +35,7 @@ namespace SmartSql.Deserializer
             var dataReader = executionContext.DataReaderWrapper;
             if (!dataReader.HasRows) return default(TResult);
             await dataReader.ReadAsync();
-            return TypeHandlerCache<TResult>.Handler.GetValue(dataReader, VALUE_ORDINAL, executionContext.Result.ResultType); 
+            return TypeHandlerCache<TResult, AnyFieldType>.Handler.GetValue(dataReader, VALUE_ORDINAL, executionContext.Result.ResultType);
         }
 
         public async Task<IList<TResult>> ToListAsync<TResult>(ExecutionContext executionContext)
@@ -43,7 +43,7 @@ namespace SmartSql.Deserializer
             var list = new List<TResult>();
             var dataReader = executionContext.DataReaderWrapper;
             if (!dataReader.HasRows) return list;
-            var typeHandler = TypeHandlerCache<TResult>.Handler;
+            var typeHandler = TypeHandlerCache<TResult, AnyFieldType>.Handler;
             while (await dataReader.ReadAsync())
             {
                 var val = typeHandler.GetValue(dataReader, VALUE_ORDINAL, executionContext.Result.ResultType);

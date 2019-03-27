@@ -5,20 +5,22 @@ using System.Data;
 
 namespace SmartSql.TypeHandlers
 {
-    public abstract class AbstractTypeHandler<T> : ITypeHandler<T>
+    public abstract class AbstractTypeHandler<TProperty, TField> : ITypeHandler<TProperty, TField>
     {
         public Type MappedType { get; }
-        public T Default { get; }
+        public Type FieldType { get; }
+        public TProperty Default { get; }
         public bool IsNullable { get; }
 
         protected AbstractTypeHandler()
         {
-            MappedType = typeof(T);
-            Default = default(T);
+            MappedType = typeof(TProperty);
+            FieldType = typeof(TField);
+            Default = default(TProperty);
             IsNullable = Default == null;
         }
 
-        public abstract T GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType);
+        public abstract TProperty GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType);
 
         public virtual void Initialize(IDictionary<string, object> parameters)
         {

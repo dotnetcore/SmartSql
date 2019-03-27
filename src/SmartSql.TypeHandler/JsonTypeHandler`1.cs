@@ -8,7 +8,7 @@ using SmartSql.Data;
 
 namespace SmartSql.TypeHandler
 {
-    public class JsonTypeHandler<T> : AbstractNullableTypeHandler<T>
+    public class JsonTypeHandler<TProperty> : AbstractNullableTypeHandler<TProperty, String>
     {
         protected JsonSerializerSettings JsonSerializerSettings { get; }
 
@@ -49,11 +49,11 @@ namespace SmartSql.TypeHandler
             }
             base.Initialize(parameters);
         }
-        public override T GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
+        public override TProperty GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
-            if (dataReader.IsDBNull(columnIndex)) { return default(T); }
+            if (dataReader.IsDBNull(columnIndex)) { return default(TProperty); }
             var jsonStr = dataReader.GetString(columnIndex);
-            return JsonConvert.DeserializeObject<T>(jsonStr, JsonSerializerSettings);
+            return JsonConvert.DeserializeObject<TProperty>(jsonStr, JsonSerializerSettings);
         }
 
         public override void SetParameter(IDataParameter dataParameter, object parameterValue)

@@ -9,11 +9,12 @@ namespace SmartSql.TypeHandlers
     public interface ITypeHandler : IInitialize
     {
         Type MappedType { get; }
+        Type FieldType { get; }
         void SetParameter(IDataParameter dataParameter, object parameterValue);
     }
-    public interface ITypeHandler<out T> : ITypeHandler
+    public interface ITypeHandler<out TProperty, TField> : ITypeHandler
     {
-        T Default { get; }
-        T GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType);
+        TProperty Default { get; }
+        TProperty GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType);
     }
 }

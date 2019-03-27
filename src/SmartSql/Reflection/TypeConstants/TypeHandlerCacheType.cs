@@ -8,33 +8,40 @@ namespace SmartSql.Reflection.TypeConstants
 {
     public static class TypeHandlerCacheType
     {
-        public static readonly Type GenericType = typeof(TypeHandlerCache<>);
-        public static Type MakeGenericType(Type mappedType)
+        public static readonly Type GenericType = typeof(TypeHandlerCache<,>);
+        public static Type MakeGenericType(Type propertyType, Type fieldType)
         {
-            return GenericType.MakeGenericType(mappedType);
+            return GenericType.MakeGenericType(propertyType, fieldType);
         }
-        public static MethodInfo GetSetHandlerMethod(Type mappedType)
+        public static MethodInfo GetSetHandlerMethod(Type propertyType, Type fieldType)
         {
-            return MakeGenericType(mappedType).
+            return MakeGenericType(propertyType, fieldType).
                 GetMethod("SetHandler", BindingFlags.Static | BindingFlags.NonPublic);
         }
-        public static MethodInfo GetGetValueMethod(Type mappedType)
+        public static MethodInfo GetGetValueMethod(Type propertyType, Type fieldType)
         {
-            return MakeGenericType(mappedType).
+            return MakeGenericType(propertyType, fieldType).
                 GetMethod("GetValue");
         }
-        public static MethodInfo GetGetObjectValueMethod(Type mappedType)
+        public static MethodInfo GetGetObjectValueMethod(Type propertyType, Type fieldType)
         {
-            return MakeGenericType(mappedType).
+            return MakeGenericType(propertyType, fieldType).
                 GetMethod("GetObjectValue");
         }
         public static void SetHandler(ITypeHandler typeHandler)
         {
-            GetSetHandlerMethod(typeHandler.MappedType).Invoke(null, new object[] { typeHandler });
+            GetSetHandlerMethod(typeHandler.MappedType, typeHandler.FieldType)
+                .Invoke(null, new object[] { typeHandler });
         }
-        public static MethodInfo GetHandlerMethod(Type mappedType)
+        public static ITypeHandler GetHandler(Type propertyType, Type fieldType)
         {
-            return MakeGenericType(mappedType).GetMethod("get_Handler");
+            return GetHandlerMethod(propertyType, fieldType)
+                .Invoke(null, null) as ITypeHandler;
+        }
+        public static MethodInfo GetHandlerMethod(Type propertyType, Type fieldType)
+        {
+            return MakeGenericType(propertyType, fieldType)
+                .GetMethod("get_Handler");
         }
     }
 }

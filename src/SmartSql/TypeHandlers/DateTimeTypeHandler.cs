@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SmartSql.TypeHandlers
 {
-    public class DateTimeTypeHandler : AbstractTypeHandler<DateTime>
+    public class DateTimeTypeHandler : AbstractTypeHandler<DateTime, DateTime>
     {
         public override DateTime GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {

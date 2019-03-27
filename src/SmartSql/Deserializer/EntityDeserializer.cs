@@ -10,6 +10,7 @@ using System.Reflection.Emit;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using SmartSql.Configuration;
+using SmartSql.TypeHandlers;
 
 namespace SmartSql.Deserializer
 {
@@ -94,7 +95,7 @@ namespace SmartSql.Deserializer
 
             var constructorMap = resultMap?.Constructor;
             var columns = Enumerable.Range(0, dataReader.FieldCount)
-                .Select(i => new { Index = i, Name = dataReader.GetName(i) })
+                .Select(i => new { Index = i, Name = dataReader.GetName(i), FieldType = dataReader.GetFieldType(i) })
                 .ToDictionary((col) => col.Name);
 
             var deserFunc = new DynamicMethod("Deserialize" + Guid.NewGuid().ToString("N"), resultType, new[] { DataType.DataReaderWrapper, RequestContextType.Type }, resultType, true);
@@ -115,7 +116,7 @@ namespace SmartSql.Deserializer
                 foreach (var arg in constructorMap.Args)
                 {
                     var col = columns[arg.Column];
-                    LoadPropertyValue(ilGen, col.Index, arg.CSharpType, null);
+                    LoadPropertyValue(ilGen, executionContext.SmartSqlConfig.TypeHandlerFactory, col.Index, arg.CSharpType, col.FieldType, null);
                 }
             }
             if (resultCtor == null)
@@ -130,6 +131,7 @@ namespace SmartSql.Deserializer
                 var colName = col.Key;
                 var propertyName = colName;
                 var colIndex = col.Value.Index;
+                var filedType = col.Value.FieldType;
                 Property resultProperty = null;
                 if (resultMap?.Properties != null && resultMap.Properties.TryGetValue(colName, out resultProperty))
                 {
@@ -140,13 +142,7 @@ namespace SmartSql.Deserializer
                 if (!property.CanWrite) { continue; }
                 var propertyType = property.PropertyType;
                 ilGen.LoadLocalVar(0);
-                #region Check Enum
-                if ((Nullable.GetUnderlyingType(propertyType) ?? propertyType).IsEnum)
-                {
-                    executionContext.SmartSqlConfig.TypeHandlerFactory.Get(propertyType);
-                }
-                #endregion
-                LoadPropertyValue(ilGen, colIndex, propertyType, resultProperty);
+                LoadPropertyValue(ilGen, executionContext.SmartSqlConfig.TypeHandlerFactory, colIndex, propertyType, filedType, resultProperty);
                 ilGen.Call(property.SetMethod);
             }
 
@@ -154,13 +150,33 @@ namespace SmartSql.Deserializer
             ilGen.Return();
             return deserFunc.CreateDelegate(typeof(Func<DataReaderWrapper, RequestContext, TResult>));
         }
-        private void LoadPropertyValue(ILGenerator ilGen, int colIndex, Type propertyType, Property resultProperty)
+        private void LoadPropertyValue(ILGenerator ilGen, ITypeHandlerFactory typeHandlerFactory, int colIndex, Type propertyType, Type fieldType, Property resultProperty)
         {
+            var propertyUnderType = (Nullable.GetUnderlyingType(propertyType) ?? propertyType);
+            var isEnum = propertyUnderType.IsEnum;
+            #region Check Enum
+            if (isEnum)
+            {
+                typeHandlerFactory.Get(propertyType);
+            }
+            #endregion
             MethodInfo getValMethod = null;
             if (resultProperty?.Handler == null)
             {
                 LoadTypeHandlerInvokeArgs(ilGen, colIndex, propertyType);
-                getValMethod = TypeHandlerCacheType.GetGetValueMethod(propertyType);
+                var mappedFieldType = fieldType;
+                if (isEnum)
+                {
+                    mappedFieldType = AnyFieldTypeType.Type;
+                }
+                else if (propertyUnderType != fieldType)
+                {
+                    if (TypeHandlerCacheType.GetHandler(propertyType, fieldType) == null)
+                    {
+                        mappedFieldType = AnyFieldTypeType.Type;
+                    }
+                }
+                getValMethod = TypeHandlerCacheType.GetGetValueMethod(propertyType, mappedFieldType);
             }
             else
             {

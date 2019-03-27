@@ -11,12 +11,13 @@ namespace SmartSql.TypeHandlers
     /// 静态TypeHandler缓存
     /// 此处使用静态类可能产生多SmartSql实例TypeHandler冲突的问题
     /// 后面可能优化为创建动态代理缓存类，Handler缓存到动态类字段中
-    /// public static ITypeHandler<TMappedType> {TMappedTypeName} ;
+    /// public static ITypeHandler<TProperty> {TMappedTypeName} ;
     /// </summary>
-    /// <typeparam name="TMappedType"></typeparam>
-    public static class TypeHandlerCache<TMappedType>
+    /// <typeparam name="TProperty"></typeparam>
+    /// <typeparam name="TField"></typeparam>
+    public static class TypeHandlerCache<TProperty, TField>
     {
-        public static ITypeHandler<TMappedType> Handler
+        public static ITypeHandler<TProperty, TField> Handler
         {
             get;
             private set;
@@ -25,11 +26,11 @@ namespace SmartSql.TypeHandlers
         {
             Handler.SetParameter(dataParameter, parameterValue);
         }
-        public static TMappedType GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
+        public static TProperty GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             return Handler.GetValue(dataReader, columnIndex, targetType);
         }
-        internal static void SetHandler(ITypeHandler<TMappedType> handler)
+        internal static void SetHandler(ITypeHandler<TProperty, TField> handler)
         {
             Handler = handler;
         }

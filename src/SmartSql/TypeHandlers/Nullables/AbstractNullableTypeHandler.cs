@@ -5,17 +5,17 @@ using System.Data;
 
 namespace SmartSql.TypeHandlers
 {
-    public abstract class AbstractNullableTypeHandler<T> : AbstractTypeHandler<T>
+    public abstract class AbstractNullableTypeHandler<TProperty, TField> : AbstractTypeHandler<TProperty, TField>
     {
-        public override T GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
+        public override TProperty GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             if (dataReader.IsDBNull(columnIndex)) { return Default; }
             return GetValueWhenNotNull(dataReader, columnIndex);
         }
 
-        protected virtual T GetValueWhenNotNull(DataReaderWrapper dataReader, int columnIndex)
+        protected virtual TProperty GetValueWhenNotNull(DataReaderWrapper dataReader, int columnIndex)
         {
-            return (T)dataReader.GetValue(columnIndex);
+            return (TProperty)dataReader.GetValue(columnIndex);
         }
     }
 }
