@@ -11,7 +11,7 @@ using SmartSql.DIExtension;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class SmartSqlExtensions
+    public static class SmartSqlDIExtensions
     {
         public static SmartSqlDIBuilder AddSmartSql(this IServiceCollection services, Func<IServiceProvider, SmartSqlBuilder> setup)
         {
