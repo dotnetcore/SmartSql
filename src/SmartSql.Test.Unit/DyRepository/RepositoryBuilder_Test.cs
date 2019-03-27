@@ -41,7 +41,7 @@ namespace SmartSql.Test.Unit.DyRepository
         {
             var sqlMapper = SmartSqlBuilder.GetSqlMapper();
             var repository = _repositoryFactory.CreateInstance(typeof(INoMapperRepository), sqlMapper) as INoMapperRepository;
-
+            var innerSqlMapper = repository.SqlMapper;
             var guid = repository.GetGuidFromDb();
         }
         [Fact]

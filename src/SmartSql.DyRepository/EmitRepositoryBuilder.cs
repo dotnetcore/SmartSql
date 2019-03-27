@@ -68,7 +68,7 @@ namespace SmartSql.DyRepository
             , methodInfo.ReturnType, Type.EmptyTypes);
             var ilGen = implMehtod.GetILGenerator();
             ilGen.LoadArg(0);
-            ilGen.FieldSet(sqlMapperField);
+            ilGen.FieldGet(sqlMapperField);
             ilGen.Return();
         }
         private void BuildMethod(Type interfaceType, TypeBuilder typeBuilder, MethodInfo methodInfo, FieldBuilder sqlMapperField, SmartSqlConfig smartSqlConfig, string scope)
