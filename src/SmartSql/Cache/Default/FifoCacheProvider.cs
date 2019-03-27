@@ -22,8 +22,11 @@ namespace SmartSql.Cache.Default
 
         public void Flush()
         {
-            _cacheKeys.Clear();
-            _cache.Clear();
+            lock (this)
+            {
+                _cacheKeys.Clear();
+                _cache.Clear();
+            }
         }
         public void Initialize(IDictionary<string, object> properties)
         {
@@ -50,7 +53,10 @@ namespace SmartSql.Cache.Default
         }
         public bool TryGetValue(CacheKey cacheKey, out object cacheItem)
         {
-            return _cache.TryGetValue(cacheKey, out cacheItem);
+            lock (this)
+            {
+                return _cache.TryGetValue(cacheKey, out cacheItem);
+            }
         }
     }
 }

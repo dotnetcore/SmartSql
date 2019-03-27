@@ -11,7 +11,6 @@ namespace SmartSql
 {
     public class SqlMapper : ISqlMapper
     {
-        private readonly ILogger<SqlMapper> _logger;
         public SmartSqlConfig SmartSqlConfig { get; }
         public IDbSessionStore SessionStore { get; }
 
@@ -19,7 +18,6 @@ namespace SmartSql
         {
             SmartSqlConfig = smartSqlConfig;
             SessionStore = smartSqlConfig.SessionStore;
-            _logger = SmartSqlConfig.LoggerFactory.CreateLogger<SqlMapper>();
         }
 
         public void BeginTransaction()
@@ -30,7 +28,6 @@ namespace SmartSql
             }
             SessionStore.Open().BeginTransaction();
         }
-
 
         public void BeginTransaction(IsolationLevel isolationLevel)
         {
@@ -50,10 +47,6 @@ namespace SmartSql
             }
             try
             {
-                if (_logger.IsEnabled(LogLevel.Debug))
-                {
-                    _logger.LogDebug($"CommitTransaction DbSession.");
-                }
                 session.CommitTransaction();
             }
             finally
@@ -71,10 +64,6 @@ namespace SmartSql
             }
             try
             {
-                if (_logger.IsEnabled(LogLevel.Debug))
-                {
-                    _logger.LogDebug($"RollbackTransaction DbSession.");
-                }
                 session.RollbackTransaction();
             }
             finally
