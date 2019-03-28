@@ -14,7 +14,7 @@ namespace SmartSql.TypeHandlers
     public class BooleanCharTypeHandler : AbstractTypeHandler<Boolean, Char>
     {
         public const char TRUE = '1';
-        public const char FALSE = '1';
+        public const char FALSE = '0';
         public override Boolean GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             var charVal = dataReader.GetChar(columnIndex);
