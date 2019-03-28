@@ -12,7 +12,7 @@ namespace SmartSql.Configuration.Tags
         public Statement Statement { get; set; }
         public ITag Parent { get; set; }
 
-        public void BuildSql(RequestContext context)
+        public void BuildSql(AbstractRequestContext context)
         {
             var nextId = IdGen.NextId();
             if (!context.Parameters.TryAdd(Id, nextId))
@@ -22,7 +22,7 @@ namespace SmartSql.Configuration.Tags
             }
         }
 
-        public bool IsCondition(RequestContext context)
+        public bool IsCondition(AbstractRequestContext context)
         {
             return true;
         }

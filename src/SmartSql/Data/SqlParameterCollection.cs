@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using SmartSql.Reflection.Convert;
 
 namespace SmartSql.Data
 {
@@ -32,36 +33,63 @@ namespace SmartSql.Data
             DbParameters = new Dictionary<String, DbParameter>(paramComparer);
         }
 
-        public static SqlParameterCollection Create(RequestContext requestContext)
+        public static SqlParameterCollection Create<TRequest>(RequestContext<TRequest> requestContext)
+            where TRequest : class
         {
             var sourceRequest = requestContext.Request;
             bool ignoreParameterCase = requestContext.ExecutionContext.SmartSqlConfig.Settings.IgnoreParameterCase;
+            if (TryCreate<object>(sourceRequest, ignoreParameterCase, out var sqlParameters))
+            {
+                return sqlParameters;
+            }
+
+            if (typeof(TRequest) == CommonType.Object)
+            {
+                return RequestConvert.Instance.ToSqlParameters(sourceRequest, ignoreParameterCase);
+            }
+            return ignoreParameterCase ? RequestConvertCache<TRequest, IgnoreCase>.Convert(sourceRequest)
+                : RequestConvertCache<TRequest>.Convert(sourceRequest);
+        }
+
+
+        private static bool TryCreate<TRequest>(TRequest sourceRequest, bool ignoreParameterCase, out SqlParameterCollection sqlParameters)
+            where TRequest : class
+        {
             switch (sourceRequest)
             {
                 case null:
-                    return new SqlParameterCollection(ignoreParameterCase);
+                    {
+                        sqlParameters = new SqlParameterCollection(ignoreParameterCase);
+                        return true;
+                    }
                 case SqlParameterCollection sourceRequestParams:
-                    return sourceRequestParams;
+                    {
+                        sqlParameters = sourceRequestParams;
+                        return true;
+                    }
                 case IEnumerable<KeyValuePair<string, object>> reqKVs:
                     {
-                        var sqlParameters = new SqlParameterCollection(ignoreParameterCase);
+                        sqlParameters = new SqlParameterCollection(ignoreParameterCase);
                         foreach (var kv in reqKVs)
                         {
                             sqlParameters.TryAdd(kv.Key, kv.Value);
                         }
-                        return sqlParameters;
+                        return true;
                     }
                 case IEnumerable<KeyValuePair<string, SqlParameter>> reqDbKVs:
                     {
-                        var sqlParameters = new SqlParameterCollection(ignoreParameterCase);
+                        sqlParameters = new SqlParameterCollection(ignoreParameterCase);
                         foreach (var kv in reqDbKVs)
                         {
                             sqlParameters.TryAdd(kv.Key, kv.Value);
                         }
-                        return sqlParameters;
+                        return true;
                     }
                 default:
-                    return RequestConvert.Instance.ToSqlParameters(sourceRequest, ignoreParameterCase);
+                    {
+                        sqlParameters = null;
+                        return false;
+                    }
             }
         }
         #region Add

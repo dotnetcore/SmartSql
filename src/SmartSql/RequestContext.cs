@@ -6,11 +6,12 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using SmartSql.Data;
+using SmartSql.Reflection.Convert;
 using SmartSql.TypeHandlers;
 
 namespace SmartSql
 {
-    public class RequestContext
+    public abstract class AbstractRequestContext
     {
         public ExecutionContext ExecutionContext { get; internal set; }
         public ExecutionType ExecutionType { get; set; }
@@ -44,12 +45,11 @@ namespace SmartSql
         public string MultipleResultMapId { get; set; }
         public MultipleResultMap MultipleResultMap { get; internal set; }
         #endregion
-        public object Request { get; set; }
         public SqlParameterCollection Parameters { get; set; }
 
         public ResultMap GetCurrentResultMap()
         {
-            return MultipleResultMap != null ? 
+            return MultipleResultMap != null ?
                 MultipleResultMap.Results[ExecutionContext.DataReaderWrapper.ResultIndex]?.Map : ResultMap;
         }
 
@@ -57,5 +57,28 @@ namespace SmartSql
         {
             return GetCurrentResultMap()?.GetHandler(columnName);
         }
+
+        public abstract void SetupParameters();
+        public abstract void SetRequest(object requestObj);
+    }
+
+    public class RequestContext<TRequest> : AbstractRequestContext where TRequest : class
+    {
+        public TRequest Request { get; set; }
+
+        public override void SetupParameters()
+        {
+            Parameters = SqlParameterCollection.Create<TRequest>(this);
+        }
+
+        public override void SetRequest(object requestObj)
+        {
+            Request = (TRequest) requestObj;
+        }
+    }
+
+    public class RequestContext : RequestContext<object>
+    {
+
     }
 }

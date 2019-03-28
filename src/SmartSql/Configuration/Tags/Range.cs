@@ -8,7 +8,7 @@ namespace SmartSql.Configuration.Tags
     {
         public Decimal Min { get; set; }
         public Decimal Max { get; set; }
-        public override bool IsCondition(RequestContext context)
+        public override bool IsCondition(AbstractRequestContext context)
         {
             var paramVal = EnsurePropertyValue(context);
             decimal numericalVal = Convert.ToDecimal(paramVal);

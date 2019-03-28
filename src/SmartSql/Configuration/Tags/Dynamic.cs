@@ -8,7 +8,7 @@ namespace SmartSql.Configuration.Tags
 {
     public class Dynamic : Tag
     {
-        public override bool IsCondition(RequestContext context)
+        public override bool IsCondition(AbstractRequestContext context)
         {
             var passed = ChildTags.Any(childTag => childTag.IsCondition(context));
             if (Required && !passed)
@@ -17,7 +17,7 @@ namespace SmartSql.Configuration.Tags
             }
             return passed;
         }
-        public override void BuildSql(RequestContext context)
+        public override void BuildSql(AbstractRequestContext context)
         {
             if (IsCondition(context))
             {
@@ -25,7 +25,7 @@ namespace SmartSql.Configuration.Tags
             }
         }
 
-        public override void BuildChildSql(RequestContext context)
+        public override void BuildChildSql(AbstractRequestContext context)
         {
             bool isFirstChild = true;
             foreach (var childTag in ChildTags)

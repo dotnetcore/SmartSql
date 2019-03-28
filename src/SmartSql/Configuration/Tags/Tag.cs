@@ -13,8 +13,8 @@ namespace SmartSql.Configuration.Tags
         public ITag Parent { get; set; }
         public Statement Statement { get; set; }
 
-        public abstract bool IsCondition(RequestContext context);
-        public virtual void BuildSql(RequestContext context)
+        public abstract bool IsCondition(AbstractRequestContext context);
+        public virtual void BuildSql(AbstractRequestContext context)
         {
             if (IsCondition(context))
             {
@@ -32,7 +32,7 @@ namespace SmartSql.Configuration.Tags
             }
         }
 
-        public virtual void BuildChildSql(RequestContext context)
+        public virtual void BuildChildSql(AbstractRequestContext context)
         {
             if (ChildTags == null || ChildTags.Count <= 0) return;
             foreach (var childTag in ChildTags)
@@ -40,11 +40,11 @@ namespace SmartSql.Configuration.Tags
                 childTag.BuildSql(context);
             }
         }
-        protected virtual String GetDbProviderPrefix(RequestContext context)
+        protected virtual String GetDbProviderPrefix(AbstractRequestContext context)
         {
             return context.ExecutionContext.SmartSqlConfig.Database.DbProvider.ParameterPrefix;
         }
-        protected virtual object EnsurePropertyValue(RequestContext context)
+        protected virtual object EnsurePropertyValue(AbstractRequestContext context)
         {
             var existProperty = context.Parameters.TryGetParameterValue(Property, out object paramVal);
             if (Required && !existProperty)

@@ -434,5 +434,8 @@
         </IsNotEmpty>
       </Where>
     </Statement>
+    <Statement Id="GetGuid">
+      Select NewId();
+    </Statement>
   </Statements>
 </SmartSqlMap>

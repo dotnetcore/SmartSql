@@ -9,7 +9,7 @@ namespace SmartSql.Configuration.Tags
     {
         public String RefId { get; set; }
         public Statement Ref { get; set; }
-        public override void BuildSql(RequestContext context)
+        public override void BuildSql(AbstractRequestContext context)
         {
             if (IsCondition(context))
             {
@@ -17,7 +17,7 @@ namespace SmartSql.Configuration.Tags
                 Ref.BuildSql(context);
             }
         }
-        public override bool IsCondition(RequestContext context)
+        public override bool IsCondition(AbstractRequestContext context)
         {
             if (!Required)
             {

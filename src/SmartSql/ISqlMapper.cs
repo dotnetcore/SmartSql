@@ -18,52 +18,52 @@ namespace SmartSql
         /// </summary>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        int Execute(RequestContext requestContext);
+        int Execute(AbstractRequestContext requestContext);
         /// <summary>
         /// IDbCommand.ExecuteScalar
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        T ExecuteScalar<T>(RequestContext requestContext);
+        T ExecuteScalar<T>(AbstractRequestContext requestContext);
         /// <summary>
         /// 查询返回List
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        IEnumerable<T> Query<T>(RequestContext requestContext);
+        IEnumerable<T> Query<T>(AbstractRequestContext requestContext);
         /// <summary>
         /// 查询返回单个实体
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        T QuerySingle<T>(RequestContext requestContext);
+        T QuerySingle<T>(AbstractRequestContext requestContext);
 
-        DataSet GetDataSet(RequestContext requestContext);
-        DataTable GetDataTable(RequestContext requestContext);
+        DataSet GetDataSet(AbstractRequestContext requestContext);
+        DataTable GetDataTable(AbstractRequestContext requestContext);
         #region Async
         /// <summary>
         /// IDbCommand.ExecuteNonQuery
         /// </summary>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        Task<int> ExecuteAsync(RequestContext requestContext);
+        Task<int> ExecuteAsync(AbstractRequestContext requestContext);
         /// <summary>
         /// IDbCommand.ExecuteScalar
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        Task<TResult> ExecuteScalarAsync<TResult>(RequestContext requestContext);
+        Task<TResult> ExecuteScalarAsync<TResult>(AbstractRequestContext requestContext);
         /// <summary>
         /// 查询返回List
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        Task<IEnumerable<TResult>> QueryAsync<TResult>(RequestContext requestContext);
+        Task<IEnumerable<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext);
 
         /// <summary>
         /// 查询返回单个实体
@@ -71,9 +71,9 @@ namespace SmartSql
         /// <typeparam name="TResult"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        Task<TResult> QuerySingleAsync<TResult>(RequestContext requestContext);
-        Task<DataSet> GetDataSetAsync(RequestContext requestContext);
-        Task<DataTable> GetDataTableAsync(RequestContext requestContext);
+        Task<TResult> QuerySingleAsync<TResult>(AbstractRequestContext requestContext);
+        Task<DataSet> GetDataSetAsync(AbstractRequestContext requestContext);
+        Task<DataTable> GetDataTableAsync(AbstractRequestContext requestContext);
         #endregion
 
     }

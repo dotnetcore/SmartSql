@@ -21,7 +21,7 @@ namespace SmartSql.DataSource
         /// </summary>
         private readonly WeightFilter<AbstractDataSource> _weightFilter = new WeightFilter<AbstractDataSource>();
 
-        public AbstractDataSource Elect(RequestContext context)
+        public AbstractDataSource Elect(AbstractRequestContext context)
         {
             if (context.ExecutionContext.SmartSqlConfig.SessionStore.LocalSession != null)
             {
@@ -29,7 +29,7 @@ namespace SmartSql.DataSource
             }
             return GetDataSource(context);
         }
-        private AbstractDataSource GetDataSource(RequestContext context)
+        private AbstractDataSource GetDataSource(AbstractRequestContext context)
         {
             var sourceChoice = context.DataSourceChoice;
             var database = context.ExecutionContext.SmartSqlConfig.Database;

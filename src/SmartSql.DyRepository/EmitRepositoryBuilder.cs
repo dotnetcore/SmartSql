@@ -103,66 +103,79 @@ namespace SmartSql.DyRepository
 
             StatementAttribute statementAttr = PreStatement(interfaceType, scope, methodInfo, returnType, isTaskReturnType, smartSqlConfig);
             var ilGen = implMethod.GetILGenerator();
-            ilGen.DeclareLocal(RequestContextType.Type);
-            ilGen.DeclareLocal(SqlParameterType.SqlParameterCollection);
-            if (paramTypes.Length == 1 && paramTypes.First() == RequestContextType.Type)
+            bool onlyOneParam = paramTypes.Length == 1;
+            Type firstParamType = paramTypes.FirstOrDefault();
+
+            ilGen.DeclareLocal(RequestContextType.AbstractType);
+
+            if (onlyOneParam && RequestContextType.AbstractType.IsAssignableFrom(firstParamType))
             {
-                ilGen.LoadArg(1);
-                ilGen.StoreLocalVar(0);
+                throw new SmartSqlException($"DyRepository.Method ParameterType :{firstParamType.FullName} can not be RequestContext.");
+                //ilGen.LoadArg(1);
+                //ilGen.StoreLocalVar(0);
+            }
+
+            bool isOnlyOneClassParam = onlyOneParam && !IsSimpleParam(firstParamType);
+            EmitNewRequestContext(ilGen, isOnlyOneClassParam, firstParamType);
+            EmitSetCommandType(ilGen, statementAttr);
+            EmitSetDataSourceChoice(ilGen, statementAttr);
+
+            if (String.IsNullOrEmpty(statementAttr.Sql))
+            {
+                EmitSetScope(ilGen, statementAttr.Scope);
+                EmitSetSqlId(ilGen, statementAttr);
             }
             else
             {
-                EmitNewRequestContext(ilGen);
-                EmitSetCommandType(ilGen, statementAttr);
-                EmitSetDataSourceChoice(ilGen, statementAttr);
-
-                if (String.IsNullOrEmpty(statementAttr.Sql))
+                EmitSetRealSql(ilGen, statementAttr);
+            }
+            if (isOnlyOneClassParam)
+            {
+                ilGen.LoadLocalVar(0);
+                ilGen.LoadArg(1);
+                ilGen.Callvirt(RequestContextType.Method.SetRequest);
+            }
+            else if (paramTypes.Length > 0)
+            {
+                ilGen.DeclareLocal(SqlParameterType.SqlParameterCollection);
+                bool ignoreParameterCase = smartSqlConfig.Settings.IgnoreParameterCase;
+                ilGen.Emit(ignoreParameterCase ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
+                ilGen.New(SqlParameterType.Ctor.SqlParameterCollection);
+                ilGen.StoreLocalVar(1);
+                for (int i = 0; i < methodParams.Length; i++)
                 {
-                    EmitSetScope(ilGen, statementAttr.Scope);
-                    EmitSetSqlId(ilGen, statementAttr);
-                }
-                else
-                {
-                    EmitSetRealSql(ilGen, statementAttr);
-                }
-                if (paramTypes.Length == 1 && !IsSimpleParam(paramTypes.First()))
-                {
-                    ilGen.LoadLocalVar(0);
-                    ilGen.LoadArg(1);
-                    ilGen.Call(RequestContextType.Method.SetRequest);
-                }
-                else if (paramTypes.Length > 0)
-                {
-                    bool ignoreParameterCase = smartSqlConfig.Settings.IgnoreParameterCase;
-                    ilGen.Emit(ignoreParameterCase ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
-                    ilGen.New(SqlParameterType.Ctor.SqlParameterCollection);
-                    ilGen.StoreLocalVar(1);
-                    for (int i = 0; i < methodParams.Length; i++)
+                    int argIndex = i + 1;
+                    var reqParam = methodParams[i];
+                    string reqParamName = reqParam.Name;
+                    var paramAttr = reqParam.GetCustomAttribute<ParamAttribute>();
+                    if (paramAttr != null && !String.IsNullOrEmpty(paramAttr.Name))
                     {
-                        int argIndex = i + 1;
-                        var reqParam = methodParams[i];
-                        string reqParamName = reqParam.Name;
-                        var paramAttr = reqParam.GetCustomAttribute<ParamAttribute>();
-                        if (paramAttr != null && !String.IsNullOrEmpty(paramAttr.Name))
-                        {
-                            reqParamName = paramAttr.Name;
-                        }
-                        ilGen.LoadLocalVar(1);
-                        ilGen.LoadString(reqParamName);
-                        ilGen.LoadArg(argIndex);
-
-                        if (reqParam.ParameterType.IsValueType)
-                        {
-                            ilGen.Box(reqParam.ParameterType);
-                        }
-                        ilGen.LoadType(reqParam.ParameterType);
-                        ilGen.New(SqlParameterType.Ctor.SqlParameter);
-                        ilGen.Call(SqlParameterType.Method.Add);
+                        reqParamName = paramAttr.Name;
                     }
-                    ilGen.LoadLocalVar(0);
                     ilGen.LoadLocalVar(1);
-                    ilGen.Call(RequestContextType.Method.SetRequest);
+                    ilGen.LoadString(reqParamName);
+                    ilGen.LoadArg(argIndex);
+
+                    if (reqParam.ParameterType.IsValueType)
+                    {
+                        ilGen.Box(reqParam.ParameterType);
+                    }
+                    ilGen.LoadType(reqParam.ParameterType);
+                    ilGen.New(SqlParameterType.Ctor.SqlParameter);
+                    ilGen.Dup();
+                    var fieldMappedType = Nullable.GetUnderlyingType(reqParam.ParameterType) ?? reqParam.ParameterType;
+                    if (fieldMappedType.IsEnum)
+                    {
+                        fieldMappedType = AnyFieldTypeType.Type;
+                    }
+                    var getHandlerMethod = TypeHandlerCacheType.GetHandlerMethod(reqParam.ParameterType, fieldMappedType);
+                    ilGen.Call(getHandlerMethod);
+                    ilGen.Call(SqlParameterType.Method.SetTypeHandler);
+                    ilGen.Call(SqlParameterType.Method.Add);
                 }
+                ilGen.LoadLocalVar(0);
+                ilGen.LoadLocalVar(1);
+                ilGen.Callvirt(RequestContextType.Method.SetRequest);
             }
             MethodInfo executeMethod = PreExecuteMethod(statementAttr, returnType, isTaskReturnType);
             ilGen.LoadArg(0);
@@ -372,16 +385,21 @@ namespace SmartSql.DyRepository
         }
         #endregion
         #region Emit Set RequestContext
-        private void EmitNewRequestContext(ILGenerator ilGen)
+        private void EmitNewRequestContext(ILGenerator ilGen, bool isOnlyOneClassParam, Type onlyOneParamType)
         {
-            ilGen.New(RequestContextType.Ctor);
+            var requestCtor = RequestContextType.Ctor;
+            if (isOnlyOneClassParam)
+            {
+                requestCtor = RequestContextType.MakeGenericTypeCtor(onlyOneParamType);
+            }
+            ilGen.New(requestCtor);
             ilGen.StoreLocalVar(0);
         }
         private void EmitSetScope(ILGenerator ilGen, string scope)
         {
             ilGen.LoadLocalVar(0);
             ilGen.LoadString(scope);
-            ilGen.Call(RequestContextType.Method.SetScope);
+            ilGen.Callvirt(RequestContextType.Method.SetScope);
         }
         private static void EmitSetCommandType(ILGenerator ilGen, StatementAttribute statementAttr)
         {
@@ -389,7 +407,7 @@ namespace SmartSql.DyRepository
             {
                 ilGen.LoadLocalVar(0);
                 ilGen.LoadInt32(statementAttr.CommandType.GetHashCode());
-                ilGen.Call(RequestContextType.Method.SetCommandType);
+                ilGen.Callvirt(RequestContextType.Method.SetCommandType);
             }
         }
         private static void EmitSetDataSourceChoice(ILGenerator ilGen, StatementAttribute statementAttr)
@@ -398,20 +416,20 @@ namespace SmartSql.DyRepository
             {
                 ilGen.LoadLocalVar(0);
                 ilGen.LoadInt32(statementAttr.SourceChoice.GetHashCode());
-                ilGen.Call(RequestContextType.Method.SetDataSourceChoice);
+                ilGen.Callvirt(RequestContextType.Method.SetDataSourceChoice);
             }
         }
         private void EmitSetRealSql(ILGenerator ilGen, StatementAttribute statementAttr)
         {
             ilGen.LoadLocalVar(0);
             ilGen.LoadString(statementAttr.Sql);
-            ilGen.Call(RequestContextType.Method.SetRealSql);
+            ilGen.Callvirt(RequestContextType.Method.SetRealSql);
         }
         private void EmitSetSqlId(ILGenerator ilGen, StatementAttribute statementAttr)
         {
             ilGen.LoadLocalVar(0);
             ilGen.LoadString(statementAttr.Id);
-            ilGen.Call(RequestContextType.Method.SetSqlId);
+            ilGen.Callvirt(RequestContextType.Method.SetSqlId);
         }
 
         #endregion

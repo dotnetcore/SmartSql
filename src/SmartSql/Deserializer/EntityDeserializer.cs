@@ -70,7 +70,7 @@ namespace SmartSql.Deserializer
             return list;
         }
 
-        private Func<DataReaderWrapper, RequestContext, TResult> GetDeserialize<TResult>(ExecutionContext executionContext)
+        private Func<DataReaderWrapper, AbstractRequestContext, TResult> GetDeserialize<TResult>(ExecutionContext executionContext)
         {
             var key = GenerateKey(executionContext);
             if (!_deserCache.TryGetValue(key, out var deser))
@@ -84,7 +84,7 @@ namespace SmartSql.Deserializer
                     }
                 }
             }
-            return deser as Func<DataReaderWrapper, RequestContext, TResult>;
+            return deser as Func<DataReaderWrapper, AbstractRequestContext, TResult>;
         }
         private Delegate CreateDeserialize<TResult>(ExecutionContext executionContext)
         {
@@ -98,7 +98,7 @@ namespace SmartSql.Deserializer
                 .Select(i => new { Index = i, Name = dataReader.GetName(i), FieldType = dataReader.GetFieldType(i) })
                 .ToDictionary((col) => col.Name);
 
-            var deserFunc = new DynamicMethod("Deserialize" + Guid.NewGuid().ToString("N"), resultType, new[] { DataType.DataReaderWrapper, RequestContextType.Type }, resultType, true);
+            var deserFunc = new DynamicMethod("Deserialize" + Guid.NewGuid().ToString("N"), resultType, new[] { DataType.DataReaderWrapper, RequestContextType.AbstractType }, resultType, true);
             var ilGen = deserFunc.GetILGenerator();
             ilGen.DeclareLocal(resultType);
             #region New
@@ -148,7 +148,7 @@ namespace SmartSql.Deserializer
 
             ilGen.LoadLocalVar(0);
             ilGen.Return();
-            return deserFunc.CreateDelegate(typeof(Func<DataReaderWrapper, RequestContext, TResult>));
+            return deserFunc.CreateDelegate(typeof(Func<DataReaderWrapper, AbstractRequestContext, TResult>));
         }
         private void LoadPropertyValue(ILGenerator ilGen, TypeHandlerFactory typeHandlerFactory, int colIndex, Type propertyType, Type fieldType, Property resultProperty)
         {

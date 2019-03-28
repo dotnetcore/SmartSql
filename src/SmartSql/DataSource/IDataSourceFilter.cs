@@ -10,6 +10,6 @@ namespace SmartSql.DataSource
     /// </summary>
     public interface IDataSourceFilter
     {
-        AbstractDataSource Elect(RequestContext context);
+        AbstractDataSource Elect(AbstractRequestContext context);
     }
 }

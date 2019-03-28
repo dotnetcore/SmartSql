@@ -13,7 +13,7 @@ namespace SmartSql.Cache
         public String Key { get; }
         public Type ResultType { get;}
 
-        public CacheKey(RequestContext requestContext)
+        public CacheKey(AbstractRequestContext requestContext)
         {
             ResultType = requestContext.ExecutionContext.Result.ResultType;
             StatementKey = requestContext.IsStatementSql ? requestContext.FullSqlId : requestContext.RealSql;

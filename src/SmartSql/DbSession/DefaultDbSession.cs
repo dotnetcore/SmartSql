@@ -251,7 +251,7 @@ namespace SmartSql.DbSession
                 throw ex;
             }
         }
-        public ExecutionContext Invoke<TResult>(RequestContext requestContext)
+        public ExecutionContext Invoke<TResult>(AbstractRequestContext requestContext)
         {
             var operationId = Guid.Empty;
             var executionContext = new ExecutionContext
@@ -293,7 +293,7 @@ namespace SmartSql.DbSession
                 throw ex;
             }
         }
-        public async Task<ExecutionContext> InvokeAsync<TResult>(RequestContext requestContext)
+        public async Task<ExecutionContext> InvokeAsync<TResult>(AbstractRequestContext requestContext)
         {
             Guid operationId = Guid.Empty;
             var executionContext = new ExecutionContext
@@ -335,82 +335,82 @@ namespace SmartSql.DbSession
                 throw ex;
             }
         }
-        public int Execute(RequestContext requestContext)
+        public int Execute(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.Execute;
             var executionContext = Invoke<int>(requestContext);
             return ((SingleResultContext<int>)executionContext.Result).Data;
         }
 
-        public TResult ExecuteScalar<TResult>(RequestContext requestContext)
+        public TResult ExecuteScalar<TResult>(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.ExecuteScalar;
             var executionContext = Invoke<TResult>(requestContext);
             return ((SingleResultContext<TResult>)executionContext.Result).Data;
         }
-        public TResult QuerySingle<TResult>(RequestContext requestContext)
+        public TResult QuerySingle<TResult>(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.QuerySingle;
             var executionContext = Invoke<TResult>(requestContext);
             return ((SingleResultContext<TResult>)executionContext.Result).Data;
         }
 
-        public DataSet GetDataSet(RequestContext requestContext)
+        public DataSet GetDataSet(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.GetDataSet;
             var executionContext = Invoke<DataSet>(requestContext);
             return executionContext.Result.GetData() as DataSet;
         }
 
-        public DataTable GetDataTable(RequestContext requestContext)
+        public DataTable GetDataTable(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.GetDataTable;
             var executionContext = Invoke<DataTable>(requestContext);
             return executionContext.Result.GetData() as DataTable;
         }
-        public IEnumerable<TResult> Query<TResult>(RequestContext requestContext)
+        public IEnumerable<TResult> Query<TResult>(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.Query;
             var executionContext = Invoke<TResult>(requestContext);
             return executionContext.Result.GetData() as IEnumerable<TResult>;
         }
 
-        public async Task<int> ExecuteAsync(RequestContext requestContext)
+        public async Task<int> ExecuteAsync(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.Execute;
             var executionContext = await InvokeAsync<int>(requestContext);
             return ((SingleResultContext<int>)executionContext.Result).Data;
         }
 
-        public async Task<TResult> ExecuteScalarAsync<TResult>(RequestContext requestContext)
+        public async Task<TResult> ExecuteScalarAsync<TResult>(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.ExecuteScalar;
             var executionContext = await InvokeAsync<TResult>(requestContext);
             return ((SingleResultContext<TResult>)executionContext.Result).Data;
         }
 
-        public async Task<IEnumerable<TResult>> QueryAsync<TResult>(RequestContext requestContext)
+        public async Task<IEnumerable<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.Query;
             var executionContext = await InvokeAsync<TResult>(requestContext);
             return executionContext.Result.GetData() as IEnumerable<TResult>;
         }
 
-        public async Task<TResult> QuerySingleAsync<TResult>(RequestContext requestContext)
+        public async Task<TResult> QuerySingleAsync<TResult>(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.QuerySingle;
             var executionContext = await InvokeAsync<TResult>(requestContext);
             return ((SingleResultContext<TResult>)executionContext.Result).Data;
         }
 
-        public async Task<DataSet> GetDataSetAsync(RequestContext requestContext)
+        public async Task<DataSet> GetDataSetAsync(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.GetDataSet;
             var executionContext = await InvokeAsync<DataSet>(requestContext);
             return executionContext.Result.GetData() as DataSet;
         }
 
-        public async Task<DataTable> GetDataTableAsync(RequestContext requestContext)
+        public async Task<DataTable> GetDataTableAsync(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.GetDataTable;
             var executionContext = await InvokeAsync<DataTable>(requestContext);

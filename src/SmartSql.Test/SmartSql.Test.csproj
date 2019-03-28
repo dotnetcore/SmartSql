@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SmartSql.DyRepository\SmartSql.DyRepository.csproj" />
     <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
   </ItemGroup>
 

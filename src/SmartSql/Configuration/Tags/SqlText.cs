@@ -22,7 +22,7 @@ namespace SmartSql.Configuration.Tags
             _hasInSyntax = _sqlInParamsTokens.IsMatch(bodyText);
         }
 
-        public void BuildSql(RequestContext context)
+        public void BuildSql(AbstractRequestContext context)
         {
             if (!_hasInSyntax)
             {
@@ -59,7 +59,7 @@ namespace SmartSql.Configuration.Tags
             context.SqlBuilder.Append(sql);
         }
 
-        public bool IsCondition(RequestContext context)
+        public bool IsCondition(AbstractRequestContext context)
         {
             return true;
         }

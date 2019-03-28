@@ -8,8 +8,8 @@ namespace SmartSql.Configuration.Tags
     {
         Statement Statement { get; set; }
         ITag Parent { get; set; }
-        bool IsCondition(RequestContext context);
-        void BuildSql(RequestContext context);
+        bool IsCondition(AbstractRequestContext context);
+        void BuildSql(AbstractRequestContext context);
     }
 
 

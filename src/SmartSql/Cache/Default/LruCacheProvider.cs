@@ -60,8 +60,15 @@ namespace SmartSql.Cache.Default
             lock (this)
             {
                 cached = _cacheKeys.Remove(cacheKey);
-                _cacheKeys.Add(cacheKey);
-                cacheItem = cached ? _cache[cacheKey] : default;
+                if (cached)
+                {
+                    _cacheKeys.Add(cacheKey);
+                    cacheItem = _cache[cacheKey];
+                }
+                else
+                {
+                    cacheItem = default;
+                }
             }
             return cached;
         }

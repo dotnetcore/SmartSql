@@ -93,31 +93,31 @@ namespace SmartSql
             }
         }
 
-        public int Execute(RequestContext requestContext)
+        public int Execute(AbstractRequestContext requestContext)
         {
             return ExecuteImpl((dbSession) => dbSession.Execute(requestContext));
         }
 
-        public T ExecuteScalar<T>(RequestContext requestContext)
+        public T ExecuteScalar<T>(AbstractRequestContext requestContext)
         {
             return ExecuteImpl((dbSession) => dbSession.ExecuteScalar<T>(requestContext));
         }
 
-        public IEnumerable<T> Query<T>(RequestContext requestContext)
+        public IEnumerable<T> Query<T>(AbstractRequestContext requestContext)
         {
             return ExecuteImpl((dbSession) => dbSession.Query<T>(requestContext));
         }
 
-        public T QuerySingle<T>(RequestContext requestContext)
+        public T QuerySingle<T>(AbstractRequestContext requestContext)
         {
             return ExecuteImpl((dbSession) => dbSession.QuerySingle<T>(requestContext));
         }
-        public DataSet GetDataSet(RequestContext requestContext)
+        public DataSet GetDataSet(AbstractRequestContext requestContext)
         {
             return ExecuteImpl((dbSession) => dbSession.GetDataSet(requestContext));
         }
 
-        public DataTable GetDataTable(RequestContext requestContext)
+        public DataTable GetDataTable(AbstractRequestContext requestContext)
         {
             return ExecuteImpl((dbSession) => dbSession.GetDataTable(requestContext));
         }
@@ -145,32 +145,32 @@ namespace SmartSql
             }
         }
 
-        public Task<int> ExecuteAsync(RequestContext requestContext)
+        public Task<int> ExecuteAsync(AbstractRequestContext requestContext)
         {
             return ExecuteImplAsync((dbSession) => dbSession.ExecuteAsync(requestContext));
         }
 
-        public Task<TResult> ExecuteScalarAsync<TResult>(RequestContext requestContext)
+        public Task<TResult> ExecuteScalarAsync<TResult>(AbstractRequestContext requestContext)
         {
             return ExecuteImplAsync((dbSession) => dbSession.ExecuteScalarAsync<TResult>(requestContext));
         }
 
-        public Task<IEnumerable<TResult>> QueryAsync<TResult>(RequestContext requestContext)
+        public Task<IEnumerable<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext)
         {
             return ExecuteImplAsync((dbSession) => dbSession.QueryAsync<TResult>(requestContext));
         }
 
-        public Task<TResult> QuerySingleAsync<TResult>(RequestContext requestContext)
+        public Task<TResult> QuerySingleAsync<TResult>(AbstractRequestContext requestContext)
         {
             return ExecuteImplAsync((dbSession) => dbSession.QuerySingleAsync<TResult>(requestContext));
         }
 
-        public Task<DataSet> GetDataSetAsync(RequestContext requestContext)
+        public Task<DataSet> GetDataSetAsync(AbstractRequestContext requestContext)
         {
             return ExecuteImplAsync((dbSession) => dbSession.GetDataSetAsync(requestContext));
         }
 
-        public Task<DataTable> GetDataTableAsync(RequestContext requestContext)
+        public Task<DataTable> GetDataTableAsync(AbstractRequestContext requestContext)
         {
             return ExecuteImplAsync((dbSession) => dbSession.GetDataTableAsync(requestContext));
         }

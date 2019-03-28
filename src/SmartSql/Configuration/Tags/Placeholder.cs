@@ -6,7 +6,7 @@ namespace SmartSql.Configuration.Tags
 {
     public class Placeholder : Tag
     {
-        public override void BuildSql(RequestContext context)
+        public override void BuildSql(AbstractRequestContext context)
         {
             if (IsCondition(context))
             {
@@ -15,7 +15,7 @@ namespace SmartSql.Configuration.Tags
             }
         }
 
-        public override bool IsCondition(RequestContext context)
+        public override bool IsCondition(AbstractRequestContext context)
         {
             return context.Parameters.ContainsKey(Property);
         }

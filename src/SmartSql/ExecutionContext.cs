@@ -10,7 +10,7 @@ namespace SmartSql
         public ExecutionType Type => Request.ExecutionType;
         public SmartSqlConfig SmartSqlConfig { get; set; }
         public IDbSession DbSession { get; set; }
-        public RequestContext Request { get; set; }
+        public AbstractRequestContext Request { get; set; }
         public DataReaderWrapper DataReaderWrapper { get; set; }
         public ResultContext Result { get; set; }
     }

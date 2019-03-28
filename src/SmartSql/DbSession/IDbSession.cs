@@ -32,58 +32,58 @@ namespace SmartSql.DbSession
         void Open();
         Task OpenAsync();
         Task OpenAsync(CancellationToken cancellationToken);
-        ExecutionContext Invoke<TResult>(RequestContext requestContext);
+        ExecutionContext Invoke<TResult>(AbstractRequestContext requestContext);
         /// <summary>
         /// IDbCommand.ExecuteNonQuery
         /// </summary>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        int Execute(RequestContext requestContext);
+        int Execute(AbstractRequestContext requestContext);
         /// <summary>
         /// IDbCommand.ExecuteScalar
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        TResult ExecuteScalar<TResult>(RequestContext requestContext);
+        TResult ExecuteScalar<TResult>(AbstractRequestContext requestContext);
         /// <summary>
         /// 查询返回List
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        IEnumerable<TResult> Query<TResult>(RequestContext requestContext);
+        IEnumerable<TResult> Query<TResult>(AbstractRequestContext requestContext);
         /// <summary>
         /// 查询返回单个实体
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        TResult QuerySingle<TResult>(RequestContext requestContext);
-        DataSet GetDataSet(RequestContext requestContext);
-        DataTable GetDataTable(RequestContext requestContext);
+        TResult QuerySingle<TResult>(AbstractRequestContext requestContext);
+        DataSet GetDataSet(AbstractRequestContext requestContext);
+        DataTable GetDataTable(AbstractRequestContext requestContext);
         #region Async
-        Task<ExecutionContext> InvokeAsync<TResult>(RequestContext requestContext);
+        Task<ExecutionContext> InvokeAsync<TResult>(AbstractRequestContext requestContext);
         /// <summary>
         /// IDbCommand.ExecuteNonQuery
         /// </summary>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        Task<int> ExecuteAsync(RequestContext requestContext);
+        Task<int> ExecuteAsync(AbstractRequestContext requestContext);
         /// <summary>
         /// IDbCommand.ExecuteScalar
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        Task<TResult> ExecuteScalarAsync<TResult>(RequestContext requestContext);
+        Task<TResult> ExecuteScalarAsync<TResult>(AbstractRequestContext requestContext);
         /// <summary>
         /// 查询返回List
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        Task<IEnumerable<TResult>> QueryAsync<TResult>(RequestContext requestContext);
+        Task<IEnumerable<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext);
 
         /// <summary>
         /// 查询返回单个实体
@@ -91,9 +91,9 @@ namespace SmartSql.DbSession
         /// <typeparam name="TResult"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        Task<TResult> QuerySingleAsync<TResult>(RequestContext requestContext);
-        Task<DataSet> GetDataSetAsync(RequestContext requestContext);
-        Task<DataTable> GetDataTableAsync(RequestContext requestContext);
+        Task<TResult> QuerySingleAsync<TResult>(AbstractRequestContext requestContext);
+        Task<DataSet> GetDataSetAsync(AbstractRequestContext requestContext);
+        Task<DataTable> GetDataTableAsync(AbstractRequestContext requestContext);
         #endregion
     }
 }

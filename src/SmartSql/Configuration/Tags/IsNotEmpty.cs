@@ -8,7 +8,7 @@ namespace SmartSql.Configuration.Tags
 {
     public class IsNotEmpty : Tag
     {
-        public override bool IsCondition(RequestContext context)
+        public override bool IsCondition(AbstractRequestContext context)
         {
             Object reqVal = EnsurePropertyValue(context);
             switch (reqVal)

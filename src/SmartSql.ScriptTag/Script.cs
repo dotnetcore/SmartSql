@@ -34,7 +34,7 @@ namespace SmartSql.ScriptTag
             });
         }
         public String Test { get; }
-        public override bool IsCondition(RequestContext context)
+        public override bool IsCondition(AbstractRequestContext context)
         {
             var engine = new Engine(options =>
             {

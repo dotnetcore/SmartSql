@@ -7,7 +7,7 @@ namespace SmartSql.Configuration.Tags
 {
     public class IsEqual : StringCompareTag
     {
-        public override bool IsCondition(RequestContext context)
+        public override bool IsCondition(AbstractRequestContext context)
         {
             var reqVal = EnsurePropertyValue(context);
             if (reqVal == null) { return false; }

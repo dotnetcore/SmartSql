@@ -15,7 +15,7 @@ namespace SmartSql.Configuration.Tags
         public string Close { get; set; }
         public string Key { get; set; }
 
-        public override bool IsCondition(RequestContext context)
+        public override bool IsCondition(AbstractRequestContext context)
         {
             var reqVal = EnsurePropertyValue(context);
             if (reqVal == null) { return false; }
@@ -25,7 +25,7 @@ namespace SmartSql.Configuration.Tags
             }
             return false;
         }
-        public override void BuildChildSql(RequestContext context)
+        public override void BuildChildSql(AbstractRequestContext context)
         {
             context.SqlBuilder.Append(Open);
             var reqVal = (EnsurePropertyValue(context) as IEnumerable).GetEnumerator();
@@ -54,7 +54,7 @@ namespace SmartSql.Configuration.Tags
             }
             context.SqlBuilder.Append(Close);
         }
-        private void BuildItemSql_DirectValue(string itemSqlStr, RequestContext context)
+        private void BuildItemSql_DirectValue(string itemSqlStr, AbstractRequestContext context)
         {
             var reqVal = (EnsurePropertyValue(context) as IEnumerable);
             int itemIndex = 0;
@@ -76,7 +76,7 @@ namespace SmartSql.Configuration.Tags
                 itemIndex++;
             }
         }
-        private void BuildItemSql_NotDirectValue(string itemSqlStr, RequestContext context)
+        private void BuildItemSql_NotDirectValue(string itemSqlStr, AbstractRequestContext context)
         {
             var reqVal = (EnsurePropertyValue(context) as IEnumerable);
             int itemIndex = 0;

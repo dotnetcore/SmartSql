@@ -23,6 +23,10 @@ namespace System.Reflection.Emit
         {
             ilGen.Emit(OpCodes.Call, methodInfo);
         }
+        public static void Callvirt(this ILGenerator ilGen, MethodInfo methodInfo)
+        {
+            ilGen.Emit(OpCodes.Callvirt, methodInfo);
+        }
         public static void LoadType(this ILGenerator ilGen, Type type)
         {
             ilGen.Emit(OpCodes.Ldtoken, type);

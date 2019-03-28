@@ -5,12 +5,12 @@ namespace SmartSql.Configuration.Tags
 {
     public class Switch : Tag
     {
-        public override bool IsCondition(RequestContext context)
+        public override bool IsCondition(AbstractRequestContext context)
         {
             EnsurePropertyValue(context);
             return true;
         }
-        public override void BuildSql(RequestContext context)
+        public override void BuildSql(AbstractRequestContext context)
         {
             var matchedTag = ChildTags.FirstOrDefault(tag =>
             {
@@ -27,7 +27,7 @@ namespace SmartSql.Configuration.Tags
 
         public class Case : StringCompareTag
         {
-            public override bool IsCondition(RequestContext context)
+            public override bool IsCondition(AbstractRequestContext context)
             {
                 var reqVal = EnsurePropertyValue(context);
                 if (reqVal == null) { return false; }
@@ -39,7 +39,7 @@ namespace SmartSql.Configuration.Tags
 
         public class Default : Tag
         {
-            public override bool IsCondition(RequestContext context)
+            public override bool IsCondition(AbstractRequestContext context)
             {
                 return true;
             }

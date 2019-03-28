@@ -26,13 +26,13 @@ namespace SmartSql.Test.Unit.DyRepository
         {
             var sqlMapper = SmartSqlBuilder.GetSqlMapper();
             var repository = _repositoryFactory.CreateInstance(typeof(IAllPrimitiveRepository), sqlMapper) as IAllPrimitiveRepository;
-
+            var list = repository.Query(10);
             var id = repository.Insert(new Entities.AllPrimitive
             {
                 String = "",
                 DateTime = DateTime.Now
             });
-            var list = repository.Query(10);
+            
         }
 
 

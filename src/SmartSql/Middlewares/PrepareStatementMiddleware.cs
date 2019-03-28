@@ -70,7 +70,7 @@ namespace SmartSql.Middlewares
             }
         }
 
-        private void BuildDbParameters(RequestContext reqConetxt)
+        private void BuildDbParameters(AbstractRequestContext reqConetxt)
         {
             var dbParameterNames = _sqlParamAnalyzer.Analyse(reqConetxt.RealSql);
             foreach (var paramName in dbParameterNames)
@@ -120,7 +120,7 @@ namespace SmartSql.Middlewares
             }
         }
 
-        private void BuildSql(RequestContext requestContext)
+        private void BuildSql(AbstractRequestContext requestContext)
         {
             if (!requestContext.IsStatementSql)
             {

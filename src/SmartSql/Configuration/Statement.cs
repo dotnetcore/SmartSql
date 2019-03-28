@@ -30,7 +30,7 @@ namespace SmartSql.Configuration
         #endregion
         internal IList<Include> IncludeDependencies { get; set; }
 
-        public void BuildSql(RequestContext context)
+        public void BuildSql(AbstractRequestContext context)
         {
             foreach (ITag tag in SqlTags)
             {

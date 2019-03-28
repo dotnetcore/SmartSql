@@ -7,7 +7,7 @@ namespace SmartSql.Configuration.Tags
 {
     public class IsProperty : Tag
     {
-        public override bool IsCondition(RequestContext context)
+        public override bool IsCondition(AbstractRequestContext context)
         {
             return context.Parameters.ContainsKey(Property);
         }
