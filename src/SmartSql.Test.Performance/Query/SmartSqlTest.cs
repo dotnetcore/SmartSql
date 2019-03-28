@@ -10,7 +10,7 @@ using SmartSql.Test.Repositories;
 
 namespace SmartSql.Test.Performance.Query
 {
-    public class SmartSqlTest : AbstracQueryTest
+    public class SmartSqlTest : AbstractQueryTest
     {
         public IDbSessionFactory DbSessionFactory { get; private set; }
         public WriteDataSource WriteDataSource { get; set; }

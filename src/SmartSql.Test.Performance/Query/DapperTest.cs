@@ -10,7 +10,7 @@ using System.Text;
 
 namespace SmartSql.Test.Performance.Query
 {
-    public class DapperTest : AbstracQueryTest
+    public class DapperTest : AbstractQueryTest
     {
         [GlobalSetup]
         public void Setup()

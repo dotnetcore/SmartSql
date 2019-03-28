@@ -8,12 +8,12 @@
 <SmartSqlMap Scope="User"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <ParameterMaps>
     <ParameterMap Id="User">
-      <Parameter Column="ExtendedInfo" Property="Info" TypeHandler="Json"/>
+      <Parameter Column="ExtendedInfo" Property="Info"/>
     </ParameterMap>
   </ParameterMaps>
   <ResultMaps>
     <ResultMap Id="User">
-      <Result Column="ExtendedInfo" Property="Info" TypeHandler="Json"/>
+      <Result Column="ExtendedInfo" Property="Info"/>
     </ResultMap>
   </ResultMaps>
   <MultipleResultMaps>

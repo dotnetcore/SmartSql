@@ -249,22 +249,31 @@ namespace SmartSql.ConfigBuilder
             {
                 Properties = ParseProperties(typeHandlerNode)
             };
-            typeHandlerNode.Attributes.TryGetValueAsString(nameof(TypeHandler.Name), out string handlerName, SmartSqlConfig.Properties);
-            typeHandlerNode.Attributes.TryGetValueAsString(nameof(TypeHandler.PropertyType), out string propertyTypeStr, SmartSqlConfig.Properties);
+            if (typeHandlerNode.Attributes.TryGetValueAsString(nameof(TypeHandler.Name), out string handlerName, SmartSqlConfig.Properties))
+            {
+                typeHandlerConfig.Name = handlerName;
+            }
             if (!typeHandlerNode.Attributes.TryGetValueAsString(TYPE_ATTRIBUTE, out string type, SmartSqlConfig.Properties))
             {
                 throw new SmartSqlException("TypeHandler.Type can not be null.");
             }
-            typeHandlerConfig.Name = handlerName;
             typeHandlerConfig.HandlerType = TypeUtils.GetType(type);
 
             if (typeHandlerConfig.HandlerType.IsGenericType)
             {
+
+                typeHandlerNode.Attributes.TryGetValueAsString(nameof(TypeHandler.PropertyType), out string propertyTypeStr, SmartSqlConfig.Properties);
+                typeHandlerNode.Attributes.TryGetValueAsString(nameof(TypeHandler.FieldType), out string fieldTypeStr, SmartSqlConfig.Properties);
+
                 if (String.IsNullOrEmpty(propertyTypeStr))
                 {
                     throw new SmartSqlException("TypeHandler.PropertyType can not be null.");
                 }
                 typeHandlerConfig.PropertyType = TypeUtils.GetType(propertyTypeStr);
+                if (!String.IsNullOrEmpty(fieldTypeStr))
+                {
+                    typeHandlerConfig.FieldType = TypeUtils.GetType(fieldTypeStr);
+                }
             }
             RegisterTypeHandler(typeHandlerConfig);
         }

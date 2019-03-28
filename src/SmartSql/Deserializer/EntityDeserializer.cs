@@ -195,7 +195,7 @@ namespace SmartSql.Deserializer
         {
             ilGen.LoadArg(1);
             ilGen.LoadString(resultProperty.Column);
-            ilGen.Call(RequestContextType.Method.GetPropertyHandler);
+            ilGen.Callvirt(RequestContextType.Method.GetPropertyHandler);
         }
 
         private void LoadTypeHandlerInvokeArgs(ILGenerator ilGen, int colIndex, Type propertyType)

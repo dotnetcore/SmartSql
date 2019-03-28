@@ -13,10 +13,10 @@ namespace SmartSql.Test.Performance.Query
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(AbstracQueryTest.CONNECTION_STRING);
+            optionsBuilder.UseSqlServer(AbstractQueryTest.CONNECTION_STRING);
         }
     }
-    public class EFTest : AbstracQueryTest
+    public class EFTest : AbstractQueryTest
     {
         EFContext _dbContext;
         [GlobalSetup]

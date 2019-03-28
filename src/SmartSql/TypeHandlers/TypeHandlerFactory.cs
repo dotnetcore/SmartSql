@@ -327,6 +327,10 @@ namespace SmartSql.TypeHandlers
             }
 
             TypeHandlerCacheType.SetHandler(typeHandler);
+            if (PropertyTypeHandlerCacheType.GetHandler(typeHandler.PropertyType) == null)
+            {
+                PropertyTypeHandlerCacheType.SetHandler(typeHandler);
+            }
         }
         private void Register(string handlerName, ITypeHandler typeHandler)
         {

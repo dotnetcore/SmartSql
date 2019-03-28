@@ -163,12 +163,7 @@ namespace SmartSql.DyRepository
                     ilGen.LoadType(reqParam.ParameterType);
                     ilGen.New(SqlParameterType.Ctor.SqlParameter);
                     ilGen.Dup();
-                    var fieldMappedType = Nullable.GetUnderlyingType(reqParam.ParameterType) ?? reqParam.ParameterType;
-                    if (fieldMappedType.IsEnum)
-                    {
-                        fieldMappedType = AnyFieldTypeType.Type;
-                    }
-                    var getHandlerMethod = TypeHandlerCacheType.GetHandlerMethod(reqParam.ParameterType, fieldMappedType);
+                    var getHandlerMethod = PropertyTypeHandlerCacheType.GetHandlerMethod(reqParam.ParameterType);
                     ilGen.Call(getHandlerMethod);
                     ilGen.Call(SqlParameterType.Method.SetTypeHandler);
                     ilGen.Call(SqlParameterType.Method.Add);

@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Configs;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Text;
 
 namespace SmartSql.Test.Performance.Query
@@ -9,7 +10,7 @@ namespace SmartSql.Test.Performance.Query
     [Config(typeof(QueryConfig))]
     [GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]
     [BenchmarkCategory("Query")]
-    public abstract class AbstracQueryTest
+    public abstract class AbstractQueryTest
     {
         public const String DbType = "SqlServer";
         public const String CONNECTION_STRING = "Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True";

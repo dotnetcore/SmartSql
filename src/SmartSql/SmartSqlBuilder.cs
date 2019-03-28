@@ -10,6 +10,7 @@ using SmartSql.Middlewares;
 using SmartSql.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SmartSql
 {
@@ -63,13 +64,16 @@ namespace SmartSql
             BuildPipeline();
         }
 
+        private bool UsedCache => SmartSqlConfig.Settings.IsCacheEnabled
+                                  && SmartSqlConfig.SqlMaps.Values.Any(sqlMap => sqlMap.Caches.Count > 0);
+
         private void BuildPipeline()
         {
             if (SmartSqlConfig.Pipeline != null)
             {
                 return;
             }
-            if (SmartSqlConfig.Settings.IsCacheEnabled)
+            if (UsedCache)
             {
                 SmartSqlConfig.CacheManager = new CacheManager(SmartSqlConfig);
                 SmartSqlConfig.Pipeline = new PipelineBuilder()

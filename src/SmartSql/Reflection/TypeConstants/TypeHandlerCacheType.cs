@@ -9,6 +9,7 @@ namespace SmartSql.Reflection.TypeConstants
     public static class TypeHandlerCacheType
     {
         public static readonly Type GenericType = typeof(TypeHandlerCache<,>);
+
         public static Type MakeGenericType(Type propertyType, Type fieldType)
         {
             return GenericType.MakeGenericType(propertyType, fieldType);
@@ -22,11 +23,6 @@ namespace SmartSql.Reflection.TypeConstants
         {
             return MakeGenericType(propertyType, fieldType).
                 GetMethod("GetValue");
-        }
-        public static MethodInfo GetGetObjectValueMethod(Type propertyType, Type fieldType)
-        {
-            return MakeGenericType(propertyType, fieldType).
-                GetMethod("GetObjectValue");
         }
         public static void SetHandler(ITypeHandler typeHandler)
         {
