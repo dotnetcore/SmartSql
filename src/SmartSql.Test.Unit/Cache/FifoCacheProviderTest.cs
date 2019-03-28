@@ -21,7 +21,7 @@ namespace SmartSql.Test.Unit.Cache
                 Scope = nameof(AllPrimitive),
                 SqlId = "QueryByFifoCache"
             });
-            Assert.Equal(list, cachedList);
+            Assert.Equal(list.GetHashCode(), cachedList.GetHashCode());
         }
     }
 }

@@ -21,7 +21,7 @@ namespace SmartSql.Test.Unit.Cache
                 Scope = nameof(AllPrimitive),
                 SqlId = "QueryByLruCache"
             });
-            Assert.Equal(list, cachedList);
+            Assert.Equal(list.GetHashCode(), cachedList.GetHashCode());
         }
     }
 }
