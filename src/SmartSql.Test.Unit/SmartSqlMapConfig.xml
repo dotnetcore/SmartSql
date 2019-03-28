@@ -16,7 +16,7 @@
     <Read Name="ReadDb-2" ConnectionString="${ConnectionString}" Weight="100"/>
   </Database>
   <TypeHandlers>
-    <TypeHandler MappedType="SmartSql.Test.Entities.UserInfo,SmartSql.Test" Type="${JsonTypeHandler`}">
+    <TypeHandler PropertyType="SmartSql.Test.Entities.UserInfo,SmartSql.Test" Type="${JsonTypeHandler`}">
       <Properties>
         <Property Name="DateFormat" Value="yyyy-MM-dd mm:ss"/>
         <Property Name="NamingStrategy" Value="Camel"/>

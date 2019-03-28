@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using SmartSql.Configuration;
 using SmartSql.Exceptions;
 using SmartSql.Reflection.TypeConstants;
 
 namespace SmartSql.TypeHandlers
 {
-    public class TypeHandlerFactory 
+    public class TypeHandlerFactory
     {
         private static readonly Type ENUM_TYPE_HANDLER_TYPE = typeof(EnumTypeHandler<>);
         private static readonly Type NULLABLE_ENUM_TYPE_HANDLER_TYPE = typeof(NullableEnumTypeHandler<>);
 
-        private readonly ConcurrentDictionary<Type, ITypeHandler> _type_Handler_Map = new ConcurrentDictionary<Type, ITypeHandler>();
-        private readonly ConcurrentDictionary<String, ITypeHandler> _name_Handler_Map = new ConcurrentDictionary<String, ITypeHandler>();
+        private readonly Dictionary<Type, IDictionary<Type, ITypeHandler>> _typeHandlerMap = new Dictionary<Type, IDictionary<Type, ITypeHandler>>();
+        private readonly Dictionary<String, ITypeHandler> _nameHandlerMap = new Dictionary<String, ITypeHandler>();
 
         private readonly ITypeHandlerBuilder _typeHandlerBuilder = new TypeHandlerBuilder();
         public TypeHandlerFactory()
@@ -72,6 +73,8 @@ namespace SmartSql.TypeHandlers
 
             handler = new Int16TypeHandler();
             this.Register(handler);
+            handler = new Int16ByteTypeHandler();
+            this.Register(handler);
             handler = new Int16AnyTypeHandler();
             this.Register(handler);
             handler = new NullableInt16TypeHandler();
@@ -81,6 +84,12 @@ namespace SmartSql.TypeHandlers
 
             handler = new Int32TypeHandler();
             this.Register(handler);
+            handler = new Int32ByteTypeHandler();
+            this.Register(handler);
+            handler = new Int32Int16TypeHandler();
+            this.Register(handler);
+            handler = new Int32Int64TypeHandler();
+            this.Register(handler);
             handler = new Int32AnyTypeHandler();
             this.Register(handler);
             handler = new NullableInt32TypeHandler();
@@ -89,6 +98,12 @@ namespace SmartSql.TypeHandlers
             this.Register(handler);
 
             handler = new Int64TypeHandler();
+            this.Register(handler);
+            handler = new Int64ByteTypeHandler();
+            this.Register(handler);
+            handler = new Int64Int16TypeHandler();
+            this.Register(handler);
+            handler = new Int64Int32TypeHandler();
             this.Register(handler);
             handler = new Int64AnyTypeHandler();
             this.Register(handler);
@@ -163,30 +178,44 @@ namespace SmartSql.TypeHandlers
             this.Register(handler);
             #endregion
         }
-        public ITypeHandler Get(string handlerName)
+        public ITypeHandler GetTypeHandler(string handlerName)
         {
-            if (_name_Handler_Map.TryGetValue(handlerName, out var typeHandler))
+            if (_nameHandlerMap.TryGetValue(handlerName, out var typeHandler))
             {
                 return typeHandler;
             }
             throw new SmartSqlException($"Not Find TypeHandler.Name:{handlerName}!");
         }
-        public ITypeHandler Get(Type mappedType)
+        public ITypeHandler GetTypeHandler(Type propertyType)
         {
-            if (_type_Handler_Map.TryGetValue(mappedType, out var typeHandler))
+            if (TryGetTypeHandler(propertyType, propertyType, out var typeHandler))
             {
                 return typeHandler;
             }
-            var nullUnderType = Nullable.GetUnderlyingType(mappedType);
-            bool isEnum = (nullUnderType ?? mappedType).IsEnum;
-            if (!isEnum) throw new SmartSqlException($"Not Find TypeHandler:{mappedType.FullName}!");
-            TryRegisterEnum(mappedType, out typeHandler);
+            if (TryGetTypeHandler(propertyType, AnyFieldTypeType.Type, out typeHandler))
+            {
+                return typeHandler;
+            }
+            var nullUnderType = Nullable.GetUnderlyingType(propertyType);
+            bool isEnum = (nullUnderType ?? propertyType).IsEnum;
+            if (!isEnum) throw new SmartSqlException($"Not Find TypeHandler:{propertyType.FullName}!");
+            TryRegisterEnumTypeHandler(propertyType, out typeHandler);
             return typeHandler;
         }
 
-        public bool TryRegisterEnum(Type enumType, out ITypeHandler typeHandler)
+        public bool TryGetTypeHandler(Type propertyType, Type fieldType, out ITypeHandler typeHandler)
         {
-            if (_type_Handler_Map.TryGetValue(enumType, out typeHandler))
+            if (!_typeHandlerMap.TryGetValue(propertyType, out var fieldTypeHandlerMap))
+            {
+                typeHandler = default;
+                return false;
+            }
+            return fieldTypeHandlerMap.TryGetValue(fieldType, out typeHandler);
+        }
+
+        public bool TryRegisterEnumTypeHandler(Type enumType, out ITypeHandler typeHandler)
+        {
+            if (TryGetTypeHandler(enumType, AnyFieldTypeType.Type, out typeHandler))
             {
                 return false;
             }
@@ -199,22 +228,39 @@ namespace SmartSql.TypeHandlers
 
         public void Register(ITypeHandler typeHandler)
         {
-            if (typeHandler.FieldType != AnyFieldTypeType.Type)
+            if (!_typeHandlerMap.TryGetValue(typeHandler.PropertyType, out var fieldTypeHandlerMap))
             {
-                _type_Handler_Map.TryAdd(typeHandler.MappedType, typeHandler);
+                fieldTypeHandlerMap = new Dictionary<Type, ITypeHandler>();
+                _typeHandlerMap.Add(typeHandler.PropertyType, fieldTypeHandlerMap);
             }
+            if (fieldTypeHandlerMap.ContainsKey(typeHandler.FieldType))
+            {
+                fieldTypeHandlerMap[typeHandler.FieldType] = typeHandler;
+            }
+            else
+            {
+                fieldTypeHandlerMap.Add(typeHandler.FieldType, typeHandler);
+            }
+
             TypeHandlerCacheType.SetHandler(typeHandler);
         }
         private void Register(string handlerName, ITypeHandler typeHandler)
         {
-            _name_Handler_Map.AddOrUpdate(handlerName, typeHandler, (type, handler) => typeHandler);
+            if (_nameHandlerMap.ContainsKey(handlerName))
+            {
+                _nameHandlerMap[handlerName] = typeHandler;
+            }
+            else
+            {
+                _nameHandlerMap.Add(handlerName, typeHandler);
+            }
         }
 
         public void Register(TypeHandler typeHandlerConfig)
         {
             var isGenericType = typeHandlerConfig.HandlerType.IsGenericType;
             ITypeHandler typeHandler = isGenericType
-                ? _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.MappedType, typeHandlerConfig.Properties)
+                ? _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.PropertyType, typeHandlerConfig.Properties)
                 : _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.Properties);
             if (isGenericType)
             {

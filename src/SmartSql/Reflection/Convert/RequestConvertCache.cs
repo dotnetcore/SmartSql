@@ -51,7 +51,12 @@ namespace SmartSql.Reflection.Convert
                 ilGen.LoadType(prop.PropertyType);
                 ilGen.New(SqlParameterType.Ctor.SqlParameter);
                 ilGen.Dup();
-                var getHandlerMethod = TypeHandlerCacheType.GetHandlerMethod(prop.PropertyType, AnyFieldTypeType.Type);
+                var fieldMappedType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+                if (fieldMappedType.IsEnum)
+                {
+                    fieldMappedType = AnyFieldTypeType.Type;
+                }
+                var getHandlerMethod = TypeHandlerCacheType.GetHandlerMethod(prop.PropertyType, fieldMappedType);
                 ilGen.Call(getHandlerMethod);
                 ilGen.Call(SqlParameterType.Method.SetTypeHandler);
                 ilGen.Call(SqlParameterType.Method.Add);

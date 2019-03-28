@@ -22,7 +22,7 @@ namespace SmartSql.Sample.AspNetCore.Controllers
         [HttpGet]
         public AllPrimitive GetById(long id)
         {
-            return _sqlMapper.GetById<AllPrimitive>(id);
+            return _sqlMapper.GetById<AllPrimitive, long>(id);
         }
         [HttpPost]
         public long Insert(AllPrimitive entity)
@@ -32,7 +32,7 @@ namespace SmartSql.Sample.AspNetCore.Controllers
         [HttpPost]
         public int DeleteById(long id)
         {
-            return _sqlMapper.DeleteById<AllPrimitive>(id);
+            return _sqlMapper.DeleteById<AllPrimitive, long>(id);
         }
         [HttpPost]
         public int Update(AllPrimitive entity)

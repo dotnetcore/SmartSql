@@ -206,7 +206,7 @@ namespace SmartSql.ConfigBuilder
                     };
                     if (parameterNode.Attributes.TryGetValueAsString("TypeHandler", out var handlerName, SmartSqlConfig.Properties))
                     {
-                        parameter.Handler = SmartSqlConfig.TypeHandlerFactory.Get(handlerName);
+                        parameter.Handler = SmartSqlConfig.TypeHandlerFactory.GetTypeHandler(handlerName);
                     }
                     parameterMap.Parameters.Add(parameter.Name, parameter);
                 }
@@ -300,7 +300,7 @@ namespace SmartSql.ConfigBuilder
                 };
                 if (resultNode.Attributes.TryGetValueAsString("TypeHandler", out var handlerName, SmartSqlConfig.Properties))
                 {
-                    property.Handler = SmartSqlConfig.TypeHandlerFactory.Get(handlerName);
+                    property.Handler = SmartSqlConfig.TypeHandlerFactory.GetTypeHandler(handlerName);
                 }
                 resultMap.Properties.Add(property.Column, property);
             }

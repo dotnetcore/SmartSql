@@ -10,9 +10,9 @@ namespace SmartSql
         {
             return sqlMapper.SessionStore.Open().DeleteAll<TEntity>();
         }
-        public static int DeleteById<TEntity>(this ISqlMapper sqlMapper, object id)
+        public static int DeleteById<TEntity, TPrimaryKey>(this ISqlMapper sqlMapper, TPrimaryKey id)
         {
-            return sqlMapper.SessionStore.Open().DeleteById<TEntity>(id);
+            return sqlMapper.SessionStore.Open().DeleteById<TEntity, TPrimaryKey>(id);
         }
         public static int DeleteMany<TEntity, TPrimaryKey>(this ISqlMapper sqlMapper, IEnumerable<TPrimaryKey> ids)
         {
@@ -22,9 +22,9 @@ namespace SmartSql
         {
             return sqlMapper.SessionStore.Open().DyUpdate<TEntity>(entity);
         }
-        public static TEntity GetById<TEntity>(this ISqlMapper sqlMapper, object id)
+        public static TEntity GetById<TEntity, TPrimaryKey>(this ISqlMapper sqlMapper, TPrimaryKey id)
         {
-            return sqlMapper.SessionStore.Open().GetById<TEntity>(id);
+            return sqlMapper.SessionStore.Open().GetById<TEntity, TPrimaryKey>(id);
         }
         public static TPrimaryKey Insert<TEntity, TPrimaryKey>(this ISqlMapper sqlMapper, TEntity entity)
         {

@@ -92,7 +92,7 @@ namespace SmartSql.Middlewares
                
                 if (typeHandler == null)
                 {
-                    typeHandler = sqlParameter.TypeHandler?? _typeHandlerFactory.Get(sqlParameter.ParameterType);
+                    typeHandler = sqlParameter.TypeHandler?? _typeHandlerFactory.GetTypeHandler(sqlParameter.ParameterType);
                 }
 
                 typeHandler.SetParameter(sourceParam, sqlParameter.Value);

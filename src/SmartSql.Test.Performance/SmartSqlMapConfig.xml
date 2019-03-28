@@ -6,7 +6,7 @@
     <Write Name="WriteDB" ConnectionString="Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True"/>
   </Database>
   <TypeHandlers>
-    <TypeHandler MappedType="SmartSql.Test.Entities.NumericalEnum,SmartSql.Test" Type="SmartSql.TypeHandlers.EnumTypeHandler`1, SmartSql"/>
+    <TypeHandler PropertyType="SmartSql.Test.Entities.NumericalEnum,SmartSql.Test" Type="SmartSql.TypeHandlers.EnumTypeHandler`1, SmartSql"/>
   </TypeHandlers>
   <SmartSqlMaps>
     <SmartSqlMap Path="Maps" Type="Directory"></SmartSqlMap>

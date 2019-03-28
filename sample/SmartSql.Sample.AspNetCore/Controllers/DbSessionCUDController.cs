@@ -24,7 +24,7 @@ namespace SmartSql.Sample.AspNetCore.Controllers
         {
             using (var dbSession = _dbSessionFactory.Open())
             {
-                return dbSession.GetById<AllPrimitive>(id);
+                return dbSession.GetById<AllPrimitive, long>(id);
             }
         }
         [HttpPost]
@@ -40,7 +40,7 @@ namespace SmartSql.Sample.AspNetCore.Controllers
         {
             using (var dbSession = _dbSessionFactory.Open())
             {
-                return dbSession.DeleteById<AllPrimitive>(id);
+                return dbSession.DeleteById<AllPrimitive, long>(id);
             }
         }
         [HttpPost]

@@ -70,7 +70,7 @@
               <xs:element ref="Properties"/>
             </xs:sequence>
             <xs:attribute name="Name" type="xs:string" use="optional" />
-            <xs:attribute name="MappedType" type="xs:string" use="optional" />
+            <xs:attribute name="PropertyType" type="xs:string" use="optional" />
             <xs:attribute name="Type" type="xs:string" use="required" />
           </xs:complexType>
         </xs:element>

@@ -13,6 +13,13 @@ namespace SmartSql.TypeHandlers
             return dataReader.GetInt16(columnIndex);
         }
     }
+    public class Int16ByteTypeHandler : AbstractTypeHandler<Int16, Byte>
+    {
+        public override Int16 GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
+        {
+            return dataReader.GetByte(columnIndex);
+        }
+    }
     public class Int16AnyTypeHandler : AbstractTypeHandler<Int16, AnyFieldType>
     {
         public override Int16 GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)

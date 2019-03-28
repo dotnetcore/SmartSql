@@ -33,7 +33,7 @@
     ],
     "TypeHandlers": [
       {
-        "MappedType": "SmartSql.Test.Entities.UserInfo,SmartSql.Test",
+        "PropertyType": "SmartSql.Test.Entities.UserInfo,SmartSql.Test",
         "Type": "SmartSql.TypeHandler.JsonTypeHandler`1,SmartSql.TypeHandler"
       },
       {

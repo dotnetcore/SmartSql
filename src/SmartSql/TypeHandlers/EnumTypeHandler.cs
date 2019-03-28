@@ -9,7 +9,7 @@ namespace SmartSql.TypeHandlers
         private readonly Type _enumUnderlyingType;
         public EnumTypeHandler()
         {
-            _enumUnderlyingType = Enum.GetUnderlyingType(MappedType);
+            _enumUnderlyingType = Enum.GetUnderlyingType(PropertyType);
         }
         public override void SetParameter(IDataParameter dataParameter, object parameterValue)
         {
@@ -18,7 +18,7 @@ namespace SmartSql.TypeHandlers
 
         public override TEnum GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
-            return (TEnum)Enum.ToObject(MappedType, dataReader.GetValue(columnIndex));
+            return (TEnum)Enum.ToObject(PropertyType, dataReader.GetValue(columnIndex));
         }
     }
 }

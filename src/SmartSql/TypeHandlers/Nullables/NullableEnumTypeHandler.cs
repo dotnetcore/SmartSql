@@ -10,7 +10,7 @@ namespace SmartSql.TypeHandlers
         private readonly Type _enumUnderlyingType;
         public NullableEnumTypeHandler()
         {
-            _enumType = Nullable.GetUnderlyingType(MappedType);
+            _enumType = Nullable.GetUnderlyingType(PropertyType);
             _enumUnderlyingType = Enum.GetUnderlyingType(_enumType);
         }
 

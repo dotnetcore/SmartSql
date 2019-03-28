@@ -12,7 +12,7 @@ namespace SmartSql.Test.Unit.CUD
         public void Get()
         {
             AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
-            var entity = DbSession.GetById<AllPrimitive>(id);
+            var entity = DbSession.GetById<AllPrimitive, long>(id);
             Assert.NotNull(entity);
         }
         [Fact]
@@ -71,7 +71,7 @@ namespace SmartSql.Test.Unit.CUD
         public void DeleteById()
         {
             AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
-            var recordsAffected = DbSession.DeleteById<AllPrimitive>(id);
+            var recordsAffected = DbSession.DeleteById<AllPrimitive, long>(id);
             Assert.NotEqual(0, recordsAffected);
         }
         [Fact]
@@ -80,7 +80,7 @@ namespace SmartSql.Test.Unit.CUD
             InsertReturnIdImpl(out long id0);
             InsertReturnIdImpl(out long id1);
             InsertReturnIdImpl(out long id2);
-            var recordsAffected = DbSession.DeleteMany<AllPrimitive,long>(new long[] { id0, id1, id2 });
+            var recordsAffected = DbSession.DeleteMany<AllPrimitive, long>(new long[] { id0, id1, id2 });
             Assert.Equal(3, recordsAffected);
         }
 

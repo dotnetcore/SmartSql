@@ -9,6 +9,7 @@ using SmartSql.Reflection.PropertyAccessor;
 using SmartSql.DataSource;
 using SmartSql.CUD;
 using SmartSql.Reflection.Convert;
+using SmartSql.TypeHandlers;
 
 namespace SmartSql
 {
@@ -30,11 +31,14 @@ namespace SmartSql
         {
             return $"{dbProvider.ParameterNamePrefix}{paramName}{dbProvider.ParameterNameSuffix}={dbProvider.ParameterPrefix}{paramName}";
         }
-        public static TEntity GetById<TEntity>(this IDbSession dbSession, object id)
+        public static TEntity GetById<TEntity, TPrimaryKey>(this IDbSession dbSession, TPrimaryKey id)
         {
             var tableName = EntityMetaDataCache<TEntity>.TableName;
             var pkCol = EntityMetaDataCache<TEntity>.PrimaryKey;
-            var idParam = new SqlParameter(pkCol.Name, id, pkCol.Property.PropertyType);
+            var idParam = new SqlParameter(pkCol.Name, id, pkCol.Property.PropertyType)
+            {
+                TypeHandler = TypeHandlerCache<TPrimaryKey, TPrimaryKey>.Handler
+            };
             var dbProvider = dbSession.SmartSqlConfig.Database.DbProvider;
             var sql = $"Select * From {tableName} Where {WrapColumnEqParameter(dbProvider, idParam.Name)};";
             return dbSession.QuerySingle<TEntity>(new RequestContext
@@ -109,12 +113,14 @@ namespace SmartSql
             return sqlBuilder;
         }
         #region Delete
-        public static int DeleteById<TEntity>(this IDbSession dbSession, object id)
+        public static int DeleteById<TEntity, TPrimaryKey>(this IDbSession dbSession, TPrimaryKey id)
         {
             var tableName = EntityMetaDataCache<TEntity>.TableName;
             var pkCol = EntityMetaDataCache<TEntity>.PrimaryKey;
-            var idParam = new SqlParameter(pkCol.Name, id, pkCol.Property.PropertyType);
-
+            var idParam = new SqlParameter(pkCol.Name, id, pkCol.Property.PropertyType)
+            {
+                TypeHandler = TypeHandlerCache<TPrimaryKey, TPrimaryKey>.Handler
+            };
             var sql = $"Delete From {tableName} Where {WrapColumnEqParameter(dbSession.SmartSqlConfig.Database.DbProvider, idParam.Name)};";
             return dbSession.Execute(new RequestContext
             {
@@ -133,7 +139,11 @@ namespace SmartSql
             foreach (var id in ids)
             {
                 var idName = $"{pkCol.Name}_{index}";
-                sqlParameters.TryAdd(idName, id);
+                var sqlParameter = new SqlParameter(idName, id, id.GetType())
+                {
+                    TypeHandler = TypeHandlerCache<TPrimaryKey, TPrimaryKey>.Handler
+                };
+                sqlParameters.TryAdd(sqlParameter);
                 if (index > 0)
                 {
                     sqlBuilder.Append(",");

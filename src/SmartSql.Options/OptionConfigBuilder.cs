@@ -74,12 +74,12 @@ namespace SmartSql.Options
 
                 if (typeHandlerConfig.HandlerType.IsGenericType)
                 {
-                    var csharpTypeStr = typeHandler.MappedType;
-                    if (String.IsNullOrEmpty(csharpTypeStr))
+                    var propertyTypeStr = typeHandler.PropertyType;
+                    if (String.IsNullOrEmpty(propertyTypeStr))
                     {
-                        throw new SmartSqlException("TypeHandler.MappedType can not be null.");
+                        throw new SmartSqlException("TypeHandler.PropertyType can not be null.");
                     }
-                    typeHandlerConfig.MappedType = TypeUtils.GetType(csharpTypeStr);
+                    typeHandlerConfig.PropertyType = TypeUtils.GetType(propertyTypeStr);
                 }
                 RegisterTypeHandler(typeHandlerConfig);
             }

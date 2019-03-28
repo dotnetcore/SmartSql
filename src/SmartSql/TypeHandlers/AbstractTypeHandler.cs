@@ -7,14 +7,14 @@ namespace SmartSql.TypeHandlers
 {
     public abstract class AbstractTypeHandler<TProperty, TField> : ITypeHandler<TProperty, TField>
     {
-        public Type MappedType { get; }
+        public Type PropertyType { get; }
         public Type FieldType { get; }
         public TProperty Default { get; }
         public bool IsNullable { get; }
 
         protected AbstractTypeHandler()
         {
-            MappedType = typeof(TProperty);
+            PropertyType = typeof(TProperty);
             FieldType = typeof(TField);
             Default = default(TProperty);
             IsNullable = Default == null;

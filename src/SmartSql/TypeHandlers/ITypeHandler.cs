@@ -8,8 +8,9 @@ namespace SmartSql.TypeHandlers
 {
     public interface ITypeHandler : IInitialize
     {
-        Type MappedType { get; }
+        Type PropertyType { get; }
         Type FieldType { get; }
+        
         void SetParameter(IDataParameter dataParameter, object parameterValue);
     }
     public interface ITypeHandler<out TProperty, TField> : ITypeHandler

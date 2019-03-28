@@ -30,7 +30,7 @@ namespace SmartSql.Reflection.TypeConstants
         }
         public static void SetHandler(ITypeHandler typeHandler)
         {
-            GetSetHandlerMethod(typeHandler.MappedType, typeHandler.FieldType)
+            GetSetHandlerMethod(typeHandler.PropertyType, typeHandler.FieldType)
                 .Invoke(null, new object[] { typeHandler });
         }
         public static ITypeHandler GetHandler(Type propertyType, Type fieldType)

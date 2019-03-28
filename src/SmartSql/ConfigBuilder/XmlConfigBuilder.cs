@@ -250,7 +250,7 @@ namespace SmartSql.ConfigBuilder
                 Properties = ParseProperties(typeHandlerNode)
             };
             typeHandlerNode.Attributes.TryGetValueAsString(nameof(TypeHandler.Name), out string handlerName, SmartSqlConfig.Properties);
-            typeHandlerNode.Attributes.TryGetValueAsString("MappedType", out string csharpTypeStr, SmartSqlConfig.Properties);
+            typeHandlerNode.Attributes.TryGetValueAsString(nameof(TypeHandler.PropertyType), out string propertyTypeStr, SmartSqlConfig.Properties);
             if (!typeHandlerNode.Attributes.TryGetValueAsString(TYPE_ATTRIBUTE, out string type, SmartSqlConfig.Properties))
             {
                 throw new SmartSqlException("TypeHandler.Type can not be null.");
@@ -260,11 +260,11 @@ namespace SmartSql.ConfigBuilder
 
             if (typeHandlerConfig.HandlerType.IsGenericType)
             {
-                if (String.IsNullOrEmpty(csharpTypeStr))
+                if (String.IsNullOrEmpty(propertyTypeStr))
                 {
-                    throw new SmartSqlException("TypeHandler.MappedType can not be null.");
+                    throw new SmartSqlException("TypeHandler.PropertyType can not be null.");
                 }
-                typeHandlerConfig.MappedType = TypeUtils.GetType(csharpTypeStr);
+                typeHandlerConfig.PropertyType = TypeUtils.GetType(propertyTypeStr);
             }
             RegisterTypeHandler(typeHandlerConfig);
         }

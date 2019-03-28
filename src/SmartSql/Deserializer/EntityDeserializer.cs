@@ -157,7 +157,7 @@ namespace SmartSql.Deserializer
             #region Check Enum
             if (isEnum)
             {
-                typeHandlerFactory.TryRegisterEnum(propertyType, out var typeHandler);
+                typeHandlerFactory.TryRegisterEnumTypeHandler(propertyType, out _);
             }
             #endregion
             MethodInfo getValMethod = null;
@@ -171,9 +171,13 @@ namespace SmartSql.Deserializer
                 }
                 else if (propertyUnderType != fieldType)
                 {
-                    if (TypeHandlerCacheType.GetHandler(propertyType, fieldType) == null)
+                    if (!typeHandlerFactory.TryGetTypeHandler(propertyType, fieldType, out _))
                     {
                         mappedFieldType = AnyFieldTypeType.Type;
+                        if (!typeHandlerFactory.TryGetTypeHandler(propertyType, mappedFieldType, out _))
+                        {
+                            throw new SmartSqlException($"Can not find TypeHandler:{nameof(ITypeHandler.PropertyType)}:{propertyType.FullName},{nameof(ITypeHandler.FieldType)}:{mappedFieldType.FullName}");
+                        }
                     }
                 }
                 getValMethod = TypeHandlerCacheType.GetGetValueMethod(propertyType, mappedFieldType);
