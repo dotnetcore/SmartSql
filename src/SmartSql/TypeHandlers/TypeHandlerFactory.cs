@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using SmartSql.Configuration;
+using SmartSql.Diagnostics;
 using SmartSql.Exceptions;
 using SmartSql.Reflection.TypeConstants;
 
@@ -347,17 +348,48 @@ namespace SmartSql.TypeHandlers
 
         public void Register(TypeHandler typeHandlerConfig)
         {
-            var isGenericType = typeHandlerConfig.HandlerType.IsGenericType;
-            ITypeHandler typeHandler = isGenericType
-                ? _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.PropertyType, typeHandlerConfig.Properties)
-                : _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.Properties);
-            if (isGenericType)
+            ITypeHandler typeHandler = null;
+            if (typeHandlerConfig.HandlerType.IsGenericType)
             {
-                Register(typeHandler);
+                var genericArgs = typeHandlerConfig.HandlerType.GetGenericArguments();
+                switch (genericArgs.Length)
+                {
+                    case 2:
+                        {
+                            typeHandler = _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType
+                                , typeHandlerConfig.PropertyType, typeHandlerConfig.FieldType, typeHandlerConfig.Properties);
+                            break;
+                        }
+                    case 1:
+                        {
+                            if (typeHandlerConfig.PropertyType != null)
+                            {
+                                typeHandler = _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.PropertyType, typeHandlerConfig.Properties);
+                            }
+                            if (typeHandlerConfig.FieldType != null)
+                            {
+                                typeHandler = _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.FieldType, typeHandlerConfig.Properties);
+                            }
+                            break;
+                        }
+                    default:
+                        {
+                            throw new SmartSqlException($"Wrong TypeHandlerConfig.Type:{typeHandlerConfig.HandlerType.FullName}.");
+                        }
+                }
             }
             else
             {
+                typeHandler = _typeHandlerBuilder.Build(typeHandlerConfig.HandlerType, typeHandlerConfig.Properties);
+            }
+
+            if (!String.IsNullOrEmpty(typeHandlerConfig.Name))
+            {
                 Register(typeHandlerConfig.Name, typeHandler);
+            }
+            else
+            {
+                Register(typeHandler);
             }
         }
     }

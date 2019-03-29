@@ -8,6 +8,7 @@ namespace SmartSql.Options
     {
         public String Name { get; set; }
         public String PropertyType { get; set; }
+        public String FieldType { get; set; }
         public String Type { get; set; }
         public IDictionary<String, Object> Properties { get; set; }
     }

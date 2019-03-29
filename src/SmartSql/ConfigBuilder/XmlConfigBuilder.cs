@@ -261,7 +261,6 @@ namespace SmartSql.ConfigBuilder
 
             if (typeHandlerConfig.HandlerType.IsGenericType)
             {
-
                 typeHandlerNode.Attributes.TryGetValueAsString(nameof(TypeHandler.PropertyType), out string propertyTypeStr, SmartSqlConfig.Properties);
                 typeHandlerNode.Attributes.TryGetValueAsString(nameof(TypeHandler.FieldType), out string fieldTypeStr, SmartSqlConfig.Properties);
 

@@ -68,18 +68,20 @@ namespace SmartSql.Options
                 var typeHandlerConfig = new Configuration.TypeHandler
                 {
                     Name = typeHandler.Name,
-                    Properties = typeHandler.Properties
+                    Properties = typeHandler.Properties,
+                    HandlerType = TypeUtils.GetType(typeHandler.Type)
                 };
-                typeHandlerConfig.HandlerType = TypeUtils.GetType(typeHandler.Type);
 
                 if (typeHandlerConfig.HandlerType.IsGenericType)
                 {
-                    var propertyTypeStr = typeHandler.PropertyType;
-                    if (String.IsNullOrEmpty(propertyTypeStr))
+                    if (!String.IsNullOrEmpty(typeHandler.PropertyType))
                     {
-                        throw new SmartSqlException("TypeHandler.PropertyType can not be null.");
+                        typeHandlerConfig.PropertyType = TypeUtils.GetType(typeHandler.PropertyType);
                     }
-                    typeHandlerConfig.PropertyType = TypeUtils.GetType(propertyTypeStr);
+                    if (!String.IsNullOrEmpty(typeHandler.FieldType))
+                    {
+                        typeHandlerConfig.FieldType = TypeUtils.GetType(typeHandler.FieldType);
+                    }
                 }
                 RegisterTypeHandler(typeHandlerConfig);
             }
