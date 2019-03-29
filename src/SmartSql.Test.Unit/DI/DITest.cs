@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SmartSql.DataSource;
 using SmartSql.DbSession;
+using SmartSql.Test.Repositories;
 using SmartSql.Test.Unit.DyRepository;
 using Xunit;
 
@@ -57,10 +58,10 @@ namespace SmartSql.Test.Unit.DI
             services.AddSmartSql()
             .AddRepositoryFromAssembly(o =>
             {
-                o.AssemblyString = "SmartSql.Test.Unit";
+                o.AssemblyString = "SmartSql.Test";
                 o.Filter = (type) =>
                 {
-                    return type.Namespace == "SmartSql.Test.Unit.DyRepository";
+                    return type.Namespace == "SmartSql.Test.Repositories";
                 };
             });
             var serviceProvider = services.BuildServiceProvider();
@@ -75,10 +76,10 @@ namespace SmartSql.Test.Unit.DI
             .AddRepositoryFromAssembly(o =>
             {
                 o.SmartSqlAlias = "AddRepositoryFromAssembly_Alias";
-                o.AssemblyString = "SmartSql.Test.Unit";
+                o.AssemblyString = "SmartSql.Test";
                 o.Filter = (type) =>
                 {
-                    return type.Namespace == "SmartSql.Test.Unit.DyRepository";
+                    return type.Namespace == "SmartSql.Test.Repositories";
                 };
             });
             var serviceProvider = services.BuildServiceProvider();

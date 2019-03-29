@@ -3,6 +3,7 @@ using SmartSql.DyRepository;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SmartSql.Test.Repositories;
 using Xunit;
 
 namespace SmartSql.Test.Unit.DyRepository
@@ -34,7 +35,6 @@ namespace SmartSql.Test.Unit.DyRepository
             });
             
         }
-
 
         [Fact]
         public void NoMapperRepository_GetGuidFromDb()

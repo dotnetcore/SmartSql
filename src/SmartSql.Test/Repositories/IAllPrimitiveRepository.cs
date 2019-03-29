@@ -10,5 +10,6 @@ namespace SmartSql.Test.Repositories
     {
         [Statement(Sql = "SELECT Top (@Taken) T.* From T_AllPrimitive T With(NoLock)")]
         IEnumerable<AllPrimitive> Query([Param("Taken")]int taken);
+        long Insert(AllPrimitive entity);
     }
 }

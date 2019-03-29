@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SmartSql.Test.Unit.DyRepository
+namespace SmartSql.Test.Repositories
 {
     public interface INoMapperRepository
     {

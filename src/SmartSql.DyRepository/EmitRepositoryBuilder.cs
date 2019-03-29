@@ -164,8 +164,7 @@ namespace SmartSql.DyRepository
                     ilGen.LoadType(reqParam.ParameterType);
                     ilGen.New(SqlParameterType.Ctor.SqlParameter);
                     ilGen.Dup();
-                    var column = reqParam.GetCustomAttribute<ColumnAttribute>();
-                    var getHandlerMethod = column?.FieldType != null ? TypeHandlerCacheType.GetHandlerMethod(reqParam.ParameterType, column?.FieldType)
+                    var getHandlerMethod = paramAttr?.FieldType != null ? TypeHandlerCacheType.GetHandlerMethod(reqParam.ParameterType, paramAttr?.FieldType)
                         : PropertyTypeHandlerCacheType.GetHandlerMethod(reqParam.ParameterType);
                     ilGen.Call(getHandlerMethod);
                     ilGen.Call(SqlParameterType.Method.SetTypeHandler);
