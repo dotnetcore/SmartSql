@@ -8,5 +8,6 @@ namespace SmartSql.Configuration.Tags
     public class Set : Dynamic
     {
         public override string Prepend => "Set";
+       
     }
 }
