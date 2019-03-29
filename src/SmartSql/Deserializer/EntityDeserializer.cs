@@ -152,6 +152,7 @@ namespace SmartSql.Deserializer
         }
         private void LoadPropertyValue(ILGenerator ilGen, TypeHandlerFactory typeHandlerFactory, int colIndex, Type propertyType, Type fieldType, Property resultProperty)
         {
+            LoadTypeHandlerInvokeArgs(ilGen, colIndex, propertyType);
             var propertyUnderType = (Nullable.GetUnderlyingType(propertyType) ?? propertyType);
             var isEnum = propertyUnderType.IsEnum;
             #region Check Enum
@@ -163,7 +164,6 @@ namespace SmartSql.Deserializer
             MethodInfo getValMethod = null;
             if (resultProperty?.Handler == null)
             {
-                LoadTypeHandlerInvokeArgs(ilGen, colIndex, propertyType);
                 var mappedFieldType = fieldType;
                 if (isEnum)
                 {
