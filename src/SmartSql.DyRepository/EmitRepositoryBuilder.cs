@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.Extensions.Logging;
+using SmartSql.Annotations;
 using SmartSql.Configuration;
 using SmartSql.DataSource;
 using SmartSql.DyRepository.Annotations;
@@ -163,7 +164,9 @@ namespace SmartSql.DyRepository
                     ilGen.LoadType(reqParam.ParameterType);
                     ilGen.New(SqlParameterType.Ctor.SqlParameter);
                     ilGen.Dup();
-                    var getHandlerMethod = PropertyTypeHandlerCacheType.GetHandlerMethod(reqParam.ParameterType);
+                    var column = reqParam.GetCustomAttribute<ColumnAttribute>();
+                    var getHandlerMethod = column?.FieldType != null ? TypeHandlerCacheType.GetHandlerMethod(reqParam.ParameterType, column?.FieldType)
+                        : PropertyTypeHandlerCacheType.GetHandlerMethod(reqParam.ParameterType);
                     ilGen.Call(getHandlerMethod);
                     ilGen.Call(SqlParameterType.Method.SetTypeHandler);
                     ilGen.Call(SqlParameterType.Method.Add);

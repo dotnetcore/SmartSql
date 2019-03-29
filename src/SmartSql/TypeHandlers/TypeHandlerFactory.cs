@@ -342,6 +342,7 @@ namespace SmartSql.TypeHandlers
             {
                 _nameHandlerMap.Add(handlerName, typeHandler);
             }
+            Register(typeHandler);
         }
 
         public void Register(TypeHandler typeHandlerConfig)

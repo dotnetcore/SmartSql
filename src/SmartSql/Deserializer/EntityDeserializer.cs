@@ -184,18 +184,9 @@ namespace SmartSql.Deserializer
             }
             else
             {
-                LoadTypeHandler(ilGen, resultProperty);
-                LoadTypeHandlerInvokeArgs(ilGen, colIndex, propertyType);
-                getValMethod = resultProperty.Handler.GetType().GetMethod("GetValue");
+                getValMethod = TypeHandlerCacheType.GetGetValueMethod(resultProperty.Handler.PropertyType, resultProperty.Handler.FieldType);
             }
             ilGen.Call(getValMethod);
-        }
-
-        private void LoadTypeHandler(ILGenerator ilGen, Property resultProperty)
-        {
-            ilGen.LoadArg(1);
-            ilGen.LoadString(resultProperty.Column);
-            ilGen.Callvirt(RequestContextType.Method.GetPropertyHandler);
         }
 
         private void LoadTypeHandlerInvokeArgs(ILGenerator ilGen, int colIndex, Type propertyType)

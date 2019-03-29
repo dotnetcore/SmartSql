@@ -3,8 +3,10 @@ using SmartSql.Reflection.TypeConstants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using SmartSql.Annotations;
 
 namespace SmartSql.Reflection.Convert
 {
@@ -51,7 +53,9 @@ namespace SmartSql.Reflection.Convert
                 ilGen.LoadType(prop.PropertyType);
                 ilGen.New(SqlParameterType.Ctor.SqlParameter);
                 ilGen.Dup();
-                var getHandlerMethod = PropertyTypeHandlerCacheType.GetHandlerMethod(prop.PropertyType);
+                var column = prop.GetCustomAttribute<ColumnAttribute>();
+                var getHandlerMethod = column?.FieldType != null ? TypeHandlerCacheType.GetHandlerMethod(prop.PropertyType, column?.FieldType)
+                    : PropertyTypeHandlerCacheType.GetHandlerMethod(prop.PropertyType);
                 ilGen.Call(getHandlerMethod);
                 ilGen.Call(SqlParameterType.Method.SetTypeHandler);
                 ilGen.Call(SqlParameterType.Method.Add);

@@ -53,11 +53,6 @@ namespace SmartSql
                 MultipleResultMap.Results[ExecutionContext.DataReaderWrapper.ResultIndex]?.Map : ResultMap;
         }
 
-        public ITypeHandler GetPropertyHandler(string columnName)
-        {
-            return GetCurrentResultMap()?.GetHandler(columnName);
-        }
-
         public abstract void SetupParameters();
         public abstract void SetRequest(object requestObj);
     }

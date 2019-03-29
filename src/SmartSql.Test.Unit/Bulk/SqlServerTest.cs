@@ -33,7 +33,7 @@ namespace SmartSql.Test.Unit.Bulk
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
-                Request = new { Taken = 10000 }
+                Request = new { Taken = 10 }
             });
             var data = list.ToDataTable();
             bulkInsert.Table = data;
