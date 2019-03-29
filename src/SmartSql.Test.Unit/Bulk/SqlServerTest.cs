@@ -26,6 +26,20 @@ namespace SmartSql.Test.Unit.Bulk
             bulkInsert.Insert();
         }
         [Fact]
+        public void InsertByList()
+        {
+            IBulkInsert bulkInsert = new BulkInsert(DbSession);
+            var list = DbSession.Query<AllPrimitive>(new RequestContext
+            {
+                Scope = nameof(AllPrimitive),
+                SqlId = "Query",
+                Request = new { Taken = 10000 }
+            });
+            var data = list.ToDataTable();
+            bulkInsert.Table = data;
+            bulkInsert.Insert();
+        }
+        [Fact]
         public async Task InsertAsync()
         {
             var data = DbSession.GetDataTable(new RequestContext

@@ -14,7 +14,13 @@ namespace SmartSql.CUD
         public static Type EntityType { get; }
         public static EntityMetaData MetaData { get; }
         public static String TableName => MetaData.TableName;
-        public static IDictionary<string, ColumnAttribute> Columns => MetaData.Columns;
+        /// <summary>
+        /// Key :PropertyName
+        /// </summary>
+        public static SortedDictionary<string, ColumnAttribute> Columns => MetaData.Columns;
+
+        public static SortedDictionary<int, ColumnAttribute> IndexColumnMaps { get; private set; }
+
         public static ColumnAttribute PrimaryKey
         {
             get
@@ -41,29 +47,46 @@ namespace SmartSql.CUD
 
         private static void InitColumns()
         {
-            MetaData.Columns = EntityType.GetProperties()
-                .Where(propInfo => propInfo.GetCustomAttribute<NotMappedAttribute>() == null)
-                .ToDictionary((propInfo) =>
+            var columnIndex = 0;
+            var columns = EntityType.GetProperties()
+               .Where(propInfo => propInfo.GetCustomAttribute<NotMappedAttribute>() == null)
+               .ToDictionary((propInfo) => propInfo.Name,
+                   (propInfo) =>
+               {
+                   var column = propInfo.GetCustomAttribute<ColumnAttribute>() ?? new ColumnAttribute(propInfo.Name)
+                   {
+                       IsPrimaryKey = String.Equals(propInfo.Name, DEFAULT_ID_NAME, StringComparison.CurrentCultureIgnoreCase)
+                   };
+                   column.Property = propInfo;
+                   if (String.IsNullOrEmpty(column.Name))
+                   {
+                       column.Name = propInfo.Name;
+                   }
+                   if (column.FieldType == null)
+                   {
+                       column.FieldType = Nullable.GetUnderlyingType(propInfo.PropertyType) ?? propInfo.PropertyType;
+                   }
+                   if (!column.Ordinal.HasValue)
+                   {
+                       column.Ordinal = columnIndex;
+                   }
+                   if (column.IsPrimaryKey)
+                   {
+                       MetaData.PrimaryKey = column;
+                   }
+                   columnIndex++;
+                   return column;
+               });
+            MetaData.Columns = new SortedDictionary<string, ColumnAttribute>(columns);
+            var indexColMap = MetaData.Columns.ToDictionary((col) =>
+            {
+                if (!col.Value.Ordinal.HasValue)
                 {
-                    var column = propInfo.GetCustomAttribute<ColumnAttribute>();
-                    return String.IsNullOrEmpty(column?.Name) ? propInfo.Name : column.Name;
-                }, (propInfo) =>
-                {
-                    var column = propInfo.GetCustomAttribute<ColumnAttribute>() ?? new ColumnAttribute(propInfo.Name)
-                    {
-                        IsPrimaryKey = String.Equals(propInfo.Name, DEFAULT_ID_NAME, StringComparison.CurrentCultureIgnoreCase)
-                    };
-                    if (String.IsNullOrEmpty(column.Name))
-                    {
-                        column.Name = propInfo.Name;
-                    }
-                    column.Property = propInfo;
-                    if (column.IsPrimaryKey)
-                    {
-                        MetaData.PrimaryKey = column;
-                    }
-                    return column;
-                });
+                    throw new SmartSqlException($"Entity:{EntityType.FullName} {col.Value.Name}.Ordinal can not be null.");
+                }
+                return col.Value.Ordinal.Value;
+            }, col => col.Value);
+            IndexColumnMaps = new SortedDictionary<int, ColumnAttribute>(indexColMap);
         }
 
         private static void InitTableName()

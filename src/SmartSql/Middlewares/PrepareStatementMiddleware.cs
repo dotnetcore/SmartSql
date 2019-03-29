@@ -76,7 +76,7 @@ namespace SmartSql.Middlewares
             foreach (var paramName in dbParameterNames)
             {
                 var parameter = reqConetxt.ParameterMap?.GetParameter(paramName);
-               var propertyName = paramName;
+                var propertyName = paramName;
                 ITypeHandler typeHandler = null;
                 if (parameter != null)
                 {
@@ -89,10 +89,10 @@ namespace SmartSql.Middlewares
                 }
                 var sourceParam = _dbProviderFactory.CreateParameter();
                 sourceParam.ParameterName = paramName;
-               
+
                 if (typeHandler == null)
                 {
-                    typeHandler = sqlParameter.TypeHandler?? _typeHandlerFactory.GetTypeHandler(sqlParameter.ParameterType);
+                    typeHandler = sqlParameter.TypeHandler ?? _typeHandlerFactory.GetTypeHandler(sqlParameter.ParameterType);
                 }
 
                 typeHandler.SetParameter(sourceParam, sqlParameter.Value);
