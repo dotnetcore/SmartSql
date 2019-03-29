@@ -9,8 +9,15 @@
 
 <SmartSqlMap Scope="WhereTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
-    <Statement Id="Where" >
-      
+    <Statement Id="Where_Min">
+      Select 'Where' As Val
+      <Where Min="1">
+        1=1
+        <IsNotEmpty Property="Msg" Prepend="And">
+          1=1
+        </IsNotEmpty>
+      </Where>
     </Statement>
+    
   </Statements>
 </SmartSqlMap>

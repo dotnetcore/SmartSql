@@ -12,6 +12,5 @@ namespace SmartSql.Configuration.Tags
         {
 
         }
-
     }
 }

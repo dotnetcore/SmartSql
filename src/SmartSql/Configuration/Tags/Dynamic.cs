@@ -8,14 +8,27 @@ namespace SmartSql.Configuration.Tags
 {
     public class Dynamic : Tag
     {
+        public int? Min { get; set; }
         public override bool IsCondition(AbstractRequestContext context)
         {
-            var passed = ChildTags.Any(childTag => childTag.IsCondition(context));
-            if (Required && !passed)
+            bool passed = false;
+            var matched = ChildTags.Sum(childTag =>
             {
-                throw new TagRequiredFailException(this);
+                if (childTag is SqlText)
+                {
+                    passed = true;
+                    return 0;
+                }
+                return childTag.IsCondition(context) ? 1 : 0;
+            });
+            if (Min.HasValue)
+            {
+                if (matched < Min)
+                {
+                    throw new TagMinMatchedFailException(this, matched);
+                }
             }
-            return passed;
+            return passed || matched > 0;
         }
         public override void BuildSql(AbstractRequestContext context)
         {

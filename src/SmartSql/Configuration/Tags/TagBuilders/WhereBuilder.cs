@@ -9,12 +9,13 @@ namespace SmartSql.Configuration.Tags.TagBuilders
     {
         public override ITag Build(XmlNode xmlNode, Statement statement)
         {
-           return new Where
-           {
-               ChildTags = new List<ITag>(),
-               Required = GetRequired(xmlNode),
-               Statement = statement
-           };
+            return new Where
+            {
+                ChildTags = new List<ITag>(),
+                Required = GetRequired(xmlNode),
+                Min = GetMin(xmlNode),
+                Statement = statement
+            };
         }
     }
 }

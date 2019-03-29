@@ -753,7 +753,7 @@
         <xs:element ref="Env" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
-      <xs:attribute name="Required" type="xs:boolean" use="optional" />
+      <xs:attribute name="Min" type="xs:int" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="Where">
@@ -782,7 +782,7 @@
         <xs:element ref="For" />
         <xs:element ref="Env" />
       </xs:choice>
-      <xs:attribute name="Required" type="xs:boolean" use="optional" />
+      <xs:attribute name="Min" type="xs:int" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="Set">
@@ -809,7 +809,7 @@
         <xs:element ref="For" />
         <xs:element ref="Env" />
       </xs:choice>
-      <xs:attribute name="Required" type="xs:boolean" use="optional" />
+      <xs:attribute name="Min" type="xs:int" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="For">

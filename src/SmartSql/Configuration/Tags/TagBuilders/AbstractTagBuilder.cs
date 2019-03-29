@@ -11,6 +11,7 @@ namespace SmartSql.Configuration.Tags.TagBuilders
         private const String PREPEND = nameof(Tag.Prepend);
         private const String PROPERTY = nameof(Tag.Property);
         private const String REQUIRED = nameof(Tag.Required);
+        private const String MIN = nameof(Dynamic.Min);
         private const String COMPARE_VALUE = nameof(NumericalCompareTag.CompareValue);
         public abstract ITag Build(XmlNode xmlNode, Statement statement);
 
@@ -41,6 +42,15 @@ namespace SmartSql.Configuration.Tags.TagBuilders
             xmlNode.Attributes.TryGetValueAsBoolean(REQUIRED, out var requiredVal);
             return requiredVal;
         }
+        public Int32? GetMin(XmlNode xmlNode)
+        {
+            if (xmlNode.Attributes.TryGetValueAsInt32(MIN, out var requiredVal))
+            {
+                return requiredVal;
+            }
+            return null;
+        }
+
         public String GetCompareValue(XmlNode xmlNode)
         {
             return GetXmlAttributeValue(xmlNode, COMPARE_VALUE);

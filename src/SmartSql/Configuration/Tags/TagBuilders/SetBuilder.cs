@@ -13,6 +13,7 @@ namespace SmartSql.Configuration.Tags.TagBuilders
             {
                 ChildTags = new List<ITag>(),
                 Required = GetRequired(xmlNode),
+                Min = GetMin(xmlNode),
                 Statement = statement
             };
         }
