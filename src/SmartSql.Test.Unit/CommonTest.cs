@@ -16,6 +16,7 @@ namespace SmartSql.Test.Unit
         [Fact]
         public void Test1()
         {
+            DateTime.TryParse("12 31 2018 11:42AM", out var dateTime);
             var yes = new AllPrimitive() as dynamic;
             var id = yes.Id;
 

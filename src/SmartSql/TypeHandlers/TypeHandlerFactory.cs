@@ -70,9 +70,16 @@ namespace SmartSql.TypeHandlers
 
             handler = new DateTimeTypeHandler();
             this.Register(handler);
+            handler = new DateTimeStringTypeHandler();
+            this.Register(handler);
+            handler = new DateTimeAnyTypeHandler();
+            this.Register(handler);
             handler = new NullableDateTimeTypeHandler();
             this.Register(handler);
-
+            handler = new NullableDateTimeStringTypeHandler();
+            this.Register(handler);
+            handler = new NullableDateTimeAnyTypeHandler();
+            this.Register(handler);
             #endregion
 
             #region Decimal
