@@ -9,7 +9,7 @@ namespace SmartSql.Test.Unit.Cache
 {
     public class RedisCacheProviderTest : AbstractXmlConfigBuilderTest
     {
-        [Fact]
+        //[Fact]
         public void QueryByRedisCache()
         {
             var list = DbSession.Query<AllPrimitive>(new RequestContext

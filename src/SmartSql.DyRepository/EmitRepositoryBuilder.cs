@@ -199,13 +199,18 @@ namespace SmartSql.DyRepository
             {
                 return false;
             }
+            if (SqlParameterType.SqlParameterCollection == paramType)
+            {
+                return false;
+            }
             if (paramType.IsValueType) { return true; }
             if (paramType == typeof(string)) { return true; }
             if (paramType.IsGenericParameter) { return true; }
+
             return DataType.Enumerable.IsAssignableFrom(paramType);
         }
         #region Pre
-        private string PreScoe(Type interfaceType, string scope = "")
+        private string PreScope(Type interfaceType, string scope = "")
         {
             var sqlmapAttr = interfaceType.GetCustomAttribute<SqlMapAttribute>();
             if (sqlmapAttr != null && !string.IsNullOrEmpty(sqlmapAttr.Scope))
@@ -437,7 +442,7 @@ namespace SmartSql.DyRepository
             typeBuilder.AddInterfaceImplementation(interfaceType);
             var sqlMapperField = typeBuilder.DefineField("sqlMapper", ISqlMapperType.Type, FieldAttributes.Family);
             var scopeField = typeBuilder.DefineField("scope", CommonType.String, FieldAttributes.Family);
-            scope = PreScoe(interfaceType, scope);
+            scope = PreScope(interfaceType, scope);
             EmitBuildCtor(scope, typeBuilder, sqlMapperField, scopeField);
             var interfaceMethods = new List<MethodInfo>();
 

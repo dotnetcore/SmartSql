@@ -15,10 +15,10 @@
     <Cache Id="FifoCache" Type="Fifo">
       <Property Name="CacheSize" Value="2"/>
     </Cache>
-    <Cache Id="RedisCache" Type="${RedisCacheProvider}">
+    <!--<Cache Id="RedisCache" Type="${RedisCacheProvider}">
       <Property Name="ConnectionString" Value="${Redis}" />
       <FlushInterval Seconds="60"/>
-    </Cache>
+    </Cache>-->
   </Caches>
   <MultipleResultMaps>
     <MultipleResultMap Id="GetByPage">
@@ -116,9 +116,9 @@
 
       </Where>
     </Statement>
-    <Statement Id="QueryByRedisCache"  Cache="RedisCache">
+    <!--<Statement Id="QueryByRedisCache"  Cache="RedisCache">
       SELECT Top 6 T.* From T_AllPrimitive T;
-    </Statement>
+    </Statement>-->
     <Statement Id="QueryByLruCache"  Cache="LruCache">
       SELECT Top 6 T.* From T_AllPrimitive T;
     </Statement>
