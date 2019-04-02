@@ -55,5 +55,28 @@ namespace SmartSql.Sample.AspNetCore.Controllers
         {
             return await _userRepository.QueryAsync(taken);
         }
+        [HttpGet]
+        public async Task Mt(int id)
+        {
+            try
+            {
+                _userRepository.SqlMapper.BeginTransaction();
+                await _userRepository.InsertAsync(new User
+                {
+                    Id = id,
+                    UserName = "SmartSql"
+                });
+                var task1 = _userRepository.QueryAsync(10);
+                var task2 = _userRepository.QueryAsync(10);
+                await Task.WhenAll(task1, task2);
+                _userRepository.SqlMapper.CommitTransaction();
+            }
+            catch (Exception e)
+            {
+                _userRepository.SqlMapper.RollbackTransaction();
+                throw;
+            }
+            
+        }
     }
 }

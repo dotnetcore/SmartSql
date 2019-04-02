@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SmartSql.ConfigBuilder;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace SmartSql.Sample.AspNetCore
@@ -30,6 +31,7 @@ namespace SmartSql.Sample.AspNetCore
                     o.AssemblyString = "SmartSql.Sample.AspNetCore";
                     o.Filter = (type) => type.Namespace == "SmartSql.Sample.AspNetCore.DyRepositories";
                 });
+
             RegisterConfigureSwagger(services);
         }
         private void RegisterConfigureSwagger(IServiceCollection services)

@@ -3,6 +3,7 @@ using SmartSql.Reflection;
 using SmartSql.Test.Entities;
 using System;
 using System.Threading.Tasks;
+using SmartSql.Data;
 using Xunit;
 
 namespace SmartSql.Test.Unit.DbSessions
@@ -216,6 +217,37 @@ namespace SmartSql.Test.Unit.DbSessions
             {
                 Assert.True(true);
             }
+        }
+
+
+
+
+        //Create PROCEDURE[dbo].[SP_QueryUser]
+        //@Total int = 0 Out
+        //    AS
+        //BEGIN
+        //    SET NOCOUNT ON;
+        //Set @Total = (Select Count(*) From T_User T With(NoLock));
+        //SELECT Top 10 T.* From T_User T With(NoLock)
+        //END
+
+        [Fact]
+        public void SP()
+        {
+            SqlParameterCollection dbParameterCollection = new SqlParameterCollection();
+            dbParameterCollection.Add(new SqlParameter("Total",null,typeof(int))
+            {
+                DbType = System.Data.DbType.Int32,
+                Direction = System.Data.ParameterDirection.Output
+            });
+            RequestContext context = new RequestContext
+            {
+                CommandType = System.Data.CommandType.StoredProcedure,
+                RealSql = "SP_QueryUser",
+                Request = dbParameterCollection
+            };
+            var list = DbSession.Query<User>(context);
+            dbParameterCollection.TryGetParameterValue("Total", out int total);
         }
 
     }
