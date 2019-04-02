@@ -266,17 +266,43 @@ namespace SmartSql.Diagnostics
         #region DataSourceFilter
         #endregion
         #region CommandExecuter
-        public static void WriteCommandBefore(this DiagnosticListener @this, EventData eventData)
-        {
+        public const string SMART_SQL_BEFORE_COMMAND_EXECUTER_EXECUTE = SMART_SQL_PREFIX + nameof(WriteCommandExecuterExecuteBefore);
+        public const string SMART_SQL_AFTER_COMMAND_EXECUTER_EXECUTE = SMART_SQL_PREFIX + nameof(WriteCommandExecuterExecuteAfter);
+        public const string SMART_SQL_ERROR_COMMAND_EXECUTER_EXECUTE = SMART_SQL_PREFIX + nameof(WriteCommandExecuterExecuteError);
 
+        public static Guid WriteCommandExecuterExecuteBefore(this DiagnosticListener @this, ExecutionContext executionContext
+            , [CallerMemberName] string operation = "")
+        {
+            if (!@this.IsEnabled(SMART_SQL_BEFORE_COMMAND_EXECUTER_EXECUTE)) return Guid.Empty;
+            var operationId = Guid.NewGuid();
+            @this.Write(SMART_SQL_BEFORE_COMMAND_EXECUTER_EXECUTE, new CommandExecuterExecuteBeforeEventData(operationId, operation)
+            {
+                ExecutionContext = executionContext
+            });
+            return operationId;
         }
-        public static void WriteCommandAfter(this DiagnosticListener @this, EventData eventData)
+        public static void WriteCommandExecuterExecuteAfter(this DiagnosticListener @this, Guid operationId, ExecutionContext executionContext
+            , [CallerMemberName] string operation = "")
         {
-
+            if (@this.IsEnabled(SMART_SQL_AFTER_COMMAND_EXECUTER_EXECUTE))
+            {
+                @this.Write(SMART_SQL_AFTER_COMMAND_EXECUTER_EXECUTE, new CommandExecuterExecuteAfterEventData(operationId, operation)
+                {
+                    ExecutionContext = executionContext
+                });
+            }
         }
-        public static void WriteCommandError(this DiagnosticListener @this, EventData eventData)
+        public static void WriteCommandExecuterExecuteError(this DiagnosticListener @this, Guid operationId, ExecutionContext executionContext
+            , Exception ex, [CallerMemberName] string operation = "")
         {
-
+            if (@this.IsEnabled(SMART_SQL_ERROR_COMMAND_EXECUTER_EXECUTE))
+            {
+                @this.Write(SMART_SQL_ERROR_COMMAND_EXECUTER_EXECUTE, new CommandExecuterExecuteErrorEventData(operationId, operation)
+                {
+                    Exception = ex,
+                    ExecutionContext = executionContext
+                });
+            }
         }
         #endregion
         #region ResultHandler

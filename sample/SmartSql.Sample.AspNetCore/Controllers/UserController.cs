@@ -45,5 +45,15 @@ namespace SmartSql.Sample.AspNetCore.Controllers
                 PageIndex = pageIndex
             });
         }
+        [HttpGet]
+        public IEnumerable<User> Query(int taken = 10)
+        {
+            return _userRepository.Query(taken);
+        }
+        [HttpGet]
+        public async Task<IEnumerable<User>> QueryAsync(int taken = 10)
+        {
+            return await _userRepository.QueryAsync(taken);
+        }
     }
 }

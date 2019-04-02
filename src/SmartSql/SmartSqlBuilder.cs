@@ -81,7 +81,7 @@ namespace SmartSql
                      .Add(new PrepareStatementMiddleware(SmartSqlConfig))
                      .Add(new CachingMiddleware(SmartSqlConfig))
                      .Add(new DataSourceFilterMiddleware(SmartSqlConfig))
-                     .Add(new CommandExecuterMiddleware())
+                     .Add(new CommandExecuterMiddleware(SmartSqlConfig))
                      .Add(new ResultHandlerMiddleware(SmartSqlConfig)).Build();
             }
             else
@@ -91,7 +91,7 @@ namespace SmartSql
                      .Add(new InitializerMiddleware(SmartSqlConfig))
                      .Add(new PrepareStatementMiddleware(SmartSqlConfig))
                      .Add(new DataSourceFilterMiddleware(SmartSqlConfig))
-                     .Add(new CommandExecuterMiddleware())
+                     .Add(new CommandExecuterMiddleware(SmartSqlConfig))
                      .Add(new ResultHandlerMiddleware(SmartSqlConfig)).Build();
             }
         }

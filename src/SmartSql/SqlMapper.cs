@@ -23,7 +23,7 @@ namespace SmartSql
         {
             if (SessionStore.LocalSession != null)
             {
-                throw new SmartSqlException("SmartSqlMapper could not invoke BeginSession(). A LocalSession is already existed.");
+                throw new SmartSqlException("SmartSqlMapper could not invoke BeginTransaction(). A LocalSession is already existed.");
             }
             SessionStore.Open().BeginTransaction();
         }
@@ -32,7 +32,7 @@ namespace SmartSql
         {
             if (SessionStore.LocalSession != null)
             {
-                throw new SmartSqlException("SmartSqlMapper could not invoke BeginSession(). A LocalSession is already existed.");
+                throw new SmartSqlException("SmartSqlMapper could not invoke BeginTransaction(). A LocalSession is already existed.");
             }
             SessionStore.Open().BeginTransaction(isolationLevel);
         }

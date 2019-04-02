@@ -3,6 +3,7 @@ using SmartSql.Configuration;
 using System;
 using System.Data;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace SmartSql.Middlewares
 {
@@ -11,9 +12,9 @@ namespace SmartSql.Middlewares
         public IMiddleware Next { get; set; }
         private readonly ICommandExecuter _commandExecuter;
 
-        public CommandExecuterMiddleware()
+        public CommandExecuterMiddleware(SmartSqlConfig smartSqlConfig)
         {
-            _commandExecuter = new CommandExecuter();
+            _commandExecuter = new CommandExecuter(smartSqlConfig.LoggerFactory.CreateLogger<CommandExecuter>());
         }
 
         public void Invoke<TResult>(ExecutionContext executionContext)
