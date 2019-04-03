@@ -121,7 +121,6 @@ namespace SmartSql.DbSession
                 {
                     _logger.LogDebug("BeginTransaction.");
                 }
-                EnsureDataSource();
                 Open();
                 Transaction = Connection.BeginTransaction();
                 TransactionBegan?.Invoke(this, DbSessionEventArgs.None);
@@ -145,7 +144,6 @@ namespace SmartSql.DbSession
                 {
                     _logger.LogDebug("BeginTransaction.");
                 }
-                EnsureDataSource();
                 Open();
                 Transaction = Connection.BeginTransaction(isolationLevel);
                 TransactionBegan?.Invoke(this, DbSessionEventArgs.None);

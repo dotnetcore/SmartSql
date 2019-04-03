@@ -175,5 +175,14 @@
         </IsNotEmpty>
       </Where>
     </Statement>
+    <Statement Id="GetByPage_ValueTuple">
+      Select T.* From T_AllPrimitive T With(NoLock)
+      <Include RefId="QueryParams" />
+      Order By T.Id Desc
+      Offset ((@PageIndex-1)*@PageSize) Rows Fetch Next @PageSize Rows Only;
+
+      Select Count(1) From T_AllPrimitive T
+      <Include RefId="QueryParams" />;
+    </Statement>
   </Statements>
 </SmartSqlMap>
