@@ -8,12 +8,19 @@ namespace SmartSql.Test.Unit.DyRepository
 {
     public class AllPrimitiveRepositoryTest : DyRepositoryTest
     {
-        [Fact]
-        public void Build()
+
+        private IAllPrimitiveRepository _repository;
+        public AllPrimitiveRepositoryTest()
         {
             var smartSqlBuilder = new SmartSqlBuilder().UseXmlConfig().Build();
-            var repositoryType = RepositoryBuilder.Build(typeof(IAllPrimitiveRepository), smartSqlBuilder.SmartSqlConfig);
-            Assert.NotNull(repositoryType);
+            _repository = RepositoryFactory.CreateInstance(typeof(IAllPrimitiveRepository), smartSqlBuilder.SqlMapper) as IAllPrimitiveRepository;
+        }
+        [Fact]
+        public void GetByPage_ValueTuple()
+        {
+            var result = _repository.GetByPage_ValueTuple();
+            
+            Assert.NotNull(result);
         }
     }
 }

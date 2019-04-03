@@ -272,7 +272,11 @@ namespace SmartSql.DyRepository
                     statementType = _statementAnalyzer.Analyse(statementAttr.Sql);
                 }
 
-                if (returnType == CommonType.Int32 || returnType == CommonType.Void || returnType == null)
+                if (CommonType.IsValueTuple(returnType))
+                {
+                    statementAttr.Execute = ExecuteBehavior.QuerySingle;
+                }
+                else if (returnType == CommonType.Int32 || returnType == CommonType.Void || returnType == null)
                 {
                     statementAttr.Execute = ExecuteBehavior.Execute;
                     if (returnType == CommonType.Int32)

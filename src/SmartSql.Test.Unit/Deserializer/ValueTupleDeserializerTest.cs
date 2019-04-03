@@ -18,6 +18,7 @@ namespace SmartSql.Test.Unit.Deserializer
                 SqlId = "GetByPage_ValueTuple",
                 Request = new { PageSize = 10, PageIndex = 1 }
             });
+            
             Assert.NotNull(result);
         }
     }
