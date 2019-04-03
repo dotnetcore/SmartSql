@@ -10,7 +10,7 @@ namespace SmartSql.Reflection.ObjectFactoryBuilder
         {
             var dyMethodName = $"{targetType.Name}_{Guid.NewGuid():N}";
 
-            DynamicMethod dyMethod = new DynamicMethod(dyMethodName, targetType, new Type[] { CommonType.ArrayObject }, targetType, true);
+            DynamicMethod dyMethod = new DynamicMethod(dyMethodName, targetType, new Type[] { CommonType.ObjectArray }, targetType, true);
             var ilGen = dyMethod.GetILGenerator();
             #region Init Arg
             for (int i = 0; i < ctorArgTypes.Length; i++)

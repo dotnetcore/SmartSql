@@ -24,6 +24,7 @@ namespace SmartSql.ConfigBuilder
         protected abstract void OnAfterBuild();
         public virtual SmartSqlConfig Build(IEnumerable<KeyValuePair<string, string>> importProperties)
         {
+            SmartSqlConfig = new SmartSqlConfig();
             OnBeforeBuild();
             ImportProperties(importProperties);
             BuildSettings();

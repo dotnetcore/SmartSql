@@ -13,7 +13,7 @@ namespace SmartSql.Test.Unit.Attempts
     {
         public Func<object[], object> ILGenerator(Type _targetType)
         {
-            DynamicMethod dyMethod = new DynamicMethod("NewGenericList", _targetType, new Type[] { CommonType.ArrayObject }, _targetType, true);
+            DynamicMethod dyMethod = new DynamicMethod("NewGenericList", _targetType, new Type[] { CommonType.ObjectArray }, _targetType, true);
             var ilGen = dyMethod.GetILGenerator();
             var newCtor = _targetType.GetConstructor(Type.EmptyTypes);
             ilGen.New(newCtor);
@@ -24,7 +24,7 @@ namespace SmartSql.Test.Unit.Attempts
         public Func<object[], object> LinqExpression(Type _targetType)
         {
             var newCtor = _targetType.GetConstructor(Type.EmptyTypes);
-            var argValsExpr = Expression.Parameter(CommonType.ArrayObject, "argVals");
+            var argValsExpr = Expression.Parameter(CommonType.ObjectArray, "argVals");
             var newExpression = Expression.New(newCtor);
             return Expression.Lambda<Func<object[], object>>(newExpression, argValsExpr).Compile();
         }
@@ -32,7 +32,7 @@ namespace SmartSql.Test.Unit.Attempts
         public Func<object[], object> LinqExpression_Arg(Type _targetType)
         {
             var newCtor = _targetType.GetConstructor(new Type[] { CommonType.Int64 });
-            var argValsExpr = Expression.Parameter(CommonType.ArrayObject, "argVals");
+            var argValsExpr = Expression.Parameter(CommonType.ObjectArray, "argVals");
             var arg1Expr = Expression.ArrayIndex(argValsExpr, Expression.Constant(0));
             var unBoxArg1Expr = Expression.Unbox(arg1Expr, CommonType.Int64);
             var newExpression = Expression.New(newCtor, unBoxArg1Expr);

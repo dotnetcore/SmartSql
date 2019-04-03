@@ -24,12 +24,14 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             return services.AddSmartSql(sp =>
             {
-                var configPath = ResolveConfigPath(sp);
                 var loggerFactory = sp.GetService<ILoggerFactory>();
-                var smartSqlBuilder = new SmartSqlBuilder()
-                .UseLoggerFactory(loggerFactory)
-                .UseXmlConfig(SmartSql.ConfigBuilder.ResourceType.File, configPath);
+                var smartSqlBuilder = new SmartSqlBuilder().UseLoggerFactory(loggerFactory);
                 setup(sp, smartSqlBuilder);
+                if (smartSqlBuilder.ConfigBuilder == null)
+                {
+                    var configPath = ResolveConfigPath(sp);
+                    smartSqlBuilder.UseXmlConfig(SmartSql.ConfigBuilder.ResourceType.File, configPath);
+                }
                 return smartSqlBuilder;
             });
         }

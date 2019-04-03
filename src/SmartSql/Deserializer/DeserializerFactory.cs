@@ -9,13 +9,14 @@ namespace SmartSql.Deserializer
         private readonly IDataReaderDeserializer _valueTypeDeser;
         private readonly IDataReaderDeserializer _dynamicDeser;
         private readonly IDataReaderDeserializer _multipleDeser;
-
+        private readonly IDataReaderDeserializer _valueTupleDeser;
         public DeserializerFactory()
         {
             _valueTypeDeser = new ValueTypeDeserializer();
             _defaultDeser = new EntityDeserializer();
             _dynamicDeser = new DynamicDeserializer();
             _multipleDeser = new MultipleResultDeserializer(this);
+            _valueTupleDeser = new ValueTupleDeserializer(this);
         }
 
         public IDataReaderDeserializer Get(ExecutionContext executionContext, Type resultType = null)
@@ -34,6 +35,11 @@ namespace SmartSql.Deserializer
 
         public IDataReaderDeserializer Get(Type resultType)
         {
+            if (CommonType.IsValueTuple(resultType))
+            {
+                return _valueTupleDeser;
+            }
+
             if (resultType.IsValueType || resultType == CommonType.String)
             {
                 return _valueTypeDeser;

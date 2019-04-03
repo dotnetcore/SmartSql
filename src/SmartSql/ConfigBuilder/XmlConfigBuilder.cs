@@ -20,9 +20,9 @@ namespace SmartSql.ConfigBuilder
         public const String SMART_SQL_CONFIG_NAMESPACE = "http://SmartSql.net/schemas/SmartSqlMapConfig.xsd";
         public const String CONFIG_PREFIX = "Config";
         public const String TYPE_ATTRIBUTE = "Type";
-        protected XmlDocument XmlConfig { get; }
-        protected XmlNamespaceManager XmlNsManager { get; }
-        protected XmlNode XmlConfigRoot { get; }
+        protected XmlDocument XmlConfig { get; private set; }
+        protected XmlNamespaceManager XmlNsManager { get; private set; }
+        protected XmlNode XmlConfigRoot { get; private set; }
         private readonly IIdGeneratorBuilder _idGeneratorBuilder = new IdGeneratorBuilder();
         public XmlConfigBuilder(ResourceType resourceType, string resourcePath, ILoggerFactory loggerFactory = null)
         {
@@ -30,11 +30,6 @@ namespace SmartSql.ConfigBuilder
             _resourcePath = resourcePath;
             _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
             Logger = _loggerFactory.CreateLogger<XmlConfigBuilder>();
-            XmlConfig = ResourceUtil.LoadAsXml(resourceType, resourcePath);
-            XmlNsManager = new XmlNamespaceManager(XmlConfig.NameTable);
-            XmlNsManager.AddNamespace(CONFIG_PREFIX, SMART_SQL_CONFIG_NAMESPACE);
-            XmlConfigRoot = XmlConfig.SelectSingleNode($"/{CONFIG_PREFIX}:SmartSqlMapConfig", XmlNsManager);
-            SmartSqlConfig = new SmartSqlConfig();
         }
 
         public override void Dispose()
@@ -43,6 +38,10 @@ namespace SmartSql.ConfigBuilder
         }
         protected override void OnBeforeBuild()
         {
+            XmlConfig = ResourceUtil.LoadAsXml(_resourceType, _resourcePath);
+            XmlNsManager = new XmlNamespaceManager(XmlConfig.NameTable);
+            XmlNsManager.AddNamespace(CONFIG_PREFIX, SMART_SQL_CONFIG_NAMESPACE);
+            XmlConfigRoot = XmlConfig.SelectSingleNode($"/{CONFIG_PREFIX}:SmartSqlMapConfig", XmlNsManager);
             if (Logger.IsEnabled(LogLevel.Debug))
             {
                 Logger.LogDebug($"XmlConfigBuilder Build ->> ResourceType:[{_resourceType}] , Path :[{_resourcePath}] Starting.");

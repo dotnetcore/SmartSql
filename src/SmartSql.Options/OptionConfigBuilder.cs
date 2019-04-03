@@ -18,7 +18,6 @@ namespace SmartSql.Options
             loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
             Logger = loggerFactory.CreateLogger<XmlConfigBuilder>();
             _configOptions = configOptions;
-            SmartSqlConfig = new SmartSqlConfig();
         }
         protected override void OnBeforeBuild()
         {

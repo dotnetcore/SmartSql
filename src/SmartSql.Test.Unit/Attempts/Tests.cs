@@ -27,7 +27,7 @@ namespace SmartSql.Test.Unit
         public void BuildNewUser_Func_IL()
         {
             var _targetType = typeof(User);
-            DynamicMethod dyMethod = new DynamicMethod("NewGenericList", _targetType, new Type[] { CommonType.ArrayObject }, _targetType, true);
+            DynamicMethod dyMethod = new DynamicMethod("NewGenericList", _targetType, new Type[] { CommonType.ObjectArray }, _targetType, true);
 
             var ilGen = dyMethod.GetILGenerator();
             var newCtor = _targetType.GetConstructor(Type.EmptyTypes);

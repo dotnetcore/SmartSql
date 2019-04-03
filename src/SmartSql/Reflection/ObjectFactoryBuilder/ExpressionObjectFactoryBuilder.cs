@@ -10,7 +10,7 @@ namespace SmartSql.Reflection.ObjectFactoryBuilder
     {
         public override Func<object[], object> Build(Type targetType, Type[] ctorArgTypes)
         {
-            var argsExpr = Expression.Parameter(CommonType.ArrayObject, "args");
+            var argsExpr = Expression.Parameter(CommonType.ObjectArray, "args");
             var parameterExprs = new List<Expression>();
             for (int i = 0; i < ctorArgTypes.Length; i++)
             {
