@@ -235,8 +235,9 @@ namespace SmartSql.Test.Unit.DbSessions
         public void SP()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();
-            dbParameterCollection.Add(new SqlParameter("Total",null,typeof(int))
+            dbParameterCollection.Add(new SqlParameter
             {
+                Name = "Total",
                 DbType = System.Data.DbType.Int32,
                 Direction = System.Data.ParameterDirection.Output
             });

@@ -10,6 +10,19 @@ namespace SmartSql.Data
     public class SqlParameter
     {
         private DbParameter _sourceParameter;
+        private object _value;
+        public SqlParameter()
+        {
+        }
+        public SqlParameter(string name, object val)
+        {
+            Name = name;
+            Value = val;
+            if (val != null)
+            {
+                ParameterType = val.GetType();
+            }
+        }
         public SqlParameter(string name, object val, Type parameterType)
         {
             Name = name;
@@ -17,7 +30,18 @@ namespace SmartSql.Data
             ParameterType = parameterType;
         }
         public string Name { get; set; }
-        public object Value { get; set; }
+        public object Value
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+                if (value != null)
+                {
+                    ParameterType = value.GetType();
+                }
+            }
+        }
         public Type ParameterType { get; set; }
         public Action<SqlParameter> OnSetSourceParameter { get; set; }
 
