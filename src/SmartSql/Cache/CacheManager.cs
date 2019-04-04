@@ -42,6 +42,7 @@ namespace SmartSql.Cache
                             if (!_statementMappedFlushCache.TryGetValue(onExecute.Statement, out var mappedCaches))
                             {
                                 mappedCaches = new List<Configuration.Cache>();
+                                _statementMappedFlushCache.TryAdd(onExecute.Statement, mappedCaches);
                             }
                             mappedCaches.Add(cache);
                         }
