@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SmartSql.Sample.AspNetCore.DyRepositories;
+using SmartSql.Sample.AspNetCore.Service;
 using SmartSql.Test.DTO;
 using SmartSql.Test.Entities;
 
@@ -14,16 +15,25 @@ namespace SmartSql.Sample.AspNetCore.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly UserService _userService;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserRepository userRepository
+        ,UserService userService)
         {
             _userRepository = userRepository;
+            _userService = userService;
         }
         // GET api/values
         [HttpPost]
-        public long Add([FromBody]User user)
+        public long AddWithTranWrap([FromBody]User user)
         {
-            var id = _userRepository.Insert(user);
+            var id = _userService.AddWithTranWrap(user);
+            return id;
+        }
+        [HttpPost]
+        public long AddWithTran([FromBody]User user)
+        {
+            var id = _userService.AddWithTran(user);
             return id;
         }
 

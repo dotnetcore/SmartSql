@@ -69,10 +69,5 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<ITransaction>(sp => sp.GetRequiredService<SmartSqlBuilder>().SqlMapper);
             services.AddSingleton<IDbSessionStore>(sp => sp.GetRequiredService<SmartSqlBuilder>().SmartSqlConfig.SessionStore);
         }
-
-        public static SmartSqlBuilder GetSmartSql(this IServiceProvider sp, string alias = SmartSqlBuilder.DEFAULT_ALIAS)
-        {
-            return sp.GetServices<SmartSqlBuilder>().FirstOrDefault(m => m.Alias == alias);
-        }
     }
 }

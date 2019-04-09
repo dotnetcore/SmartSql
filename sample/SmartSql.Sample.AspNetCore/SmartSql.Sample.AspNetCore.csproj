@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\SmartSql.AOP\SmartSql.AOP.csproj" />
     <ProjectReference Include="..\..\src\SmartSql.Bulk.MySql\SmartSql.Bulk.MySql.csproj" />
     <ProjectReference Include="..\..\src\SmartSql.Bulk.PostgreSql\SmartSql.Bulk.PostgreSql.csproj" />
     <ProjectReference Include="..\..\src\SmartSql.Bulk.SqlServer\SmartSql.Bulk.SqlServer.csproj" />
