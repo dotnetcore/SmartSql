@@ -10,10 +10,10 @@ namespace SmartSql.Utils
         public SqlCommandType Analyse(string realSql)
         {
             SqlCommandType commandType = SqlCommandType.Unknown;
-            var statements = realSql.Trim().Replace("\r\n", " ").Trim().Split(';');
+            var statements = realSql.Trim().Split(';');
             foreach (var statement in statements)
             {
-                var statementStr = statement.TrimStart(' ', '(');
+                var statementStr = statement.Trim().TrimStart('(');
                 if (statementStr.StartsWith("Insert", StringComparison.CurrentCultureIgnoreCase))
                 {
                     commandType = commandType | SqlCommandType.Insert;
