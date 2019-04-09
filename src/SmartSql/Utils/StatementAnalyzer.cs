@@ -17,11 +17,11 @@ namespace SmartSql.Utils
         private StatementType AnalyseImpl(string realSql)
         {
             StatementType statementType = StatementType.Unknown;
-            var statements = realSql.Trim().Replace("\r\n", " ").Trim().Split(';');
+            var statements = realSql.Trim().Split(';');
             foreach (var statement in statements)
             {
                 if (String.IsNullOrEmpty(statement)) { continue; }
-                var statementStr = statement.Trim().TrimStart(' ', '(');
+                var statementStr = statement.Trim().TrimStart('(');
                 if (statementStr.StartsWith("Insert", StringComparison.CurrentCultureIgnoreCase))
                 {
                     statementType = statementType | StatementType.Insert;
