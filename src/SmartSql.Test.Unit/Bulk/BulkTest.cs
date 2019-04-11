@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Text;
 using SmartSql.Bulk;
 using SmartSql.Test.Entities;
@@ -12,6 +13,7 @@ namespace SmartSql.Test.Unit.Bulk
         [Fact]
         public void ToDataTable()
         {
+            
             var list = new List<AllPrimitive>();
             list.Add(new AllPrimitive
             {

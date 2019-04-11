@@ -29,6 +29,7 @@
   <Statements>
     <Statement Id="QueryParams">
       <Where>
+        
         <IsNotEmpty Prepend="And" Property="Id">
           T.Id = @Id
         </IsNotEmpty>

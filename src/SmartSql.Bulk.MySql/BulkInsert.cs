@@ -32,6 +32,7 @@ namespace SmartSql.Bulk.MySql
             await DbSession.OpenAsync();
             var conn = DbSession.Connection as MySqlConnection;
             MySqlBulkLoader bulkLoader = GetBulkLoader(conn);
+            
             await bulkLoader.LoadAsync();
         }
 

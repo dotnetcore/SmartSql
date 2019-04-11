@@ -79,9 +79,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{E52317
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{FB71A21B-B0FD-4F40-985D-4BB7756D33BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.AOP", "src\SmartSql.AOP\SmartSql.AOP.csproj", "{141E2EFF-0D74-4A11-8CC4-B48B8D3BD06B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.AOP", "src\SmartSql.AOP\SmartSql.AOP.csproj", "{141E2EFF-0D74-4A11-8CC4-B48B8D3BD06B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.Extensions", "src\SmartSql.Extensions\SmartSql.Extensions.csproj", "{D32B306D-6D46-4C4A-9116-97845684192A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Extensions", "src\SmartSql.Extensions\SmartSql.Extensions.csproj", "{D32B306D-6D46-4C4A-9116-97845684192A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

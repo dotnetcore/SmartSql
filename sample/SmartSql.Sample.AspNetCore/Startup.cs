@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SmartSql.ConfigBuilder;
+using SmartSql.DIExtension;
 using SmartSql.Sample.AspNetCore.Service;
 using Swashbuckle.AspNetCore.Swagger;
 
