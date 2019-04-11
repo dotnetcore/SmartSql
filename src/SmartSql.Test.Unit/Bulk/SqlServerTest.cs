@@ -33,16 +33,14 @@ namespace SmartSql.Test.Unit.Bulk
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
-                Request = new { Taken = 10 }
+                Request = new { Taken = 100 }
             });
-            var data = list.ToDataTable();
-            bulkInsert.Table = data;
-            bulkInsert.Insert();
+            bulkInsert.Insert(list);
         }
         [Fact]
         public async Task InsertAsync()
         {
-            var data = DbSession.GetDataTable(new RequestContext
+            var data = await DbSession.GetDataTableAsync(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
@@ -52,6 +50,18 @@ namespace SmartSql.Test.Unit.Bulk
             IBulkInsert bulkInsert = new BulkInsert(DbSession);
             bulkInsert.Table = data;
             await bulkInsert.InsertAsync();
+        }
+        [Fact]
+        public async Task InsertByListAsync()
+        {
+            var list = await DbSession.QueryAsync<AllPrimitive>(new RequestContext
+            {
+                Scope = nameof(AllPrimitive),
+                SqlId = "Query",
+                Request = new { Taken = 100 }
+            });
+            IBulkInsert bulkInsert = new BulkInsert(DbSession);
+            await bulkInsert.InsertAsync<AllPrimitive>(list);
         }
     }
 }

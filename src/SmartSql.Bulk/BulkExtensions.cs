@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using System.Threading.Tasks;
 using SmartSql.CUD;
 
 namespace SmartSql.Bulk
@@ -35,5 +36,19 @@ namespace SmartSql.Bulk
             }
             return dataTable;
         }
+
+        public static void Insert<TEntity>(this IBulkInsert bulkInsert, IEnumerable<TEntity> list)
+        {
+            var dataTable = list.ToDataTable();
+            bulkInsert.Table = dataTable;
+            bulkInsert.Insert();
+        }
+        public static async Task InsertAsync<TEntity>(this IBulkInsert bulkInsert, IEnumerable<TEntity> list)
+        {
+            var dataTable = list.ToDataTable();
+            bulkInsert.Table = dataTable;
+            await bulkInsert.InsertAsync();
+        }
     }
 }
+
