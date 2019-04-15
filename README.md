@@ -38,6 +38,10 @@ DotNet 体系下大都是Linq系的ORM，Linq很好，消除了开发人员对SQ
 
 Dapper 确实很好，并且又很好的性能，但是会让给你的代码里边充斥着SQL和各种判断分支，这些将会使代码维护难以阅读和维护。另外 Dapper 只提供了DataReader到Entity的反序列化功能。而SmartSql提供了大量的特性来提升开发者的效率。
 
+## 主要特性
+
+![SmartSql特性](https://raw.githubusercontent.com/Smart-Kit/SmartSql-Docs/master/docs/imgs/SmartSql-features.png)
+
 ## Nuget Packages
 
 | Package | NuGet Stable |  Downloads |
