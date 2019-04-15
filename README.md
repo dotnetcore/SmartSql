@@ -1,75 +1,42 @@
 <p align="center">
-  <a href="https://doc.smartsql.net/" target="_blank">
+  <a href="https://www.smartsql.net/" target="_blank">
     <img width="100"src="./SmartSql.png"/>
   </a>
 </p>
 
-# SmartSql ([English-Document](https://doc-en.smartsql.net))
+# SmartSql ([文档地址](https://www.smartsql.net))
 
-## Why
+# 介绍
 
-- 拥抱 跨平台 DotNet Core，是时候了。
-- 高性能、高生产力，超轻量级的ORM。**156kb** (Dapper:**168kb**)
+SmartSql = MyBatis + Cache(Memory | Redis) + R/W Splitting +Dynamic Repository + Diagnostics ......
 
-## So SmartSql
+## 她是如何工作的？
 
-- TargetFrameworks: .NETFramework 4.6 & .NETStandard 2.0
-- SmartSql = SmartSql = MyBatis + Cache(Memory | Redis) + ZooKeeper + R/W Splitting +Dynamic Repository + ......
+SmartSql 借鉴了MyBatis的思想，使用XML来管理SQL，并且提供了若干个筛选器标签来消除代码层面的各种if/else的判断分支。
 
-## 主要特性
+SmartSql将管理你的SQL，并且通过筛选标签来维护本来你在代码层面的各种条件判断，使你的代码更加优美。
 
-- 1 ORM
-  - 1.1 Sync
-  - 1.2 Async
-- 2 XmlConfig & XmlStatement -> Sql
-  - 2.1 SmartSqlMapConfig & SmartSqlMap (是的，你猜对了，和MyBatis一样，通过XML配置分离SQL。)
-  - 2.2 Config Hot Update ->ConfigWatcher & Reload (配置文件热更新：当你需要修改Sql的时候，直接修改SqlMap配置文件，保存即可。)
-- 3 读写分离
-  - 3.1 读写分离
-  - 3.2 多读库 权重筛选 （配置多读库，根据读库权重选举读库）
-- 4 日志
-  - 4.1 基于 Microsoft.Extensions.Logging.Abstractions  (当你需要跟踪调试的时候一切都是那么一目了然)
-- 5 Dynamic Repository
-  - 5.1 SmartSql.DyRepository  （解放你的双手，你来定义仓储接口，我来实现数据库访问）
-- 6 查询缓存  （热数据缓存，一个配置轻松搞定）
-  - 6.1 SmartSql.Cache.Memory
-    - 6.1.1 Fifo
-    - 6.1.2 Lru
-  - 6.2 SmartSql.Cache.Redis
-  - 6.3 缓存事务一致性
-- 7 分布式配置插件
-  - 7.1 IConfigLoader (配置文件加载器)
-  - 7.2 LocalFileConfigLoader  (本地文件配置加载器)
-    - 7.2.1 Load SmartSqlMapSource Xml
-    - 7.3.1 Load SmartSqlMapSource Directory
-  - 7.3 SmartSql.ZooKeeperConfig (ZooKeeper 分布式配置文件加载器)
+同时SmartSql还提供了以下各种特性(包括但不限于)：
 
-## 性能评测
+- [动态代理仓储](https://www.smartsql.net/dyrepository/)
+- 分布式缓存
+- 类型处理器
+- 自动生成 CUD 代码
+- Id生成器
+- 性能诊断
+- AOP 级别的事物
+- 缓存（内存，分布式缓存）
+- 读写分离
+- 代码生成器(<https://github.com/dotnetcore/SmartCode>)
+- 高性能的批量插入
 
-``` ini
+## 为什么选择SmartSql？
 
-BenchmarkDotNet=v0.10.14, OS=Windows 10.0.17134
-Intel Core i7-6700K CPU 4.00GHz (Skylake), 1 CPU, 8 logical and 4 physical cores
-.NET Core SDK=2.1.201
-  [Host]     : .NET Core 2.0.7 (CoreCLR 4.6.26328.01, CoreFX 4.6.26403.03), 64bit RyuJIT
-  DefaultJob : .NET Core 2.0.7 (CoreCLR 4.6.26328.01, CoreFX 4.6.26403.03), 64bit RyuJIT
-```
+DotNet 体系下大都是Linq系的ORM，Linq很好，消除了开发人员对SQL的依赖。但却忽视了一点，SQL本身并不复杂，而且在复杂查询场景当中开发人员很难通过编写Linq来生成良好性能的SQL，相信使用过EF的同学一定有这样的体验：“我想好了Sql怎么写，然后再来写Linq,完了可能还要再查看一下Linq输出的Sql是什么样的“。这是非常糟糕的体验。要想对Sql做绝对的优化，那么开发者必须对Sql有绝对的控制权。另外Sql本身很简单，为何要增加一层翻译器呢？
 
-|            ORM |                     Type |                  Method |        Return |      Mean |     Error |    StdDev | Rank |     Gen 0 |     Gen 1 |     Gen 2 | Allocated |
-|--------------- |------------------------- |------------------------ |-------------- |----------:|----------:|----------:|-----:|----------:|----------:|----------:|----------:|
-|         Native |         NativeBenchmarks |   Query_GetValue_DbNull | IEnumerable`1 |  78.39 ms | 0.8935 ms | 0.7921 ms |    1 | 3000.0000 | 1125.0000 |  500.0000 |  15.97 MB |
-|       SmartSql |       SmartSqlBenchmarks |                   Query | IEnumerable`1 |  78.46 ms | 0.2402 ms | 0.1875 ms |    1 | 2312.5000 | 1000.0000 |  312.5000 |  12.92 MB |
-| SmartSqlDapper | SmartSqlDapperBenchmarks |                   Query | IEnumerable`1 |  78.65 ms | 1.2094 ms | 1.1312 ms |    1 | 3687.5000 | 1437.5000 |  687.5000 |  19.03 MB |
-|         Native |         NativeBenchmarks | Query_IsDBNull_GetValue | IEnumerable`1 |  78.84 ms | 0.8984 ms | 0.7502 ms |    1 | 2312.5000 | 1000.0000 |  312.5000 |  12.92 MB |
-|         Dapper |         DapperBenchmarks |                   Query | IEnumerable`1 |  79.00 ms | 1.0949 ms | 0.9706 ms |    1 | 3312.5000 | 1312.5000 |  625.0000 |  17.19 MB |
-|             EF |             EFBenchmarks |                   Query | IEnumerable`1 |  79.44 ms | 1.6880 ms | 1.5789 ms |    1 | 6250.0000 |         - |         - |  26.05 MB |
-|       SqlSugar |       SqlSugarBenchmarks |                   Query | IEnumerable`1 |  81.09 ms | 0.8718 ms | 0.7728 ms |    2 | 2187.5000 |  875.0000 |  250.0000 |  12.64 MB |
-|          Chloe |          ChloeBenchmarks |                   Query | IEnumerable`1 |  83.86 ms | 1.2714 ms | 1.1893 ms |    3 | 2250.0000 |  937.5000 |  312.5000 |  12.62 MB |
-|             EF |             EFBenchmarks |                SqlQuery | IEnumerable`1 |  89.11 ms | 0.7562 ms | 0.6314 ms |    4 | 8187.5000 |  125.0000 |         - |  33.68 MB |
-|             EF |             EFBenchmarks |        Query_NoTracking | IEnumerable`1 |  93.13 ms | 0.8458 ms | 0.7912 ms |    5 | 5875.0000 | 2250.0000 | 1062.5000 |  29.71 MB |
-|             EF |             EFBenchmarks |     SqlQuery_NoTracking | IEnumerable`1 | 106.89 ms | 1.0998 ms | 1.0288 ms |    6 | 7437.5000 | 2875.0000 | 1312.5000 |  37.34 MB |
+## 那么为什么不是Dapper，或者DbHelper?
 
----
+Dapper 确实很好，并且又很好的性能，但是会让给你的代码里边充斥着SQL和各种判断分支，这些将会使代码维护难以阅读和维护。另外 Dapper 只提供了DataReader到Entity的反序列化功能。而SmartSql提供了大量的特性来提升开发者的效率。
 
 ## Nuget Packages
 
@@ -91,14 +58,7 @@ Intel Core i7-6700K CPU 4.00GHz (Skylake), 1 CPU, 8 logical and 4 physical cores
 
 ## 示例项目
 
->[SmartSql-Starter](https://github.com/Ahoo-Wang/SmartSql-Starter)
-
-## 文档地址
-
-- [在线阅读地址](https://doc.smartsql.net/)
-- [PDF](https://www.gitbook.com/download/pdf/book/ahoo-wang/smartsql-doc-cn)
-- [Mobi](https://www.gitbook.com/download/mobi/book/ahoo-wang/smartsql-doc-cn)
-- [ePub](https://www.gitbook.com/download/epub/book/ahoo-wang/smartsql-doc-cn)
+>[SmartSql.Sample.AspNetCore](https://github.com/dotnetcore/SmartSql/tree/master/sample/SmartSql.Sample.AspNetCore)
 
 ## 技术交流
 
