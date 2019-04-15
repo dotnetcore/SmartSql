@@ -155,6 +155,7 @@ namespace SmartSql.ConfigBuilder
                             throw new SmartSqlException($"Include can not find statement.id:{include.RefId}");
                         }
                         include.Ref = refStatement;
+                        include.ChildTags = refStatement.SqlTags;
                     }
                 }
             }

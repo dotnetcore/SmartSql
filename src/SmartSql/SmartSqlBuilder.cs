@@ -40,7 +40,7 @@ namespace SmartSql
             BeforeBuildInitService();
             DbSessionFactory = SmartSqlConfig.DbSessionFactory;
             SqlMapper = new SqlMapper(SmartSqlConfig);
-            SmartSqlContainer.Instance.TryRegister(Alias, this);
+            SmartSqlContainer.Instance.TryRegister(this);
             return this;
         }
         public IDbSessionFactory GetDbSessionFactory()

@@ -9,14 +9,6 @@ namespace SmartSql.Configuration.Tags
     {
         public String RefId { get; set; }
         public Statement Ref { get; set; }
-        public override void BuildSql(AbstractRequestContext context)
-        {
-            if (IsCondition(context))
-            {
-                context.SqlBuilder.Append(Prepend);
-                Ref.BuildSql(context);
-            }
-        }
         public override bool IsCondition(AbstractRequestContext context)
         {
             if (!Required)
@@ -26,7 +18,7 @@ namespace SmartSql.Configuration.Tags
 
             bool passed = false;
 
-            foreach (var childTag in Ref.SqlTags)
+            foreach (var childTag in ChildTags)
             {
                 if (childTag.IsCondition(context))
                 {
