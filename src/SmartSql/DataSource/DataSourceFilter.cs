@@ -23,7 +23,7 @@ namespace SmartSql.DataSource
 
         public AbstractDataSource Elect(AbstractRequestContext context)
         {
-            if (context.ExecutionContext.SmartSqlConfig.SessionStore.LocalSession != null)
+            if (context.ExecutionContext.SmartSqlConfig.SessionStore.LocalSession?.DataSource != null)
             {
                 return context.ExecutionContext.SmartSqlConfig.SessionStore.LocalSession.DataSource;
             }

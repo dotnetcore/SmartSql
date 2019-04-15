@@ -61,21 +61,14 @@ namespace SmartSql.Middlewares
             }
             else
             {
-
-                if ((StatementType.Write & requestContext.Statement.StatementType)
-                    == StatementType.Unknown)
-                {
-                    requestContext.DataSourceChoice = DataSourceChoice.Write;
-                }
+                requestContext.DataSourceChoice = (StatementType.Write & requestContext.Statement.StatementType)
+                                                  != StatementType.Unknown ? DataSourceChoice.Write : DataSourceChoice.Read;
             }
             if (requestContext.Statement.CommandType.HasValue)
             {
                 requestContext.CommandType = requestContext.Statement.CommandType.Value;
             }
-            if (String.IsNullOrEmpty(requestContext.ReadDb))
-            {
-                requestContext.ReadDb = requestContext.Statement.ReadDb;
-            }
+            requestContext.ReadDb = requestContext.Statement.ReadDb;
             requestContext.CacheId = requestContext.Statement.CacheId;
             requestContext.Cache = requestContext.Statement.Cache;
             requestContext.ParameterMapId = requestContext.Statement.ParameterMapId;
