@@ -5,6 +5,8 @@
     <Property Name="JsonTypeHandler`" Value="SmartSql.TypeHandler.JsonTypeHandler`1,SmartSql.TypeHandler"/>
     <Property Name="JsonTypeHandler" Value="SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"/>
     <Property Name="ScriptBuilder" Value="SmartSql.ScriptTag.ScriptBuilder,SmartSql.ScriptTag"/>
+    <Property Name="RedisCacheProvider" Value="SmartSql.Cache.Redis.RedisCacheProvider,SmartSql.Cache.Redis"/>
+    <Property Name="Redis" Value="127.0.0.1"/>
   </Properties>
   <Database>
     <DbProvider Name="SqlServer"/>

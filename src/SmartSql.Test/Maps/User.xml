@@ -33,7 +33,7 @@
 
     </Statement>
     <!--获取数据列-->
-    <Statement Id="Query" ParameterMap="User" >
+    <Statement Id="Query" ParameterMap="User">
       SELECT
       <IsNotEmpty Prepend="Top" Property="Taken">
         (@Taken)

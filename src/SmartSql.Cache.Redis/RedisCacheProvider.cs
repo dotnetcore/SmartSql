@@ -31,17 +31,22 @@ namespace SmartSql.Cache.Redis
             _database = _redis.GetDatabase(_databaseId);
         }
 
+        private string GetCacheKey(CacheKey cacheKey)
+        {
+            return $"{_prefix}:{cacheKey.Key}";
+        }
+
         public bool TryAdd(CacheKey cacheKey, object cacheItem)
         {
             string cacheStr = JsonConvert.SerializeObject(cacheItem);
-            return _database.StringSet(cacheKey.Key, cacheStr, _expiryInterval);
+            return _database.StringSet(GetCacheKey(cacheKey), cacheStr, _expiryInterval);
         }
 
         public void Flush()
         {
             var serverEndPoint = _redis.GetEndPoints()[0];
             var server = _redis.GetServer(serverEndPoint);
-            var keys = server.Keys(_databaseId, pattern: $"{_prefix}*").ToArray();
+            var keys = server.Keys(_databaseId, pattern: $"{_prefix}:*").ToArray();
             if (keys.Length > 0)
             {
                 _database.KeyDelete(keys.ToArray());
@@ -51,7 +56,7 @@ namespace SmartSql.Cache.Redis
         public bool TryGetValue(CacheKey cacheKey, out object cacheItem)
         {
             cacheItem = null;
-            string cacheStr = _database.StringGet(cacheKey.Key);
+            string cacheStr = _database.StringGet(GetCacheKey(cacheKey));
             if (String.IsNullOrEmpty(cacheStr)) { return false; }
             cacheItem = JsonConvert.DeserializeObject(cacheStr, cacheKey.ResultType);
             return true;
