@@ -42,6 +42,10 @@ Dapper 确实很好，并且又很好的性能，但是会让给你的代码里�
 
 ![SmartSql特性](https://raw.githubusercontent.com/Smart-Kit/SmartSql-Docs/master/docs/imgs/SmartSql-features.png)
 
+## 使用 [SmartCode](https://github.com/dotnetcore/SmartCode) 直接体验 [SmartSql](https://github.com/dotnetcore/SmartSql)
+
+![SmartCode](https://raw.githubusercontent.com/Smart-Kit/SmartSql-Docs/master/docs/imgs/SmartCode-Db-1.gif)
+
 ## Nuget Packages
 
 | Package | NuGet Stable |  Downloads |
