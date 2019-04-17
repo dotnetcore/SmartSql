@@ -14,7 +14,7 @@ namespace SmartSql.Reflection.TypeConstants
         {
             if (ignoreCase)
             {
-                return GenericType.MakeGenericType(requestType, typeof(IgnoreCase));
+                return GenericType.MakeGenericType(requestType, typeof(IgnoreCaseType));
             }
             return GenericType.MakeGenericType(requestType, typeof(object));
         }

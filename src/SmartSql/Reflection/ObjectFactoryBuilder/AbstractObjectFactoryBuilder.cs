@@ -3,13 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using SmartSql.Utils;
 
 namespace SmartSql.Reflection.ObjectFactoryBuilder
 {
     public abstract class AbstractObjectFactoryBuilder : IObjectFactoryBuilder
     {
-        private static readonly object _syncObj = new object();
-        private static readonly IDictionary<String, Func<object[], object>> _factoryCache = new Dictionary<string, Func<object[], object>>();
         /// <summary>
         /// 
         /// </summary>
@@ -35,18 +34,8 @@ namespace SmartSql.Reflection.ObjectFactoryBuilder
                 ctorArgTypes = Type.EmptyTypes;
             }
             var cacheKey = GetCacheKey(targetType, ctorArgTypes);
-            if (!_factoryCache.ContainsKey(cacheKey))
-            {
-                lock (_syncObj)
-                {
-                    if (!_factoryCache.ContainsKey(cacheKey))
-                    {
-                        var newFunc = Build(targetType, ctorArgTypes);
-                        _factoryCache.Add(cacheKey, newFunc);
-                    }
-                }
-            }
-            return _factoryCache[cacheKey];
+            return CacheUtil<AbstractObjectFactoryBuilder, String, Func<object[], object>>
+                  .GetOrAdd(cacheKey, _ => Build(targetType, ctorArgTypes));
         }
         protected ConstructorInfo GetConstructor(Type targetType, Type[] ctorArgTypes)
         {

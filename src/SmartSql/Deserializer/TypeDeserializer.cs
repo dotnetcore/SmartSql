@@ -5,14 +5,12 @@ using System.Reflection.Emit;
 using System.Text;
 using SmartSql.Configuration;
 using SmartSql.Reflection.TypeConstants;
+using SmartSql.Utils;
 
 namespace SmartSql.Deserializer
 {
     public class TypeDeserializer
     {
-        private static readonly object lockObj = new object();
-        private static readonly IDictionary<Type, Func<IDataReaderDeserializer, ExecutionContext, object>> _cachedImpl = new Dictionary<Type, Func<IDataReaderDeserializer, ExecutionContext, object>>();
-
         public static object Deserialize(Type resultType, IDataReaderDeserializer deserializer, ExecutionContext executionContext)
         {
             return GetImpl(resultType)(deserializer, executionContext);
@@ -20,18 +18,8 @@ namespace SmartSql.Deserializer
 
         private static Func<IDataReaderDeserializer, ExecutionContext, object> GetImpl(Type resultType)
         {
-            if (!_cachedImpl.ContainsKey(resultType))
-            {
-                lock (lockObj)
-                {
-                    if (!_cachedImpl.ContainsKey(resultType))
-                    {
-                        var impl = CreateImpl(resultType);
-                        _cachedImpl.Add(resultType, impl);
-                    }
-                }
-            }
-            return _cachedImpl[resultType];
+            return CacheUtil<TypeDeserializer, Type, Func<IDataReaderDeserializer, ExecutionContext, object>>
+                  .GetOrAdd(resultType, CreateImpl);
         }
 
         private static Func<IDataReaderDeserializer, ExecutionContext, object> CreateImpl(Type resultType)

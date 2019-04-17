@@ -9,7 +9,6 @@ namespace System.Reflection.Emit
 {
     public static class ILGeneratorExtensions
     {
-
         public static void Pop(this ILGenerator ilGen)
         {
             ilGen.Emit(OpCodes.Pop);

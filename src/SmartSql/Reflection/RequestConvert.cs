@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using SmartSql.Utils;
 
 namespace SmartSql.Reflection
 {
@@ -12,31 +13,20 @@ namespace SmartSql.Reflection
     {
         public static RequestConvert Instance = new RequestConvert();
 
-        private readonly Dictionary<string, Func<object, SqlParameterCollection>> _cachedConvert = new Dictionary<string, Func<object, SqlParameterCollection>>();
-        private String GenerateCacheKey(Type sourceType, bool ignoreNameCase)
-        {
-            return $"{sourceType.FullName}_{ignoreNameCase}";
-        }
         public SqlParameterCollection ToSqlParameters(object sourceObj, bool ignoreNameCase)
         {
             return GetToSqlParametersFunc(sourceObj.GetType(), ignoreNameCase)(sourceObj);
         }
 
-        public Func<object, SqlParameterCollection> GetToSqlParametersFunc(Type sourceType, bool ignoreNameCase)
+        public Func<object, SqlParameterCollection> GetToSqlParametersFunc(Type sourceType, bool ignoreCase)
         {
-            string key = GenerateCacheKey(sourceType, ignoreNameCase);
-            if (!_cachedConvert.ContainsKey(key))
+            if (ignoreCase)
             {
-                lock (this)
-                {
-                    if (!_cachedConvert.ContainsKey(key))
-                    {
-                        var impl = RequestConvertCacheType.GetConvert(sourceType, ignoreNameCase);
-                        _cachedConvert.Add(key, impl);
-                    }
-                }
+                return CacheUtil<TypeWrapper<RequestContext, IgnoreCaseType>, Type, Func<object, SqlParameterCollection>>
+                     .GetOrAdd(sourceType, _ => RequestConvertCacheType.GetConvert(_, ignoreCase));
             }
-            return _cachedConvert[key];
+            return CacheUtil<RequestContext, Type, Func<object, SqlParameterCollection>>
+                .GetOrAdd(sourceType, _ => RequestConvertCacheType.GetConvert(_, ignoreCase)); ;
         }
     }
 }

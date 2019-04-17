@@ -10,7 +10,6 @@ using SmartSql.Annotations;
 
 namespace SmartSql.Reflection.Convert
 {
-    public class IgnoreCase { }
     public static class RequestConvertCache<TRequest>
     {
         public static Func<object, SqlParameterCollection> Convert { get; private set; }
@@ -36,7 +35,7 @@ namespace SmartSql.Reflection.Convert
             var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString("N"), SqlParameterType.SqlParameterCollection, new[] { CommonType.Object }, requestType, true);
             var ilGen = dynamicMethod.GetILGenerator();
             ilGen.DeclareLocal(SqlParameterType.SqlParameterCollection);
-            var ignoreCase = typeof(TIgnoreCase) == typeof(IgnoreCase);
+            var ignoreCase = typeof(TIgnoreCase) == typeof(IgnoreCaseType);
             ilGen.LoadInt32(ignoreCase ? 1 : 0);
             ilGen.New(SqlParameterType.Ctor.SqlParameterCollection);
             ilGen.StoreLocalVar(0);
