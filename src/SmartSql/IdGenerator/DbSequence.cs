@@ -7,25 +7,43 @@ namespace SmartSql.IdGenerator
 {
     public class DbSequence : IIdGenerator
     {
-        private SmartSqlConfig _smartSqlConfig;
-        
         protected int Step { get; set; } = 1;
-        protected int DbId { get; set; } 
-        protected int CurrentId { get; set; } = 1;
-        protected String Sql { get; set; }
+        protected long DbId { get; set; }
+        protected long CurrentId { get; set; }
 
+        protected String Sql { get; set; }
+        private ISqlMapper _sqlMapper;
         public void Initialize(IDictionary<string, object> parameters)
         {
             if (parameters.Value(nameof(DbSequence.Step), out int step))
             {
                 Step = step;
             }
-            parameters.EnsureValue(nameof(SmartSqlConfig), out _smartSqlConfig);
+        }
+
+        public void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
+        {
+            _sqlMapper = smartSqlBuilder.SqlMapper;
         }
 
         public long NextId()
         {
-            throw new NotImplementedException();
+            lock (this)
+            {
+                if (DbId != 0 && CurrentId < DbId + Step) return ++CurrentId;
+                NextDbId();
+                CurrentId = DbId;
+                return CurrentId;
+            }
+        }
+
+        private void NextDbId()
+        {
+            DbId = _sqlMapper.ExecuteScalar<long>(new RequestContext
+            {
+                RealSql = Sql
+            });
         }
     }
 }
+
