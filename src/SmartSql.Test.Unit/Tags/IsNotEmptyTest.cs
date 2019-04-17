@@ -19,6 +19,18 @@ namespace SmartSql.Test.Unit.Tags
             });
             Assert.Equal("Name IsNotEmpty", msg);
         }
+
+        [Fact]
+        public void GetEntity_IsNotEmpty()
+        {
+            var msg = DbSession.Query<Object>(new RequestContext
+            {
+                Scope = nameof(IsNotEmptyTest),
+                SqlId = "GetEntity",
+                Request = new { FLong = 1 }
+            });
+        }
+
         [Fact]
         public void IsNotEmpty_Required()
         {

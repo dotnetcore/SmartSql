@@ -42,7 +42,13 @@
     <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Maps\IncludeTest.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Maps\IsLessThanTest.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Maps\EnvTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Maps\IsNotEmptyTest.xml">
