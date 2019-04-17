@@ -7,9 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="SmartSqlMapConfig-Embedded.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="..\SmartSql.Test\Maps\User.xml" Link="Maps\User.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="SmartSqlMapConfig-Embedded.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

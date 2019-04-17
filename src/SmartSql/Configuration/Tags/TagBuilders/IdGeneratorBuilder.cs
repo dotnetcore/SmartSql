@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml;
+using SmartSql.Exceptions;
+using SmartSql.IdGenerator;
 
 namespace SmartSql.Configuration.Tags.TagBuilders
 {
@@ -9,11 +12,20 @@ namespace SmartSql.Configuration.Tags.TagBuilders
     {
         public override ITag Build(XmlNode xmlNode, Statement statement)
         {
+            IIdGenerator idGen = statement.SqlMap.SmartSqlConfig.IdGenerators.Values.FirstOrDefault();
+            var idGenName = GetXmlAttributeValue(xmlNode, "Name");
+            if (!String.IsNullOrEmpty(idGenName))
+            {
+                if (!statement.SqlMap.SmartSqlConfig.IdGenerators.TryGetValue(idGenName, out idGen))
+                {
+                    throw new SmartSqlException($"Can not find IdGenerator.Name:{idGenName},XmlNode:{xmlNode}.");
+                }
+            }
             return new IdGenerator
             {
                 Statement = statement,
                 Id = GetXmlAttributeValue(xmlNode, nameof(IdGenerator.Id)),
-                IdGen = statement.SqlMap.SmartSqlConfig.IdGenerator
+                IdGen = idGen
             };
         }
     }

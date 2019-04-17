@@ -881,6 +881,7 @@
   <xs:element name="IdGenerator">
     <xs:complexType>
       <xs:attribute name="Id" type="xs:string" use="required" />
+      <xs:attribute name="Name" type="xs:string" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="Statement">

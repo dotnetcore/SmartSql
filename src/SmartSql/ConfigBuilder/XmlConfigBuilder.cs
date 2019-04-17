@@ -89,21 +89,32 @@ namespace SmartSql.ConfigBuilder
         }
         #endregion
         #region 2. IdGen
-        protected override void BuildIdGenerator()
+        protected override void BuildIdGenerators()
         {
-            var settingsXPath = $"{CONFIG_PREFIX}:IdGenerator";
-            var idGeneratorNode = XmlConfigRoot.SelectSingleNode(settingsXPath, XmlNsManager);
-            if (idGeneratorNode == null)
+            var idGenXPath = $"{CONFIG_PREFIX}:IdGenerators/{CONFIG_PREFIX}:IdGenerator";
+            var idGenNodes = XmlConfigRoot.SelectNodes(idGenXPath, XmlNsManager);
+            if (idGenNodes != null)
             {
-                return;
+                SmartSqlConfig.IdGenerators.Clear();
+                foreach (XmlNode idGenNode in idGenNodes)
+                {
+                    BuildIdGenerator(idGenNode);
+                }
             }
-
-            if (!idGeneratorNode.Attributes.TryGetValueAsString("Type", out string typeString, SmartSqlConfig.Properties))
+        }
+        private void BuildIdGenerator(XmlNode idGenNode)
+        {
+            if (!idGenNode.Attributes.TryGetValueAsString("Name", out string name, SmartSqlConfig.Properties))
+            {
+                throw new SmartSqlException("IdGenerator.Name can not be null.");
+            }
+            if (!idGenNode.Attributes.TryGetValueAsString("Type", out string typeString, SmartSqlConfig.Properties))
             {
                 throw new SmartSqlException("IdGenerator.Type can not be null.");
             }
-            var parameters = ParseProperties(idGeneratorNode);
-            SmartSqlConfig.IdGenerator = _idGeneratorBuilder.Build(typeString, parameters);
+            var parameters = ParseProperties(idGenNode);
+            var idGen = _idGeneratorBuilder.Build(typeString, parameters);
+            SmartSqlConfig.IdGenerators.Add(name, idGen);
         }
         #endregion
         #region 2. Database

@@ -12,7 +12,7 @@ namespace SmartSql.Options
         public Database Database { get; set; }
         public List<TypeHandler> TypeHandlers { get; set; } = new List<TypeHandler>();
         public List<TagBuilder> TagBuilders { get; set; } = new List<TagBuilder>();
-        public IdGenerator IdGenerator { get; set; }
+        public List<IdGenerator> IdGenerators { get; set; }
         public List<SqlMapSource> SmartSqlMaps { get; set; } = new List<SqlMapSource>();
     }
 }
