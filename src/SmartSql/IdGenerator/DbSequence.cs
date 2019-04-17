@@ -5,34 +5,31 @@ using SmartSql.Configuration;
 
 namespace SmartSql.IdGenerator
 {
-    public class DbSequence : IIdGenerator
+    public class DbSequence : IIdGenerator, ISetupSmartSql
     {
-        protected int Step { get; set; } = 1;
+        private int _step;
+        private string _sequenceSql;
         protected long DbId { get; set; }
+        protected long MaxId { get; set; }
         protected long CurrentId { get; set; }
-
-        protected String Sql { get; set; }
         private ISqlMapper _sqlMapper;
         public void Initialize(IDictionary<string, object> parameters)
         {
-            if (parameters.Value(nameof(DbSequence.Step), out int step))
-            {
-                Step = step;
-            }
+            parameters.EnsureValue("Step", out _step);
+            parameters.EnsureValue("SequenceSql", out _sequenceSql);
         }
-
         public void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
         {
             _sqlMapper = smartSqlBuilder.SqlMapper;
+
         }
 
         public long NextId()
         {
             lock (this)
             {
-                if (DbId != 0 && CurrentId < DbId + Step) return ++CurrentId;
+                if (DbId != 0 && CurrentId < MaxId) return ++CurrentId;
                 NextDbId();
-                CurrentId = DbId;
                 return CurrentId;
             }
         }
@@ -41,8 +38,10 @@ namespace SmartSql.IdGenerator
         {
             DbId = _sqlMapper.ExecuteScalar<long>(new RequestContext
             {
-                RealSql = Sql
+                RealSql = _sequenceSql
             });
+            MaxId = DbId + _step - 1;
+            CurrentId = DbId;
         }
     }
 }

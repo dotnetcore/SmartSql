@@ -81,7 +81,7 @@
   <xs:element name="TagBuilders">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="TagBuilder">
+        <xs:element name="TagBuilder" minOccurs="1" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence minOccurs="0">
               <xs:element ref="Properties"/>
@@ -97,7 +97,7 @@
   <xs:element name="IdGenerators">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="IdGenerator"/>
+        <xs:element ref="IdGenerator" minOccurs="1" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>

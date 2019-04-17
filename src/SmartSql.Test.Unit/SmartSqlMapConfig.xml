@@ -35,6 +35,12 @@
         <Property Name="Sequence" Value="14"/>
       </Properties>
     </IdGenerator>
+    <IdGenerator Name="DbSequence" Type="DbSequence">
+      <Properties>
+        <Property Name="Step" Value="10"/>
+        <Property Name="SequenceSql" Value="Select Next Value For IdSequence;"/>
+      </Properties>
+    </IdGenerator>
   </IdGenerators>
   <SmartSqlMaps>
     <SmartSqlMap Path="Maps" Type="Directory"></SmartSqlMap>
