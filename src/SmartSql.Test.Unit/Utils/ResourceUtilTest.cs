@@ -21,7 +21,7 @@ namespace SmartSql.Test.Unit.Utils
         [Fact]
         public void LoadEmbeddedAsXml()
         {
-            var xml = ResourceUtil.LoadEmbeddedAsXml("SmartSql.Test.SmartSqlMapConfig.xml,SmartSql.Test");
+            var xml = ResourceUtil.LoadEmbeddedAsXml("SmartSql.Test.Unit.SmartSqlMapConfig-Embedded.xml,SmartSql.Test.Unit");
             Assert.NotNull(xml);
         }
         [Fact]

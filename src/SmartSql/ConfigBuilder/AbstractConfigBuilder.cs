@@ -29,7 +29,7 @@ namespace SmartSql.ConfigBuilder
             ImportProperties(importProperties);
             BuildSettings();
             BuildProperties();
-            BuildIdGenerator();
+            BuildIdGenerators();
             BuildDatabase();
             BuildTypeHandlers();
             BuildTagBuilders();
@@ -44,7 +44,7 @@ namespace SmartSql.ConfigBuilder
         protected abstract void BuildTagBuilders();
         protected abstract void BuildTypeHandlers();
         protected abstract void BuildDatabase();
-        protected abstract void BuildIdGenerator();
+        protected abstract void BuildIdGenerators();
         protected abstract void BuildProperties();
         protected abstract void BuildSettings();
         public abstract void Dispose();

@@ -41,8 +41,21 @@ namespace SmartSql
             DbSessionFactory = SmartSqlConfig.DbSessionFactory;
             SqlMapper = new SqlMapper(SmartSqlConfig);
             SmartSqlContainer.Instance.TryRegister(this);
+            SetupSmartSql();
             return this;
         }
+
+        private void SetupSmartSql()
+        {
+            foreach (var idGen in SmartSqlConfig.IdGenerators.Values)
+            {
+                if (idGen is ISetupSmartSql setupSmartSql)
+                {
+                    setupSmartSql.SetupSmartSql(this);
+                }
+            }
+        }
+
         public IDbSessionFactory GetDbSessionFactory()
         {
             return DbSessionFactory;
