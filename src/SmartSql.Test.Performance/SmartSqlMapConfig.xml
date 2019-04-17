@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
+  <Settings IgnoreParameterCase="false" ParameterPrefix="$" IsCacheEnabled="false"/>
+  <Database>
+    <DbProvider Name="SqlServer"/>
+    <Write Name="WriteDB" ConnectionString="Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True"/>
+  </Database>
+  <TypeHandlers>
+    <TypeHandler PropertyType="SmartSql.Test.Entities.NumericalEnum,SmartSql.Test" Type="SmartSql.TypeHandlers.EnumTypeHandler`1, SmartSql"/>
+  </TypeHandlers>
+  <SmartSqlMaps>
+    <SmartSqlMap Path="Maps" Type="Directory"></SmartSqlMap>
+  </SmartSqlMaps>
+</SmartSqlMapConfig>

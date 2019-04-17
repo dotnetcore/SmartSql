@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+//*******************************
+// Create By Ahoo Wang
+// Date 2019-01-24 17:54
+// Code Generate By SmartCode
+// Code Generate Github : https://github.com/Ahoo-Wang/SmartCode
+//*******************************-->
+
+<SmartSqlMap Scope="RangeTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+  <Statements>
+    <Statement Id="Range" >
+      <Range Min="0" Max="10" Property="Id">
+        Select 'Id Between 0 And 10'
+      </Range>
+    </Statement>
+    <Statement Id="Range_Required" >
+      <Range Min="0" Max="10" Property="Id" Required="true">
+        Select 'Id Between 0 And 10'
+      </Range>
+    </Statement>
+  </Statements>
+</SmartSqlMap>

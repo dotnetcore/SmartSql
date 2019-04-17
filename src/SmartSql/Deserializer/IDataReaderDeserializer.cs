@@ -1,0 +1,16 @@
+﻿using SmartSql.Data;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SmartSql.Deserializer
+{
+    public interface IDataReaderDeserializer : IDataReaderDeserializerAsync
+    {
+        TResult ToSinge<TResult>(ExecutionContext executionContext);
+        IList<TResult> ToList<TResult>(ExecutionContext executionContext);
+    }
+}

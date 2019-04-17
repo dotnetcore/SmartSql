@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>SmartSql.Schema</id>
+    <title>SmartSql Schema for Intellisense(TM)</title>
+    <version>4.0.0</version>
+    <authors>Ahoo Wang</authors>
+    <owners>Ahoo Wang</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <language>en-US</language>
+    <license type="expression">Apache-2.0</license>
+    <projectUrl>https://github.com/Smart-Kit/SmartSql</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/Smart-Kit/SmartSql/master/SmartSql.png</iconUrl>
+    <repository type="git" url="https://github.com/Smart-Kit/SmartSql"/>
+    <summary>Enables Intellisense(TM) when editing SmartSql-config.</summary>
+    <description>
+      XSD file to enables Intellisense(TM) when editing SmartSql configuration files, for example in Visual Studio.
+      Note: extensions to SmartSql will report XSD errors. Those can be ignored safely.
+    </description>
+    <tags>SmartSql, intellisense, xsd</tags>
+    <contentFiles>
+      <files include="**/*.*" buildAction="None" copyToOutput="false" flatten="true" />
+    </contentFiles>
+  </metadata>
+  <files>
+    <file src=".\*.xsd" target="contentFiles\any\any" />
+    <file src=".\*.xsd" target="content\" />
+  </files>
+</package>

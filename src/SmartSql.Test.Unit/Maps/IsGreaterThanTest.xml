@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+//*******************************
+// Create By Ahoo Wang
+// Date 2019-01-24 17:54
+// Code Generate By SmartCode
+// Code Generate Github : https://github.com/Ahoo-Wang/SmartCode
+//*******************************-->
+
+<SmartSqlMap Scope="IsGreaterThanTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+  <Statements>
+    <Statement Id="IsGreaterThan">
+      <IsGreaterThan Property="Id" CompareValue="10">
+        Select 'Id IsGreaterThan 10'
+      </IsGreaterThan>
+    </Statement>
+    <Statement Id="IsGreaterThan_Required">
+      <IsGreaterThan Property="Id" CompareValue="10" Required="true">
+        Select 'Id IsGreaterThan 10'
+      </IsGreaterThan>
+    </Statement>
+  </Statements>
+</SmartSqlMap>

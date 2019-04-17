@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+//*******************************
+// Create By Ahoo Wang
+// Date 2019-01-24 17:54
+// Code Generate By SmartCode
+// Code Generate Github : https://github.com/Ahoo-Wang/SmartCode
+//*******************************-->
+
+<SmartSqlMap Scope="IsLessThanTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+  <Statements>
+    <Statement Id="IsLessThan">
+      <IsLessThan Property="Id" CompareValue="0">
+        Select 'Id IsLessThan 0'
+      </IsLessThan>
+    </Statement>
+    <Statement Id="IsLessThan_Required">
+      <IsLessThan Property="Id" CompareValue="0" Required="true">
+        Select 'Id IsLessThan 0'
+      </IsLessThan>
+    </Statement>
+  </Statements>
+</SmartSqlMap>

@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+*******************************
+ Create By Ahoo Wang 
+ Date 2018-05-07 10:07
+*******************************
+-->
+<SmartSqlMap Scope="Entity"  xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+  <Caches>
+    <Cache Id="LRU" Type="Lru">
+      <FlushInterval Hours="1"/>
+      <Property Name="Size" Value="100"/>
+    </Cache>
+  </Caches>
+  <ResultMaps>
+    <ResultMap Id="ResultMap_CustomerConstructor">
+      <Constructor>
+        <Arg Column="FLong" CSharpType="Int64" />
+        <Arg Column="FDecimal" CSharpType="Decimal" />
+      </Constructor>
+    </ResultMap>
+  </ResultMaps>
+  <MultipleResultMaps>
+    <MultipleResultMap Id="QueryByPageMResult">
+      <Result Property="Total"/>
+      <Result Property="List"/>
+    </MultipleResultMap>
+    <MultipleResultMap Id="GetNested_RootMResult">
+      <Root/>
+      <Result Property="List"/>
+    </MultipleResultMap>
+  </MultipleResultMaps>
+  <Statements>
+    <Statement Id="Query_1_Entity">
+      Select Top 2 T.* From T_Entity T;
+    </Statement>
+    <Statement Id="Query_2_Entity">
+      <Include RefId="Query_1_Entity"></Include>
+      Select Top 2 T.* From T_Entity T;
+    </Statement>
+    <Statement Id="Query_All">
+      Select Top 1 T.* From T_Entity T;
+      <Include RefId="Query_2_Entity"></Include>
+    </Statement>
+    <Statement Id="Query_NestedParams"  >
+      Select Top 10 T.* From T_Entity T
+      Where FLong=@Root.Second.Id
+    </Statement>
+
+    <Statement Id="Query_ReadDb2"  ReadDb="ReadDb-2">
+      Select Top 10 T.* From T_Entity T
+    </Statement>
+
+    <Statement Id="GetNested_Root" MultipleResultMap="GetNested_RootMResult">
+      Select Count(1) As Total From T_Entity;
+      Select Top 10 T.* From T_Entity T
+    </Statement>
+    <Statement Id="MQueryByPage" MultipleResultMap="QueryByPageMResult">
+      Select Count(1) From T_Entity;
+      Select Top 10 T.* From T_Entity T
+    </Statement>
+    <Statement Id="ExecuteScalar_NULL">
+      Select Top 1 T.FLong From T_Entity T Where T.FLong=-1
+    </Statement>
+    <Statement Id="SP_QueryByPage" CommandType="StoredProcedure">
+      SP_QueryByPage
+    </Statement>
+    <Statement Id="InsertBatch">
+      INSERT INTO T_Entity
+      (FString
+      ,FDecimal
+      ,FNullDecimal
+      ,FBool
+      ,FNullBool
+      ,Status
+      ,NullStatus
+      ,CreationTime
+      ,LastUpdateTime)
+      VALUES
+      <For Open="" Close="" Key="T" Property="Items" Separator=",">
+        (@FString
+        ,@FDecimal
+        ,@FNullDecimal
+        ,@FBool
+        ,@FNullBool
+        ,@Status
+        ,@NullStatus
+        ,@CreationTime
+        ,@LastUpdateTime)
+      </For>
+    </Statement>
+    <Statement Id="QueryForPlaceholder">
+      SELECT Top(10) T.* From <Placeholder Property="TableName"></Placeholder> T With(NoLock)
+    </Statement>
+    <Statement Id="QueryParams">
+      <Where>
+        <IsNotEmpty Prepend="And" Property="FLongs">
+          T.FLong In $FLongs
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="FString">
+          T.FString=$FString
+        </IsNotEmpty>
+        <IsNotEmpty Prepend="And" Property="NullStatus">
+          <Switch Property="NullStatus">
+            <Default>
+              T.NullStatus Is Not Null
+            </Default>
+          </Switch>
+        </IsNotEmpty>
+        <For Prepend="And" Key="Key" Open="T.FLong In (" Close=")" Property="Ids" Separator=",">
+          @Key,@Key
+        </For>
+        <For Prepend="And" Key="LikeKey" Open="(" Close=")" Property="FStrings" Separator="Or">
+          T.FString Like Concat(@LikeKey,'%')
+        </For>
+      </Where>
+    </Statement>
+    <Statement Id="QueryId">
+      SELECT Top(10) T.FLong From T_Entity T With(NoLock)
+    </Statement>
+    <Statement Id="QueryCustomConstructorEntity"  ResultMap="ResultMap_CustomerConstructor">
+      SELECT Top(10) T.* From T_Entity T With(NoLock)
+    </Statement>
+    <Statement Id="QueryStatus">
+      SELECT Top(10) T.Status From T_Entity T With(NoLock)
+    </Statement>
+    <Statement Id="QueryNullStatus">
+      SELECT Top(10) T.NullStatus From T_Entity T With(NoLock)
+    </Statement>
+
+    <!--新增-->
+    <Statement Id="Insert">
+      INSERT INTO T_Entity
+      (FString
+      ,FDecimal
+      ,FNullDecimal
+      ,FBool
+      ,FNullBool
+      ,Status
+      ,NullStatus
+      ,CreationTime
+      ,LastUpdateTime)
+      VALUES
+      (@FString
+      ,@FDecimal
+      ,@FNullDecimal
+      ,@FBool
+      ,@FNullBool
+      ,@Status
+      ,@NullStatus
+      ,@CreationTime
+      ,@LastUpdateTime)
+      ;Select Scope_Identity();
+    </Statement>
+
+    <!--删除-->
+    <Statement Id="Delete">
+      Delete T_Entity
+      Where FLong=@Id
+    </Statement>
+
+
+    <!--更新-->
+    <Statement Id="Update">
+      UPDATE T_Entity
+      <Set>
+        <IsProperty Prepend="," Property="FString">
+          FString = @FString
+        </IsProperty>
+        <IsProperty Prepend="," Property="FDecimal">
+          FDecimal = @FDecimal
+        </IsProperty>
+        <IsProperty Prepend="," Property="FNullDecimal">
+          FNullDecimal = @FNullDecimal
+        </IsProperty>
+        <IsProperty Prepend="," Property="FBool">
+          FBool = @FBool
+        </IsProperty>
+        <IsProperty Prepend="," Property="FNullBool">
+          FNullBool = @FNullBool
+        </IsProperty>
+        <IsProperty Prepend="," Property="Status">
+          Status = @Status
+        </IsProperty>
+        <IsProperty Prepend="," Property="NullStatus">
+          NullStatus = @NullStatus
+        </IsProperty>
+        <IsProperty Prepend="," Property="CreationTime">
+          CreationTime = @CreationTime
+        </IsProperty>
+        <IsProperty Prepend="," Property="LastUpdateTime">
+          LastUpdateTime = @LastUpdateTime
+        </IsProperty>
+      </Set>
+      Where FLong=@FLong
+    </Statement>
+
+    <Statement Id="QueryPs">
+      <Where>
+        T.FBool=0
+        <IsNotEmpty Prepend="And" Property="FString">
+          T.FString=$FString
+        </IsNotEmpty>
+      </Where>
+    </Statement>
+    <!--获取数据列-->
+    <Statement Id="Query" Cache="LRU">
+      Select
+      <IsNotEmpty Prepend="Top" Property="Taken">
+        (@Taken)
+      </IsNotEmpty>
+      <!--<IsNull Prepend="Top" Property="Taken">
+        (10)
+      </IsNull>-->
+      T.* From T_Entity T With(NoLock)
+      <Include RefId="QueryParams" />
+      <Switch Prepend="Order By" Property="OrderBy">
+        <Default>
+          T.FLong Desc
+        </Default>
+      </Switch>
+    </Statement>
+
+    <!--获取分页数据-->
+    <Statement Id="QueryByPage">
+      Select TT.* From
+      (Select ROW_NUMBER() Over(Order By T.FLong Desc) Row_Index,T.* From T_Entity T With(NoLock)
+      <Include RefId="QueryParams"/>) TT
+      Where TT.Row_Index Between ((@PageIndex-1)*@PageSize+1) And (@PageIndex*@PageSize)
+    </Statement>
+
+    <!--获取记录数-->
+    <Statement Id="GetRecord">
+      Select Count(1) From T_Entity T With(NoLock)
+      <Include RefId="QueryParams"/>
+    </Statement>
+
+    <!--获取表映射实体-->
+    <Statement Id="GetEntity">
+      Select Top 1 T.* From T_Entity T With(NoLock)
+      <Where>
+        <IsNotEmpty Prepend="And" Property="Id">
+          T.FLong=@Id
+        </IsNotEmpty>
+      </Where>
+    </Statement>
+
+    <!--是否存在该记录-->
+    <Statement Id="IsExist">
+      Select Count(1) From T_Entity T With(NoLock)
+      <Include RefId="QueryParams"/>
+    </Statement>
+
+
+    <Statement Id="MultiQuery">
+      Select Top 6 T.* From T_Entity T With(NoLock);
+      Select Top 8 T.* From T_Entity T With(NoLock);
+    </Statement>
+  </Statements>
+</SmartSqlMap>

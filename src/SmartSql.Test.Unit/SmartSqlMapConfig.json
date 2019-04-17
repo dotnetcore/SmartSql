@@ -1,0 +1,45 @@
+{
+  "SmartSqlMapConfig": {
+    "Settings": {
+      "IgnoreParameterCase": "true",
+      "IsCacheEnabled": "false",
+      "ParameterPrefix": "$"
+    },
+    "Properties": {
+      "Redis": "localhost",
+      "RedisCacheProvider": "SmartSql.Cache.Redis.RedisCacheProvider,SmartSql.Cache.Redis"
+    },
+    "Database": {
+      "DbProvider": {
+        "Name": "SqlServer"
+      },
+      "Write": {
+        "Name": "WriteDB",
+        "ConnectionString": "Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True"
+      },
+      "Reads": [
+        {
+          "Name": "ReadDb-2",
+          "ConnectionString": "Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True",
+          "Weight": 100
+        }
+      ]
+    },
+    "SmartSqlMaps": [
+      {
+        "Path": "Maps",
+        "Type": "Directory"
+      }
+    ],
+    "TypeHandlers": [
+      {
+        "PropertyType": "SmartSql.Test.Entities.UserInfo,SmartSql.Test",
+        "Type": "SmartSql.TypeHandler.JsonTypeHandler`1,SmartSql.TypeHandler"
+      },
+      {
+        "Name": "Json",
+        "Type": "SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"
+      }
+    ]
+  }
+}

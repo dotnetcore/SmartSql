@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+//*******************************
+// Create By Ahoo Wang
+// Date 2019-01-24 17:54
+// Code Generate By SmartCode
+// Code Generate Github : https://github.com/Ahoo-Wang/SmartCode
+//*******************************-->
+
+<SmartSqlMap Scope="WhereTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+  <Statements>
+    <Statement Id="Where_Min">
+      Select 'Where' As Val
+      <Where Min="1">
+        1=1
+        <IsNotEmpty Property="Msg" Prepend="And">
+          1=1
+        </IsNotEmpty>
+      </Where>
+    </Statement>
+    
+  </Statements>
+</SmartSqlMap>
