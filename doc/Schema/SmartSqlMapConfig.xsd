@@ -93,11 +93,21 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+
+  <xs:element name="IdGenerators">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="IdGenerator"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
   <xs:element name="IdGenerator">
     <xs:complexType>
       <xs:sequence minOccurs="0">
         <xs:element ref="Properties"/>
       </xs:sequence>
+      <xs:attribute name="Name" type="xs:string" use="required" />
       <xs:attribute name="Type" type="xs:string" use="required" />
     </xs:complexType>
   </xs:element>
@@ -131,7 +141,7 @@
         <xs:element ref="Database"/>
         <xs:element ref="TypeHandlers" minOccurs="0"/>
         <xs:element ref="TagBuilders" minOccurs="0"/>
-        <xs:element ref="IdGenerator" minOccurs="0"/>
+        <xs:element ref="IdGenerators" minOccurs="0"/>
         <xs:element ref="SmartSqlMaps" minOccurs="0"/>       
       </xs:all>
     </xs:complexType>
