@@ -14,7 +14,7 @@ namespace SmartSql.Test.Unit.Tags
             {
                 Scope = nameof(IncludeTest),
                 SqlId = "Query",
-                Request = new { FLong = 1 }
+                Request = new { UserName = "SmartSql" }
             });
             Assert.True(true);
         }
