@@ -15,9 +15,9 @@ namespace SmartSql.Test.Unit.Tags
             {
                 Scope = nameof(IsNotEmptyTest),
                 SqlId = "IsNotEmpty",
-                Request = new { Name = "SmartSql" }
+                Request = new { UserName = "SmartSql" }
             });
-            Assert.Equal("Name IsNotEmpty", msg);
+            Assert.Equal("UserName IsNotEmpty", msg);
         }
 
         [Fact]
@@ -27,7 +27,7 @@ namespace SmartSql.Test.Unit.Tags
             {
                 Scope = nameof(IsNotEmptyTest),
                 SqlId = "GetEntity",
-                Request = new { FLong = 1 }
+                Request = new { UserName = "SmartSql" }
             });
         }
 
@@ -38,9 +38,9 @@ namespace SmartSql.Test.Unit.Tags
             {
                 Scope = nameof(IsNotEmptyTest),
                 SqlId = "IsNotEmpty_Required",
-                Request = new { Name = "SmartSql" }
+                Request = new { UserName = "SmartSql" }
             });
-            Assert.Equal("Name IsNotEmpty", msg);
+            Assert.Equal("UserName IsNotEmpty", msg);
         }
         [Fact]
         public void IsNotEmpty_Required_Fail()

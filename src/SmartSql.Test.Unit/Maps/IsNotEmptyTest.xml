@@ -10,21 +10,21 @@
 <SmartSqlMap Scope="IsNotEmptyTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
     <Statement Id="IsNotEmpty">
-      <IsNotEmpty Property="Name">
-        Select 'Name IsNotEmpty'
+      <IsNotEmpty Property="UserName">
+        Select 'UserName IsNotEmpty'
       </IsNotEmpty>
     </Statement>
     <Statement Id="IsNotEmpty_Required">
-      <IsNotEmpty Property="Name" Required="true">
-        Select 'Name IsNotEmpty'
+      <IsNotEmpty Property="UserName" Required="true">
+        Select 'UserName IsNotEmpty'
       </IsNotEmpty>
     </Statement>
 
     <Statement Id="GetEntity">
-      Select * From T_Entity T
+      Select * From T_User T
       <Where>
-        <IsNotEmpty Prepend="And" Property="FLong">
-          T.FLong=@FLong
+        <IsNotEmpty Prepend="And" Property="UserName">
+          T.UserName=@UserName
         </IsNotEmpty>
       </Where>
     </Statement>
