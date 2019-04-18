@@ -33,8 +33,19 @@ namespace SmartSql.Test.Unit.DyRepository
                 String = "",
                 DateTime = DateTime.Now
             });
-            
         }
+        [Fact]
+        public void InsertByAnnotationTransaction()
+        {
+            var sqlMapper = SmartSqlBuilder.GetSqlMapper();
+            var repository = _repositoryFactory.CreateInstance(typeof(IAllPrimitiveRepository), sqlMapper) as IAllPrimitiveRepository;
+            var id = repository.InsertByAnnotationTransaction(new Entities.AllPrimitive
+            {
+                String = "",
+                DateTime = DateTime.Now
+            });
+        }
+        
 
         [Fact]
         public void NoMapperRepository_GetGuidFromDb()

@@ -13,7 +13,6 @@ namespace SmartSql.Configuration
         public StatementType StatementType { get; set; } = StatementType.Unknown;
         public CommandType? CommandType { get; set; }
         public DataSourceChoice? SourceChoice { get; set; }
-        [Obsolete("弃用")]
         public IsolationLevel? Transaction { get; set; }
         public String ReadDb { get; set; }
         public String FullSqlId => $"{SqlMap.Scope}.{Id}";

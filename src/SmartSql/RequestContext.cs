@@ -17,6 +17,7 @@ namespace SmartSql
         public ExecutionType ExecutionType { get; set; }
         public DataSourceChoice DataSourceChoice { get; set; } = DataSourceChoice.Unknow;
         public CommandType CommandType { get; set; } = CommandType.Text;
+        public IsolationLevel? Transaction { get; set; }
         public String ReadDb { get; set; }
         public Statement Statement { get; internal set; }
         public StringBuilder SqlBuilder { get; internal set; }
@@ -51,6 +52,11 @@ namespace SmartSql
         {
             return MultipleResultMap != null ?
                 MultipleResultMap.Results[ExecutionContext.DataReaderWrapper.ResultIndex]?.Map : ResultMap;
+        }
+
+        public void SetTransaction(IsolationLevel isolationLevel)
+        {
+            Transaction = isolationLevel;
         }
 
         public abstract void SetupParameters();

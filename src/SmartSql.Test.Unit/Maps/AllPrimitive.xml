@@ -199,6 +199,69 @@
       )
       ;Select Scope_Identity();
     </Statement>
+    <Statement Id="InsertByStatementTransaction" Transaction="Unspecified">
+      INSERT INTO T_AllPrimitive
+      (
+      Boolean,
+      Char,
+      Byte,
+      Int16,
+      Int32,
+      Int64,
+      Single,
+      Decimal,
+      DateTime,
+      String,
+      Guid,
+      TimeSpan,
+      NumericalEnum,
+      NullableBoolean,
+      NullableChar,
+      NullableByte,
+      NullableInt16,
+      NullableInt32,
+      NullableInt64,
+      NullableSingle,
+      NullableDouble,
+      NullableDecimal,
+      NullableDateTime,
+      NullableGuid,
+      NullableTimeSpan,
+      NullableNumericalEnum,
+      NullableString
+      )
+      VALUES
+      (
+      @Boolean,
+      @Char,
+      @Byte,
+      @Int16,
+      @Int32,
+      @Int64,
+      @Single,
+      @Decimal,
+      @DateTime,
+      @String,
+      @Guid,
+      @TimeSpan,
+      @NumericalEnum,
+      @NullableBoolean,
+      @NullableChar,
+      @NullableByte,
+      @NullableInt16,
+      @NullableInt32,
+      @NullableInt64,
+      @NullableSingle,
+      @NullableDouble,
+      @NullableDecimal,
+      @NullableDateTime,
+      @NullableGuid,
+      @NullableTimeSpan,
+      @NullableNumericalEnum,
+      @NullableString
+      )
+      ;Select Scope_Identity();
+    </Statement>
     <Statement Id="InsertByIdGen">
       <IdGenerator Id="Int64"/>
       INSERT INTO T_AllPrimitive

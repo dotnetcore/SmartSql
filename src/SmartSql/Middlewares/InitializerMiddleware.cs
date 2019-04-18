@@ -68,6 +68,7 @@ namespace SmartSql.Middlewares
             {
                 requestContext.CommandType = requestContext.Statement.CommandType.Value;
             }
+            requestContext.Transaction = requestContext.Transaction ?? requestContext.Statement.Transaction;
             requestContext.ReadDb = requestContext.Statement.ReadDb;
             requestContext.CacheId = requestContext.Statement.CacheId;
             requestContext.Cache = requestContext.Statement.Cache;

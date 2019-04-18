@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using SmartSql.DyRepository.Annotations;
 using SmartSql.Test.Entities;
@@ -13,5 +14,8 @@ namespace SmartSql.Test.Repositories
         long Insert(AllPrimitive entity);
 
         (IList<AllPrimitive>, int) GetByPage_ValueTuple(int PageSize = 10, int PageIndex = 1);
+        [UseTransaction]
+        [Statement(Id = "Insert")]
+        long InsertByAnnotationTransaction(AllPrimitive entity);
     }
 }

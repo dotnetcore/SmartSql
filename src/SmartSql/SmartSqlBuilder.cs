@@ -11,7 +11,6 @@ using SmartSql.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SmartSql.TypeHandlers;
 
 namespace SmartSql
 {
@@ -92,6 +91,7 @@ namespace SmartSql
                 SmartSqlConfig.CacheManager = new CacheManager(SmartSqlConfig);
                 SmartSqlConfig.Pipeline = new PipelineBuilder()
                      .Add(new InitializerMiddleware(SmartSqlConfig))
+                     .Add(new TransactionMiddleware())
                      .Add(new PrepareStatementMiddleware(SmartSqlConfig))
                      .Add(new CachingMiddleware(SmartSqlConfig))
                      .Add(new DataSourceFilterMiddleware(SmartSqlConfig))
@@ -103,6 +103,7 @@ namespace SmartSql
                 SmartSqlConfig.CacheManager = new NoneCacheManager();
                 SmartSqlConfig.Pipeline = new PipelineBuilder()
                      .Add(new InitializerMiddleware(SmartSqlConfig))
+                     .Add(new TransactionMiddleware())
                      .Add(new PrepareStatementMiddleware(SmartSqlConfig))
                      .Add(new DataSourceFilterMiddleware(SmartSqlConfig))
                      .Add(new CommandExecuterMiddleware(SmartSqlConfig))

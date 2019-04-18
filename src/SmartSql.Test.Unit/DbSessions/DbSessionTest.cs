@@ -2,6 +2,7 @@
 using SmartSql.Reflection;
 using SmartSql.Test.Entities;
 using System;
+using System.Data;
 using System.Threading.Tasks;
 using SmartSql.Data;
 using Xunit;
@@ -90,6 +91,35 @@ namespace SmartSql.Test.Unit.DbSessions
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Insert",
+                Request = new AllPrimitive
+                {
+                    DateTime = DateTime.Now,
+                    String = "SmartSql",
+                }
+            });
+        }
+        [Fact]
+        public void InsertByRequestTransaction()
+        {
+            var id = DbSession.ExecuteScalar<long>(new RequestContext
+            {
+                Scope = nameof(AllPrimitive),
+                SqlId = "Insert",
+                Transaction = IsolationLevel.Unspecified,
+                Request = new AllPrimitive
+                {
+                    DateTime = DateTime.Now,
+                    String = "SmartSql",
+                }
+            });
+        }
+        [Fact]
+        public void InsertByStatementTransaction()
+        {
+            var id = DbSession.ExecuteScalar<long>(new RequestContext
+            {
+                Scope = nameof(AllPrimitive),
+                SqlId = "InsertByStatementTransaction",
                 Request = new AllPrimitive
                 {
                     DateTime = DateTime.Now,
