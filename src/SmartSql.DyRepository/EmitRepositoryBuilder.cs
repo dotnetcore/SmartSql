@@ -432,6 +432,7 @@ namespace SmartSql.DyRepository
             {
                 ilGen.LoadLocalVar(0);
                 ilGen.LoadInt32(useTransactionAttribute.Level.GetHashCode());
+                ilGen.New(NullableType<IsolationLevel>.Ctor);
                 ilGen.Callvirt(RequestContextType.Method.SetTransaction);
             }
         }

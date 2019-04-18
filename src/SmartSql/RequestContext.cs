@@ -54,11 +54,6 @@ namespace SmartSql
                 MultipleResultMap.Results[ExecutionContext.DataReaderWrapper.ResultIndex]?.Map : ResultMap;
         }
 
-        public void SetTransaction(IsolationLevel isolationLevel)
-        {
-            Transaction = isolationLevel;
-        }
-
         public abstract void SetupParameters();
         public abstract void SetRequest(object requestObj);
     }
