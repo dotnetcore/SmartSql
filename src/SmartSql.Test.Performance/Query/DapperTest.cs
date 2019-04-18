@@ -28,7 +28,7 @@ namespace SmartSql.Test.Performance.Query
         }
         [BenchmarkCategory("Query", "Query_10")]
         [Benchmark(Baseline = true)]
-        public List<AllPrimitive> Query_10()
+        public IList<AllPrimitive> Query_10()
         {
             using (IDbConnection connection = new SqlConnection(CONNECTION_STRING))
             {
@@ -37,7 +37,7 @@ namespace SmartSql.Test.Performance.Query
         }
         [BenchmarkCategory("Query", "Query_100")]
         [Benchmark(Baseline = true)]
-        public List<AllPrimitive> Query_100()
+        public IList<AllPrimitive> Query_100()
         {
             using (IDbConnection connection = new SqlConnection(CONNECTION_STRING))
             {
@@ -46,7 +46,7 @@ namespace SmartSql.Test.Performance.Query
         }
         [BenchmarkCategory("Query", "Query_1000")]
         [Benchmark(Baseline = true)]
-        public List<AllPrimitive> Query_1000()
+        public IList<AllPrimitive> Query_1000()
         {
             using (IDbConnection connection = new SqlConnection(CONNECTION_STRING))
             {
@@ -55,7 +55,7 @@ namespace SmartSql.Test.Performance.Query
         }
         [BenchmarkCategory("Query", "Query_1000")]
         [Benchmark()]
-        public List<dynamic> Query_Dynamic_1000()
+        public IList<dynamic> Query_Dynamic_1000()
         {
             using (IDbConnection connection = new SqlConnection(CONNECTION_STRING))
             {

@@ -9,8 +9,6 @@ namespace SmartSql.Utils
 {
     public class SqlParamAnalyzer
     {
-        private readonly ConcurrentDictionary<String, IEnumerable<string>> _paramNameCache = new ConcurrentDictionary<String, IEnumerable<string>>();
-
         private readonly Regex _sqlParamsTokens;
         public SqlParamAnalyzer(bool ignoreCase, string dbPrefix)
         {
@@ -23,7 +21,7 @@ namespace SmartSql.Utils
         }
         public IEnumerable<string> Analyse(string realSql)
         {
-            return _paramNameCache.GetOrAdd(realSql, AnalyseImpl);
+            return CacheUtil<SqlParamAnalyzer, String, IEnumerable<string>>.GetOrAdd(realSql, AnalyseImpl);
         }
 
         private IEnumerable<string> AnalyseImpl(string realSql)

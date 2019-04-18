@@ -33,7 +33,7 @@ namespace SmartSql.Configuration
         public IDbSessionStore SessionStore { get; set; }
         public IDbSessionFactory DbSessionFactory { get; set; }
         public ICacheManager CacheManager { get; set; }
-        public IIdGenerator IdGenerator { get; set; }
+        public IDictionary<String, IIdGenerator> IdGenerators { get; set; }
         public SqlMap GetSqlMap(string scope)
         {
             if (!SqlMaps.TryGetValue(scope, out var sqlMap))
@@ -53,7 +53,10 @@ namespace SmartSql.Configuration
             LoggerFactory = NullLoggerFactory.Instance;
             DeserializerFactory = new DeserializerFactory();
             Properties = new Properties();
-            IdGenerator = SnowflakeId.Default;
+            IdGenerators = new Dictionary<string, IIdGenerator>
+            {
+                { nameof(SnowflakeId.Default), SnowflakeId.Default }
+            };
             DbSessionFactory = new DbSessionFactory(this);
             SessionStore = new DbSessionStore(DbSessionFactory);
             StatementAnalyzer = new StatementAnalyzer();

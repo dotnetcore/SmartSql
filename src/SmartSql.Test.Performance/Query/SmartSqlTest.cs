@@ -46,13 +46,13 @@ namespace SmartSql.Test.Performance.Query
         }
         [BenchmarkCategory("Query", "Query_1")]
         [Benchmark]
-        public List<AllPrimitive> Query_DyRepository_1()
+        public IList<AllPrimitive> Query_DyRepository_1()
         {
-            return Repository.Query(TAKEN_10).ToList();
+            return Repository.Query(TAKEN_10) ;
         }
         [BenchmarkCategory("Query", "Query_1")]
         [Benchmark]
-        public List<AllPrimitive> Query_10()
+        public IList<AllPrimitive> Query_10()
         {
             using (var dbSession = DbSessionFactory.Open(WriteDataSource))
             {
@@ -61,18 +61,18 @@ namespace SmartSql.Test.Performance.Query
                     Scope = Scope,
                     SqlId = "Query",
                     Request = new { Taken = TAKEN_10 }
-                }).ToList();
+                }) as List<AllPrimitive>;
             }
         }
         [BenchmarkCategory("Query", "Query_10")]
         [Benchmark]
-        public List<AllPrimitive> Query_DyRepository_10()
+        public IList<AllPrimitive> Query_DyRepository_10()
         {
-            return Repository.Query(TAKEN_10).ToList();
+            return Repository.Query(TAKEN_10);
         }
         [BenchmarkCategory("Query", "Query_100")]
         [Benchmark]
-        public List<AllPrimitive> Query_100()
+        public IList<AllPrimitive> Query_100()
         {
             using (var dbSession = DbSessionFactory.Open(WriteDataSource))
             {
@@ -81,18 +81,18 @@ namespace SmartSql.Test.Performance.Query
                     Scope = Scope,
                     SqlId = "Query",
                     Request = new { Taken = TAKEN_100 }
-                }).ToList();
+                }) ;
             }
         }
         [BenchmarkCategory("Query", "Query_100")]
         [Benchmark]
-        public List<AllPrimitive> Query_DyRepository_100()
+        public IList<AllPrimitive> Query_DyRepository_100()
         {
-            return Repository.Query(TAKEN_100).ToList();
+            return Repository.Query(TAKEN_100);
         }
         [BenchmarkCategory("Query", "Query_1000")]
         [Benchmark]
-        public List<AllPrimitive> Query_1000()
+        public IList<AllPrimitive> Query_1000()
         {
             using (var dbSession = DbSessionFactory.Open(WriteDataSource))
             {
@@ -101,18 +101,18 @@ namespace SmartSql.Test.Performance.Query
                     Scope = Scope,
                     SqlId = "Query",
                     Request = new { Taken = TAKEN_1000 }
-                }).ToList();
+                });
             }
         }
         [BenchmarkCategory("Query", "Query_1000")]
         [Benchmark]
-        public List<AllPrimitive> Query_DyRepository_1000()
+        public IList<AllPrimitive> Query_DyRepository_1000()
         {
-            return Repository.Query(TAKEN_1000).ToList();
+            return Repository.Query(TAKEN_1000);
         }
         [BenchmarkCategory("Query", "Query_1000")]
         [Benchmark]
-        public List<dynamic> Query_Dynamic_1000()
+        public IList<dynamic> Query_Dynamic_1000()
         {
             using (var dbSession = DbSessionFactory.Open(WriteDataSource))
             {
@@ -121,7 +121,7 @@ namespace SmartSql.Test.Performance.Query
                     Scope = Scope,
                     SqlId = "Query",
                     Request = new { Taken = TAKEN_1000 }
-                }).ToList();
+                });
             }
         }
         //[BenchmarkCategory("Query", "Query_1000")]

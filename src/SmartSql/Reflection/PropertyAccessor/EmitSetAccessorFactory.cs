@@ -5,13 +5,12 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using SmartSql.Utils;
 
 namespace SmartSql.Reflection.PropertyAccessor
 {
     public class EmitSetAccessorFactory : ISetAccessorFactory
     {
-        private readonly Dictionary<PropertyInfo, Action<object, object>> _cachedSet = new Dictionary<PropertyInfo, Action<object, object>>();
-
         public Action<object, object> Create(Type targetType, string propertyName)
         {
             var propertyInfo = targetType.GetProperty(propertyName);
@@ -20,18 +19,8 @@ namespace SmartSql.Reflection.PropertyAccessor
 
         public Action<object, object> Create(PropertyInfo propertyInfo)
         {
-            if (!_cachedSet.ContainsKey(propertyInfo))
-            {
-                lock (this)
-                {
-                    if (!_cachedSet.ContainsKey(propertyInfo))
-                    {
-                        var impl = CreateImpl(propertyInfo);
-                        _cachedSet.Add(propertyInfo, impl);
-                    }
-                }
-            }
-            return _cachedSet[propertyInfo];
+            return CacheUtil<EmitSetAccessorFactory, PropertyInfo, Action<object, object>>
+                   .GetOrAdd(propertyInfo, CreateImpl);
         }
 
         private Action<object, object> CreateImpl(PropertyInfo propertyInfo)

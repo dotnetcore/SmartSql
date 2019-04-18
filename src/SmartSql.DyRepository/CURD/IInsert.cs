@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace SmartSql.DyRepository
 {
-    public interface IInsert<TEntity>
+    public interface IInsert<in TEntity>
     {
         int Insert(TEntity entity);
     }
-    public interface IInsertAsync<TEntity>
+    public interface IInsertAsync<in TEntity>
     {
         Task<int> InsertAsync(TEntity entity);
     }

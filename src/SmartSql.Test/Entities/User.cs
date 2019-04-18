@@ -26,8 +26,6 @@ namespace SmartSql.Test.Entities
         }
         public long Id { get; set; }
         public String UserName { get; set; }
-        [Column(FieldType = typeof(String))]
-        public UserInfo Info { get; set; }
         public UserStatus Status { get; set; }
     }
     public enum UserStatus

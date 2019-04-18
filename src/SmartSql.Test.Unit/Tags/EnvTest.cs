@@ -5,7 +5,7 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
 {
-   public class EnvTest : AbstractXmlConfigBuilderTest
+    public class EnvTest : AbstractXmlConfigBuilderTest
     {
         [Fact]
         public void Env_Test()
@@ -14,9 +14,9 @@ namespace SmartSql.Test.Unit.Tags
             {
                 Scope = nameof(EnvTest),
                 SqlId = "GetEntity",
-                Request = new { FLong = 11 }
+                Request = new { UserName = "SmartSql" }
             });
-          Assert.True(true);
+            Assert.True(true);
         }
 
     }

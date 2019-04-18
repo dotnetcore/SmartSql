@@ -52,7 +52,7 @@ namespace SmartSql.DbSession
         /// <typeparam name="TResult"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        IEnumerable<TResult> Query<TResult>(AbstractRequestContext requestContext);
+        IList<TResult> Query<TResult>(AbstractRequestContext requestContext);
         /// <summary>
         /// 查询返回单个实体
         /// </summary>
@@ -83,7 +83,7 @@ namespace SmartSql.DbSession
         /// <typeparam name="TResult"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        Task<IEnumerable<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext);
+        Task<IList<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext);
 
         /// <summary>
         /// 查询返回单个实体

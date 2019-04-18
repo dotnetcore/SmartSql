@@ -12,7 +12,7 @@ namespace SmartSql.Reflection.TypeConstants
 
         public class Method
         {
-            public readonly static MethodInfo GetHandler = Type.GetMethod("GetHandler");
+            public static readonly MethodInfo GetHandler = Type.GetMethod("GetHandler");
         }
     }
 }

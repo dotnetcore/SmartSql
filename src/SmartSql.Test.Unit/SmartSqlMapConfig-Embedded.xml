@@ -42,6 +42,6 @@
     </IdGenerator>
   </IdGenerators>
   <SmartSqlMaps>
-    <SmartSqlMap Path="Maps" Type="Directory"></SmartSqlMap>
+    <SmartSqlMap Path="Embedded-Maps" Type="Directory"></SmartSqlMap>
   </SmartSqlMaps>
 </SmartSqlMapConfig>

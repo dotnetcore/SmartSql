@@ -7,16 +7,16 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using SmartSql.Configuration;
+using SmartSql.Reflection;
 using SmartSql.TypeHandlers;
+using SmartSql.Utils;
 
 namespace SmartSql.Deserializer
 {
     public class EntityDeserializer : IDataReaderDeserializer
     {
-        private readonly ConcurrentDictionary<String, Delegate> _deserCache = new ConcurrentDictionary<string, Delegate>();
         public TResult ToSinge<TResult>(ExecutionContext executionContext)
         {
             var dataReader = executionContext.DataReaderWrapper;
@@ -73,18 +73,9 @@ namespace SmartSql.Deserializer
         private Func<DataReaderWrapper, AbstractRequestContext, TResult> GetDeserialize<TResult>(ExecutionContext executionContext)
         {
             var key = GenerateKey(executionContext);
-            if (!_deserCache.TryGetValue(key, out var deser))
-            {
-                lock (this)
-                {
-                    if (!_deserCache.TryGetValue(key, out deser))
-                    {
-                        deser = CreateDeserialize<TResult>(executionContext);
-                        _deserCache.TryAdd(key, deser);
-                    }
-                }
-            }
-            return deser as Func<DataReaderWrapper, AbstractRequestContext, TResult>;
+            return CacheUtil<TypeWrapper<EntityDeserializer, TResult>, String, Delegate>.GetOrAdd(key,
+                   _ => CreateDeserialize<TResult>(executionContext))
+                   as Func<DataReaderWrapper, AbstractRequestContext, TResult>;
         }
         private Delegate CreateDeserialize<TResult>(ExecutionContext executionContext)
         {
@@ -198,8 +189,8 @@ namespace SmartSql.Deserializer
 
         public String GenerateKey(ExecutionContext executionContext)
         {
-            var statementKey = executionContext.Request.IsStatementSql ? executionContext.Request.FullSqlId : executionContext.Request.RealSql;
-            return $"{statementKey}_{executionContext.Result.ResultType.FullName}";
+            return
+                $"Index:{executionContext.DataReaderWrapper.ResultIndex}_{(executionContext.Request.IsStatementSql ? executionContext.Request.FullSqlId : executionContext.Request.RealSql)}";
         }
 
         private string GetColumnQueryString(IDataReader dataReader)
@@ -208,7 +199,5 @@ namespace SmartSql.Deserializer
                             .Select(i => $"({i}:{dataReader.GetName(i)}:{dataReader.GetFieldType(i).Name})");
             return String.Join("&", columns);
         }
-
-
     }
 }

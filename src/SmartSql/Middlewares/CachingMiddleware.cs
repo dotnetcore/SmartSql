@@ -15,7 +15,8 @@ namespace SmartSql.Middlewares
         }
         public void Invoke<TResult>(ExecutionContext executionContext)
         {
-            if (_cacheManager.TryGetValue(executionContext, out var cacheItem))
+            if (executionContext.DbSession.Transaction == null
+                && _cacheManager.TryGetValue(executionContext, out var cacheItem))
             {
                 executionContext.Result.SetData(cacheItem, true);
                 return;
@@ -26,7 +27,8 @@ namespace SmartSql.Middlewares
 
         public async Task InvokeAsync<TResult>(ExecutionContext executionContext)
         {
-            if (_cacheManager.TryGetValue(executionContext, out var cacheItem))
+            if (executionContext.DbSession.Transaction == null
+                && _cacheManager.TryGetValue(executionContext, out var cacheItem))
             {
                 executionContext.Result.SetData(cacheItem, true);
                 return;

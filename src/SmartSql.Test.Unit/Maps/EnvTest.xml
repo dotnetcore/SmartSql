@@ -10,16 +10,16 @@
 <SmartSqlMap Scope="EnvTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
     <Statement Id="GetEntity">
-      Select * From T_Entity T
+      Select * From T_User T
       <Where>
         <Env DbProvider="SqlServer" Prepend="And">
-          <IsNotEmpty  Property="FLong">
-            T.FLong=@FLong
+          <IsNotEmpty  Property="UserName">
+            T.UserName=@UserName
           </IsNotEmpty>
         </Env>
         <Env DbProvider="Mysql">
-          <IsNotEmpty Property="FLong">
-            T.FLong=?FLong
+          <IsNotEmpty Property="UserName">
+            T.UserName=?UserName
           </IsNotEmpty>
         </Env>
       </Where>

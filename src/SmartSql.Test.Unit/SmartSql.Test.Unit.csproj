@@ -7,9 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="..\SmartSql.Test\Maps\User.xml" Link="Maps\User.xml">
+    <None Remove="Maps\User.xml" />
+    <None Remove="SmartSqlMapConfig-Embedded.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Maps\User.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="SmartSqlMapConfig-Embedded.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -55,6 +66,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Maps\IsGreaterThanTest.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Maps\UseIdGenEntity.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Maps\UserExtendedInfo.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Maps\WhereTest.xml">

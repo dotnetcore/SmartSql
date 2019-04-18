@@ -33,19 +33,19 @@ namespace SmartSql.Test.Performance.Query
         }
         [BenchmarkCategory("Query", "Query_10")]
         [Benchmark]
-        public List<AllPrimitive> Query_10()
+        public IList<AllPrimitive> Query_10()
         {
             return _dbContext.Entities.AsNoTracking().Take(TAKEN_10).ToList();
         }
         [BenchmarkCategory("Query", "Query_100")]
         [Benchmark]
-        public List<AllPrimitive> Query_100()
+        public IList<AllPrimitive> Query_100()
         {
             return _dbContext.Entities.AsNoTracking().Take(TAKEN_100).ToList();
         }
         [BenchmarkCategory("Query", "Query_1000")]
         [Benchmark]
-        public List<AllPrimitive> Query_1000()
+        public IList<AllPrimitive> Query_1000()
         {
             return _dbContext.Entities.AsNoTracking().Take(TAKEN_1000).ToList();
         }

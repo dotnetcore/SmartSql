@@ -10,12 +10,12 @@
 <SmartSqlMap Scope="IncludeTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
     <Statement Id="QueryParams">
-      <IsNotEmpty  Property="FLong">
-        T.FLong=@FLong
+      <IsNotEmpty  Property="UserName">
+        T.UserName=@UserName
       </IsNotEmpty>
     </Statement>
     <Statement Id="Query">
-      Select * From T_Entity T
+      Select * From T_User T
       <Where>
         <Include Prepend="And" RefId="QueryParams" Required="1"/>
       </Where>

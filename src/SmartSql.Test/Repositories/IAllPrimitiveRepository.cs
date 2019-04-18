@@ -9,9 +9,9 @@ namespace SmartSql.Test.Repositories
     public interface IAllPrimitiveRepository
     {
         [Statement(Sql = "SELECT Top (@Taken) T.* From T_AllPrimitive T With(NoLock)")]
-        IEnumerable<AllPrimitive> Query([Param("Taken")]int taken);
+        IList<AllPrimitive> Query([Param("Taken")]int taken);
         long Insert(AllPrimitive entity);
 
-        (IEnumerable<AllPrimitive>, int) GetByPage_ValueTuple(int PageSize = 10, int PageIndex = 1);
+        (IList<AllPrimitive>, int) GetByPage_ValueTuple(int PageSize = 10, int PageIndex = 1);
     }
 }

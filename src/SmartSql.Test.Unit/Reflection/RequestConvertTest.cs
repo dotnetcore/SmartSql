@@ -16,7 +16,7 @@ namespace SmartSql.Test.Unit.Reflection
             var user = new User { Id = 0, UserName = "1" };
             var dic = RequestConvert.Instance.ToSqlParameters(user, true);
             var dic_1 = RequestConvert.Instance.ToSqlParameters(user, false);
-            var dic_cache = RequestConvertCache<User, IgnoreCase>.Convert(user);
+            var dic_cache = RequestConvertCache<User, IgnoreCaseType>.Convert(user);
             var dic_cache_1 = RequestConvertCache<User>.Convert(user);
         }
         [Fact]

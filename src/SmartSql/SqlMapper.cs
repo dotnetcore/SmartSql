@@ -103,7 +103,7 @@ namespace SmartSql
             return ExecuteImpl((dbSession) => dbSession.ExecuteScalar<T>(requestContext));
         }
 
-        public IEnumerable<T> Query<T>(AbstractRequestContext requestContext)
+        public IList<T> Query<T>(AbstractRequestContext requestContext)
         {
             return ExecuteImpl((dbSession) => dbSession.Query<T>(requestContext));
         }
@@ -155,7 +155,7 @@ namespace SmartSql
             return ExecuteImplAsync((dbSession) => dbSession.ExecuteScalarAsync<TResult>(requestContext));
         }
 
-        public Task<IEnumerable<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext)
+        public Task<IList<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext)
         {
             return ExecuteImplAsync((dbSession) => dbSession.QueryAsync<TResult>(requestContext));
         }

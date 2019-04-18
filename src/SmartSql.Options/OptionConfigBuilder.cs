@@ -91,11 +91,17 @@ namespace SmartSql.Options
             SmartSqlConfig.Properties.Import(_configOptions.Properties);
         }
 
-        protected override void BuildIdGenerator()
+        protected override void BuildIdGenerators()
         {
-            if (_configOptions.IdGenerator == null) { return; }
-            SmartSqlConfig.IdGenerator = IdGeneratorBuilder.Build(_configOptions.IdGenerator.Type, _configOptions.IdGenerator.Properties);
+            if (_configOptions.IdGenerators == null) { return; }
+            SmartSqlConfig.IdGenerators.Clear();
+            foreach (var idGenConfig in _configOptions.IdGenerators)
+            {
+                var idGen = IdGeneratorBuilder.Build(idGenConfig.Type, idGenConfig.Properties);
+                SmartSqlConfig.IdGenerators.Add(idGenConfig.Name, idGen);
+            }
         }
+
         protected override void BuildDatabase()
         {
             var dbProvider = _configOptions.Database.DbProvider;

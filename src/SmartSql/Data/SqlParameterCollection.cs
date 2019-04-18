@@ -47,7 +47,7 @@ namespace SmartSql.Data
             {
                 return RequestConvert.Instance.ToSqlParameters(sourceRequest, ignoreParameterCase);
             }
-            return ignoreParameterCase ? RequestConvertCache<TRequest, IgnoreCase>.Convert(sourceRequest)
+            return ignoreParameterCase ? RequestConvertCache<TRequest, IgnoreCaseType>.Convert(sourceRequest)
                 : RequestConvertCache<TRequest>.Convert(sourceRequest);
         }
 

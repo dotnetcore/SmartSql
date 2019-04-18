@@ -50,7 +50,7 @@ namespace SmartSql
 
         private static SqlParameterCollection ToSqlParameters<TEntity>(TEntity entity, bool ignoreCase)
         {
-            return ignoreCase ? RequestConvertCache<TEntity, IgnoreCase>.Convert(entity) : RequestConvertCache<TEntity>.Convert(entity);
+            return ignoreCase ? RequestConvertCache<TEntity, IgnoreCaseType>.Convert(entity) : RequestConvertCache<TEntity>.Convert(entity);
         }
 
         public static int Insert<TEntity>(this IDbSession dbSession, TEntity entity)
