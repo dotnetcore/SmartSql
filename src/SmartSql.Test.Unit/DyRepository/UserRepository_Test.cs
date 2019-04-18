@@ -12,7 +12,7 @@ namespace SmartSql.Test.Unit.DyRepository
         private IUserRepository _userRepository;
         public UserRepository_Test()
         {
-            var smartSqlBuilder = new SmartSqlBuilder().UseXmlConfig().Build();
+            var smartSqlBuilder = new SmartSqlBuilder().UseXmlConfig().UseAlias(this.GetType().FullName).Build();
             _userRepository = RepositoryFactory.CreateInstance(typeof(IUserRepository), smartSqlBuilder.SqlMapper) as IUserRepository;
         }
 

@@ -10,10 +10,15 @@ namespace SmartSql.Test.Unit.Deserializer
 {
     public class DynamicDeserializerTest : AbstractXmlConfigBuilderTest
     {
+        protected ISqlMapper SqlMapper { get; }
+        public DynamicDeserializerTest()
+        {
+            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+        }
         [Fact]
         public void QuerySingle_Dynamic()
         {
-            var result = DbSession.QuerySingle<dynamic>(new RequestContext
+            var result = SqlMapper.QuerySingle<dynamic>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
@@ -24,7 +29,7 @@ namespace SmartSql.Test.Unit.Deserializer
         [Fact]
         public void Query_Dynamic()
         {
-            var result = DbSession.Query<dynamic>(new RequestContext
+            var result = SqlMapper.Query<dynamic>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
@@ -36,7 +41,7 @@ namespace SmartSql.Test.Unit.Deserializer
         [Fact]
         public async Task QuerySingleAsync_Dynamic()
         {
-            var result = await DbSession.QuerySingleAsync<dynamic>(new RequestContext
+            var result = await SqlMapper.QuerySingleAsync<dynamic>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
@@ -47,7 +52,7 @@ namespace SmartSql.Test.Unit.Deserializer
         [Fact]
         public async Task QueryAsync_Dynamic()
         {
-            var result = await DbSession.QueryAsync<dynamic>(new RequestContext
+            var result = await SqlMapper.QueryAsync<dynamic>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",

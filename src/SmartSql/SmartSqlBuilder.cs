@@ -11,6 +11,7 @@ using SmartSql.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SmartSql.TypeHandlers;
 
 namespace SmartSql
 {
@@ -39,7 +40,8 @@ namespace SmartSql
             BeforeBuildInitService();
             DbSessionFactory = SmartSqlConfig.DbSessionFactory;
             SqlMapper = new SqlMapper(SmartSqlConfig);
-            SmartSqlContainer.Instance.TryRegister(this);
+            SmartSqlContainer.Instance.Register(this);
+            NamedTypeHandlerCache.Build(Alias, SmartSqlConfig.TypeHandlerFactory.GetNamedTypeHandlers());
             SetupSmartSql();
             return this;
         }
@@ -67,6 +69,7 @@ namespace SmartSql
         private void BeforeBuildInitService()
         {
             SmartSqlConfig = ConfigBuilder.Build(_importProperties);
+            SmartSqlConfig.Alias = Alias;
             SmartSqlConfig.LoggerFactory = LoggerFactory;
             SmartSqlConfig.DataSourceFilter = _dataSourceFilter ?? new DataSourceFilter(SmartSqlConfig.LoggerFactory);
             if (_isCacheEnabled.HasValue)

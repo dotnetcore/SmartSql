@@ -16,6 +16,7 @@ namespace SmartSql.Test.Unit.Bulk
         {
             var dbSessionFactory = new SmartSqlBuilder()
                 .UseDataSource(DbProvider.POSTGRESQL, "Server=localhost;Database=SmartTestDB;Port=5432;User Id=postgres;Password=SmartSql.net;")
+                .UseAlias("PostgreSqlTest")
                 .Build().GetDbSessionFactory();
 
             var list = new List<User> {

@@ -107,7 +107,7 @@ namespace SmartSql.Deserializer
                 foreach (var arg in constructorMap.Args)
                 {
                     var col = columns[arg.Column];
-                    LoadPropertyValue(ilGen, executionContext.SmartSqlConfig.TypeHandlerFactory, col.Index, arg.CSharpType, col.FieldType, null);
+                    LoadPropertyValue(ilGen, executionContext, col.Index, arg.CSharpType, col.FieldType, null);
                 }
             }
             if (resultCtor == null)
@@ -133,7 +133,7 @@ namespace SmartSql.Deserializer
                 if (!property.CanWrite) { continue; }
                 var propertyType = property.PropertyType;
                 ilGen.LoadLocalVar(0);
-                LoadPropertyValue(ilGen, executionContext.SmartSqlConfig.TypeHandlerFactory, colIndex, propertyType, filedType, resultProperty);
+                LoadPropertyValue(ilGen, executionContext, colIndex, propertyType, filedType, resultProperty);
                 ilGen.Call(property.SetMethod);
             }
 
@@ -141,9 +141,9 @@ namespace SmartSql.Deserializer
             ilGen.Return();
             return deserFunc.CreateDelegate(typeof(Func<DataReaderWrapper, AbstractRequestContext, TResult>));
         }
-        private void LoadPropertyValue(ILGenerator ilGen, TypeHandlerFactory typeHandlerFactory, int colIndex, Type propertyType, Type fieldType, Property resultProperty)
+        private void LoadPropertyValue(ILGenerator ilGen, ExecutionContext executionContext, int colIndex, Type propertyType, Type fieldType, Property resultProperty)
         {
-            LoadTypeHandlerInvokeArgs(ilGen, colIndex, propertyType);
+            var typeHandlerFactory = executionContext.SmartSqlConfig.TypeHandlerFactory;
             var propertyUnderType = (Nullable.GetUnderlyingType(propertyType) ?? propertyType);
             var isEnum = propertyUnderType.IsEnum;
             #region Check Enum
@@ -155,6 +155,7 @@ namespace SmartSql.Deserializer
             MethodInfo getValMethod = null;
             if (resultProperty?.Handler == null)
             {
+                LoadTypeHandlerInvokeArgs(ilGen, colIndex, propertyType);
                 var mappedFieldType = fieldType;
                 if (isEnum)
                 {
@@ -172,12 +173,16 @@ namespace SmartSql.Deserializer
                     }
                 }
                 getValMethod = TypeHandlerCacheType.GetGetValueMethod(propertyType, mappedFieldType);
+                ilGen.Call(getValMethod);
             }
             else
             {
-                getValMethod = TypeHandlerCacheType.GetGetValueMethod(resultProperty.Handler.PropertyType, resultProperty.Handler.FieldType);
+                var typeHandlerField = NamedTypeHandlerCache.GetTypeHandlerField(executionContext.SmartSqlConfig.Alias, resultProperty.TypeHandler);
+                ilGen.FieldGet(typeHandlerField);
+                LoadTypeHandlerInvokeArgs(ilGen, colIndex, propertyType);
+                getValMethod = resultProperty.Handler.GetType().GetMethod("GetValue");
+                ilGen.Callvirt(getValMethod);
             }
-            ilGen.Call(getValMethod);
         }
 
         private void LoadTypeHandlerInvokeArgs(ILGenerator ilGen, int colIndex, Type propertyType)
@@ -191,13 +196,6 @@ namespace SmartSql.Deserializer
         {
             return
                 $"Index:{executionContext.DataReaderWrapper.ResultIndex}_{(executionContext.Request.IsStatementSql ? executionContext.Request.FullSqlId : executionContext.Request.RealSql)}";
-        }
-
-        private string GetColumnQueryString(IDataReader dataReader)
-        {
-            var columns = Enumerable.Range(0, dataReader.FieldCount)
-                            .Select(i => $"({i}:{dataReader.GetName(i)}:{dataReader.GetFieldType(i).Name})");
-            return String.Join("&", columns);
         }
     }
 }

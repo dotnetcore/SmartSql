@@ -12,7 +12,7 @@ namespace SmartSql.Test.Unit.DyRepository
         private IAllPrimitiveRepository _repository;
         public AllPrimitiveRepositoryTest()
         {
-            var smartSqlBuilder = new SmartSqlBuilder().UseXmlConfig().Build();
+            var smartSqlBuilder = new SmartSqlBuilder().UseXmlConfig().UseAlias(this.GetType().FullName).Build();
             _repository = RepositoryFactory.CreateInstance(typeof(IAllPrimitiveRepository), smartSqlBuilder.SqlMapper) as IAllPrimitiveRepository;
         }
         [Fact]

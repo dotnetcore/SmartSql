@@ -8,10 +8,12 @@ namespace SmartSql.Test.Unit.Tags
 {
     public class WhereTest : AbstractXmlConfigBuilderTest
     {
+        protected ISqlMapper SqlMapper => BuildSqlMapper(this.GetType().FullName);
+
         [Fact]
         public void Where_Min()
         {
-            var msg = DbSession.ExecuteScalar<String>(new RequestContext
+            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
             {
                 Scope = nameof(WhereTest),
                 SqlId = "Where_Min",
@@ -24,7 +26,7 @@ namespace SmartSql.Test.Unit.Tags
         {
             try
             {
-                var msg = DbSession.ExecuteScalar<String>(new RequestContext
+                var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
                 {
                     Scope = nameof(WhereTest),
                     SqlId = "Where_Min",

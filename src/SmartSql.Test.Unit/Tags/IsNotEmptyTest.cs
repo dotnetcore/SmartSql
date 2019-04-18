@@ -8,10 +8,16 @@ namespace SmartSql.Test.Unit.Tags
 {
     public class IsNotEmptyTest : AbstractXmlConfigBuilderTest
     {
+        protected ISqlMapper SqlMapper { get; }
+        public IsNotEmptyTest()
+        {
+            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+        }
+
         [Fact]
         public void IsNotEmpty()
         {
-            var msg = DbSession.ExecuteScalar<String>(new RequestContext
+            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
             {
                 Scope = nameof(IsNotEmptyTest),
                 SqlId = "IsNotEmpty",
@@ -23,7 +29,7 @@ namespace SmartSql.Test.Unit.Tags
         [Fact]
         public void GetEntity_IsNotEmpty()
         {
-            var msg = DbSession.Query<Object>(new RequestContext
+            var msg = SqlMapper.Query<Object>(new RequestContext
             {
                 Scope = nameof(IsNotEmptyTest),
                 SqlId = "GetEntity",
@@ -34,7 +40,7 @@ namespace SmartSql.Test.Unit.Tags
         [Fact]
         public void IsNotEmpty_Required()
         {
-            var msg = DbSession.ExecuteScalar<String>(new RequestContext
+            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
             {
                 Scope = nameof(IsNotEmptyTest),
                 SqlId = "IsNotEmpty_Required",
@@ -47,7 +53,7 @@ namespace SmartSql.Test.Unit.Tags
         {
             try
             {
-                var msg = DbSession.ExecuteScalar<String>(new RequestContext
+                var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
                 {
                     Scope = nameof(IsNotEmptyTest),
                     SqlId = "IsNotEmpty_Required",

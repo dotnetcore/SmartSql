@@ -10,10 +10,15 @@ namespace SmartSql.Test.Unit.Deserializer
 {
     public class DataTableDeserializerTest : AbstractXmlConfigBuilderTest
     {
+        protected ISqlMapper SqlMapper { get; }
+        public DataTableDeserializerTest()
+        {
+            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+        }
         [Fact]
         public void GetDataTable()
         {
-            var result = DbSession.GetDataTable(new RequestContext
+            var result = SqlMapper.GetDataTable(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
@@ -24,7 +29,7 @@ namespace SmartSql.Test.Unit.Deserializer
         [Fact]
         public async Task GetDataTableAsync()
         {
-            var result = await DbSession.GetDataTableAsync(new RequestContext
+            var result = await SqlMapper.GetDataTableAsync(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",

@@ -16,6 +16,7 @@ namespace SmartSql.Test.Unit.Bulk
         {
             var dbSessionFactory = new SmartSqlBuilder()
                 .UseDataSource(DbProvider.MYSQL, "Data Source=localhost;database=SmartSqlTestDB;uid=root;pwd=SmartSql.net")
+                .UseAlias("MySqlTest")
                 .Build().GetDbSessionFactory();
 
             var list = new List<User> {

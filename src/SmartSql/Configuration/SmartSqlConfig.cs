@@ -17,6 +17,7 @@ namespace SmartSql.Configuration
 {
     public class SmartSqlConfig
     {
+        public string Alias { get; set; }
         public Settings Settings { get; set; }
         public Database Database { get; set; }
         public Properties Properties { get; set; }

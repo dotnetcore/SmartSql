@@ -8,10 +8,16 @@ namespace SmartSql.Test.Unit.Tags
 {
     public class RangeTest : AbstractXmlConfigBuilderTest
     {
+        protected ISqlMapper SqlMapper { get; }
+        public RangeTest()
+        {
+            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+        }
+
         [Fact]
         public void Range()
         {
-            var msg = DbSession.ExecuteScalar<String>(new RequestContext
+            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
             {
                 Scope = nameof(RangeTest),
                 SqlId = "Range",
@@ -22,7 +28,7 @@ namespace SmartSql.Test.Unit.Tags
         [Fact]
         public void Range_Required()
         {
-            var msg = DbSession.ExecuteScalar<String>(new RequestContext
+            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
             {
                 Scope = nameof(RangeTest),
                 SqlId = "Range_Required",
@@ -35,7 +41,7 @@ namespace SmartSql.Test.Unit.Tags
         {
             try
             {
-                var msg = DbSession.ExecuteScalar<String>(new RequestContext
+                var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
                 {
                     Scope = nameof(RangeTest),
                     SqlId = "Range_Required",

@@ -8,10 +8,17 @@ namespace SmartSql.Test.Unit.IdGenerator
 {
     public class DbSequenceTest : AbstractXmlConfigBuilderTest
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public DbSequenceTest()
+        {
+            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+        }
+
         [Fact]
         public void NextId()
         {
-            new SmartSqlBuilder().UseXmlConfig().Build().SmartSqlConfig.IdGenerators.TryGetValue("DbSequence", out var idGen);
+            SqlMapper.SmartSqlConfig.IdGenerators.TryGetValue("DbSequence", out var idGen);
 
             var id = idGen.NextId();
 
@@ -20,7 +27,7 @@ namespace SmartSql.Test.Unit.IdGenerator
         [Fact]
         public void Insert()
         {
-            var id = DbSession.ExecuteScalar<long>(new RequestContext
+            var id = SqlMapper.ExecuteScalar<long>(new RequestContext
             {
                 Scope = nameof(UseIdGenEntity),
                 SqlId = "InsertByDbSequence",

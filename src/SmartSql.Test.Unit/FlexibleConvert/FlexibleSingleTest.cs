@@ -8,10 +8,12 @@ namespace SmartSql.Test.Unit.FlexibleConvert
 {
     public class FlexibleSingleTest : FlexibleTest
     {
+        protected ISqlMapper SqlMapper => BuildSqlMapper(this.GetType().FullName);
+
         [Fact]
         public void Test()
         {
-            var entity = DbSession.QuerySingle<FlexibleSingle>(new RequestContext
+            var entity = SqlMapper.QuerySingle<FlexibleSingle>(new RequestContext
             {
                 RealSql = SQL
             });

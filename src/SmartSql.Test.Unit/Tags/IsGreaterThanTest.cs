@@ -8,10 +8,12 @@ namespace SmartSql.Test.Unit.Tags
 {
     public class IsGreaterThanTest : AbstractXmlConfigBuilderTest
     {
+        protected ISqlMapper SqlMapper => BuildSqlMapper(this.GetType().FullName);
+
         [Fact]
         public void IsGreaterThan()
         {
-            var msg = DbSession.ExecuteScalar<String>(new RequestContext
+            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
             {
                 Scope = nameof(IsGreaterThanTest),
                 SqlId = "IsGreaterThan",
@@ -22,7 +24,7 @@ namespace SmartSql.Test.Unit.Tags
         [Fact]
         public void IsGreaterThan_Required()
         {
-            var msg = DbSession.ExecuteScalar<String>(new RequestContext
+            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
             {
                 Scope = nameof(IsGreaterThanTest),
                 SqlId = "IsGreaterThan_Required",
@@ -35,7 +37,7 @@ namespace SmartSql.Test.Unit.Tags
         {
             try
             {
-                var msg = DbSession.ExecuteScalar<String>(new RequestContext
+                var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
                 {
                     Scope = nameof(IsGreaterThanTest),
                     SqlId = "IsGreaterThan_Required",

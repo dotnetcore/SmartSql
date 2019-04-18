@@ -8,10 +8,12 @@ namespace SmartSql.Test.Unit.FlexibleConvert
 {
     public class FlexibleBooleanTest : FlexibleTest
     {
+        protected ISqlMapper SqlMapper => BuildSqlMapper(this.GetType().FullName);
+
         [Fact]
         public void Test()
         {
-            var entity = DbSession.QuerySingle<FlexibleBoolean>(new RequestContext
+            var entity = SqlMapper.QuerySingle<FlexibleBoolean>(new RequestContext
             {
                 RealSql = @"Select 
 Convert(bit,1) As Boolean,

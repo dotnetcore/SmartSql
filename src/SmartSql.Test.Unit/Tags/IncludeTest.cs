@@ -7,10 +7,12 @@ namespace SmartSql.Test.Unit.Tags
 {
   public  class IncludeTest:AbstractXmlConfigBuilderTest
     {
+        protected ISqlMapper SqlMapper => BuildSqlMapper(this.GetType().FullName);
+
         [Fact]
         public void Include_Test()
         {
-            var msg = DbSession.ExecuteScalar<String>(new RequestContext
+            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
             {
                 Scope = nameof(IncludeTest),
                 SqlId = "Query",

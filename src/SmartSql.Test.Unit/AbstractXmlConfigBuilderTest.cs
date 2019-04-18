@@ -6,20 +6,17 @@ using System.Text;
 
 namespace SmartSql.Test.Unit
 {
-    public abstract class AbstractXmlConfigBuilderTest : IDisposable
+    public abstract class AbstractXmlConfigBuilderTest
     {
-        protected IDbSessionFactory DbSessionFactory { get; }
-        protected SmartSqlBuilder SmartSqlBuilder { get; }
-        public IDbSession DbSession { get; }
-        public AbstractXmlConfigBuilderTest()
+        protected ISqlMapper BuildSqlMapper(string alias)
         {
-            SmartSqlBuilder = new SmartSqlBuilder().UseXmlConfig().Build();
-            DbSessionFactory = SmartSqlBuilder.GetDbSessionFactory();
-            DbSession = DbSessionFactory.Open();
+            lock (this)
+            {
+                var smartsqlBuilder = SmartSqlContainer.Instance.GetSmartSql(alias);
+                return smartsqlBuilder != null ? smartsqlBuilder.SqlMapper : new SmartSqlBuilder().UseXmlConfig().UseAlias(alias).Build().SqlMapper;
+
+            }
         }
-        public void Dispose()
-        {
-            DbSession.Dispose();
-        }
+
     }
 }

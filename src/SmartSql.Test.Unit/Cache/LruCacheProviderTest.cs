@@ -8,15 +8,21 @@ namespace SmartSql.Test.Unit.Cache
 {
     public class LruCacheProviderTest : AbstractXmlConfigBuilderTest
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public LruCacheProviderTest()
+        {
+            SqlMapper = BuildSqlMapper(this.GetType().Name);
+        }
         [Fact]
         public void QueryByLruCache()
         {
-            var list = DbSession.Query<AllPrimitive>(new RequestContext
+            var list = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "QueryByLruCache"
             });
-            var cachedList = DbSession.Query<AllPrimitive>(new RequestContext
+            var cachedList = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "QueryByLruCache"

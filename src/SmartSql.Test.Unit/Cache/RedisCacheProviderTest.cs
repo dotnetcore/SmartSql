@@ -9,15 +9,20 @@ namespace SmartSql.Test.Unit.Cache
 {
     public class RedisCacheProviderTest : AbstractXmlConfigBuilderTest
     {
+        protected ISqlMapper SqlMapper { get; }
+        public RedisCacheProviderTest()
+        {
+            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+        }
         //[Fact]
         public void QueryByRedisCache()
         {
-            var list = DbSession.Query<AllPrimitive>(new RequestContext
+            var list = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "QueryByRedisCache"
             });
-            var cachedList = DbSession.Query<AllPrimitive>(new RequestContext
+            var cachedList = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "QueryByRedisCache"
