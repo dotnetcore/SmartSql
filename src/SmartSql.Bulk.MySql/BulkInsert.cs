@@ -23,6 +23,8 @@ namespace SmartSql.Bulk.MySql
             MySqlBulkLoader bulkLoader = GetBulkLoader(conn);
             bulkLoader.Load();
         }
+
+        public String SecureFilePriv { get; set; }
         private string _fieldTerminator = ",";
         private char _fieldQuotationCharacter = '"';
         private char _escapeCharacter = '"';
@@ -32,7 +34,7 @@ namespace SmartSql.Bulk.MySql
             await DbSession.OpenAsync();
             var conn = DbSession.Connection as MySqlConnection;
             MySqlBulkLoader bulkLoader = GetBulkLoader(conn);
-            
+
             await bulkLoader.LoadAsync();
         }
 
@@ -59,7 +61,7 @@ namespace SmartSql.Bulk.MySql
                 foreach (DataColumn dataColumn in Table.Columns)
                 {
                     if (colIndex != 0) dataBuilder.Append(_fieldTerminator);
-                    
+
                     if (dataColumn.DataType == CommonType.String
                         && !row.IsNull(dataColumn)
                         && row[dataColumn].ToString().Contains(_fieldTerminator))
@@ -75,8 +77,10 @@ namespace SmartSql.Bulk.MySql
                 }
                 dataBuilder.Append(_lineTerminator);
             }
-            var fileName = Guid.NewGuid().ToString("N") + ".csv";
-            fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+
+            var fileName = Guid.NewGuid().ToString("N")+".csv";
+            var fileDir = SecureFilePriv ?? AppDomain.CurrentDomain.BaseDirectory;
+            fileName = Path.Combine(fileDir, fileName);
             File.WriteAllText(fileName, dataBuilder.ToString());
             return fileName;
         }

@@ -8,7 +8,15 @@
 //*******************************-->
 
 <SmartSqlMap Scope="User" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
-
+  <!--<Caches >
+    <Cache Id="RedisCache" Type="${RedisCacheProvider}">
+      <Property Name="DatabaseId" Value="3"/>
+      <Property Name="ConnectionString" Value="${Redis}"/>
+      <FlushOnExecute Statement="Insert"/>
+      <FlushOnExecute Statement="Update"/>
+      <FlushOnExecute Statement="Delete"/>
+    </Cache>
+  </Caches>-->
   <Statements>
     <Statement Id="QueryParams">
       <Where>
