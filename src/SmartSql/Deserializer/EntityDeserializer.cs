@@ -189,7 +189,8 @@ namespace SmartSql.Deserializer
 
         public String GenerateKey(ExecutionContext executionContext)
         {
-            return executionContext.Request.IsStatementSql ? executionContext.Request.FullSqlId : executionContext.Request.RealSql;
+            return
+                $"Index:{executionContext.DataReaderWrapper.ResultIndex}_{(executionContext.Request.IsStatementSql ? executionContext.Request.FullSqlId : executionContext.Request.RealSql)}";
         }
 
         private string GetColumnQueryString(IDataReader dataReader)

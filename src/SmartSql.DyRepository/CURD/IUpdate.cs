@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace SmartSql.DyRepository
 {
-    public interface IUpdate<TEntity>
+    public interface IUpdate<in TEntity>
     {
         int Update(TEntity entity);
         [Statement(Id = "Update")]
         int DyUpdate(object dyObj);
     }
-    public interface IUpdateAsync<TEntity>
+    public interface IUpdateAsync<in TEntity>
     {
         Task<int> UpdateAsync(TEntity entity);
         [Statement(Id = "Update")]

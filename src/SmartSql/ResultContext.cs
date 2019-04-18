@@ -26,14 +26,14 @@ namespace SmartSql
     }
     public class ListResultContext<TResult> : ResultContext
     {
-        public override Type ResultType => typeof(IEnumerable<TResult>);
+        public override Type ResultType => typeof(IList<TResult>);
         public override bool IsList => true;
-        public IEnumerable<TResult> Data { get; set; }
+        public IList<TResult> Data { get; set; }
         public override object GetData() => Data;
         public override void SetData(object data, bool fromCache = false)
         {
             FromCache = fromCache;
-            Data = (IEnumerable<TResult>)data;
+            Data = (IList<TResult>)data;
         }
     }
 }

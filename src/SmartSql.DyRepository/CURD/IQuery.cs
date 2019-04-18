@@ -7,13 +7,13 @@ namespace SmartSql.DyRepository
 {
     public interface IQuery<TEntity>
     {
-        IEnumerable<TEntity> Query(object reqParams);
+        IList<TEntity> Query(object reqParams);
     }
 
 
 
     public interface IQueryAsync<TEntity>
     {
-        Task<IEnumerable<TEntity>> QueryAsync(object reqParams);
+        Task<IList<TEntity>> QueryAsync(object reqParams);
     }
 }

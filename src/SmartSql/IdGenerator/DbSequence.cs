@@ -21,7 +21,6 @@ namespace SmartSql.IdGenerator
         public void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
         {
             _sqlMapper = smartSqlBuilder.SqlMapper;
-
         }
 
         public long NextId()

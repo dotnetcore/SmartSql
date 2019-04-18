@@ -403,11 +403,11 @@ namespace SmartSql.DbSession
             var executionContext = Invoke<DataTable>(requestContext);
             return executionContext.Result.GetData() as DataTable;
         }
-        public IEnumerable<TResult> Query<TResult>(AbstractRequestContext requestContext)
+        public IList<TResult> Query<TResult>(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.Query;
             var executionContext = Invoke<TResult>(requestContext);
-            return executionContext.Result.GetData() as IEnumerable<TResult>;
+            return executionContext.Result.GetData() as IList<TResult>;
         }
 
         public async Task<int> ExecuteAsync(AbstractRequestContext requestContext)
@@ -424,11 +424,11 @@ namespace SmartSql.DbSession
             return ((SingleResultContext<TResult>)executionContext.Result).Data;
         }
 
-        public async Task<IEnumerable<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext)
+        public async Task<IList<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.Query;
             var executionContext = await InvokeAsync<TResult>(requestContext);
-            return executionContext.Result.GetData() as IEnumerable<TResult>;
+            return executionContext.Result.GetData() as IList<TResult>;
         }
 
         public async Task<TResult> QuerySingleAsync<TResult>(AbstractRequestContext requestContext)

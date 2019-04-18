@@ -32,7 +32,7 @@ namespace SmartSql
         /// <typeparam name="T"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        IEnumerable<T> Query<T>(AbstractRequestContext requestContext);
+        IList<T> Query<T>(AbstractRequestContext requestContext);
         /// <summary>
         /// 查询返回单个实体
         /// </summary>
@@ -63,7 +63,7 @@ namespace SmartSql
         /// <typeparam name="TResult"></typeparam>
         /// <param name="requestContext"></param>
         /// <returns></returns>
-        Task<IEnumerable<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext);
+        Task<IList<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext);
 
         /// <summary>
         /// 查询返回单个实体
