@@ -10,10 +10,10 @@
 <SmartSqlMap Scope="AllPrimitive" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Caches>
     <Cache Id="LruCache" Type="Lru">
-      <Property Name="CacheSize" Value="2"/>
+      <Property Name="CacheSize" Value="10"/>
     </Cache>
     <Cache Id="FifoCache" Type="Fifo">
-      <Property Name="CacheSize" Value="2"/>
+      <Property Name="CacheSize" Value="10"/>
     </Cache>
     <!--<Cache Id="RedisCache" Type="${RedisCacheProvider}">
       <Property Name="ConnectionString" Value="${Redis}" />
@@ -137,6 +137,69 @@
     </Statement>
     <!--新增-->
     <Statement Id="Insert">
+      INSERT INTO T_AllPrimitive
+      (
+      Boolean,
+      Char,
+      Byte,
+      Int16,
+      Int32,
+      Int64,
+      Single,
+      Decimal,
+      DateTime,
+      String,
+      Guid,
+      TimeSpan,
+      NumericalEnum,
+      NullableBoolean,
+      NullableChar,
+      NullableByte,
+      NullableInt16,
+      NullableInt32,
+      NullableInt64,
+      NullableSingle,
+      NullableDouble,
+      NullableDecimal,
+      NullableDateTime,
+      NullableGuid,
+      NullableTimeSpan,
+      NullableNumericalEnum,
+      NullableString
+      )
+      VALUES
+      (
+      @Boolean,
+      @Char,
+      @Byte,
+      @Int16,
+      @Int32,
+      @Int64,
+      @Single,
+      @Decimal,
+      @DateTime,
+      @String,
+      @Guid,
+      @TimeSpan,
+      @NumericalEnum,
+      @NullableBoolean,
+      @NullableChar,
+      @NullableByte,
+      @NullableInt16,
+      @NullableInt32,
+      @NullableInt64,
+      @NullableSingle,
+      @NullableDouble,
+      @NullableDecimal,
+      @NullableDateTime,
+      @NullableGuid,
+      @NullableTimeSpan,
+      @NullableNumericalEnum,
+      @NullableString
+      )
+      ;Select Scope_Identity();
+    </Statement>
+    <Statement Id="InsertByStatementTransaction" Transaction="Unspecified">
       INSERT INTO T_AllPrimitive
       (
       Boolean,

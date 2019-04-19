@@ -6,13 +6,20 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.CUD
 {
-    public class CUDTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class CUDTest 
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public CUDTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void Get()
         {
             AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
-            var entity = DbSession.GetById<AllPrimitive, long>(id);
+            var entity = SqlMapper.GetById<AllPrimitive, long>(id);
             Assert.NotNull(entity);
         }
         [Fact]
@@ -23,7 +30,7 @@ namespace SmartSql.Test.Unit.CUD
                 String = "Insert",
                 DateTime = DateTime.Now
             };
-            var recordsAffected = DbSession.Insert<AllPrimitive>(insertEntity);
+            var recordsAffected = SqlMapper.Insert<AllPrimitive>(insertEntity);
             Assert.NotEqual(0, recordsAffected);
         }
         [Fact]
@@ -41,7 +48,7 @@ namespace SmartSql.Test.Unit.CUD
                 String = "Insert",
                 DateTime = DateTime.Now
             };
-            id = DbSession.Insert<AllPrimitive, long>(insertEntity);
+            id = SqlMapper.Insert<AllPrimitive, long>(insertEntity);
             return insertEntity;
         }
 
@@ -50,7 +57,7 @@ namespace SmartSql.Test.Unit.CUD
         {
             AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
 
-            var recordsAffected = DbSession.Update<AllPrimitive>(new AllPrimitive
+            var recordsAffected = SqlMapper.Update<AllPrimitive>(new AllPrimitive
             {
                 Id = id,
                 String = "Update",
@@ -63,7 +70,7 @@ namespace SmartSql.Test.Unit.CUD
         public void DyUpdate()
         {
             AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
-            var recordsAffected = DbSession.DyUpdate<AllPrimitive>(new { Id = id, Boolean = true });
+            var recordsAffected = SqlMapper.DyUpdate<AllPrimitive>(new { Id = id, Boolean = true });
             Assert.NotEqual(0, recordsAffected);
         }
 
@@ -71,7 +78,7 @@ namespace SmartSql.Test.Unit.CUD
         public void DeleteById()
         {
             AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
-            var recordsAffected = DbSession.DeleteById<AllPrimitive, long>(id);
+            var recordsAffected = SqlMapper.DeleteById<AllPrimitive, long>(id);
             Assert.NotEqual(0, recordsAffected);
         }
         [Fact]
@@ -80,7 +87,7 @@ namespace SmartSql.Test.Unit.CUD
             InsertReturnIdImpl(out long id0);
             InsertReturnIdImpl(out long id1);
             InsertReturnIdImpl(out long id2);
-            var recordsAffected = DbSession.DeleteMany<AllPrimitive, long>(new long[] { id0, id1, id2 });
+            var recordsAffected = SqlMapper.DeleteMany<AllPrimitive, long>(new long[] { id0, id1, id2 });
             Assert.Equal(3, recordsAffected);
         }
 

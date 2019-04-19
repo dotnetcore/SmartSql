@@ -300,6 +300,7 @@ namespace SmartSql.ConfigBuilder
                 };
                 if (resultNode.Attributes.TryGetValueAsString("TypeHandler", out var handlerName, SmartSqlConfig.Properties))
                 {
+                    property.TypeHandler = handlerName;
                     property.Handler = SmartSqlConfig.TypeHandlerFactory.GetTypeHandler(handlerName);
                 }
                 resultMap.Properties.Add(property.Column, property);

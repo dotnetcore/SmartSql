@@ -350,7 +350,12 @@ namespace SmartSql.TypeHandlers
             {
                 _nameHandlerMap.Add(handlerName, typeHandler);
             }
-            Register(typeHandler);
+            //Register(typeHandler);
+        }
+
+        public IDictionary<String, ITypeHandler> GetNamedTypeHandlers()
+        {
+            return _nameHandlerMap;
         }
 
         public void Register(TypeHandler typeHandlerConfig)

@@ -41,7 +41,7 @@
     </Statement>
 
     <!--删除-->
-    <Statement Id="Delete">
+    <Statement Id="Delete" Transaction="Unspecified">
       Delete From T_User
       Where Id=@Id
     </Statement>

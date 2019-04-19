@@ -120,7 +120,7 @@ namespace SmartSql.DyRepository
             EmitNewRequestContext(ilGen, isOnlyOneClassParam, firstParamType);
             EmitSetCommandType(ilGen, statementAttr);
             EmitSetDataSourceChoice(ilGen, statementAttr);
-
+            EmitSetTransaction(ilGen, methodInfo);
             if (String.IsNullOrEmpty(statementAttr.Sql))
             {
                 EmitSetScope(ilGen, statementAttr.Scope);
@@ -423,6 +423,17 @@ namespace SmartSql.DyRepository
                 ilGen.LoadLocalVar(0);
                 ilGen.LoadInt32(statementAttr.SourceChoice.GetHashCode());
                 ilGen.Callvirt(RequestContextType.Method.SetDataSourceChoice);
+            }
+        }
+        private static void EmitSetTransaction(ILGenerator ilGen, MethodInfo methodInfo)
+        {
+            var useTransactionAttribute = methodInfo.GetCustomAttribute<UseTransactionAttribute>();
+            if (useTransactionAttribute != null)
+            {
+                ilGen.LoadLocalVar(0);
+                ilGen.LoadInt32(useTransactionAttribute.Level.GetHashCode());
+                ilGen.New(NullableType<IsolationLevel>.Ctor);
+                ilGen.Callvirt(RequestContextType.Method.SetTransaction);
             }
         }
         private void EmitSetRealSql(ILGenerator ilGen, StatementAttribute statementAttr)

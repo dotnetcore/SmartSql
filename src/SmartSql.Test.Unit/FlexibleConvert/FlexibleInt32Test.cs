@@ -6,12 +6,19 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.FlexibleConvert
 {
+    [Collection("GlobalSmartSql")]
     public class FlexibleInt32Test : FlexibleTest
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public FlexibleInt32Test(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void Test()
         {
-            var entity = DbSession.QuerySingle<FlexibleInt32>(new RequestContext
+            var entity = SqlMapper.QuerySingle<FlexibleInt32>(new RequestContext
             {
                 RealSql = SQL
             });

@@ -7,8 +7,15 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.IdGenerator
 {
-    public class SnowflakeIdTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class SnowflakeIdTest
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public SnowflakeIdTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void NextId()
         {
@@ -18,7 +25,7 @@ namespace SmartSql.Test.Unit.IdGenerator
         [Fact]
         public void Insert()
         {
-            var id = DbSession.ExecuteScalar<long>(new RequestContext
+            var id = SqlMapper.ExecuteScalar<long>(new RequestContext
             {
                 Scope = nameof(UseIdGenEntity),
                 SqlId = "Insert",

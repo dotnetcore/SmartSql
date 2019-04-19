@@ -2,7 +2,7 @@
 using SmartSql.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
+
 namespace SmartSql
 {
     public class SmartSqlContainer : IDisposable
@@ -12,7 +12,7 @@ namespace SmartSql
         /// <summary>
         /// Mapper容器
         /// </summary>
-        private ConcurrentDictionary<String, SmartSqlBuilder> Container { get; set; } = new ConcurrentDictionary<String, SmartSqlBuilder>();
+        private Dictionary<String, SmartSqlBuilder> Container { get; set; } = new Dictionary<String, SmartSqlBuilder>();
 
         public SmartSqlBuilder GetSmartSql(string alias)
         {
@@ -24,9 +24,16 @@ namespace SmartSql
             Container.TryGetValue(alias, out var smartSqlBuilder);
             return smartSqlBuilder;
         }
-        public bool TryRegister( SmartSqlBuilder smartSqlBuilder)
+        public void Register(SmartSqlBuilder smartSqlBuilder)
         {
-            return Container.TryAdd(smartSqlBuilder.Alias, smartSqlBuilder);
+            lock (this)
+            {
+                if (Container.ContainsKey(smartSqlBuilder.Alias))
+                {
+                    throw new SmartSqlException($"SmartSql.Alias:[{smartSqlBuilder.Alias}] already exist.");
+                }
+                Container.Add(smartSqlBuilder.Alias, smartSqlBuilder);
+            }
         }
         public void Dispose()
         {

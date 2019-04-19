@@ -8,7 +8,11 @@
 //*******************************-->
 
 <SmartSqlMap Scope="UserExtendedInfo" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
-
+  <ResultMaps >
+    <ResultMap Id="UserResult">
+      <Result Property="Data" TypeHandler="Json"/>
+    </ResultMap>
+  </ResultMaps>
   <Statements>
     <Statement Id="QueryParams">
       <Where>
@@ -86,7 +90,7 @@
     </Statement>
 
     <!--获取表映射实体-->
-    <Statement Id="GetEntity" >
+    <Statement Id="GetEntity"  ResultMap="UserResult">
       Select Top 1 T.* From T_UserExtendedInfo T With(NoLock)
       <Where Min="1">
         <IsNotEmpty Prepend="And" Property="UserId">

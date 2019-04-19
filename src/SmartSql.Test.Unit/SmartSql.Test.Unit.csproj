@@ -39,6 +39,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SmartSql.Bulk.MySqlConnector\SmartSql.Bulk.MySqlConnector.csproj" />
     <ProjectReference Include="..\SmartSql.Bulk.MySql\SmartSql.Bulk.MySql.csproj" />
     <ProjectReference Include="..\SmartSql.Bulk.PostgreSql\SmartSql.Bulk.PostgreSql.csproj" />
     <ProjectReference Include="..\SmartSql.Bulk.SqlServer\SmartSql.Bulk.SqlServer.csproj" />

@@ -17,7 +17,7 @@ namespace SmartSql.Test.Unit.DI
         public void AddSmartSql()
         {
             IServiceCollection services = new ServiceCollection();
-            services.AddSmartSql();
+            services.AddSmartSql("AddSmartSql");
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);
         }
@@ -35,7 +35,7 @@ namespace SmartSql.Test.Unit.DI
             IServiceCollection services = new ServiceCollection();
             services.AddSmartSql(sp =>
             {
-                return new SmartSqlBuilder().UseDataSource(DbProvider.SQLSERVER, ConnectionString);
+                return new SmartSqlBuilder().UseAlias("AddSmartSql_Func").UseDataSource(DbProvider.SQLSERVER, ConnectionString);
             });
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);
@@ -46,7 +46,7 @@ namespace SmartSql.Test.Unit.DI
             IServiceCollection services = new ServiceCollection();
             services.AddSmartSql((sp, smartsqlBuilder) =>
             {
-                smartsqlBuilder.UseAlias("SmartSqlIsGood");
+                smartsqlBuilder.UseAlias("AddSmartSql_Action");
             });
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);
@@ -55,7 +55,7 @@ namespace SmartSql.Test.Unit.DI
         public void AddRepositoryFromAssembly()
         {
             IServiceCollection services = new ServiceCollection();
-            services.AddSmartSql()
+            services.AddSmartSql("AddRepositoryFromAssembly")
             .AddRepositoryFromAssembly(o =>
             {
                 o.AssemblyString = "SmartSql.Test";

@@ -6,14 +6,13 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.DyRepository
 {
+    [Collection("GlobalSmartSql")]
     public class AllPrimitiveRepositoryTest : DyRepositoryTest
     {
-
         private IAllPrimitiveRepository _repository;
-        public AllPrimitiveRepositoryTest()
+        public AllPrimitiveRepositoryTest(SmartSqlFixture smartSqlFixture)
         {
-            var smartSqlBuilder = new SmartSqlBuilder().UseXmlConfig().Build();
-            _repository = RepositoryFactory.CreateInstance(typeof(IAllPrimitiveRepository), smartSqlBuilder.SqlMapper) as IAllPrimitiveRepository;
+            _repository = RepositoryFactory.CreateInstance(typeof(IAllPrimitiveRepository), smartSqlFixture.SqlMapper) as IAllPrimitiveRepository;
         }
         [Fact]
         public void GetByPage_ValueTuple()

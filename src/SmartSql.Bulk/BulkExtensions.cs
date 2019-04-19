@@ -22,7 +22,8 @@ namespace SmartSql.Bulk
             var dataTable = new DataTable(tableName);
             foreach (var columnIndex in EntityMetaDataCache<TEntity>.IndexColumnMaps)
             {
-                dataTable.Columns.Add(columnIndex.Value.Name, columnIndex.Value.FieldType);
+                DataColumn dataColumn=new DataColumn(columnIndex.Value.Name, columnIndex.Value.FieldType);
+                dataTable.Columns.Add(dataColumn);
             }
             foreach (var entity in list)
             {

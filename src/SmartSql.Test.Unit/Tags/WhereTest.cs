@@ -7,12 +7,19 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
 {
-    public class WhereTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class WhereTest 
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public WhereTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void Where_Min()
         {
-            var msg = DbSession.ExecuteScalar<String>(new RequestContext
+            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
             {
                 Scope = nameof(WhereTest),
                 SqlId = "Where_Min",
@@ -25,7 +32,7 @@ namespace SmartSql.Test.Unit.Tags
         {
             try
             {
-                var msg = DbSession.ExecuteScalar<String>(new RequestContext
+                var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
                 {
                     Scope = nameof(WhereTest),
                     SqlId = "Where_Min",
