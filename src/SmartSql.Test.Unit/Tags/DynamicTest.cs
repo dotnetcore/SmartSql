@@ -6,8 +6,15 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
 {
-    public class DynamicTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class DynamicTest
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public DynamicTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void Dynamic_Test()
         {
