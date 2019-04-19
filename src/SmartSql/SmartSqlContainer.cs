@@ -2,7 +2,7 @@
 using SmartSql.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
+
 namespace SmartSql
 {
     public class SmartSqlContainer : IDisposable
@@ -26,11 +26,14 @@ namespace SmartSql
         }
         public void Register(SmartSqlBuilder smartSqlBuilder)
         {
-            if (Container.ContainsKey(smartSqlBuilder.Alias))
+            lock (this)
             {
-                throw new SmartSqlException($"SmartSql.Alias:[{smartSqlBuilder.Alias}] already exist.");
+                if (Container.ContainsKey(smartSqlBuilder.Alias))
+                {
+                    throw new SmartSqlException($"SmartSql.Alias:[{smartSqlBuilder.Alias}] already exist.");
+                }
+                Container.Add(smartSqlBuilder.Alias, smartSqlBuilder);
             }
-            Container.Add(smartSqlBuilder.Alias, smartSqlBuilder);
         }
         public void Dispose()
         {
