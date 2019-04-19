@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+//*******************************
+// Create By Rocher Kong
+// Date 2019-04-17 17:54
+// Code Generate By SmartCode
+// Code Generate Github : https://github.com/Ahoo-Wang/SmartCode
+//*******************************-->
+
+<SmartSqlMap Scope="SetTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+  <Statements>
+    <Statement Id="UpdateUser">
+      Update T_User
+      <Set>
+        <IsProperty Prepend="," Property="UserName">
+          UserName=@UserName
+        </IsProperty>
+        <IsProperty Prepend="," Property="Status">
+          Status=@Status
+        </IsProperty>
+      </Set>
+      Where Id=@Id
+    </Statement>
+  </Statements>
+</SmartSqlMap>
