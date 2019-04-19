@@ -7,6 +7,10 @@ using System.Dynamic;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 using SmartSql.Test.Entities;
 
 namespace SmartSql.Test.Unit
@@ -16,16 +20,7 @@ namespace SmartSql.Test.Unit
         [Fact]
         public void Test1()
         {
-            DateTime.TryParse("12 31 2018 11:42AM", out var dateTime);
-            var yes = new AllPrimitive() as dynamic;
-            var id = yes.Id;
-
-            IList<dynamic> list = new List<dynamic>();
-            IDictionary<string, object> exObj = new ExpandoObject();
-            exObj.Add("1", 2);
-            list.Add(exObj);
-            var type = typeof(ITypeHandler<,>);
-            var typeStr = Assembly.Load("SmartSql").GetType("SmartSql.TypeHandlers.ITypeHandler`1");
+            Console.WriteLine("Test1");
         }
     }
 
