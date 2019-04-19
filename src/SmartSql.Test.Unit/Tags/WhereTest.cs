@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
@@ -36,6 +37,18 @@ namespace SmartSql.Test.Unit.Tags
             {
                 Assert.True(true);
             }
+        }
+
+        [Fact]
+        public void GetUser_Test()
+        {
+            var user = SqlMapper.QuerySingle<User>(new RequestContext
+            {
+                Scope = nameof(WhereTest),
+                SqlId = "GetUser",
+                Request = new { UserName = "SmartSql" }
+            });
+            Assert.True(true);
         }
     }
 }
