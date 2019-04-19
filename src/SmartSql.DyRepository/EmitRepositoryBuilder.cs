@@ -433,7 +433,7 @@ namespace SmartSql.DyRepository
                 var attrType = attributeData.AttributeType;
                 if (attrType == typeof(UseTransactionAttribute))
                 {
-                    var transactionAttribute = methodInfo.GetCustomAttribute(attrType) as UseTransactionAttribute;
+                    var transactionAttribute = methodInfo.GetCustomAttribute<UseTransactionAttribute>();
                     isolationLevel = transactionAttribute.Level;
                     break;
                 }
