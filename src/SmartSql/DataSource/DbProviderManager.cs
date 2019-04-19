@@ -13,14 +13,14 @@ namespace SmartSql.DataSource
 
         public static readonly DbProvider SQLSERVER_DBPROVIDER = new DbProvider
         {
-            Name = "SqlServer",
+            Name = DbProvider.SQLSERVER,
             ParameterPrefix = "@",
             Type = "System.Data.SqlClient.SqlClientFactory,System.Data.SqlClient",
             SelectAutoIncrement = ";Select Scope_Identity();"
         };
         public static readonly DbProvider POSTGRESQL_DBPROVIDER = new DbProvider
         {
-            Name = "PostgreSql",
+            Name = DbProvider.POSTGRESQL,
             ParameterPrefix = "@",
             Type = "Npgsql.NpgsqlFactory,Npgsql",
             SelectAutoIncrement = "Returning *;"
@@ -28,32 +28,33 @@ namespace SmartSql.DataSource
         public static DbProviderManager Instance = new DbProviderManager();
         private DbProviderManager()
         {
-            _dbProviders.Add("SqlServer", SQLSERVER_DBPROVIDER);
-            _dbProviders.Add("PostgreSql", POSTGRESQL_DBPROVIDER);
-            _dbProviders.Add("MySql", new DbProvider
+            
+            _dbProviders.Add(DbProvider.SQLSERVER, SQLSERVER_DBPROVIDER);
+            _dbProviders.Add(DbProvider.POSTGRESQL, POSTGRESQL_DBPROVIDER);
+            _dbProviders.Add(DbProvider.MYSQL, new DbProvider
             {
-                Name = "MySql",
+                Name = DbProvider.MYSQL,
                 ParameterPrefix = "?",
                 Type = "MySql.Data.MySqlClient.MySqlClientFactory,MySql.Data",
                 SelectAutoIncrement = ";Select Last_Insert_Id();"
             });
-            _dbProviders.Add("MySqlConnector", new DbProvider
+            _dbProviders.Add(DbProvider.MYSQL_CONNECTOR, new DbProvider
             {
-                Name = "MySqlConnector",
+                Name = DbProvider.MYSQL_CONNECTOR,
                 ParameterPrefix = "?",
                 Type = "MySql.Data.MySqlClient.MySqlClientFactory,MySqlConnector",
                 SelectAutoIncrement = ";Select Last_Insert_Id();"
             });
-            _dbProviders.Add("Oracle", new DbProvider
+            _dbProviders.Add(DbProvider.ORACLE, new DbProvider
             {
-                Name = "Oracle",
+                Name = DbProvider.ORACLE,
                 ParameterPrefix = ":",
                 Type = "Oracle.ManagedDataAccess.Client.OracleClientFactory,Oracle.ManagedDataAccess",
                 SelectAutoIncrement = ""
             });
-            _dbProviders.Add("SQLite", new DbProvider
+            _dbProviders.Add(DbProvider.SQLITE, new DbProvider
             {
-                Name = "SQLite",
+                Name = DbProvider.SQLITE,
                 ParameterPrefix = "$",
                 Type = "System.Data.SQLite.SQLiteFactory,System.Data.SQLite",
                 SelectAutoIncrement = ""
