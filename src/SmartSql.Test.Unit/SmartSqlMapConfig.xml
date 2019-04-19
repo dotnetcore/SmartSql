@@ -2,8 +2,8 @@
 <SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
   <Settings IgnoreParameterCase="false" ParameterPrefix="$" IsCacheEnabled="true"/>
   <Properties>
-    <Property Name="Redis" Value="192.168.1.125"/>
-    <Property Name="ConnectionString" Value="Data Source=192.168.0.22;database=SmartSqlStartDB;uid=sa;pwd=MydaoSql!@#51"/>
+    <Property Name="Redis" Value="localhost"/>
+    <Property Name="ConnectionString" Value="Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True"/>
     <Property Name="JsonTypeHandler`" Value="SmartSql.TypeHandler.JsonTypeHandler`1,SmartSql.TypeHandler"/>
     <Property Name="JsonTypeHandler" Value="SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"/>
     <Property Name="ScriptBuilder" Value="SmartSql.ScriptTag.ScriptBuilder,SmartSql.ScriptTag"/>

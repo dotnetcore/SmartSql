@@ -7,13 +7,21 @@
     <Read Name="ReadDb-1" ConnectionString="${ConnectionString}" Weight="100"/>
     <Read Name="ReadDb-2" ConnectionString="${ConnectionString}" Weight="100"/>
   </Database>
-  <IdGenerator Type="SnowflakeId">
-    <Properties>
-      <Property Name="WorkerIdBits" Value="10"/>
-      <Property Name="WorkerId" Value="888"/>
-      <Property Name="Sequence" Value="14"/>
-    </Properties>
-  </IdGenerator>
+  <IdGenerators>
+    <IdGenerator Name="SnowflakeId" Type="SnowflakeId">
+      <Properties>
+        <Property Name="WorkerIdBits" Value="10"/>
+        <Property Name="WorkerId" Value="888"/>
+        <Property Name="Sequence" Value="14"/>
+      </Properties>
+    </IdGenerator>
+    <IdGenerator Name="DbSequence" Type="DbSequence">
+      <Properties>
+        <Property Name="Step" Value="10"/>
+        <Property Name="SequenceSql" Value="Select Next Value For IdSequence;"/>
+      </Properties>
+    </IdGenerator>
+  </IdGenerators>
   <SmartSqlMaps>
     <SmartSqlMap Path="Maps" Type="Directory"></SmartSqlMap>
   </SmartSqlMaps>

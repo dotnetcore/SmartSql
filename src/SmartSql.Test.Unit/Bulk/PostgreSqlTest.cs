@@ -15,7 +15,7 @@ namespace SmartSql.Test.Unit.Bulk
         public void Insert()
         {
             var dbSessionFactory = new SmartSqlBuilder()
-                .UseDataSource(DbProvider.POSTGRESQL, "Server=localhost;Database=SmartTestDB;Port=5432;User Id=postgres;Password=SmartSql.net;")
+                .UseDataSource(DbProvider.POSTGRESQL, "Server=localhost;Database=SmartSqlTestDB;Port=5432;User Id=postgres;Password=SmartSql.net;")
                 .UseAlias("PostgreSqlTest")
                 .Build().GetDbSessionFactory();
 

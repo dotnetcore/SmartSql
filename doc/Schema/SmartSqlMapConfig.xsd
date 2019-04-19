@@ -136,13 +136,13 @@
   <xs:element name="SmartSqlMapConfig">
     <xs:complexType>
       <xs:all>
-        <xs:element ref="Settings"/>
-        <xs:element ref="Properties" minOccurs="0"/>
-        <xs:element ref="Database"/>
-        <xs:element ref="TypeHandlers" minOccurs="0"/>
-        <xs:element ref="TagBuilders" minOccurs="0"/>
-        <xs:element ref="IdGenerators" minOccurs="0"/>
-        <xs:element ref="SmartSqlMaps" minOccurs="0"/>       
+        <xs:element ref="Settings" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="Properties" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="Database" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="TypeHandlers" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="TagBuilders" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="IdGenerators" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="SmartSqlMaps" minOccurs="0" maxOccurs="1"/>
       </xs:all>
     </xs:complexType>
   </xs:element>

@@ -19,16 +19,15 @@ SmartSql将管理你的SQL，并且通过筛选标签来维护本来你在代码
 同时SmartSql还提供了以下各种特性(包括但不限于)：
 
 - [动态代理仓储](https://www.smartsql.net/dyrepository/)
-- 分布式缓存
 - 类型处理器
-- 自动生成 CUD 代码
-- Id生成器
-- 性能诊断
+- [自动生成 CUD 代码](https://www.smartsql.net/guide/getting-started.html#idbsession-cud)
+- [Id生成器](https://www.smartsql.net/guide/id-generator.html)
+- [性能诊断](https://www.smartsql.net/guide/skyapm.html)
 - AOP 级别的事物
-- 缓存（内存，分布式缓存）
-- 读写分离
+- [缓存（内存，分布式缓存）](https://www.smartsql.net/config/sqlmap.html#cache-%E6%A0%87%E7%AD%BE)
+- [读写分离](https://www.smartsql.net/config/#database-%E5%AD%90%E6%A0%87%E7%AD%BE)
 - 代码生成器(<https://github.com/dotnetcore/SmartCode>)
-- 高性能的批量插入
+- [高性能的批量插入](https://www.smartsql.net/guide/bulk.html)
 
 ## 为什么选择SmartSql？
 
