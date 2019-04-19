@@ -13,7 +13,7 @@ namespace SmartSql.AOP
     public class TransactionAttribute : AbstractInterceptorAttribute
     {
         public string Alias { get; set; } = SmartSqlBuilder.DEFAULT_ALIAS;
-        public IsolationLevel? Level { get; set; }
+        public IsolationLevel Level { get; set; } = IsolationLevel.Unspecified;
         public override async Task Invoke(AspectContext context, AspectDelegate next)
         {
             var sessionStore = context.ServiceProvider.GetSessionStore(Alias);
@@ -29,20 +29,10 @@ namespace SmartSql.AOP
 
             using (sessionStore)
             {
-                if (Level.HasValue)
+                await sessionStore.Open().TransactionWrapAsync(Level, async () =>
                 {
-                    await sessionStore.Open().TransactionWrapAsync(Level.Value, async () =>
-                    {
-                        await next.Invoke(context);
-                    });
-                }
-                else
-                {
-                    await sessionStore.Open().TransactionWrapAsync(async () =>
-                    {
-                        await next.Invoke(context);
-                    });
-                }
+                    await next.Invoke(context);
+                });
             }
         }
     }

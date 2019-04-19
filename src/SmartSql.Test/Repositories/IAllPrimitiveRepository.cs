@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using SmartSql.AOP;
 using SmartSql.DyRepository.Annotations;
 using SmartSql.Test.Entities;
 
@@ -17,5 +18,9 @@ namespace SmartSql.Test.Repositories
         [UseTransaction]
         [Statement(Id = "Insert")]
         long InsertByAnnotationTransaction(AllPrimitive entity);
+
+        [Transaction]
+        [Statement(Id = "Insert")]
+        long InsertByAnnotationAOPTransaction(AllPrimitive entity);
     }
 }

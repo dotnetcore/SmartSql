@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using SmartSql.Test.Repositories;
 using Xunit;
+using Microsoft.Extensions.Logging;
 
 namespace SmartSql.Test.Unit.DyRepository
 {
@@ -18,8 +19,9 @@ namespace SmartSql.Test.Unit.DyRepository
         public RepositoryBuilder_Test(SmartSqlFixture smartSqlFixture)
         {
             SqlMapper = smartSqlFixture.SqlMapper;
-            _repositoryBuilder = new EmitRepositoryBuilder(null, null, Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance);
-            _repositoryFactory = new RepositoryFactory(_repositoryBuilder, Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance);
+            _repositoryBuilder = new EmitRepositoryBuilder(null, null, smartSqlFixture.LoggerFactory.CreateLogger<EmitRepositoryBuilder>());
+            _repositoryFactory = new RepositoryFactory(_repositoryBuilder, smartSqlFixture.LoggerFactory.CreateLogger<RepositoryFactory>());
+
         }
         [Fact]
         public void Build()
@@ -48,7 +50,19 @@ namespace SmartSql.Test.Unit.DyRepository
                 DateTime = DateTime.Now
             });
         }
+
+        [Fact]
+        public void InsertByAnnotationAOPTransaction()
+        {
+            var repository = _repositoryFactory.CreateInstance(typeof(IAllPrimitiveRepository), SqlMapper) as IAllPrimitiveRepository;
+            var id = repository.InsertByAnnotationAOPTransaction(new Entities.AllPrimitive
+            {
+                String = "",
+                DateTime = DateTime.Now
+            });
+        }
         
+
 
         [Fact]
         public void NoMapperRepository_GetGuidFromDb()

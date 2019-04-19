@@ -16,15 +16,18 @@ namespace SmartSql.Test.Unit
         public static int CtorCount = 0;
         public SmartSqlBuilder SmartSqlBuilder { get; }
         public IDbSessionFactory DbSessionFactory { get; }
-        public ISqlMapper SqlMapper { get; set; }
+        public ISqlMapper SqlMapper { get; }
+        public ILoggerFactory LoggerFactory { get; }
+
         public SmartSqlFixture()
         {
-            LoggerFactory loggerFactory = new LoggerFactory(Enumerable.Empty<ILoggerProvider>(), new LoggerFilterOptions { MinLevel = LogLevel.Debug });
+            LoggerFactory = new LoggerFactory(Enumerable.Empty<ILoggerProvider>(), new LoggerFilterOptions { MinLevel = LogLevel.Debug });
             var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", $"SmartSql.log");
-            loggerFactory.AddFile(logPath, LogLevel.Trace);
+            LoggerFactory.AddFile(logPath, LogLevel.Trace);
+
             SmartSqlBuilder = new SmartSqlBuilder()
                 .UseXmlConfig()
-                .UseLoggerFactory(loggerFactory)
+                .UseLoggerFactory(LoggerFactory)
                 .UseAlias(GLOBAL_SMART_SQL)
                 .Build();
             DbSessionFactory = SmartSqlBuilder.DbSessionFactory;

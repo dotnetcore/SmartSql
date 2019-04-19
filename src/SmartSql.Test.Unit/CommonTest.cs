@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using SmartSql.Test.Entities;
+using SmartSql.Test.Repositories;
 
 namespace SmartSql.Test.Unit
 {

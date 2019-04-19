@@ -425,13 +425,37 @@ namespace SmartSql.DyRepository
                 ilGen.Callvirt(RequestContextType.Method.SetDataSourceChoice);
             }
         }
-        private static void EmitSetTransaction(ILGenerator ilGen, MethodInfo methodInfo)
+        private void EmitSetTransaction(ILGenerator ilGen, MethodInfo methodInfo)
         {
-            var useTransactionAttribute = methodInfo.GetCustomAttribute<UseTransactionAttribute>();
-            if (useTransactionAttribute != null)
+            IsolationLevel? isolationLevel = null;
+            foreach (var attributeData in methodInfo.GetCustomAttributesData())
+            {
+                var attrType = attributeData.AttributeType;
+                if (attrType == typeof(UseTransactionAttribute))
+                {
+                    var transactionAttribute = methodInfo.GetCustomAttribute(attrType) as UseTransactionAttribute;
+                    isolationLevel = transactionAttribute.Level;
+                    break;
+                }
+
+                #region  Warning:: SmartSql.AOP.TransactionAttribute , Suggested use UseTransactionAttribute
+                if (attrType.FullName == "SmartSql.AOP.TransactionAttribute")
+                {
+                    _logger.LogWarning($"RepositoryBuilder.BuildMethod:{methodInfo.Name} Used:[{attrType.FullName}] ,Suggested use:[{typeof(UseTransactionAttribute).FullName}] For DyRepository interface.");
+                    var transactionAttribute = methodInfo.GetCustomAttribute(attrType);
+                    var transactionLevel = attrType.GetProperty("Level")?.GetValue(transactionAttribute);
+                    if (transactionLevel != null)
+                    {
+                        isolationLevel = (IsolationLevel)transactionLevel;
+                    }
+                    break;
+                }
+                #endregion
+            }
+            if (isolationLevel.HasValue)
             {
                 ilGen.LoadLocalVar(0);
-                ilGen.LoadInt32(useTransactionAttribute.Level.GetHashCode());
+                ilGen.LoadInt32(isolationLevel.GetHashCode());
                 ilGen.New(NullableType<IsolationLevel>.Ctor);
                 ilGen.Callvirt(RequestContextType.Method.SetTransaction);
             }

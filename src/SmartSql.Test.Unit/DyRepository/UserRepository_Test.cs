@@ -2,18 +2,22 @@
 using System.Collections.Generic;
 using System.Text;
 using SmartSql.Data;
+using SmartSql.DyRepository;
 using SmartSql.Test.Repositories;
 using Xunit;
+using Microsoft.Extensions.Logging;
 
 namespace SmartSql.Test.Unit.DyRepository
 {
     [Collection("GlobalSmartSql")]
-    public class UserRepository_Test : DyRepositoryTest
+    public class UserRepository_Test
     {
         private IUserRepository _userRepository;
         public UserRepository_Test(SmartSqlFixture smartSqlFixture)
         {
-            _userRepository = RepositoryFactory.CreateInstance(typeof(IUserRepository), smartSqlFixture.SqlMapper) as IUserRepository;
+            var repositoryBuilder = new EmitRepositoryBuilder(null, null, smartSqlFixture.LoggerFactory.CreateLogger<EmitRepositoryBuilder>());
+            var repositoryFactory = new RepositoryFactory(repositoryBuilder, smartSqlFixture.LoggerFactory.CreateLogger<RepositoryFactory>());
+            _userRepository = repositoryFactory.CreateInstance(typeof(IUserRepository), smartSqlFixture.SqlMapper) as IUserRepository;
         }
 
 
