@@ -74,6 +74,9 @@
     <None Update="Maps\IsGreaterThanTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Maps\PlaceholderTest.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Maps\SetTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

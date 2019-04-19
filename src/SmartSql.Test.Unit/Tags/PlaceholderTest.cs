@@ -7,22 +7,22 @@ using Xunit;
 namespace SmartSql.Test.Unit.Tags
 {
     [Collection("GlobalSmartSql")]
-    public class SetTest 
+    public class PlaceholderTest 
     {
         protected ISqlMapper SqlMapper { get; }
 
-        public SetTest(SmartSqlFixture smartSqlFixture)
+        public PlaceholderTest(SmartSqlFixture smartSqlFixture)
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
         [Fact]
-        public void Set_Test()
+        public void Placeholder_Test()
         {
-            var iRows = SqlMapper.Execute(new RequestContext
+            var UserList = SqlMapper.Query<User>(new RequestContext
             {
-                Scope = nameof(SetTest),
-                SqlId = "UpdateUser",
-                Request = new { UserName = "MySmartSql",Status=1,Id=1 }
+                Scope = nameof(PlaceholderTest),
+                SqlId = "Query",
+                Request = new { Placeholder= "Select TUE.UserId From T_UserExtendedInfo as TUE" }
             });
             Assert.True(true);
         }
