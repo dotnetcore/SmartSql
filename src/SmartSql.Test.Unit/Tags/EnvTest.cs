@@ -5,12 +5,19 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
 {
-    public class EnvTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class EnvTest 
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public EnvTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void Env_Test()
         {
-            var msg = DbSession.ExecuteScalar<String>(new RequestContext
+            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
             {
                 Scope = nameof(EnvTest),
                 SqlId = "GetEntity",

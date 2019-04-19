@@ -6,12 +6,20 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
 {
-    public class IsLessThanTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class IsLessThanTest 
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public IsLessThanTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
+
         [Fact]
         public void IsLessThan()
         {
-            var msg = DbSession.ExecuteScalar<String>(new RequestContext
+            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
             {
                 Scope = nameof(IsLessThanTest),
                 SqlId = "IsLessThan",
@@ -22,7 +30,7 @@ namespace SmartSql.Test.Unit.Tags
         [Fact]
         public void IsLessThan_Required()
         {
-            var msg = DbSession.ExecuteScalar<String>(new RequestContext
+            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
             {
                 Scope = nameof(IsLessThanTest),
                 SqlId = "IsLessThan_Required",
@@ -35,7 +43,7 @@ namespace SmartSql.Test.Unit.Tags
         {
             try
             {
-                var msg = DbSession.ExecuteScalar<String>(new RequestContext
+                var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
                 {
                     Scope = nameof(IsLessThanTest),
                     SqlId = "IsLessThan_Required",

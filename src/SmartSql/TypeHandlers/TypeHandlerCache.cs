@@ -9,9 +9,6 @@ namespace SmartSql.TypeHandlers
 {
     /// <summary>
     /// 静态TypeHandler缓存
-    /// 此处使用静态类可能产生多SmartSql实例TypeHandler冲突的问题
-    /// 后面可能优化为创建动态代理缓存类，Handler缓存到动态类字段中
-    /// public static ITypeHandler<TProperty> {TMappedTypeName} ;
     /// </summary>
     /// <typeparam name="TProperty"></typeparam>
     /// <typeparam name="TField"></typeparam>

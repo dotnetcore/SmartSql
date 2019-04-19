@@ -15,6 +15,7 @@ namespace SmartSql.Test.Unit
         {
             var dbSessionFactory = new SmartSqlBuilder()
                 .UseDataSource(DbProvider.SQLSERVER, ConnectionString)
+                .UseAlias("Build_By_DataSource")
                 .Build().GetDbSessionFactory();
 
             using (var dbSession = dbSessionFactory.Open())
@@ -41,6 +42,7 @@ namespace SmartSql.Test.Unit
                        Reads = new Dictionary<String, ReadDataSource>()
                    }
                })
+               .UseAlias("Build_By_Config")
                .Build();
         }
         [Fact]
@@ -48,6 +50,7 @@ namespace SmartSql.Test.Unit
         {
             var dbSessionFactory = new SmartSqlBuilder()
                .UseXmlConfig()
+               .UseAlias("Build_By_Xml")
                .Build();
         }
         [Fact]
@@ -55,6 +58,7 @@ namespace SmartSql.Test.Unit
         {
             var sqlMapper = new SmartSqlBuilder()
                .UseXmlConfig()
+               .UseAlias("Build_As_Mapper")
                .Build()
                .GetSqlMapper();
         }

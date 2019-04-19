@@ -21,10 +21,6 @@ namespace SmartSql.Configuration
             }
             return null;
         }
-        public ITypeHandler GetHandler(string columnName)
-        {
-            return GetProperty(columnName)?.Handler;
-        }
     }
 
     public class Constructor
@@ -43,6 +39,7 @@ namespace SmartSql.Configuration
     {
         public string Name { get; set; }
         public string Column { get; set; }
+        public String TypeHandler { get; set; }
         public ITypeHandler Handler { get; set; }
     }
 }

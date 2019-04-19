@@ -24,12 +24,12 @@ namespace SmartSql.Test.Unit
             var services = new ServiceCollection();
             services.AddOptions();
             var smartSqlConfigJson = configuration.GetSection("SmartSqlMapConfig");
-            services.Configure<SmartSqlConfigOptions>("SmartSql", smartSqlConfigJson);
+            services.Configure<SmartSqlConfigOptions>("OptionConfigBuilderTest", smartSqlConfigJson);
 
             services.AddSmartSql((sp) =>
             {
                 return new SmartSqlBuilder()
-                .UseAlias("SmartSql")
+                .UseAlias("OptionConfigBuilderTest")
                 .UseOptions(sp);
             });
             var serviceProvider = services.BuildServiceProvider();

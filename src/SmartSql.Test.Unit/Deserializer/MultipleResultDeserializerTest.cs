@@ -8,12 +8,20 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Deserializer
 {
-    public class MultipleResultDeserializerTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class MultipleResultDeserializerTest 
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public MultipleResultDeserializerTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
+
         [Fact]
         public void GetByPage()
         {
-            var result = DbSession.QuerySingle<GetByPageResponse<AllPrimitive>>(new RequestContext
+            var result = SqlMapper.QuerySingle<GetByPageResponse<AllPrimitive>>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetByPage",
@@ -23,7 +31,7 @@ namespace SmartSql.Test.Unit.Deserializer
         [Fact]
         public async Task GetByPageAsync()
         {
-            var result = await DbSession.QuerySingleAsync<GetByPageResponse<AllPrimitive>>(new RequestContext
+            var result = await SqlMapper.QuerySingleAsync<GetByPageResponse<AllPrimitive>>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetByPage",

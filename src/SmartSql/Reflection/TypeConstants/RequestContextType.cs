@@ -25,6 +25,7 @@ namespace SmartSql.Reflection.TypeConstants
         {
             public static readonly MethodInfo SetDataSourceChoice = AbstractType.GetMethod("set_DataSourceChoice");
             public static readonly MethodInfo SetCommandType = AbstractType.GetMethod("set_CommandType");
+            public static readonly MethodInfo SetTransaction = AbstractType.GetMethod("set_Transaction");
             public static readonly MethodInfo SetScope = AbstractType.GetMethod("set_Scope");
             public static readonly MethodInfo SetSqlId = AbstractType.GetMethod("set_SqlId");
             public static readonly MethodInfo SetRequest = AbstractType.GetMethod("SetRequest");

@@ -7,15 +7,20 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Deserializer
 {
-    public class EntityDeserializerTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class EntityDeserializerTest 
     {
+        protected ISqlMapper SqlMapper { get; }
 
-
+        public EntityDeserializerTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void QuerySinge()
         {
             long id = Insert();
-            var entity = DbSession.QuerySingle<AllPrimitive>(new RequestContext
+            var entity = SqlMapper.QuerySingle<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetEntity",
@@ -26,7 +31,7 @@ namespace SmartSql.Test.Unit.Deserializer
 
         private long Insert()
         {
-            return DbSession.Insert<AllPrimitive, long>(new AllPrimitive
+            return SqlMapper.Insert<AllPrimitive, long>(new AllPrimitive
             {
                 String = "Insert",
                 DateTime = DateTime.Now
@@ -36,13 +41,13 @@ namespace SmartSql.Test.Unit.Deserializer
         [Fact]
         public void Query()
         {
-            var list = DbSession.Query<AllPrimitive>(new RequestContext
+            var list = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
                 Request = new { Taken = 10000 }
             });
-            list = DbSession.Query<AllPrimitive>(new RequestContext
+            list = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
@@ -54,7 +59,7 @@ namespace SmartSql.Test.Unit.Deserializer
         public async Task QuerySingeAsync()
         {
             long id = Insert();
-            var entity = await DbSession.QuerySingleAsync<AllPrimitive>(new RequestContext
+            var entity = await SqlMapper.QuerySingleAsync<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetEntity",
@@ -65,13 +70,13 @@ namespace SmartSql.Test.Unit.Deserializer
         [Fact]
         public async Task QueryAsync()
         {
-            var list = await DbSession.QueryAsync<AllPrimitive>(new RequestContext
+            var list = await SqlMapper.QueryAsync<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
                 Request = new { Taken = 10000 }
             });
-            list = await DbSession.QueryAsync<AllPrimitive>(new RequestContext
+            list = await SqlMapper.QueryAsync<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",

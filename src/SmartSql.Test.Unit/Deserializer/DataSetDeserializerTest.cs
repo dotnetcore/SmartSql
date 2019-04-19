@@ -7,12 +7,19 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Deserializer
 {
-    public class DataSetDeserializerTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class DataSetDeserializerTest
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public DataSetDeserializerTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void GetDataSet()
         {
-            var result = DbSession.GetDataSet(new RequestContext
+            var result = SqlMapper.GetDataSet(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetDataSet"
@@ -22,7 +29,7 @@ namespace SmartSql.Test.Unit.Deserializer
         [Fact]
         public async Task GetDataSetAsync()
         {
-            var result = await DbSession.GetDataSetAsync(new RequestContext
+            var result = await SqlMapper.GetDataSetAsync(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetDataSet"

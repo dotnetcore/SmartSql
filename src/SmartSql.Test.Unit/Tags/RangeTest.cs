@@ -6,12 +6,20 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
 {
-    public class RangeTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class RangeTest
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public RangeTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
+
         [Fact]
         public void Range()
         {
-            var msg = DbSession.ExecuteScalar<String>(new RequestContext
+            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
             {
                 Scope = nameof(RangeTest),
                 SqlId = "Range",
@@ -22,7 +30,7 @@ namespace SmartSql.Test.Unit.Tags
         [Fact]
         public void Range_Required()
         {
-            var msg = DbSession.ExecuteScalar<String>(new RequestContext
+            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
             {
                 Scope = nameof(RangeTest),
                 SqlId = "Range_Required",
@@ -35,7 +43,7 @@ namespace SmartSql.Test.Unit.Tags
         {
             try
             {
-                var msg = DbSession.ExecuteScalar<String>(new RequestContext
+                var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
                 {
                     Scope = nameof(RangeTest),
                     SqlId = "Range_Required",

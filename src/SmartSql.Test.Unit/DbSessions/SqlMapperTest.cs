@@ -6,12 +6,19 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.DbSessions
 {
-    public class SqlMapperTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class SqlMapperTest 
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public SqlMapperTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public async Task QueryAsync()
         {
-            var list = await SmartSqlBuilder.SqlMapper.QueryAsync<dynamic>(new RequestContext
+            var list = await SqlMapper.QueryAsync<dynamic>(new RequestContext
             {
                 RealSql = "SELECT Top (5) T.* From T_AllPrimitive T With(NoLock)"
             });

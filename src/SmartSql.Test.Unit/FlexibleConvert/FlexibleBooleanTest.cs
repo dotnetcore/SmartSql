@@ -6,12 +6,19 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.FlexibleConvert
 {
+    [Collection("GlobalSmartSql")]
     public class FlexibleBooleanTest : FlexibleTest
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public FlexibleBooleanTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void Test()
         {
-            var entity = DbSession.QuerySingle<FlexibleBoolean>(new RequestContext
+            var entity = SqlMapper.QuerySingle<FlexibleBoolean>(new RequestContext
             {
                 RealSql = @"Select 
 Convert(bit,1) As Boolean,

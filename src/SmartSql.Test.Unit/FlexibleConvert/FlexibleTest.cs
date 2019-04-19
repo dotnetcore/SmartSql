@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SmartSql.Test.Unit.FlexibleConvert
 {
-    public class FlexibleTest : AbstractXmlConfigBuilderTest
+    public class FlexibleTest 
     {
         public const string SQL = @"Select 
 Convert(bit,1) As Boolean,

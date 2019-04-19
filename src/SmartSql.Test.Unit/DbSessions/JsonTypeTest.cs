@@ -6,8 +6,15 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.DbSessions
 {
-    public class JsonTypeTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class JsonTypeTest
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public JsonTypeTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void Insert()
         {
@@ -21,7 +28,7 @@ namespace SmartSql.Test.Unit.DbSessions
             {
                 userExtendedInfo = NewUserExtendedInfo();
             }
-            DbSession.Execute(new RequestContext
+            SqlMapper.Execute(new RequestContext
             {
                 Scope = nameof(UserExtendedInfo),
                 SqlId = "Insert",
@@ -32,7 +39,7 @@ namespace SmartSql.Test.Unit.DbSessions
 
         private UserExtendedInfo NewUserExtendedInfo()
         {
-            SmartSqlBuilder.SmartSqlConfig.IdGenerators.TryGetValue("DbSequence", out var idGenerator);
+            SqlMapper.SmartSqlConfig.IdGenerators.TryGetValue("DbSequence", out var idGenerator);
             var id = idGenerator.NextId();
             return new UserExtendedInfo
             {
@@ -50,7 +57,7 @@ namespace SmartSql.Test.Unit.DbSessions
         {
             var insertUserExtendedInfo = NewUserExtendedInfo();
             var userId = InsertImpl(insertUserExtendedInfo);
-            var userExtendedInfo = DbSession.QuerySingle<UserExtendedInfo>(new RequestContext
+            var userExtendedInfo = SqlMapper.QuerySingle<UserExtendedInfo>(new RequestContext
             {
                 Scope = nameof(UserExtendedInfo),
                 SqlId = "GetEntity",

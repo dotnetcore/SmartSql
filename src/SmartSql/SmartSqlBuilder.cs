@@ -40,7 +40,8 @@ namespace SmartSql
             BeforeBuildInitService();
             DbSessionFactory = SmartSqlConfig.DbSessionFactory;
             SqlMapper = new SqlMapper(SmartSqlConfig);
-            SmartSqlContainer.Instance.TryRegister(this);
+            SmartSqlContainer.Instance.Register(this);
+            NamedTypeHandlerCache.Build(Alias, SmartSqlConfig.TypeHandlerFactory.GetNamedTypeHandlers());
             SetupSmartSql();
             return this;
         }
@@ -68,6 +69,7 @@ namespace SmartSql
         private void BeforeBuildInitService()
         {
             SmartSqlConfig = ConfigBuilder.Build(_importProperties);
+            SmartSqlConfig.Alias = Alias;
             SmartSqlConfig.LoggerFactory = LoggerFactory;
             SmartSqlConfig.DataSourceFilter = _dataSourceFilter ?? new DataSourceFilter(SmartSqlConfig.LoggerFactory);
             if (_isCacheEnabled.HasValue)
@@ -92,6 +94,7 @@ namespace SmartSql
                 SmartSqlConfig.CacheManager = new CacheManager(SmartSqlConfig);
                 SmartSqlConfig.Pipeline = new PipelineBuilder()
                      .Add(new InitializerMiddleware(SmartSqlConfig))
+                     .Add(new TransactionMiddleware())
                      .Add(new PrepareStatementMiddleware(SmartSqlConfig))
                      .Add(new CachingMiddleware(SmartSqlConfig))
                      .Add(new DataSourceFilterMiddleware(SmartSqlConfig))
@@ -103,6 +106,7 @@ namespace SmartSql
                 SmartSqlConfig.CacheManager = new NoneCacheManager();
                 SmartSqlConfig.Pipeline = new PipelineBuilder()
                      .Add(new InitializerMiddleware(SmartSqlConfig))
+                     .Add(new TransactionMiddleware())
                      .Add(new PrepareStatementMiddleware(SmartSqlConfig))
                      .Add(new DataSourceFilterMiddleware(SmartSqlConfig))
                      .Add(new CommandExecuterMiddleware(SmartSqlConfig))

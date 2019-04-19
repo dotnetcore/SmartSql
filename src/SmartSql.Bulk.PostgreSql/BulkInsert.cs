@@ -13,6 +13,7 @@ namespace SmartSql.Bulk.PostgreSql
         {
 
         }
+
         public const string DATA_TYPE_NAME = "DataTypeName";
         public override void Insert()
         {
