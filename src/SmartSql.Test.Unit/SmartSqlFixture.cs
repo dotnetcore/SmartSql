@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using SmartSql.DbSession;
 using Xunit;
 using Xunit.Abstractions;
@@ -16,8 +19,14 @@ namespace SmartSql.Test.Unit
         public ISqlMapper SqlMapper { get; set; }
         public SmartSqlFixture()
         {
-            Console.Error.WriteLine($"SmartSqlFixture.Ctor.Invoke:{++CtorCount}.");
-            SmartSqlBuilder = new SmartSqlBuilder().UseXmlConfig().UseAlias(GLOBAL_SMART_SQL).Build();
+            LoggerFactory loggerFactory = new LoggerFactory(Enumerable.Empty<ILoggerProvider>(), new LoggerFilterOptions { MinLevel = LogLevel.Debug });
+            var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", $"SmartSql.log");
+            loggerFactory.AddFile(logPath, LogLevel.Trace);
+            SmartSqlBuilder = new SmartSqlBuilder()
+                .UseXmlConfig()
+                .UseLoggerFactory(loggerFactory)
+                .UseAlias(GLOBAL_SMART_SQL)
+                .Build();
             DbSessionFactory = SmartSqlBuilder.DbSessionFactory;
             SqlMapper = SmartSqlBuilder.SqlMapper;
         }
