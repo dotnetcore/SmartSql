@@ -9,6 +9,8 @@ namespace SmartSql.DataSource
     {
         public const String SQLSERVER = "SqlServer";
         public const String MYSQL = "MySql";
+        public const String MYSQL_CONNECTOR = "MySqlConnector";
+        
         public const String POSTGRESQL = "PostgreSql";
         public const String ORACLE = "Oracle";
         public const String SQLITE = "SQLite";

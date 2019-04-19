@@ -37,6 +37,13 @@ namespace SmartSql.DataSource
                 Type = "MySql.Data.MySqlClient.MySqlClientFactory,MySql.Data",
                 SelectAutoIncrement = ";Select Last_Insert_Id();"
             });
+            _dbProviders.Add("MySqlConnector", new DbProvider
+            {
+                Name = "MySqlConnector",
+                ParameterPrefix = "?",
+                Type = "MySql.Data.MySqlClient.MySqlClientFactory,MySqlConnector",
+                SelectAutoIncrement = ";Select Last_Insert_Id();"
+            });
             _dbProviders.Add("Oracle", new DbProvider
             {
                 Name = "Oracle",
