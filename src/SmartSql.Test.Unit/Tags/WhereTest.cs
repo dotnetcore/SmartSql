@@ -6,10 +6,15 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
 {
-    public class WhereTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class WhereTest 
     {
-        protected ISqlMapper SqlMapper => BuildSqlMapper(this.GetType().FullName);
+        protected ISqlMapper SqlMapper { get; }
 
+        public WhereTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void Where_Min()
         {

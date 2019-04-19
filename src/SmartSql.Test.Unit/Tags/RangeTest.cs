@@ -6,12 +6,14 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
 {
-    public class RangeTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class RangeTest
     {
         protected ISqlMapper SqlMapper { get; }
-        public RangeTest()
+
+        public RangeTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+            SqlMapper = smartSqlFixture.SqlMapper;
         }
 
         [Fact]

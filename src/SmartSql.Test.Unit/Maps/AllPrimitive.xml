@@ -10,10 +10,10 @@
 <SmartSqlMap Scope="AllPrimitive" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Caches>
     <Cache Id="LruCache" Type="Lru">
-      <Property Name="CacheSize" Value="2"/>
+      <Property Name="CacheSize" Value="10"/>
     </Cache>
     <Cache Id="FifoCache" Type="Fifo">
-      <Property Name="CacheSize" Value="2"/>
+      <Property Name="CacheSize" Value="10"/>
     </Cache>
     <!--<Cache Id="RedisCache" Type="${RedisCacheProvider}">
       <Property Name="ConnectionString" Value="${Redis}" />

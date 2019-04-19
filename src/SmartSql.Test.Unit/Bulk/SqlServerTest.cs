@@ -9,10 +9,15 @@ using SmartSql.Test.Entities;
 
 namespace SmartSql.Test.Unit.Bulk
 {
-    public class SqlServerTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class SqlServerTest 
     {
-        protected ISqlMapper SqlMapper => BuildSqlMapper(this.GetType().FullName);
+        protected ISqlMapper SqlMapper { get; }
 
+        public SqlServerTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void Insert()
         {

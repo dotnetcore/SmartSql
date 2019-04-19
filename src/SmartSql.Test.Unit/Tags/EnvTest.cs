@@ -5,10 +5,15 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
 {
-    public class EnvTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class EnvTest 
     {
-        protected ISqlMapper SqlMapper => BuildSqlMapper(this.GetType().FullName);
+        protected ISqlMapper SqlMapper { get; }
 
+        public EnvTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void Env_Test()
         {

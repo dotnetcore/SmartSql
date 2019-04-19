@@ -7,12 +7,14 @@ using System.Linq;
 
 namespace SmartSql.Test.Unit.Cache
 {
-    public class RedisCacheProviderTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class RedisCacheProviderTest 
     {
         protected ISqlMapper SqlMapper { get; }
-        public RedisCacheProviderTest()
+
+        public RedisCacheProviderTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+            SqlMapper = smartSqlFixture.SqlMapper;
         }
         //[Fact]
         public void QueryByRedisCache()

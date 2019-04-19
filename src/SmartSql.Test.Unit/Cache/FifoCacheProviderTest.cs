@@ -6,13 +6,14 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Cache
 {
-    public class FifoCacheProviderTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class FifoCacheProviderTest
     {
         protected ISqlMapper SqlMapper { get; }
 
-        public FifoCacheProviderTest()
+        public FifoCacheProviderTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper= BuildSqlMapper(this.GetType().Name);
+            SqlMapper = smartSqlFixture.SqlMapper;
         }
 
         [Fact]

@@ -6,13 +6,14 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Deserializer
 {
-    public class ValueTypeDeserializerTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class ValueTypeDeserializerTest 
     {
         protected ISqlMapper SqlMapper { get; }
 
-        public ValueTypeDeserializerTest()
+        public ValueTypeDeserializerTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+            SqlMapper = smartSqlFixture.SqlMapper;
         }
         private const int ONE = 1;
         private const string SELECT_ONE = "Select 1;";

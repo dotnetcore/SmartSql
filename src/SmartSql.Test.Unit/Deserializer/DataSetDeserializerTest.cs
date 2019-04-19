@@ -7,12 +7,14 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Deserializer
 {
-    public class DataSetDeserializerTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class DataSetDeserializerTest
     {
         protected ISqlMapper SqlMapper { get; }
-        public DataSetDeserializerTest()
+
+        public DataSetDeserializerTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+            SqlMapper = smartSqlFixture.SqlMapper;
         }
         [Fact]
         public void GetDataSet()

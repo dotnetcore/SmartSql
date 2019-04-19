@@ -7,13 +7,13 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.DyRepository
 {
+    [Collection("GlobalSmartSql")]
     public class UserRepository_Test : DyRepositoryTest
     {
         private IUserRepository _userRepository;
-        public UserRepository_Test()
+        public UserRepository_Test(SmartSqlFixture smartSqlFixture)
         {
-            var smartSqlBuilder = new SmartSqlBuilder().UseXmlConfig().UseAlias(this.GetType().FullName).Build();
-            _userRepository = RepositoryFactory.CreateInstance(typeof(IUserRepository), smartSqlBuilder.SqlMapper) as IUserRepository;
+            _userRepository = RepositoryFactory.CreateInstance(typeof(IUserRepository), smartSqlFixture.SqlMapper) as IUserRepository;
         }
 
 

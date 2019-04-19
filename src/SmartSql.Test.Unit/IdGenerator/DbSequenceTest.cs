@@ -6,13 +6,14 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.IdGenerator
 {
-    public class DbSequenceTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class DbSequenceTest
     {
         protected ISqlMapper SqlMapper { get; }
 
-        public DbSequenceTest()
+        public DbSequenceTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+            SqlMapper = smartSqlFixture.SqlMapper;
         }
 
         [Fact]

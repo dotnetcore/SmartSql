@@ -6,12 +6,14 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
 {
-    public class IsNotEmptyTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class IsNotEmptyTest 
     {
         protected ISqlMapper SqlMapper { get; }
-        public IsNotEmptyTest()
+
+        public IsNotEmptyTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+            SqlMapper = smartSqlFixture.SqlMapper;
         }
 
         [Fact]

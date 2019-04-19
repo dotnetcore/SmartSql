@@ -7,12 +7,14 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Deserializer
 {
-    public class ValueTupleDeserializerTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class ValueTupleDeserializerTest 
     {
         protected ISqlMapper SqlMapper { get; }
-        public ValueTupleDeserializerTest()
+
+        public ValueTupleDeserializerTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+            SqlMapper = smartSqlFixture.SqlMapper;
         }
         [Fact]
         public void GetByPage_ValueTuple()

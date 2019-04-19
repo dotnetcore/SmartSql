@@ -13,7 +13,7 @@ namespace SmartSql.Test.Unit.TypeHandlers
         [Fact]
         public void Init()
         {
-            var alias = "SmartSql";
+            var alias = "NamedTypeHandlerCacheTest";
             var namedTypeHandlers = new Dictionary<string, ITypeHandler>
             {
                 {"Json", new JsonTypeHandler()},

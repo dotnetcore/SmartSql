@@ -8,12 +8,14 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Deserializer
 {
-    public class DynamicDeserializerTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class DynamicDeserializerTest 
     {
         protected ISqlMapper SqlMapper { get; }
-        public DynamicDeserializerTest()
+
+        public DynamicDeserializerTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+            SqlMapper = smartSqlFixture.SqlMapper;
         }
         [Fact]
         public void QuerySingle_Dynamic()

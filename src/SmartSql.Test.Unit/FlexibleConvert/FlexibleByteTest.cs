@@ -6,10 +6,15 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.FlexibleConvert
 {
+    [Collection("GlobalSmartSql")]
     public class FlexibleByteTest : FlexibleTest
     {
-        protected ISqlMapper SqlMapper => BuildSqlMapper(this.GetType().FullName);
+        protected ISqlMapper SqlMapper { get; }
 
+        public FlexibleByteTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void Test()
         {

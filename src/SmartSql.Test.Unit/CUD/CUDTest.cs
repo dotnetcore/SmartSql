@@ -6,12 +6,14 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.CUD
 {
-    public class CUDTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class CUDTest 
     {
         protected ISqlMapper SqlMapper { get; }
-        public CUDTest()
+
+        public CUDTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+            SqlMapper = smartSqlFixture.SqlMapper;
         }
         [Fact]
         public void Get()

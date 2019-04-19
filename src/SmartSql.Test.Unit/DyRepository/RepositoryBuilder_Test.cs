@@ -8,15 +8,16 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.DyRepository
 {
-    public class RepositoryBuilder_Test : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class RepositoryBuilder_Test
     {
         protected ISqlMapper SqlMapper { get; }
 
         IRepositoryBuilder _repositoryBuilder;
         IRepositoryFactory _repositoryFactory;
-        public RepositoryBuilder_Test()
+        public RepositoryBuilder_Test(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+            SqlMapper = smartSqlFixture.SqlMapper;
             _repositoryBuilder = new EmitRepositoryBuilder(null, null, Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance);
             _repositoryFactory = new RepositoryFactory(_repositoryBuilder, Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance);
         }

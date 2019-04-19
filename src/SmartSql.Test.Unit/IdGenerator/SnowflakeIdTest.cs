@@ -7,10 +7,15 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.IdGenerator
 {
-    public class SnowflakeIdTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class SnowflakeIdTest
     {
-        protected ISqlMapper SqlMapper => BuildSqlMapper(this.GetType().FullName);
+        protected ISqlMapper SqlMapper { get; }
 
+        public SnowflakeIdTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void NextId()
         {

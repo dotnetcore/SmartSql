@@ -6,13 +6,14 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Cache
 {
-    public class LruCacheProviderTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class LruCacheProviderTest 
     {
         protected ISqlMapper SqlMapper { get; }
 
-        public LruCacheProviderTest()
+        public LruCacheProviderTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = BuildSqlMapper(this.GetType().Name);
+            SqlMapper = smartSqlFixture.SqlMapper;
         }
         [Fact]
         public void QueryByLruCache()

@@ -7,10 +7,17 @@ using System.Threading.Tasks;
 using SmartSql.Data;
 using Xunit;
 
-namespace SmartSql.Test.Unit.SqlMappers
+namespace SmartSql.Test.Unit.DbSessions
 {
-    public class SqlMapperTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class DbSessionTest
     {
+        protected ISqlMapper SqlMapper { get; }
+
+        public DbSessionTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         #region Insert_From_RealSql
         private const string INSERT_SQL = @"INSERT INTO T_AllPrimitive
               (Boolean
@@ -69,13 +76,6 @@ namespace SmartSql.Test.Unit.SqlMappers
               ,@NullableNumericalEnum
               ,@NullableString);
         Select SCOPE_IDENTITY();";
-        protected ISqlMapper SqlMapper { get; }
-
-        public SqlMapperTest()
-        {
-            SqlMapper = BuildSqlMapper(this.GetType().FullName);
-        }
-
         [Fact]
         public void Insert_From_RealSql()
         {

@@ -4,14 +4,16 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace SmartSql.Test.Unit.SqlMappers
+namespace SmartSql.Test.Unit.DbSessions
 {
-    public class JsonTypeTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class JsonTypeTest
     {
         protected ISqlMapper SqlMapper { get; }
-        public JsonTypeTest()
+
+        public JsonTypeTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+            SqlMapper = smartSqlFixture.SqlMapper;
         }
         [Fact]
         public void Insert()

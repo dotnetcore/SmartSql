@@ -6,10 +6,15 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
 {
-    public class IsGreaterThanTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class IsGreaterThanTest 
     {
-        protected ISqlMapper SqlMapper => BuildSqlMapper(this.GetType().FullName);
+        protected ISqlMapper SqlMapper { get; }
 
+        public IsGreaterThanTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void IsGreaterThan()
         {

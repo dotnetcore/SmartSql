@@ -5,10 +5,15 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
 {
-  public  class IncludeTest:AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class IncludeTest 
     {
-        protected ISqlMapper SqlMapper => BuildSqlMapper(this.GetType().FullName);
+        protected ISqlMapper SqlMapper { get; }
 
+        public IncludeTest(SmartSqlFixture smartSqlFixture)
+        {
+            SqlMapper = smartSqlFixture.SqlMapper;
+        }
         [Fact]
         public void Include_Test()
         {

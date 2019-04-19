@@ -6,12 +6,14 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.DbSessions
 {
-    public class SqlMapperTest : AbstractXmlConfigBuilderTest
+    [Collection("GlobalSmartSql")]
+    public class SqlMapperTest 
     {
         protected ISqlMapper SqlMapper { get; }
-        public SqlMapperTest()
+
+        public SqlMapperTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = BuildSqlMapper(this.GetType().FullName);
+            SqlMapper = smartSqlFixture.SqlMapper;
         }
         [Fact]
         public async Task QueryAsync()
