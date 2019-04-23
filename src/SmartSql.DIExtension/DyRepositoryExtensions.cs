@@ -6,6 +6,7 @@ using SmartSql.DyRepository;
 using System;
 using System.Linq;
 using System.Reflection;
+using SmartSql.Exceptions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -51,7 +52,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 ISqlMapper sqlMapper = sp.GetRequiredService<ISqlMapper>(); ;
                 if (!String.IsNullOrEmpty(smartSqlAlias))
                 {
-                    sqlMapper = sp.GetSmartSql(smartSqlAlias).SqlMapper;
+                    sqlMapper = sp.EnsureSmartSql(smartSqlAlias).SqlMapper;
                 }
                 var factory = sp.GetRequiredService<IRepositoryFactory>();
                 return factory.CreateInstance(typeof(T), sqlMapper, scope) as T;
@@ -82,7 +83,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     ISqlMapper sqlMapper = sp.GetRequiredService<ISqlMapper>(); ;
                     if (!String.IsNullOrEmpty(options.SmartSqlAlias))
                     {
-                        sqlMapper = sp.GetSmartSql(options.SmartSqlAlias).SqlMapper;
+                        sqlMapper = sp.EnsureSmartSql(options.SmartSqlAlias).SqlMapper;
                     }
                     var factory = sp.GetRequiredService<IRepositoryFactory>();
                     var scope = string.Empty;
@@ -96,5 +97,4 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
     }
-
 }
