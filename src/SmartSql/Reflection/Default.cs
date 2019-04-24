@@ -6,6 +6,6 @@ namespace SmartSql.Reflection
 {
     public static class Default<T>
     {
-        public static T Value = default(T);
+        public static readonly T Value = default(T);
     }
 }
