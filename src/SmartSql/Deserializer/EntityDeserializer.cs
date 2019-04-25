@@ -168,7 +168,8 @@ namespace SmartSql.Deserializer
                         mappedFieldType = AnyFieldTypeType.Type;
                         if (!typeHandlerFactory.TryGetTypeHandler(propertyType, mappedFieldType, out _))
                         {
-                            throw new SmartSqlException($"Can not find TypeHandler:{nameof(ITypeHandler.PropertyType)}:{propertyType.FullName},{nameof(ITypeHandler.FieldType)}:{mappedFieldType.FullName}");
+                            propertyType = CommonType.Object;
+                            //throw new SmartSqlException($"Can not find TypeHandler:{nameof(ITypeHandler.PropertyType)}:{propertyType.FullName},{nameof(ITypeHandler.FieldType)}:{mappedFieldType.FullName}");
                         }
                     }
                 }
