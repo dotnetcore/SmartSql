@@ -6,7 +6,9 @@ namespace SmartSql.DIExtension
 {
     public class AssemblyAutoRegisterOptions
     {
-
+        /// <summary>
+        /// 实例别名
+        /// </summary>
         public String SmartSqlAlias { get; set; }
         /// <summary>
         /// 仓储接口程序集

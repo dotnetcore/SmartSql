@@ -33,6 +33,7 @@ namespace SmartSql
         public IDbSessionFactory DbSessionFactory { get; private set; }
         public ISqlMapper SqlMapper { get; private set; }
         public bool Built { get; private set; }
+        public bool Registered { get; private set; } = true;
         public SmartSqlBuilder Build()
         {
             if (Built) return this;
@@ -40,7 +41,10 @@ namespace SmartSql
             BeforeBuildInitService();
             DbSessionFactory = SmartSqlConfig.DbSessionFactory;
             SqlMapper = new SqlMapper(SmartSqlConfig);
-            SmartSqlContainer.Instance.Register(this);
+            if (Registered)
+            {
+                SmartSqlContainer.Instance.Register(this);
+            }
             NamedTypeHandlerCache.Build(Alias, SmartSqlConfig.TypeHandlerFactory.GetNamedTypeHandlers());
             SetupSmartSql();
             return this;
@@ -119,7 +123,10 @@ namespace SmartSql
         private IDataSourceFilter _dataSourceFilter;
         private bool? _isCacheEnabled;
         private IEnumerable<KeyValuePair<string, string>> _importProperties;
-
+        public SmartSqlBuilder RegisterToContainer(bool registered = true)
+        {
+            Registered = registered; return this;
+        }
         public SmartSqlBuilder UseDataSourceFilter(IDataSourceFilter dataSourceFilter)
         {
             _dataSourceFilter = dataSourceFilter; return this;
