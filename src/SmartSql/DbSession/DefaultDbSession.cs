@@ -130,7 +130,7 @@ namespace SmartSql.DbSession
             catch (Exception ex)
             {
                 _diagnosticListener.WriteDbSessionBeginTransactionError(operationId, this, ex);
-                throw ex;
+                throw;
             }
         }
         public void BeginTransaction(IsolationLevel isolationLevel)
@@ -153,7 +153,7 @@ namespace SmartSql.DbSession
             catch (Exception ex)
             {
                 _diagnosticListener.WriteDbSessionBeginTransactionError(operationId, this, ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -185,7 +185,7 @@ namespace SmartSql.DbSession
             catch (Exception ex)
             {
                 _diagnosticListener.WriteDbSessionCommitError(operationId, this, ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -213,7 +213,7 @@ namespace SmartSql.DbSession
             catch (Exception ex)
             {
                 _diagnosticListener.WriteDbSessionRollbackError(operationId, this, ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -253,7 +253,7 @@ namespace SmartSql.DbSession
             catch (Exception ex)
             {
                 _diagnosticListener.WriteDbSessionDisposeError(operationId, this, ex);
-                throw ex;
+                throw;
             }
         }
         public ExecutionContext Invoke<TResult>(AbstractRequestContext requestContext)
@@ -304,7 +304,7 @@ namespace SmartSql.DbSession
             catch (Exception ex)
             {
                 _diagnosticListener.WriteDbSessionInvokeError(operationId, executionContext, ex);
-                throw ex;
+                throw;
             }
             finally
             {
@@ -359,7 +359,7 @@ namespace SmartSql.DbSession
             catch (Exception ex)
             {
                 _diagnosticListener.WriteDbSessionInvokeError(operationId, executionContext, ex);
-                throw ex;
+                throw;
             }
             finally
             {

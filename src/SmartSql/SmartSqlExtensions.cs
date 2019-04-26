@@ -18,10 +18,10 @@ namespace SmartSql
                 handler();
                 dbSession.CommitTransaction();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 dbSession.RollbackTransaction();
-                throw ex;
+                throw;
             }
         }
 
@@ -33,10 +33,10 @@ namespace SmartSql
                 handler();
                 dbSession.CommitTransaction();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 dbSession.RollbackTransaction();
-                throw ex;
+                throw;
             }
         }
 
@@ -48,10 +48,10 @@ namespace SmartSql
                 await handler();
                 dbSession.CommitTransaction();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 dbSession.RollbackTransaction();
-                throw ex;
+                throw;
             }
         }
 
@@ -63,10 +63,10 @@ namespace SmartSql
                 await handler();
                 dbSession.CommitTransaction();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 dbSession.RollbackTransaction();
-                throw ex;
+                throw;
             }
         }
         #endregion
@@ -79,10 +79,10 @@ namespace SmartSql
                 handler();
                 transaction.CommitTransaction();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 transaction.RollbackTransaction();
-                throw ex;
+                throw;
             }
         }
 
@@ -94,10 +94,10 @@ namespace SmartSql
                 handler();
                 transaction.CommitTransaction();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 transaction.RollbackTransaction();
-                throw ex;
+                throw;
             }
         }
 
@@ -109,10 +109,10 @@ namespace SmartSql
                 await handler();
                 transaction.CommitTransaction();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 transaction.RollbackTransaction();
-                throw ex;
+                throw;
             }
         }
 
@@ -124,10 +124,10 @@ namespace SmartSql
                 await handler();
                 transaction.CommitTransaction();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 transaction.RollbackTransaction();
-                throw ex;
+                throw;
             }
         }
         #endregion
