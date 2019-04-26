@@ -1,4 +1,4 @@
-﻿using SmartSql.Abstractions;
+using SmartSql.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -83,16 +83,14 @@ namespace SmartSql
                     CommitTransaction();
                     return result;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     RollbackTransaction();
-                    throw ex;
+                    throw;
                 }
             }
-            else
-            {
-                return executeFun(null);
-            }
+
+            return executeFun(null);
         }
 
         public T ExecuteWrap<T>(Func<IDbConnectionSession, T> execute, RequestContext context, DataSourceChoice sourceChoice = DataSourceChoice.Write)
@@ -115,11 +113,6 @@ namespace SmartSql
                      CacheManager.RequestExecuted(dbSession, context);
                      CacheManager.TryAdd<T>(context, result);
                      return result;
-                 }
-                 catch (Exception ex)
-                 {
-                     _logger.LogError(ex.HelpLink, ex, ex.Message);
-                     throw ex;
                  }
                  finally
                  {
@@ -295,10 +288,10 @@ namespace SmartSql
                     CommitTransaction();
                     return result;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     RollbackTransaction();
-                    throw ex;
+                    throw;
                 }
             }
             else
@@ -330,8 +323,8 @@ namespace SmartSql
                }
                catch (Exception ex)
                {
-                   _logger.LogError(ex.HelpLink, ex, ex.Message);
-                   throw ex;
+                   _logger.LogError(ex.Message, ex);
+                   throw;
                }
                finally
                {
