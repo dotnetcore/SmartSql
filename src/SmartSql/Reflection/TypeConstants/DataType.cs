@@ -12,5 +12,6 @@ namespace SmartSql.Reflection.TypeConstants
         public static readonly Type DataTable = typeof(DataTable);
         public static readonly Type Dictionary = typeof(IDictionary);
         public static readonly Type DataReaderWrapper = typeof(DataReaderWrapper);
+        public static readonly Type DynamicRow = typeof(DynamicRow);
     }
 }

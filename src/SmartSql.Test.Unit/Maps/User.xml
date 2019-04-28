@@ -61,7 +61,7 @@
     </Statement>
 
     <!--获取数据列-->
-    <Statement Id="Query" >
+    <Statement Id="Query" CommandTimeout="3">
       SELECT
       <IsNotEmpty Prepend="Top" Property="Taken">
         (@Taken)
