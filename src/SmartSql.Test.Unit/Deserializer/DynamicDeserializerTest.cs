@@ -1,5 +1,6 @@
 ﻿using SmartSql.Test.Entities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ using Xunit;
 namespace SmartSql.Test.Unit.Deserializer
 {
     [Collection("GlobalSmartSql")]
-    public class DynamicDeserializerTest 
+    public class DynamicDeserializerTest
     {
         protected ISqlMapper SqlMapper { get; }
 
@@ -39,10 +40,31 @@ namespace SmartSql.Test.Unit.Deserializer
             });
             Assert.NotEqual(0, result.FirstOrDefault().Id);
         }
+        [Fact]
+        public void Query_Dynamic_AsHashtable()
+        {
+            var result = SqlMapper.Query<dynamic>(new RequestContext
+            {
+                Scope = nameof(AllPrimitive),
+                SqlId = "Query",
+                Request = new { Taken = 10 }
+            });
 
+            var hashtableList = result.Select(item =>
+            {
+                var dic = item as IDictionary<string, object>;
+                  var hashTable = new Hashtable(dic.Count);
+                  foreach (var kv in dic)
+                  {
+                      hashTable.Add(kv.Key, kv.Value);
+                  }
+                  return hashTable;
+              });
+        }
         [Fact]
         public async Task QuerySingleAsync_Dynamic()
         {
+
             var result = await SqlMapper.QuerySingleAsync<dynamic>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),

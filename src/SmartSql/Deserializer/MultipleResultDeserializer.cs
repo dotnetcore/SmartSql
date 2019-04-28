@@ -19,6 +19,12 @@ namespace SmartSql.Deserializer
             _deserializerFactory = deserializerFactory;
             _setAccessorFactory = new EmitSetAccessorFactory();
         }
+
+        public bool CanDeserialize(ExecutionContext executionContext, Type resultType, bool isMultiple = false)
+        {
+            return isMultiple;
+        }
+
         public TResult ToSinge<TResult>(ExecutionContext executionContext)
         {
             TResult result = default;
@@ -27,7 +33,7 @@ namespace SmartSql.Deserializer
             var multipleResultMap = executionContext.Request.MultipleResultMap;
             if (multipleResultMap.Root != null)
             {
-                var deser = _deserializerFactory.Get(executionContext.Result.ResultType);
+                var deser = _deserializerFactory.Get(executionContext, executionContext.Result.ResultType);
                 result = deser.ToSinge<TResult>(executionContext);
                 if (result == null)
                 {
@@ -44,7 +50,7 @@ namespace SmartSql.Deserializer
                 #region Set Muti Property
                 var propertyInfo = resultType.GetProperty(resultMap.Property);
                 var setProperty = _setAccessorFactory.Create(propertyInfo);
-                var deser = _deserializerFactory.Get(propertyInfo.PropertyType);
+                var deser = _deserializerFactory.Get(executionContext, propertyInfo.PropertyType);
                 var resultMapResult = TypeDeserializer.Deserialize(propertyInfo.PropertyType, deser, executionContext);
                 setProperty(result, resultMapResult);
                 #endregion
@@ -64,7 +70,7 @@ namespace SmartSql.Deserializer
             var multipleResultMap = executionContext.Request.MultipleResultMap;
             if (multipleResultMap.Root != null)
             {
-                var deser = _deserializerFactory.Get(executionContext.Result.ResultType);
+                var deser = _deserializerFactory.Get(executionContext);
                 result = deser.ToSinge<TResult>(executionContext);
                 if (result == null)
                 {
@@ -81,8 +87,8 @@ namespace SmartSql.Deserializer
                 #region Set Muti Property
                 var propertyInfo = resultType.GetProperty(resultMap.Property);
                 var setProperty = _setAccessorFactory.Create(propertyInfo);
-                var deser = _deserializerFactory.Get(propertyInfo.PropertyType);
-                
+                var deser = _deserializerFactory.Get(executionContext, propertyInfo.PropertyType);
+
                 var resultMapResult = TypeDeserializer.Deserialize(propertyInfo.PropertyType, deser, executionContext);
                 setProperty(result, resultMapResult);
                 #endregion

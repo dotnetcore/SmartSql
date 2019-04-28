@@ -1,50 +1,30 @@
 ﻿using SmartSql.Reflection.TypeConstants;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SmartSql.Deserializer
 {
     public class DeserializerFactory : IDeserializerFactory
     {
-        private readonly IDataReaderDeserializer _defaultDeser;
-        private readonly IDataReaderDeserializer _valueTypeDeser;
-        private readonly IDataReaderDeserializer _dynamicDeser;
-        private readonly IDataReaderDeserializer _multipleDeser;
-        private readonly IDataReaderDeserializer _valueTupleDeser;
+        private readonly IList<IDataReaderDeserializer> _deserCache = new List<IDataReaderDeserializer>();
+        private readonly IDataReaderDeserializer _Default_Deserializer;
         public DeserializerFactory()
         {
-            _valueTypeDeser = new ValueTypeDeserializer();
-            _defaultDeser = new EntityDeserializer();
-            _dynamicDeser = new DynamicDeserializer();
-            _multipleDeser = new MultipleResultDeserializer(this);
-            _valueTupleDeser = new ValueTupleDeserializer(this);
+            _Default_Deserializer = new EntityDeserializer();
         }
 
-        public IDataReaderDeserializer Get(ExecutionContext executionContext, Type resultType = null)
+        public IDataReaderDeserializer Get(ExecutionContext executionContext, Type resultType = null, bool isMultiple = false)
         {
-            if (executionContext.Request.MultipleResultMap != null)
-            {
-                return _multipleDeser;
-            }
-            if (resultType == null)
-            {
-                resultType = executionContext.Result.ResultType;
-            }
+            resultType = resultType ?? executionContext.Result.ResultType;
 
-            return Get(resultType);
+            var deser = _deserCache.FirstOrDefault(d => d.CanDeserialize(executionContext, resultType, isMultiple));
+            return deser ?? _Default_Deserializer;
         }
 
-        public IDataReaderDeserializer Get(Type resultType)
+        public void Add(IDataReaderDeserializer deserializer)
         {
-            if (CommonType.IsValueTuple(resultType))
-            {
-                return _valueTupleDeser;
-            }
-
-            if (resultType.IsValueType || resultType == CommonType.String)
-            {
-                return _valueTypeDeser;
-            }
-            return resultType == CommonType.Object ? _dynamicDeser : _defaultDeser;
+            _deserCache.Add(deserializer);
         }
     }
 }

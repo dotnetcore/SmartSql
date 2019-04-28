@@ -4,11 +4,17 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
+using SmartSql.Reflection.TypeConstants;
 
 namespace SmartSql.Deserializer
 {
     public class DynamicDeserializer : IDataReaderDeserializer
     {
+        public bool CanDeserialize(ExecutionContext executionContext, Type resultType, bool isMultiple = false)
+        {
+            return resultType == CommonType.Object;
+        }
+
         public TResult ToSinge<TResult>(ExecutionContext executionContext)
         {
             var dataReader = executionContext.DataReaderWrapper;

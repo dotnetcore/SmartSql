@@ -10,6 +10,7 @@ namespace SmartSql.Deserializer
 {
     public interface IDataReaderDeserializer : IDataReaderDeserializerAsync
     {
+        bool CanDeserialize(ExecutionContext executionContext, Type resultType, bool isMultiple = false);
         TResult ToSinge<TResult>(ExecutionContext executionContext);
         IList<TResult> ToList<TResult>(ExecutionContext executionContext);
     }

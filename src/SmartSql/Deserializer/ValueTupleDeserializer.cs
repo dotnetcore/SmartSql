@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SmartSql.Exceptions;
 using SmartSql.Reflection;
+using SmartSql.Reflection.TypeConstants;
 
 namespace SmartSql.Deserializer
 {
@@ -12,6 +14,11 @@ namespace SmartSql.Deserializer
         public ValueTupleDeserializer(IDeserializerFactory deserializerFactory)
         {
             _deserializerFactory = deserializerFactory;
+        }
+
+        public bool CanDeserialize(ExecutionContext executionContext, Type resultType, bool isMultiple = false)
+        {
+            return CommonType.IsValueTuple(resultType);
         }
 
         public TResult ToSinge<TResult>(ExecutionContext executionContext)

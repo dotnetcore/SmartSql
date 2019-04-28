@@ -17,6 +17,11 @@ namespace SmartSql.Deserializer
 {
     public class EntityDeserializer : IDataReaderDeserializer
     {
+        public bool CanDeserialize(ExecutionContext executionContext, Type resultType, bool isMultiple = false)
+        {
+            return true;
+        }
+
         public TResult ToSinge<TResult>(ExecutionContext executionContext)
         {
             var dataReader = executionContext.DataReaderWrapper;

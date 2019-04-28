@@ -11,6 +11,7 @@ using SmartSql.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SmartSql.Deserializer;
 using SmartSql.TypeHandlers;
 
 namespace SmartSql
@@ -34,6 +35,8 @@ namespace SmartSql
         public ISqlMapper SqlMapper { get; private set; }
         public bool Built { get; private set; }
         public bool Registered { get; private set; } = true;
+        private readonly IList<IDataReaderDeserializer> _dataReaderDeserializers = new List<IDataReaderDeserializer>();
+
         public SmartSqlBuilder Build()
         {
             if (Built) return this;
@@ -81,7 +84,24 @@ namespace SmartSql
                 SmartSqlConfig.Settings.IsCacheEnabled = _isCacheEnabled.Value;
             }
             SmartSqlConfig.SqlParamAnalyzer = new SqlParamAnalyzer(SmartSqlConfig.Settings.IgnoreParameterCase, SmartSqlConfig.Database.DbProvider.ParameterPrefix);
+            InitDeserializerFactory();
             BuildPipeline();
+        }
+
+        private void InitDeserializerFactory()
+        {
+            IDataReaderDeserializer deser = new MultipleResultDeserializer(SmartSqlConfig.DeserializerFactory);
+            SmartSqlConfig.DeserializerFactory.Add(deser);
+            deser = new ValueTupleDeserializer(SmartSqlConfig.DeserializerFactory);
+            SmartSqlConfig.DeserializerFactory.Add(deser);
+            deser = new ValueTypeDeserializer();
+            SmartSqlConfig.DeserializerFactory.Add(deser);
+            deser = new DynamicDeserializer();
+            SmartSqlConfig.DeserializerFactory.Add(deser);
+            foreach (var deserializer in _dataReaderDeserializers)
+            {
+                SmartSqlConfig.DeserializerFactory.Add(deserializer);
+            }
         }
 
         private bool UsedCache => SmartSqlConfig.Settings.IsCacheEnabled
@@ -127,6 +147,12 @@ namespace SmartSql
         {
             Registered = registered; return this;
         }
+
+        public SmartSqlBuilder AddDeserializer(IDataReaderDeserializer deserializer)
+        {
+            _dataReaderDeserializers.Add(deserializer); return this;
+        }
+
         public SmartSqlBuilder UseDataSourceFilter(IDataSourceFilter dataSourceFilter)
         {
             _dataSourceFilter = dataSourceFilter; return this;

@@ -19,7 +19,7 @@ namespace SmartSql.Middlewares
         public void Invoke<TResult>(ExecutionContext executionContext)
         {
             var resultContext = executionContext.Result;
-            var deser = _deserializerFactory.Get(executionContext, typeof(TResult));
+            var deser = _deserializerFactory.Get(executionContext, typeof(TResult), executionContext.Request.MultipleResultMap != null);
             if (resultContext.IsList)
             {
                 resultContext.SetData(deser.ToList<TResult>(executionContext));
