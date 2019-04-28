@@ -1,7 +1,6 @@
 ﻿using SmartSql.Data;
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using SmartSql.Reflection.TypeConstants;
@@ -12,7 +11,7 @@ namespace SmartSql.Deserializer
     {
         public bool CanDeserialize(ExecutionContext executionContext, Type resultType, bool isMultiple = false)
         {
-            return resultType == CommonType.Object;
+            return resultType == CommonType.Object || resultType == CommonType.DictionaryStringObject;
         }
 
         public TResult ToSinge<TResult>(ExecutionContext executionContext)

@@ -25,7 +25,8 @@ namespace SmartSql.Reflection.TypeConstants
         public static readonly Type Task = typeof(Task);
         public static readonly Type Void = typeof(void);
         public static readonly Type ValueTuple = typeof(ValueTuple);
-        
+        public static readonly Type DictionaryStringObject = typeof(IDictionary<String, object>);
+
         public static bool IsValueTuple(Type type)
         {
             return type != null && type.ToString().StartsWith("System.ValueTuple");

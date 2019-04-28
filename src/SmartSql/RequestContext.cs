@@ -19,6 +19,7 @@ namespace SmartSql
         public CommandType CommandType { get; set; } = CommandType.Text;
         public IsolationLevel? Transaction { get; set; }
         public String ReadDb { get; set; }
+        public int? CommandTimeout { get; set; }
         public Statement Statement { get; internal set; }
         public StringBuilder SqlBuilder { get; internal set; }
         public bool IsStatementSql { get; internal set; } = true;

@@ -41,6 +41,17 @@ namespace SmartSql.Test.Unit.Deserializer
             Assert.NotEqual(0, result.FirstOrDefault().Id);
         }
         [Fact]
+        public void Query_Dictionary()
+        {
+            var result = SqlMapper.Query<IDictionary<String,Object>>(new RequestContext
+            {
+                Scope = nameof(AllPrimitive),
+                SqlId = "Query",
+                Request = new { Taken = 10 }
+            });
+            Assert.NotEqual(0, result.FirstOrDefault()["Id"]);
+        }
+        [Fact]
         public void Query_Dynamic_AsHashtable()
         {
             var result = SqlMapper.Query<dynamic>(new RequestContext

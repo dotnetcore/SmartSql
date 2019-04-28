@@ -378,6 +378,12 @@ namespace SmartSql.ConfigBuilder
             statementNode.Attributes.TryGetValueAsString("ParameterMap", out var parameterId, SmartSqlConfig.Properties);
             statementNode.Attributes.TryGetValueAsString("ResultMap", out var resultMapId, SmartSqlConfig.Properties);
             statementNode.Attributes.TryGetValueAsString("MultipleResultMap", out var multipleResultMapId, SmartSqlConfig.Properties);
+            int? commandTimeout=null;
+            if (statementNode.Attributes.TryGetValueAsInt32(nameof(Statement.CommandTimeout), out var cmdTimeout, SmartSqlConfig.Properties))
+            {
+                commandTimeout = cmdTimeout;
+            }
+
             var statement = new Statement
             {
                 Id = id,
@@ -387,6 +393,7 @@ namespace SmartSql.ConfigBuilder
                 CacheId = cacheId,
                 ParameterMapId = parameterId,
                 ResultMapId = resultMapId,
+                CommandTimeout = commandTimeout,
                 MultipleResultMapId = multipleResultMapId,
                 IncludeDependencies = new List<Include>()
             };

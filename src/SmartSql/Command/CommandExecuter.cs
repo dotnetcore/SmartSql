@@ -30,6 +30,10 @@ namespace SmartSql.Command
             dbCmd.CommandType = executionContext.Request.CommandType;
             dbCmd.Transaction = dbSession.Transaction;
             dbCmd.CommandText = executionContext.Request.RealSql;
+            if (executionContext.Request.CommandTimeout.HasValue)
+            {
+                dbCmd.CommandTimeout = executionContext.Request.CommandTimeout.Value;
+            }
             foreach (var dbParam in executionContext.Request.Parameters.DbParameters.Values)
             {
                 dbCmd.Parameters.Add(dbParam);

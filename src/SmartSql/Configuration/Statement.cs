@@ -15,6 +15,7 @@ namespace SmartSql.Configuration
         public DataSourceChoice? SourceChoice { get; set; }
         public IsolationLevel? Transaction { get; set; }
         public String ReadDb { get; set; }
+        public int? CommandTimeout { get; set; }
         public String FullSqlId => $"{SqlMap.Scope}.{Id}";
         public IList<ITag> SqlTags { get; set; }
         #region Map

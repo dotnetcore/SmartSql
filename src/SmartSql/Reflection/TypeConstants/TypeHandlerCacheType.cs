@@ -1,8 +1,6 @@
 ﻿using SmartSql.TypeHandlers;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace SmartSql.Reflection.TypeConstants
 {
