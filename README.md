@@ -1,8 +1,8 @@
 
-# SmartSql ([文档地址](https://www.smartsql.net))
+# SmartSql ([文档地址](https://smartsql.net))
 
 <p align="center">
-  <a href="https://www.smartsql.net/" target="_blank">
+  <a href="https://smartsql.net/" target="_blank">
     <img width="100"src="./SmartSql.png"/>
   </a>
 </p>
