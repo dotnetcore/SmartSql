@@ -49,5 +49,35 @@ namespace SmartSql.Test.Unit.ConfigBuilder
             var propVal = properties.GetPropertyValue("${SmartSql`Great}");
             Assert.Equal("Yes", propVal);
         }
+        [Fact]
+        public void GetNumPropertyValue()
+        {
+            Properties properties = new Properties();
+            properties.Import(new Dictionary<string, string> {
+                { "SmartSql888","Yes"}
+            });
+            var propVal = properties.GetPropertyValue("${SmartSql888}");
+            Assert.Equal("Yes", propVal);
+        }
+        [Fact]
+        public void GetDotPropertyValue()
+        {
+            Properties properties = new Properties();
+            properties.Import(new Dictionary<string, string> {
+                { "SmartSql.888","Yes"}
+            });
+            var propVal = properties.GetPropertyValue("${SmartSql.888}");
+            Assert.Equal("Yes", propVal);
+        }
+        [Fact]
+        public void GetBlankPropertyValue()
+        {
+            Properties properties = new Properties();
+            properties.Import(new Dictionary<string, string> {
+                { "SmartSql 888","Yes"}
+            });
+            var propVal = properties.GetPropertyValue("${SmartSql 888}");
+            Assert.Equal("Yes", propVal);
+        }
     }
 }
