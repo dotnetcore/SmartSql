@@ -22,7 +22,7 @@ namespace SmartSql.Deserializer
 
         public bool CanDeserialize(ExecutionContext executionContext, Type resultType, bool isMultiple = false)
         {
-            return isMultiple;
+            return isMultiple && !CommonType.IsValueTuple(resultType);
         }
 
         public TResult ToSinge<TResult>(ExecutionContext executionContext)

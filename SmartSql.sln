@@ -83,7 +83,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.AOP", "src\SmartSq
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Extensions", "src\SmartSql.Extensions\SmartSql.Extensions.csproj", "{D32B306D-6D46-4C4A-9116-97845684192A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.Bulk.MySqlConnector", "src\SmartSql.Bulk.MySqlConnector\SmartSql.Bulk.MySqlConnector.csproj", "{D78D36E8-B534-4B92-9C08-5F2B422029E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Bulk.MySqlConnector", "src\SmartSql.Bulk.MySqlConnector\SmartSql.Bulk.MySqlConnector.csproj", "{D78D36E8-B534-4B92-9C08-5F2B422029E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

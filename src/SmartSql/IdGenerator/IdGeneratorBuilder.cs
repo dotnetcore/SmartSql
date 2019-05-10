@@ -19,6 +19,12 @@ namespace SmartSql.IdGenerator
                         idGen.Initialize(parameters);
                         return idGen;
                     }
+                case nameof(CustomSnowflakeId):
+                {
+                    var idGen = new CustomSnowflakeId();
+                    idGen.Initialize(parameters);
+                    return idGen;
+                }
                 case nameof(DbSequence):
                     {
                         var idGen = new DbSequence();
