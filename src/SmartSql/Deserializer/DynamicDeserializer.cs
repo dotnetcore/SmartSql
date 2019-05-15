@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using SmartSql.Data;
 using SmartSql.Reflection.TypeConstants;
@@ -64,7 +65,7 @@ namespace SmartSql.Deserializer
 
             return list;
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private DynamicRow ToDynamicRow(DataReaderWrapper dataReader, IDictionary<string, int> columns)
         {
             var values = new object[columns.Count];

@@ -154,7 +154,7 @@ namespace SmartSql.Middlewares
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                Next.Invoke<TResult>(executionContext);
+                await Next.InvokeAsync<TResult>(executionContext);
             }
             finally
             {

@@ -95,33 +95,32 @@ namespace SmartSql
 
         public int Execute(AbstractRequestContext requestContext)
         {
-            return ExecuteImpl((dbSession) => dbSession.Execute(requestContext));
+            return ExecuteImpl(dbSession => dbSession.Execute(requestContext));
         }
 
         public T ExecuteScalar<T>(AbstractRequestContext requestContext)
         {
-            return ExecuteImpl((dbSession) => dbSession.ExecuteScalar<T>(requestContext));
+            return ExecuteImpl(dbSession => dbSession.ExecuteScalar<T>(requestContext));
         }
 
         public IList<T> Query<T>(AbstractRequestContext requestContext)
         {
-            return ExecuteImpl((dbSession) => dbSession.Query<T>(requestContext));
+            return ExecuteImpl(dbSession => dbSession.Query<T>(requestContext));
         }
 
         public T QuerySingle<T>(AbstractRequestContext requestContext)
         {
-            return ExecuteImpl((dbSession) => dbSession.QuerySingle<T>(requestContext));
+            return ExecuteImpl(dbSession => dbSession.QuerySingle<T>(requestContext));
         }
         public DataSet GetDataSet(AbstractRequestContext requestContext)
         {
-            return ExecuteImpl((dbSession) => dbSession.GetDataSet(requestContext));
+            return ExecuteImpl(dbSession => dbSession.GetDataSet(requestContext));
         }
 
         public DataTable GetDataTable(AbstractRequestContext requestContext)
         {
-            return ExecuteImpl((dbSession) => dbSession.GetDataTable(requestContext));
+            return ExecuteImpl(dbSession => dbSession.GetDataTable(requestContext));
         }
-
 
         private async Task<TResult> ExecuteImplAsync<TResult>(Func<IDbSession, Task<TResult>> executeFunc)
         {
@@ -145,34 +144,34 @@ namespace SmartSql
             }
         }
 
-        public Task<int> ExecuteAsync(AbstractRequestContext requestContext)
+        public async Task<int> ExecuteAsync(AbstractRequestContext requestContext)
         {
-            return ExecuteImplAsync((dbSession) => dbSession.ExecuteAsync(requestContext));
+            return await ExecuteImplAsync(async dbSession => await dbSession.ExecuteAsync(requestContext));
         }
 
-        public Task<TResult> ExecuteScalarAsync<TResult>(AbstractRequestContext requestContext)
+        public async Task<TResult> ExecuteScalarAsync<TResult>(AbstractRequestContext requestContext)
         {
-            return ExecuteImplAsync((dbSession) => dbSession.ExecuteScalarAsync<TResult>(requestContext));
+            return await ExecuteImplAsync(async dbSession => await dbSession.ExecuteScalarAsync<TResult>(requestContext));
         }
 
-        public Task<IList<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext)
+        public async Task<IList<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext)
         {
-            return ExecuteImplAsync((dbSession) => dbSession.QueryAsync<TResult>(requestContext));
+            return await ExecuteImplAsync(async dbSession => await dbSession.QueryAsync<TResult>(requestContext));
         }
 
-        public Task<TResult> QuerySingleAsync<TResult>(AbstractRequestContext requestContext)
+        public async Task<TResult> QuerySingleAsync<TResult>(AbstractRequestContext requestContext)
         {
-            return ExecuteImplAsync((dbSession) => dbSession.QuerySingleAsync<TResult>(requestContext));
+            return await ExecuteImplAsync(dbSession => dbSession.QuerySingleAsync<TResult>(requestContext));
         }
 
-        public Task<DataSet> GetDataSetAsync(AbstractRequestContext requestContext)
+        public async Task<DataSet> GetDataSetAsync(AbstractRequestContext requestContext)
         {
-            return ExecuteImplAsync((dbSession) => dbSession.GetDataSetAsync(requestContext));
+            return await ExecuteImplAsync(async dbSession => await dbSession.GetDataSetAsync(requestContext));
         }
 
-        public Task<DataTable> GetDataTableAsync(AbstractRequestContext requestContext)
+        public async Task<DataTable> GetDataTableAsync(AbstractRequestContext requestContext)
         {
-            return ExecuteImplAsync((dbSession) => dbSession.GetDataTableAsync(requestContext));
+            return await ExecuteImplAsync(async dbSession => await dbSession.GetDataTableAsync(requestContext));
         }
 
         public void Dispose()

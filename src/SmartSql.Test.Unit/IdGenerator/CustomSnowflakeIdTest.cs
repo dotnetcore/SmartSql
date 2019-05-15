@@ -15,7 +15,7 @@ namespace SmartSql.Test.Unit.IdGenerator
             snowflakeId.Initialize(new Dictionary<string, object>()
             {
                 { "MachineId",1},
-                { "MachineIdBits",1},
+                { "MachineIdBits",5},
                 { "SequenceBits",5},
                 { "EpochDate","2019-05-10"}
             });

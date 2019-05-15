@@ -11,7 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Maps\User.xml" />
+    <EmbeddedResource Include="Maps\User.xml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="Maps\AllPrimitive.xml" />
     <Content Include="SmartSqlMapConfig.xml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
