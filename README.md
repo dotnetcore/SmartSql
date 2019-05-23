@@ -1,50 +1,47 @@
 
-# SmartSql ([文档地址](https://smartsql.net))
+# SmartSql ([Document](https://smartsql.net/en/))
 
 <p align="center">
-  <a href="https://smartsql.net/" target="_blank">
+  <a href="https://smartsql.net/en/" target="_blank">
     <img width="100"src="./SmartSql.png"/>
   </a>
 </p>
 
-
-# 介绍
+# Overview
 
 > SmartSql = MyBatis + Cache(Memory | Redis) + R/W Splitting +Dynamic Repository + Diagnostics ......
 ---
-> 简洁、高效、高性能、扩展性、监控、渐进式开发！
+> Simple, efficient, high-performance, scalable, monitoring, progressive development!
 
-## 她是如何工作的？
+## How does she work?
 
-SmartSql 借鉴了 MyBatis 的思想，使用 XML 来管理 SQL ，并且提供了若干个筛选器标签来消除代码层面的各种 if/else 的判断分支。
+SmartSql draws on MyBatis's ideas, uses XML to manage SQL, and provides several filter tags to eliminate various if/else judgment branches at the code level. 
+SmartSql will manage your SQL and filter the tags to maintain your various conditional judgments at the code level to make your code more beautiful.
 
-SmartSql将管理你的 SQL ，并且通过筛选标签来维护本来你在代码层面的各种条件判断，使你的代码更加优美。
+## Why Choose SmartSql?
 
-## 为什么选择 SmartSql ？
+The Orm,linq of the DotNet system, which is mostly Linq, is very good, eliminating the developer's reliance on SQL. But it ignores the fact that SQL itself is not complex, and that it is difficult for developers to write Linq to generate good performance SQL in complex query scenarios, and I believe that students who have used EF must have this experience: "I think about how SQL writes, and then I write Linq, It's over. You may also want to see what SQL output of Linq is like. " It was a very bad experience. To be absolutely optimized for SQL, developers must have absolute control over SQL. In addition, SQL itself is very simple, why add a layer of translators?
 
-DotNet 体系下大都是 Linq 系的 ORM，Linq 很好，消除了开发人员对 SQL 的依赖。
-但却忽视了一点，SQL 本身并不复杂，而且在复杂查询场景当中开发人员很难通过编写Linq来生成良好性能的SQL，相信使用过EF的同学一定有这样的体验：“我想好了Sql怎么写，然后再来写Linq,完了可能还要再查看一下Linq输出的Sql是什么样的“。这是非常糟糕的体验。要想对Sql做绝对的优化，那么开发者必须对Sql有绝对的控制权。另外Sql本身很简单，为何要增加一层翻译器呢？
+> SmartSql has been out of formal open source for more than two years, in the production environment after several micro-service verification.
+> There are also some businesses that are using SmartSql (if you are also using SmartSql Welcome to submit issue)[Who is using SmartSql](https://github.com/dotnetcore/SmartSql/issues/13).
+> Has now joined [NCC](https://github.com/dotnetcore)。
+> The future ([Roadmap-2019](https://github.com/dotnetcore/SmartSql/issues/47))  SmartSql will continue to add new features to help developers improve efficiency. Welcome to submit Issue <https://github.com/dotnetcore/SmartSql/issues>.
 
-> SmartSql 从正式开源已历经俩年多的时间，在生产环境经过若干个微服务验证。
-> 同时也有一部分企业正在使用 SmartSql （如果您也在使用 SmartSql 欢迎提交issue）[Who is using SmartSql](https://github.com/dotnetcore/SmartSql/issues/13)。
-> 目前已加入 [NCC](https://github.com/dotnetcore)。
-> 未来([Roadmap-2019](https://github.com/dotnetcore/SmartSql/issues/47)) SmartSql 也会持续加入一些新的特性来帮助开发者提升效率。欢迎提交 Issue <https://github.com/dotnetcore/SmartSql/issues>。
+## So why not Dapper, or DbHelper?
 
-## 那么为什么不是 Dapper，或者 DbHelper ？
+Dapper is really good and good performance, but the code that will be ceded to you is filled with SQL and various judgment branches that will make code maintenance difficult to read and maintain. In addition, Dapper only provides DataReader to Entity anti-serialization function. And SmartSql offers a number of features to improve developer efficiency.
 
-Dapper 确实很好，并且又很好的性能，但是会让给你的代码里边充斥着 SQL 和各种判断分支，这些将会使代码维护难以阅读和维护。另外 Dapper 只提供了DataReader 到 Entity 的反序列化功能。而 SmartSql 提供了大量的特性来提升开发者的效率。
-
-## 特性概览
+## Feature Overview
 
 ![SmartSql](https://raw.githubusercontent.com/Smart-Kit/SmartSql-Docs/master/docs/imgs/SmartSql-features.png)
 
-## 动态仓储
+## Dynamic Repository
 
-动态代理仓储(SmartSql.DyRepository)组件是 SmartSql 非常独特的功能，它能简化 SmartSql 的使用。对业务代码几乎没有侵入。可以说使用 ISqlMapper 是原始方法，而 DyRepository 自动帮你实现这些方法。
+Dynamic Agent Repository (SmartSql.DyRepository) components are SmartSql very unique features that simplify the use of SmartSql. There is little intrusion into the business code. It can be said that using ISqlMapper is the original method, and DyRepository automatically helps you implement these methods.
 
-DyRepository 的表现是只需要定义仓储接口，通过简单配置就能自动实现这些接口并注册到 IoC 容器中，使用时注入即刻获取实现。原理是通过接口和接口方法的命名规则来获取 SmartSql 的 xml 文件中的 Scope 和 SqlId ，用接口方法的参数作为 Request ，通过 xml 中的 sql 自动判断是查询还是执行操作，最后实现对 ISqlMapper 的调用。
+DyRepository only need to define the Repository interface, through a simple configuration can automatically implement these interfaces and register in the IoC container, when used injection instant acquisition implementation. The principle is to obtain the Scope and SqlId in the XML file of SmartSql through the naming rules of the interface and interface method, use the parameters of the interface method as the Request, and automatically judge the query or perform the operation through the SQL in the XML, and finally realize the ISqlMapper Call.
 
-### 0. 定义仓储接口
+### 0. Define Repository interfaces
 
 ``` csharp
     public interface IUserRepository : IRepository<User, long>
@@ -52,35 +49,35 @@ DyRepository 的表现是只需要定义仓储接口，通过简单配置就能�
     }
 ```
 
-### 1. 注入依赖
+### 1. Injection dependencies
 
 ``` csharp
             services.AddSmartSql()
                 .AddRepositoryFromAssembly(options => { options.AssemblyString = "SmartSql.Starter.Repository"; });
 ```
 
-### 2. 使用
+### 2. Use
 
 ``` csharp
     public class UserService
     {
         IUserRepository userRepository;
 
-        public UserService(IActivityRepository userRepository)
+        public UserService(IUserRepository userRepository)
         {
             this.userRepository = userRepository;
         }
     }
 ```
 
-## SmartSql 最佳实践 -> [SmartCode](https://github.com/dotnetcore/SmartCode)
+## SmartSql Best practices -> [SmartCode](https://github.com/dotnetcore/SmartCode)
 
 ![SmartCode](https://raw.githubusercontent.com/Smart-Kit/SmartSql-Docs/master/docs/imgs/SmartCode.gif)
 
-通过 [SmartCode](https://github.com/dotnetcore/SmartCode) 开发人员仅需配置好数据库连接即可生成解决方案所需的一切，包括但不限于：
+By [SmartCode](https://github.com/dotnetcore/SmartCode) Developers simply configure the database connection to build everything that is required for the solution, including, but not limited to:
 
-- 解决方案工程
-- 帮你 restore 一下
+- Solution Engineering
+- Give you a restore.
 
 ``` yml
   ReStore:
@@ -92,7 +89,7 @@ DyRepository 的表现是只需要定义仓储接口，通过简单配置就能�
 ```
 
 - Docker
-  - 构建 Docker 镜像 & 运行实例
+  - Building Docker Mirroring & Running Instances
 
 ``` yml
  BuildDocker:
@@ -110,7 +107,7 @@ DyRepository 的表现是只需要定义仓储接口，通过简单配置就能�
       Args: docker run --name {{Project.Parameters.DockerImage}} --rm -d -p 8008:80 {{Project.Parameters.DockerImage}}:v1.0.0 .
 ```
 
-- 顺便开启个浏览器
+- Open a browser by the way
 
 ``` yml
   RunChrome:
@@ -128,13 +125,13 @@ DyRepository 的表现是只需要定义仓储接口，通过简单配置就能�
 ![SmartCode](https://raw.githubusercontent.com/Smart-Kit/SmartSql-Docs/master/docs/imgs/docker-2.png)
 ![SmartCode](https://raw.githubusercontent.com/Smart-Kit/SmartSql-Docs/master/docs/imgs/docker-3.png)
 
-### SmartCode 生成的目录结构
+### Directory structure generated by SmartCode
 
 ![SmartCode-directory-structure](https://raw.githubusercontent.com/Smart-Kit/SmartSql-Docs/master/docs/imgs/SmartCode-directory-structure.png)
 
-## 读写分离
+## Read and write separation
 
-SmartSql 读写分离特别简便，仅需提供好配置即可：
+SmartSql Read and write separation is especially easy, just provide a good configuration can be:
 
 ``` xml
   <Database>
@@ -145,12 +142,12 @@ SmartSql 读写分离特别简便，仅需提供好配置即可：
   </Database>
 ```
 
-## 缓存
+## Cache
 
-- Lru 最近最少使用算法
-- Fifo 先进先出算法
+- Lru Least recently used algorithms
+- Fifo Advanced first-out algorithm
 - RedisCacheProvider
-- 其他继承自ICacheProvider缓存类型均可
+- Other inherited self-ICacheProvider cache types are available
 
 ``` xml
 <Caches>
@@ -172,9 +169,9 @@ SmartSql 读写分离特别简便，仅需提供好配置即可：
     </Statement>
 ```
 
-## 类型处理器
+## Type Handler
 
-SmartSql 内部实现了 DotNet 主要类型的类型处理器，并且提供了部分类型兼容的类型转换处理器，同时还提供了比较常用的 JsonTypeHanlder 。
+The SmartSql is implemented internally DotNet the main types of type handlers, and some types of compatible type conversion processors are provided, as well as more commonly used JsonTypeHanlder.
 
 ``` xml
     <TypeHandler PropertyType="SmartSql.Test.Entities.UserInfo,SmartSql.Test" Type="${JsonTypeHandler`}">
@@ -185,9 +182,9 @@ SmartSql 内部实现了 DotNet 主要类型的类型处理器，并且提供了
     </TypeHandler>
 ```
 
-## CUD 代码生成
+## CUD Code generation
 
-SmartSql 同时提供了 CUD 扩展函数帮助开发者生成好 CUD-SQL ，方便开发者直接使用，无需编写任何配置。
+SmartSql also provides CUD extension functions to help developers generate good CUD-SQL for direct developer use without having to write any configuration.
 
 ``` csharp
 public static TEntity GetById<TEntity, TPrimaryKey>(this ISqlMapper);
@@ -198,7 +195,7 @@ public static int DeleteById<TEntity, TPrimaryKey>(this ISqlMapper sqlMapper, TP
 public static int DeleteMany<TEntity, TPrimaryKey>(this ISqlMapper sqlMapper, IEnumerable<TPrimaryKey> ids);
 ```
 
-## Id 生成器
+## Id Generator
 
 ### SnowflakeId
 
@@ -286,7 +283,7 @@ var id = SqlMapper.ExecuteScalar<long>(new RequestContext
             });
 ```
 
-## AOP 事务
+## AOP Transaction
 
 ``` csharp
         [Transaction]
@@ -296,9 +293,9 @@ var id = SqlMapper.ExecuteScalar<long>(new RequestContext
         }
 ```
 
-### 事物嵌套
+### Transaction nesting
 
-> 当出现事物嵌套时，子函数的事物特性注解将不再开启，转而使用上级调用函数的事物
+> When a transaction is nested, the transaction attribute annotation of the child function is no longer turned on, and the transaction that calls the function by the parent is used instead
 
 ``` csharp
         [Transaction]
@@ -326,38 +323,57 @@ using (var dbSession= SqlMapper.SessionStore.Open())
             }
 ```
 
-## Skywalking 监控
+## Skywalking Monitoring
 
-SmartSql 目前支持 Skywalking 监控，通过安装 [SkyAPM-dotnet](https://github.com/SkyAPM/SkyAPM-dotnet) 代理来启用。以下是部分截图。
+SmartSql currently supports Skywalking monitoring and is enabled by installing the [SkyAPM-dotnet](https://github.com/SkyAPM/SkyAPM-dotnet) agent. The following is a partial screenshot.
 
-### 监控执行命令
+### Monitoring execution commands
 
 ![Query](https://raw.githubusercontent.com/Smart-Kit/SmartSql-Docs/master/docs/imgs/skyapm-0.png)
 
-### 查看是否缓存，以及返回的记录数
+### View whether the cache is cached and the number of records returned
 
 ![Query-Detail](https://raw.githubusercontent.com/Smart-Kit/SmartSql-Docs/master/docs/imgs/skyapm-1.png)
 
-### 查看执行的SQL语句
+### View executed SQL statements
 
 ![Query-Statement](https://raw.githubusercontent.com/Smart-Kit/SmartSql-Docs/master/docs/imgs/skyapm-2.png)
 
-### 事务
+### Transaction
 
 ![Transaction](https://raw.githubusercontent.com/Smart-Kit/SmartSql-Docs/master/docs/imgs/skyapm-3.png)
 
-### 异常
+### Error
 
 ![Error](https://raw.githubusercontent.com/Smart-Kit/SmartSql-Docs/master/docs/imgs/skyapm-error-0.png)
 
-### 异常堆栈跟踪
+### Exception stack Trace
 
 ![Error-Detail](https://raw.githubusercontent.com/Smart-Kit/SmartSql-Docs/master/docs/imgs/skyapm-error-1.png)
 
-## 示例项目
+## Nuget Packages
+
+| Package | NuGet Stable |  Downloads |
+| ------- | -------- | ------- |
+| [SmartSql](https://www.nuget.org/packages/SmartSql/) | [![SmartSql](https://img.shields.io/nuget/v/SmartSql.svg)](https://www.nuget.org/packages/SmartSql/)  | [![SmartSql](https://img.shields.io/nuget/dt/SmartSql.svg)](https://www.nuget.org/packages/SmartSql/) |
+| [SmartSql.Schema](https://www.nuget.org/packages/SmartSql.Schema/) | [![SmartSql.Schema](https://img.shields.io/nuget/v/SmartSql.Schema.svg)](https://www.nuget.org/packages/SmartSql.Schema/)  | [![SmartSql.Schema](https://img.shields.io/nuget/dt/SmartSql.Schema.svg)](https://www.nuget.org/packages/SmartSql.Schema/) |
+| [SmartSql.TypeHandler](https://www.nuget.org/packages/SmartSql.TypeHandler/) | [![SmartSql.TypeHandler](https://img.shields.io/nuget/v/SmartSql.TypeHandler.svg)](https://www.nuget.org/packages/SmartSql.TypeHandler/)  | [![SmartSql.TypeHandler](https://img.shields.io/nuget/dt/SmartSql.TypeHandler.svg)](https://www.nuget.org/packages/SmartSql.TypeHandler/) |
+| [SmartSql.DyRepository](https://www.nuget.org/packages/SmartSql.DyRepository/) | [![SmartSql.DyRepository](https://img.shields.io/nuget/v/SmartSql.DyRepository.svg)](https://www.nuget.org/packages/SmartSql.DyRepository/)  | [![SmartSql.DyRepository](https://img.shields.io/nuget/dt/SmartSql.DyRepository.svg)](https://www.nuget.org/packages/SmartSql.DyRepository/) |
+| [SmartSql.DIExtension](https://www.nuget.org/packages/SmartSql.DIExtension/) | [![SmartSql.DIExtension](https://img.shields.io/nuget/v/SmartSql.DIExtension.svg)](https://www.nuget.org/packages/SmartSql.DIExtension/)  | [![SmartSql.DIExtension](https://img.shields.io/nuget/dt/SmartSql.DIExtension.svg)](https://www.nuget.org/packages/SmartSql.DIExtension/) |
+| [SmartSql.Cache.Redis](https://www.nuget.org/packages/SmartSql.Cache.Redis/) | [![SmartSql.Cache.Redis](https://img.shields.io/nuget/v/SmartSql.Cache.Redis.svg)](https://www.nuget.org/packages/SmartSql.Cache.Redis/)  | [![SmartSql.Cache.Redis](https://img.shields.io/nuget/dt/SmartSql.Cache.Redis.svg)](https://www.nuget.org/packages/SmartSql.Cache.Redis/) |
+| [SmartSql.ScriptTag](https://www.nuget.org/packages/SmartSql.ScriptTag/) | [![SmartSql.ScriptTag](https://img.shields.io/nuget/v/SmartSql.ScriptTag.svg)](https://www.nuget.org/packages/SmartSql.ScriptTag/)  | [![SmartSql.ScriptTag](https://img.shields.io/nuget/dt/SmartSql.ScriptTag.svg)](https://www.nuget.org/packages/SmartSql.ScriptTag/) |
+| [SmartSql.AOP](https://www.nuget.org/packages/SmartSql.AOP/) | [![SmartSql.AOP](https://img.shields.io/nuget/v/SmartSql.AOP.svg)](https://www.nuget.org/packages/SmartSql.AOP/)  | [![SmartSql.AOP](https://img.shields.io/nuget/dt/SmartSql.AOP.svg)](https://www.nuget.org/packages/SmartSql.AOP/) |
+| [SmartSql.Options](https://www.nuget.org/packages/SmartSql.Options/) | [![SmartSql.Options](https://img.shields.io/nuget/v/SmartSql.Options.svg)](https://www.nuget.org/packages/SmartSql.Options/)  | [![SmartSql.Options](https://img.shields.io/nuget/dt/SmartSql.Options.svg)](https://www.nuget.org/packages/SmartSql.Options/) |
+| [SmartSql.Bulk](https://www.nuget.org/packages/SmartSql.Bulk/) | [![SmartSql.Bulk](https://img.shields.io/nuget/v/SmartSql.Bulk.svg)](https://www.nuget.org/packages/SmartSql.Bulk/)  | [![SmartSql.Bulk](https://img.shields.io/nuget/dt/SmartSql.Bulk.svg)](https://www.nuget.org/packages/SmartSql.Bulk/) |
+| [SmartSql.Bulk.SqlServer](https://www.nuget.org/packages/SmartSql.Bulk.SqlServer/) | [![SmartSql.Bulk.SqlServer](https://img.shields.io/nuget/v/SmartSql.Bulk.SqlServer.svg)](https://www.nuget.org/packages/SmartSql.Bulk.SqlServer/)  | [![SmartSql.Bulk.SqlServer](https://img.shields.io/nuget/dt/SmartSql.Bulk.SqlServer.svg)](https://www.nuget.org/packages/SmartSql.Bulk.SqlServer/) |
+| [SmartSql.Bulk.PostgreSql](https://www.nuget.org/packages/SmartSql.Bulk.PostgreSql/) | [![SmartSql.Bulk.PostgreSql](https://img.shields.io/nuget/v/SmartSql.Bulk.PostgreSql.svg)](https://www.nuget.org/packages/SmartSql.Bulk.PostgreSql/)  | [![SmartSql.Bulk.PostgreSql](https://img.shields.io/nuget/dt/SmartSql.Bulk.PostgreSql.svg)](https://www.nuget.org/packages/SmartSql.Bulk.PostgreSql/)
+| [SmartSql.Bulk.MySql](https://www.nuget.org/packages/SmartSql.Bulk.MySql/) | [![SmartSql.Bulk.MySql](https://img.shields.io/nuget/v/SmartSql.Bulk.MySql.svg)](https://www.nuget.org/packages/SmartSql.Bulk.MySql/)  | [![SmartSql.Bulk.MySql](https://img.shields.io/nuget/dt/SmartSql.Bulk.MySql.svg)](https://www.nuget.org/packages/SmartSql.Bulk.MySql/) |
+| [SmartSql.Bulk.MySqlConnector](https://www.nuget.org/packages/SmartSql.Bulk.MySqlConnector/) | [![SmartSql.Bulk.MySqlConnector](https://img.shields.io/nuget/v/SmartSql.Bulk.MySqlConnector.svg)](https://www.nuget.org/packages/SmartSql.Bulk.MySqlConnector/)  | [![SmartSql.Bulk.MySqlConnector](https://img.shields.io/nuget/dt/SmartSql.Bulk.MySqlConnector.svg)](https://www.nuget.org/packages/SmartSql.Bulk.MySqlConnector/) |
+
+## Demo
 
 >[SmartSql.Sample.AspNetCore](https://github.com/dotnetcore/SmartSql/tree/master/sample/SmartSql.Sample.AspNetCore)
 
-## 技术交流
+## QQGroup
 
-点击链接加入QQ群【SmartSql 官方交流群】：[604762592](https://jq.qq.com/?_wv=1027&k=5Sy8Ahw)
+Click on the link to join the QQ group [SmartSql official QQ group]:[604762592](https://jq.qq.com/?_wv=1027&k=5Sy8Ahw)
