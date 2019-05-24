@@ -8,8 +8,15 @@ using System.Threading.Tasks;
 
 namespace SmartSql.DbSession
 {
+    public class DbSessionFactoryOpenedEventArgs : EventArgs
+    {
+        public IDbSession DbSession { get; set; }
+    }
+    public delegate void DbSessionFactoryOpenedEventHandler(object sender, DbSessionFactoryOpenedEventArgs eventArgs);
+    
     public interface IDbSessionFactory
     {
+        event DbSessionFactoryOpenedEventHandler Opened;
         SmartSqlConfig SmartSqlConfig { get; }
         IDbSession Open();
         IDbSession Open(String connectionString);

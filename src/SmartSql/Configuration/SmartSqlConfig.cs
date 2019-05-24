@@ -34,13 +34,16 @@ namespace SmartSql.Configuration
         public IDbSessionStore SessionStore { get; set; }
         public IDbSessionFactory DbSessionFactory { get; set; }
         public ICacheManager CacheManager { get; set; }
+        public InvokeSucceedListener InvokeSucceedListener { get; set; }
         public IDictionary<String, IIdGenerator> IdGenerators { get; set; }
+
         public SqlMap GetSqlMap(string scope)
         {
             if (!SqlMaps.TryGetValue(scope, out var sqlMap))
             {
                 throw new SmartSqlException($"Can not find SqlMap.Scope:{scope}");
             }
+
             return sqlMap;
         }
 
@@ -56,21 +59,28 @@ namespace SmartSql.Configuration
             Properties = new Properties();
             IdGenerators = new Dictionary<string, IIdGenerator>
             {
-                { nameof(SnowflakeId.Default), SnowflakeId.Default }
+                {nameof(SnowflakeId.Default), SnowflakeId.Default}
             };
             DbSessionFactory = new DbSessionFactory(this);
             SessionStore = new DbSessionStore(DbSessionFactory);
             StatementAnalyzer = new StatementAnalyzer();
+            InvokeSucceedListener = new InvokeSucceedListener();
+            DbSessionFactory.Opened += (sender, args) =>
+            {
+                InvokeSucceedListener.BindDbSessionEvent(args.DbSession);
+            };
         }
     }
+
     public class Settings
     {
-        public static Settings Default = new Settings
+        public static readonly Settings Default = new Settings
         {
             IgnoreParameterCase = false,
             IsCacheEnabled = false,
             ParameterPrefix = "$"
         };
+
         public bool IgnoreParameterCase { get; set; }
         public bool IsCacheEnabled { get; set; }
         public string ParameterPrefix { get; set; }

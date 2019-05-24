@@ -22,6 +22,7 @@ namespace SmartSql.DbSession
         public event DbSessionEventHandler Committed;
         public event DbSessionEventHandler Rollbacked;
         public event DbSessionEventHandler Disposed;
+        public event DbSessionInvokedEventHandler Invoked;
 
         public Guid Id { get; }
         public AbstractDataSource DataSource { get; private set; }
@@ -296,6 +297,7 @@ namespace SmartSql.DbSession
 
                 requestContext.ExecutionContext = executionContext;
                 Pipeline.Invoke<TResult>(executionContext);
+                Invoked?.Invoke(this,new DbSessionInvokedEventArgs{ ExecutionContext = executionContext});
                 #endregion
 
                 _diagnosticListener.WriteDbSessionInvokeAfter(operationId, executionContext);
@@ -352,6 +354,7 @@ namespace SmartSql.DbSession
                 }
                 requestContext.ExecutionContext = executionContext;
                 await Pipeline.InvokeAsync<TResult>(executionContext);
+                Invoked?.Invoke(this,new DbSessionInvokedEventArgs{ ExecutionContext = executionContext});
                 #endregion
                 _diagnosticListener.WriteDbSessionInvokeAfter(operationId, executionContext);
                 return executionContext;

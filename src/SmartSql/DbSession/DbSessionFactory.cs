@@ -10,6 +10,7 @@ namespace SmartSql.DbSession
 {
     public class DbSessionFactory : IDbSessionFactory
     {
+        public event DbSessionFactoryOpenedEventHandler Opened;
         public SmartSqlConfig SmartSqlConfig { get; }
         public DbSessionFactory(SmartSqlConfig smartSqlConfig)
         {
@@ -19,7 +20,7 @@ namespace SmartSql.DbSession
         public IDbSession Open()
         {
             var dbSession = new DefaultDbSession(SmartSqlConfig);
-            SmartSqlConfig.CacheManager.BindSessionEventHandler(dbSession);
+            Opened?.Invoke(this, new DbSessionFactoryOpenedEventArgs { DbSession = dbSession});
             return dbSession;
         }
 

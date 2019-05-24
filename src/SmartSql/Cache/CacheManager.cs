@@ -11,7 +11,6 @@ namespace SmartSql.Cache
 
     public class CacheManager : ICacheManager
     {
-        private readonly ConcurrentDictionary<Guid, ConcurrentQueue<ExecutionContext>> _sessionMappedExecutionQueue;
         private ConcurrentDictionary<String, IList<Configuration.Cache>> _statementMappedFlushCache;
         private ConcurrentDictionary<Configuration.Cache, DateTime> _cacheMappedLastFlushTime;
         private readonly Timer _timer;
@@ -23,8 +22,11 @@ namespace SmartSql.Cache
         {
             _smartSqlConfig = smartSqlConfig;
             _logger = _smartSqlConfig.LoggerFactory.CreateLogger<CacheManager>();
+            smartSqlConfig.InvokeSucceedListener.InvokeSucceed += (sender, args) =>
+            {
+                HandleCache(args.ExecutionContext);
+            };
             InitCacheMapped();
-            _sessionMappedExecutionQueue = new ConcurrentDictionary<Guid, ConcurrentQueue<ExecutionContext>>();
             _timer = new Timer(FlushOnInterval, null, _defaultDueTime, _defaultPeriodTime);
         }
         private void InitCacheMapped()
@@ -54,31 +56,6 @@ namespace SmartSql.Cache
                 }
             }
         }
-        public void ExecuteRequest(ExecutionContext executionContext)
-        {
-            if (_logger.IsEnabled(LogLevel.Debug))
-            {
-                _logger.LogDebug("ExecuteRequest Start");
-            }
-            if (executionContext.DbSession.Transaction == null)
-            {
-                HandleCache(executionContext);
-            }
-            else
-            {
-                if (!_sessionMappedExecutionQueue.TryGetValue(executionContext.DbSession.Id, out var executionQueue))
-                {
-                    executionQueue = new ConcurrentQueue<ExecutionContext>();
-                    _sessionMappedExecutionQueue.TryAdd(executionContext.DbSession.Id, executionQueue);
-                }
-                executionQueue.Enqueue(executionContext);
-            }
-            if (_logger.IsEnabled(LogLevel.Debug))
-            {
-                _logger.LogDebug("ExecuteRequest End");
-            }
-        }
-
         private void FlushOnExecuted(ExecutionContext executionContext)
         {
             if (_logger.IsEnabled(LogLevel.Debug))
@@ -135,47 +112,8 @@ namespace SmartSql.Cache
                 _logger.LogDebug($"FlushOnInterval End");
             }
         }
-        public void BindSessionEventHandler(IDbSession dbSession)
-        {
-            dbSession.Committed += DbSession_Committed;
-            dbSession.Disposed += DbSession_Disposed;
-            dbSession.Rollbacked += DbSession_Rollbacked;
-        }
 
-        private void DbSession_Rollbacked(object sender, DbSessionEventArgs eventArgs)
-        {
-            var dbSession = sender as IDbSession;
-            _sessionMappedExecutionQueue.TryRemove(dbSession.Id, out var exeQueue);
-        }
-
-        private void DbSession_Disposed(object sender, DbSessionEventArgs eventArgs)
-        {
-            var dbSession = sender as IDbSession;
-            if (_sessionMappedExecutionQueue.TryGetValue(dbSession.Id, out var executionQueue))
-            {
-                _sessionMappedExecutionQueue.TryRemove(dbSession.Id, out var exeQueue);
-            }
-        }
-
-        private void DbSession_Committed(object sender, DbSessionEventArgs eventArgs)
-        {
-            var dbSession = sender as IDbSession;
-            if (_sessionMappedExecutionQueue.TryGetValue(dbSession.Id, out var executionQueue))
-            {
-                HandleCacheQueue(executionQueue);
-                _sessionMappedExecutionQueue.TryRemove(dbSession.Id, out var exeQueue);
-            }
-        }
-
-        private void HandleCacheQueue(ConcurrentQueue<ExecutionContext> executionQueue)
-        {
-            while (executionQueue.TryDequeue(out var executionContext))
-            {
-                HandleCache(executionContext);
-            }
-        }
-
-        private void HandleCache(ExecutionContext executionContext)
+        public void HandleCache(ExecutionContext executionContext)
         {
             FlushOnExecuted(executionContext);
             var cache = executionContext.Request.Cache;

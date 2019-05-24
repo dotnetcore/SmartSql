@@ -15,6 +15,11 @@ namespace SmartSql.DbSession
         public static readonly DbSessionEventArgs None = new DbSessionEventArgs();
     }
     public delegate void DbSessionEventHandler(object sender, DbSessionEventArgs eventArgs);
+    public class DbSessionInvokedEventArgs : EventArgs
+    {
+        public ExecutionContext ExecutionContext { get; set; }
+    }
+    public delegate void DbSessionInvokedEventHandler(object sender, DbSessionInvokedEventArgs eventArgs);
 
     public interface IDbSession : ITransaction, IDisposable
     {
@@ -23,6 +28,8 @@ namespace SmartSql.DbSession
         event DbSessionEventHandler Committed;
         event DbSessionEventHandler Rollbacked;
         event DbSessionEventHandler Disposed;
+        event DbSessionInvokedEventHandler Invoked;
+        
         Guid Id { get; }
         DbTransaction Transaction { get; }
         DbConnection Connection { get; }

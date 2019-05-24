@@ -22,7 +22,6 @@ namespace SmartSql.Middlewares
                 return;
             }
             Next.Invoke<TResult>(executionContext);
-            _cacheManager.ExecuteRequest(executionContext);
         }
 
         public async Task InvokeAsync<TResult>(ExecutionContext executionContext)
@@ -34,7 +33,6 @@ namespace SmartSql.Middlewares
                 return;
             }
             await Next.InvokeAsync<TResult>(executionContext);
-            _cacheManager.ExecuteRequest(executionContext);
         }
     }
 }
