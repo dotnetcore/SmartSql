@@ -85,6 +85,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Extensions", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Bulk.MySqlConnector", "src\SmartSql.Bulk.MySqlConnector\SmartSql.Bulk.MySqlConnector.csproj", "{D78D36E8-B534-4B92-9C08-5F2B422029E6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sync", "Sync", "{903A0C86-20AC-4E4A-A33F-25706FA0E20A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.InvokeSync", "src\SmartSql.InvokeSync\SmartSql.InvokeSync.csproj", "{F97E8897-6A81-49FE-A4CC-636F33A12AF6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -167,6 +171,10 @@ Global
 		{D78D36E8-B534-4B92-9C08-5F2B422029E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D78D36E8-B534-4B92-9C08-5F2B422029E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D78D36E8-B534-4B92-9C08-5F2B422029E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F97E8897-6A81-49FE-A4CC-636F33A12AF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F97E8897-6A81-49FE-A4CC-636F33A12AF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F97E8897-6A81-49FE-A4CC-636F33A12AF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F97E8897-6A81-49FE-A4CC-636F33A12AF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -198,6 +206,8 @@ Global
 		{141E2EFF-0D74-4A11-8CC4-B48B8D3BD06B} = {FB71A21B-B0FD-4F40-985D-4BB7756D33BF}
 		{D32B306D-6D46-4C4A-9116-97845684192A} = {FB71A21B-B0FD-4F40-985D-4BB7756D33BF}
 		{D78D36E8-B534-4B92-9C08-5F2B422029E6} = {10CE96D5-C0F2-48F4-AF24-4B07C1B36FA8}
+		{903A0C86-20AC-4E4A-A33F-25706FA0E20A} = {6DDF0BFB-B7B7-4ABE-8346-E99D1E01670C}
+		{F97E8897-6A81-49FE-A4CC-636F33A12AF6} = {903A0C86-20AC-4E4A-A33F-25706FA0E20A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6942F9AB-D574-4C16-8CF7-0D10B637237B}
