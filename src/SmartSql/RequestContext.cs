@@ -3,11 +3,7 @@ using SmartSql.DataSource;
 using System;
 using System.Data;
 using System.Text;
-using System.Collections;
-using System.Collections.Generic;
 using SmartSql.Data;
-using SmartSql.Reflection.Convert;
-using SmartSql.TypeHandlers;
 
 namespace SmartSql
 {

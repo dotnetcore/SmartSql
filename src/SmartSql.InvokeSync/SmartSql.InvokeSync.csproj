@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
+      <ProjectReference Include="..\SmartSql.DIExtension\SmartSql.DIExtension.csproj" />
     </ItemGroup>
 
 </Project>
