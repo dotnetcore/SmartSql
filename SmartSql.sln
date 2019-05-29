@@ -89,6 +89,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sync", "Sync", "{903A0C86-2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.InvokeSync", "src\SmartSql.InvokeSync\SmartSql.InvokeSync.csproj", "{F97E8897-6A81-49FE-A4CC-636F33A12AF6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.InvokeSync.Kafka", "src\SmartSql.InvokeSync.Kafka\SmartSql.InvokeSync.Kafka.csproj", "{351A1466-8FE0-41F0-8A13-4F1BA973C58F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.InvokeSync.RabbitMQ", "src\SmartSql.InvokeSync.RabbitMQ\SmartSql.InvokeSync.RabbitMQ.csproj", "{9FC40FC1-8FEC-4048-A78B-AA392F87DCA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -175,6 +179,14 @@ Global
 		{F97E8897-6A81-49FE-A4CC-636F33A12AF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F97E8897-6A81-49FE-A4CC-636F33A12AF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F97E8897-6A81-49FE-A4CC-636F33A12AF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{351A1466-8FE0-41F0-8A13-4F1BA973C58F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{351A1466-8FE0-41F0-8A13-4F1BA973C58F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{351A1466-8FE0-41F0-8A13-4F1BA973C58F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{351A1466-8FE0-41F0-8A13-4F1BA973C58F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FC40FC1-8FEC-4048-A78B-AA392F87DCA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FC40FC1-8FEC-4048-A78B-AA392F87DCA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FC40FC1-8FEC-4048-A78B-AA392F87DCA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FC40FC1-8FEC-4048-A78B-AA392F87DCA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -208,6 +220,8 @@ Global
 		{D78D36E8-B534-4B92-9C08-5F2B422029E6} = {10CE96D5-C0F2-48F4-AF24-4B07C1B36FA8}
 		{903A0C86-20AC-4E4A-A33F-25706FA0E20A} = {6DDF0BFB-B7B7-4ABE-8346-E99D1E01670C}
 		{F97E8897-6A81-49FE-A4CC-636F33A12AF6} = {903A0C86-20AC-4E4A-A33F-25706FA0E20A}
+		{351A1466-8FE0-41F0-8A13-4F1BA973C58F} = {903A0C86-20AC-4E4A-A33F-25706FA0E20A}
+		{9FC40FC1-8FEC-4048-A78B-AA392F87DCA2} = {903A0C86-20AC-4E4A-A33F-25706FA0E20A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6942F9AB-D574-4C16-8CF7-0D10B637237B}

@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace SmartSql.InvokeSync
 {
-    public interface IPublish
+    public interface IPublish : IDisposable
     {
-        void Publish(ExecutionContext executionContext);
+        Task PublishAsync(PublishRequest publishRequest);
     }
 }
