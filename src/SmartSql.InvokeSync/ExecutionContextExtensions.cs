@@ -7,6 +7,7 @@ namespace SmartSql.InvokeSync
             var reqContext = executionContext.Request;
             return new PublishRequest
             {
+                CommandType=reqContext.CommandType,
                 Scope = reqContext.Scope,
                 SqlId = reqContext.SqlId,
                 RealSql = reqContext.RealSql,

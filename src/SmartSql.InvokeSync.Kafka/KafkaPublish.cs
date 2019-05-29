@@ -41,5 +41,10 @@ namespace SmartSql.InvokeSync.Kafka
                 _logger.LogError($"kafka topic message [{_kafkaOptions.Topic}] publish failed.");
             }
         }
+
+        public void Dispose()
+        {
+            _producer?.Dispose();
+        }
     }
 }
