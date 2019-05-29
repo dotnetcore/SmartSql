@@ -22,7 +22,7 @@ namespace SmartSql.InvokeSync
         /// Statement.Id
         /// </summary>
         public String SqlId { get; set; }
-        public IDictionary<string, DbParameter> Parameters { get; set; }
+        public IDictionary<string, object> Parameters { get; set; }
         public object Result { get; set; }
     }
 }

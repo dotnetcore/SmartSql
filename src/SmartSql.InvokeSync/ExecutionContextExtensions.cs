@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace SmartSql.InvokeSync
 {
     public static class ExecutionContextExtensions
@@ -7,7 +9,7 @@ namespace SmartSql.InvokeSync
             var reqContext = executionContext.Request;
             return new SyncRequest
             {
-                CommandType=reqContext.CommandType,
+                CommandType = reqContext.CommandType,
                 Scope = reqContext.Scope,
                 SqlId = reqContext.SqlId,
                 RealSql = reqContext.RealSql,
@@ -15,7 +17,8 @@ namespace SmartSql.InvokeSync
                 DataSourceChoice = reqContext.DataSourceChoice,
                 Transaction = reqContext.Transaction,
                 IsStatementSql = reqContext.IsStatementSql,
-                Parameters = executionContext.Request.Parameters.DbParameters,
+                Parameters =
+                    reqContext.Parameters.DbParameters.ToDictionary(keyVal => keyVal.Key, keyVal => keyVal.Value.Value),
                 Result = executionContext.Result.GetData()
             };
         }
