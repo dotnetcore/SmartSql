@@ -7,19 +7,19 @@ using RabbitMQ.Client.Framing;
 
 namespace SmartSql.InvokeSync.RabbitMQ
 {
-    public class RabbitMQPublish : IPublish
+    public class RabbitMQPublisher : IPublisher
     {
         private readonly RabbitMQOptions _rabbitMqOptions;
         private readonly PersistentConnection _connection;
         private IModel _channel;
 
-        public RabbitMQPublish(RabbitMQOptions rabbitMqOptions, PersistentConnection connection)
+        public RabbitMQPublisher(RabbitMQOptions rabbitMqOptions, PersistentConnection connection)
         {
             _rabbitMqOptions = rabbitMqOptions;
             _connection = connection;
         }
 
-        public Task PublishAsync(PublishRequest publishRequest)
+        public Task PublishAsync(SyncRequest publishRequest)
         {
             if (!_connection.IsConnected)
             {

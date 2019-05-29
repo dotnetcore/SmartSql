@@ -32,5 +32,16 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return serviceProvider;
         }
+
+        public static IServiceProvider UseSmartSqlSubscriber(this IServiceProvider serviceProvider,
+            Action<SyncRequest> onReceived)
+        {
+            if (onReceived == null) throw new ArgumentNullException(nameof(onReceived));
+
+            var subscriber = serviceProvider.GetRequiredService<ISubscriber>();
+            subscriber.Received += (sender, request) => { onReceived(request); };
+            subscriber.Listening();
+            return serviceProvider;
+        }
     }
 }

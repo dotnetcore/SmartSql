@@ -5,12 +5,12 @@ namespace SmartSql.InvokeSync
     public class SyncService : ISyncService
     {
         private readonly ISyncFilter _syncFilter;
-        private readonly IPublish _publish;
+        private readonly IPublisher _publisher;
 
-        public SyncService(ISyncFilter syncFilter,IPublish publish)
+        public SyncService(ISyncFilter syncFilter,IPublisher publisher)
         {
             _syncFilter = syncFilter;
-            _publish = publish;
+            _publisher = publisher;
         }
 
         public async Task Sync(ExecutionContext executionContext)
@@ -19,7 +19,7 @@ namespace SmartSql.InvokeSync
             {
                 return;
             }
-            await _publish.PublishAsync(executionContext.AsPublishRequest());
+            await _publisher.PublishAsync(executionContext.AsPublishRequest());
         }
     }
 }

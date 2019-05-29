@@ -6,21 +6,21 @@ using Newtonsoft.Json;
 
 namespace SmartSql.InvokeSync.Kafka
 {
-    public class KafkaPublish : IPublish
+    public class KafkaPublisher : IPublisher
     {
         private readonly KafkaOptions _kafkaOptions;
-        private readonly ILogger<KafkaPublish> _logger;
+        private readonly ILogger<KafkaPublisher> _logger;
         private readonly IProducer<Null, String> _producer;
 
-        public KafkaPublish(KafkaOptions kafkaOptions
-            , ILogger<KafkaPublish> logger)
+        public KafkaPublisher(KafkaOptions kafkaOptions
+            , ILogger<KafkaPublisher> logger)
         {
             _kafkaOptions = kafkaOptions;
             _logger = logger;
             _producer = new ProducerBuilder<Null, String>(_kafkaOptions.AsKafkaConfig()).Build();
         }
 
-        public async Task PublishAsync(PublishRequest publishRequest)
+        public async Task PublishAsync(SyncRequest publishRequest)
         {
             var data = JsonConvert.SerializeObject(publishRequest);
             var deliveryResult = await _producer.ProduceAsync(_kafkaOptions.Topic, new Message<Null, string>

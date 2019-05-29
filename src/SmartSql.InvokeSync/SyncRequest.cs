@@ -6,7 +6,7 @@ using SmartSql.DataSource;
 
 namespace SmartSql.InvokeSync
 {
-    public class PublishRequest
+    public class SyncRequest
     {
         public DataSourceChoice DataSourceChoice { get; set; } = DataSourceChoice.Unknow;
         public CommandType CommandType { get; set; } = CommandType.Text;

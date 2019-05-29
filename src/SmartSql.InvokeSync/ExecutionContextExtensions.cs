@@ -2,10 +2,10 @@ namespace SmartSql.InvokeSync
 {
     public static class ExecutionContextExtensions
     {
-        public static PublishRequest AsPublishRequest(this ExecutionContext executionContext)
+        public static SyncRequest AsPublishRequest(this ExecutionContext executionContext)
         {
             var reqContext = executionContext.Request;
-            return new PublishRequest
+            return new SyncRequest
             {
                 CommandType=reqContext.CommandType,
                 Scope = reqContext.Scope,
