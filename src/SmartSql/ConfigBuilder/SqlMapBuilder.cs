@@ -431,7 +431,7 @@ namespace SmartSql.ConfigBuilder
             {
                 statement.CommandType = cmdType;
             }
-            if (Enum.TryParse<DataSourceChoice>(cmdTypeStr, out DataSourceChoice sourceChoice))
+            if (Enum.TryParse<DataSourceChoice>(sourceChoiceStr, out DataSourceChoice sourceChoice))
             {
                 statement.SourceChoice = sourceChoice;
             }

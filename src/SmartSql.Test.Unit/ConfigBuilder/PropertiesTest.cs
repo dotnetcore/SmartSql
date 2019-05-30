@@ -79,5 +79,15 @@ namespace SmartSql.Test.Unit.ConfigBuilder
             var propVal = properties.GetPropertyValue("${SmartSql 888}");
             Assert.Equal("Yes", propVal);
         }
+        [Fact]
+        public void GetConcatPropertyValue()
+        {
+            Properties properties = new Properties();
+            properties.Import(new Dictionary<string, string> {
+                { "SmartSql","Great"}
+            });
+            var propVal = properties.GetPropertyValue("SmartSql.${SmartSql}");
+            Assert.Equal("SmartSql.Great", propVal);
+        }
     }
 }
