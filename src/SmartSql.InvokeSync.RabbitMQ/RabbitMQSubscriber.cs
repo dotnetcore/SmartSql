@@ -47,6 +47,10 @@ namespace SmartSql.InvokeSync.RabbitMQ
                 try
                 {
                     Received?.Invoke(this, syncMsg);
+                    if (_logger.IsEnabled(LogLevel.Debug))
+                    {
+                         _logger.LogDebug($"Received Invoke -> Id:[{syncMsg.Id}],Scope:[{syncMsg.Scope}],[{syncMsg.SqlId}] succeeded.");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -58,7 +62,7 @@ namespace SmartSql.InvokeSync.RabbitMQ
 
             consumerChannel.CallbackException += (sender, ea) =>
             {
-                _logger.LogWarning("consumerChannel callback exception");
+                _logger.LogError(ea.Exception,$"consumerChannel callback exception:{ea.Exception?.Message}");
             };
         }
     }
