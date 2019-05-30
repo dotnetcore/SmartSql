@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using SmartSql.DataSource;
+using StatementType = SmartSql.Configuration.StatementType;
 
 namespace SmartSql.InvokeSync
 {
     public class SyncRequest
     {
+        public Guid Id { get; set; }
         public DataSourceChoice DataSourceChoice { get; set; } = DataSourceChoice.Unknow;
         public CommandType CommandType { get; set; } = CommandType.Text;
+        public StatementType? StatementType { get; set; }
         public IsolationLevel? Transaction { get; set; }
         public String ReadDb { get; set; }
         public bool IsStatementSql { get; internal set; } = true;

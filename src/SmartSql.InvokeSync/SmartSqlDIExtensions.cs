@@ -24,7 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var syncService = serviceProvider.GetRequiredService<ISyncService>();
             foreach (var smartSqlBuilder in serviceProvider.GetServices<SmartSqlBuilder>())
             {
-                smartSqlBuilder.SmartSqlConfig.InvokeSucceedListener.InvokeSucceed += (sender, args) =>
+                smartSqlBuilder.SmartSqlConfig.InvokeSucceedListener.InvokeSucceeded += (sender, args) =>
                 {
                     syncService.Sync(args.ExecutionContext);
                 };

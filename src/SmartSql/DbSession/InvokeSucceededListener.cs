@@ -4,17 +4,17 @@ using Microsoft.Extensions.Logging;
 
 namespace SmartSql.DbSession
 {
-    public class InvokeSucceedEventArgs : EventArgs
+    public class InvokeSucceededEventArgs : EventArgs
     {
         public ExecutionContext ExecutionContext { get; set; }
     }
 
-    public delegate void InvokeSucceedEventHandler(object sender, InvokeSucceedEventArgs eventArgs);
+    public delegate void InvokeSucceededEventHandler(object sender, InvokeSucceededEventArgs eventArgs);
 
     public class InvokeSucceedListener
     {
         private readonly ConcurrentDictionary<Guid, ConcurrentQueue<ExecutionContext>> _sessionMappedExecutionQueue;
-        public event InvokeSucceedEventHandler InvokeSucceed;
+        public event InvokeSucceededEventHandler InvokeSucceeded;
 
         public InvokeSucceedListener()
         {
@@ -33,7 +33,7 @@ namespace SmartSql.DbSession
         {
             if (executionContext.DbSession.Transaction == null)
             {
-                InvokeSucceed?.Invoke(this, new InvokeSucceedEventArgs {ExecutionContext = executionContext});
+                InvokeSucceeded?.Invoke(this, new InvokeSucceededEventArgs {ExecutionContext = executionContext});
             }
             else
             {
@@ -65,7 +65,7 @@ namespace SmartSql.DbSession
             if (!_sessionMappedExecutionQueue.TryGetValue(dbSession.Id, out var executionQueue)) return;
             while (executionQueue.TryDequeue(out var executionContext))
             {
-                InvokeSucceed?.Invoke(this, new InvokeSucceedEventArgs {ExecutionContext = executionContext});
+                InvokeSucceeded?.Invoke(this, new InvokeSucceededEventArgs {ExecutionContext = executionContext});
             }
 
             _sessionMappedExecutionQueue.TryRemove(dbSession.Id, out _);

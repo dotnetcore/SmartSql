@@ -39,7 +39,7 @@ namespace SmartSql
 
         private readonly IList<IDataReaderDeserializer> _dataReaderDeserializers = new List<IDataReaderDeserializer>();
 
-        public Action<ExecutionContext> InvokeSucceed { get; set; }
+        public Action<ExecutionContext> InvokeSucceeded { get; set; }
 
         public SmartSqlBuilder Build()
         {
@@ -90,11 +90,11 @@ namespace SmartSql
                 SmartSqlConfig.Settings.IsCacheEnabled = _isCacheEnabled.Value;
             }
 
-            if (InvokeSucceed != null)
+            if (InvokeSucceeded != null)
             {
-                SmartSqlConfig.InvokeSucceedListener.InvokeSucceed += (sender, args) =>
+                SmartSqlConfig.InvokeSucceedListener.InvokeSucceeded += (sender, args) =>
                 {
-                    InvokeSucceed(args.ExecutionContext);
+                    InvokeSucceeded(args.ExecutionContext);
                 };
             }
 
@@ -161,9 +161,9 @@ namespace SmartSql
         private bool? _isCacheEnabled;
         private IEnumerable<KeyValuePair<string, string>> _importProperties;
 
-        public SmartSqlBuilder ListenInvokeSucceed(Action<ExecutionContext> invokeSucceed)
+        public SmartSqlBuilder ListenInvokeSucceeded(Action<ExecutionContext> invokeSucceeded)
         {
-            InvokeSucceed = invokeSucceed;
+            InvokeSucceeded = invokeSucceeded;
             return this;
         }
 

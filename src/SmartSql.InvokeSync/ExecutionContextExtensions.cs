@@ -1,15 +1,18 @@
+using System;
 using System.Linq;
 
 namespace SmartSql.InvokeSync
 {
     public static class ExecutionContextExtensions
     {
-        public static SyncRequest AsPublishRequest(this ExecutionContext executionContext)
+        public static SyncRequest AsSyncRequest(this ExecutionContext executionContext)
         {
             var reqContext = executionContext.Request;
             return new SyncRequest
             {
+                Id = new Guid(),
                 CommandType = reqContext.CommandType,
+                StatementType = reqContext.Statement?.StatementType,
                 Scope = reqContext.Scope,
                 SqlId = reqContext.SqlId,
                 RealSql = reqContext.RealSql,

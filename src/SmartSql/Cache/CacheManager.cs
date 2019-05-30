@@ -22,7 +22,7 @@ namespace SmartSql.Cache
         {
             _smartSqlConfig = smartSqlConfig;
             _logger = _smartSqlConfig.LoggerFactory.CreateLogger<CacheManager>();
-            smartSqlConfig.InvokeSucceedListener.InvokeSucceed += (sender, args) =>
+            smartSqlConfig.InvokeSucceedListener.InvokeSucceeded += (sender, args) =>
             {
                 HandleCache(args.ExecutionContext);
             };
