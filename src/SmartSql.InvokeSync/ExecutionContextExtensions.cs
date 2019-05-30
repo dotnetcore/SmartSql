@@ -10,7 +10,7 @@ namespace SmartSql.InvokeSync
             var reqContext = executionContext.Request;
             return new SyncRequest
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 CommandType = reqContext.CommandType,
                 StatementType = reqContext.Statement?.StatementType,
                 Scope = reqContext.Scope,

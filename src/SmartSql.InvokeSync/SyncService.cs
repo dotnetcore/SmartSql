@@ -25,7 +25,7 @@ namespace SmartSql.InvokeSync
             {
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
-                    _logger.LogDebug($"Sync Request -> StatementType:[{executionContext.Request.Statement?.StatementType}], Scope:[{executionContext.Request.Scope}],SqlId:[{executionContext.Request.SqlId}],RealSql:{executionContext.Request.RealSql} Filter false.");
+                    _logger.LogDebug($"Sync Request -> StatementType:[{executionContext.Request.Statement?.StatementType}], Scope:[{executionContext.Request.Scope}],SqlId:[{executionContext.Request.SqlId}] Filter false.");
                 }
                 return;
             }
@@ -34,7 +34,7 @@ namespace SmartSql.InvokeSync
             await _publisher.PublishAsync(syncRequest);
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug($"Sync Request -> Id:[{syncRequest.Id}],StatementType:[{syncRequest.StatementType}],Scope:[{syncRequest.Scope}],SqlId:[{syncRequest.SqlId}],RealSql:{syncRequest.RealSql} succeeded.");
+                _logger.LogDebug($"Sync Request -> Id:[{syncRequest.Id}],StatementType:[{syncRequest.StatementType}],Scope:[{syncRequest.Scope}],SqlId:[{syncRequest.SqlId}] succeeded.");
             }
         }
     }
