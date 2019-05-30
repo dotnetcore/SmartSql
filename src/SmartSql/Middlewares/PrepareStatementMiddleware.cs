@@ -12,13 +12,12 @@ using SmartSql.Data;
 
 namespace SmartSql.Middlewares
 {
-    public class PrepareStatementMiddleware : IMiddleware
+    public class PrepareStatementMiddleware : AbstractMiddleware
     {
         private readonly ILogger _logger;
         private readonly SqlParamAnalyzer _sqlParamAnalyzer;
         private readonly DbProviderFactory _dbProviderFactory;
         private readonly TypeHandlerFactory _typeHandlerFactory;
-        public IMiddleware Next { get; set; }
         public PrepareStatementMiddleware(SmartSqlConfig smartSqlConfig)
         {
             _logger = smartSqlConfig.LoggerFactory.CreateLogger<PrepareStatementMiddleware>();
@@ -26,10 +25,10 @@ namespace SmartSql.Middlewares
             _dbProviderFactory = smartSqlConfig.Database.DbProvider.Factory;
             _typeHandlerFactory = smartSqlConfig.TypeHandlerFactory;
         }
-        public void Invoke<TResult>(ExecutionContext executionContext)
+        public override void Invoke<TResult>(ExecutionContext executionContext)
         {
             InitParameters(executionContext);
-            Next.Invoke<TResult>(executionContext);
+            InvokeNext<TResult>(executionContext);
         }
         #region Init Parameter
         private void InitParameters(ExecutionContext executionContext)
@@ -151,10 +150,10 @@ namespace SmartSql.Middlewares
             requestContext.RealSql = requestContext.SqlBuilder.ToString().Trim();
         }
         #endregion
-        public async Task InvokeAsync<TResult>(ExecutionContext executionContext)
+        public override async Task InvokeAsync<TResult>(ExecutionContext executionContext)
         {
             InitParameters(executionContext);
-            await Next.InvokeAsync<TResult>(executionContext);
+            await InvokeNextAsync<TResult>(executionContext);
         }
     }
 }

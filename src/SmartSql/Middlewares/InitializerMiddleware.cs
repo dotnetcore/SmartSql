@@ -6,24 +6,23 @@ using System.Threading.Tasks;
 
 namespace SmartSql.Middlewares
 {
-    public class InitializerMiddleware : IMiddleware
+    public class InitializerMiddleware : AbstractMiddleware
     {
         private readonly SmartSqlConfig _smartSqlConfig;
-        public IMiddleware Next { get; set; }
         public InitializerMiddleware(SmartSqlConfig smartSqlConfig)
         {
             _smartSqlConfig = smartSqlConfig;
         }
-        public void Invoke<TResult>(ExecutionContext executionContext)
+        public override void Invoke<TResult>(ExecutionContext executionContext)
         {
             Init(executionContext);
-            Next.Invoke<TResult>(executionContext);
+            InvokeNext<TResult>(executionContext);
         }
 
-        public async Task InvokeAsync<TResult>(ExecutionContext executionContext)
+        public override async Task InvokeAsync<TResult>(ExecutionContext executionContext)
         {
             Init(executionContext);
-            await Next.InvokeAsync<TResult>(executionContext);
+            await InvokeNextAsync<TResult>(executionContext);
         }
 
         private void Init(ExecutionContext executionContext)

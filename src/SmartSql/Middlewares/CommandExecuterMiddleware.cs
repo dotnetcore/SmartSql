@@ -7,9 +7,8 @@ using Microsoft.Extensions.Logging;
 
 namespace SmartSql.Middlewares
 {
-    public class CommandExecuterMiddleware : IMiddleware
+    public class CommandExecuterMiddleware : AbstractMiddleware
     {
-        public IMiddleware Next { get; set; }
         private readonly ICommandExecuter _commandExecuter;
 
         public CommandExecuterMiddleware(SmartSqlConfig smartSqlConfig)
@@ -17,7 +16,7 @@ namespace SmartSql.Middlewares
             _commandExecuter = new CommandExecuter(smartSqlConfig.LoggerFactory.CreateLogger<CommandExecuter>());
         }
 
-        public void Invoke<TResult>(ExecutionContext executionContext)
+        public override void Invoke<TResult>(ExecutionContext executionContext)
         {
             try
             {
@@ -55,7 +54,7 @@ namespace SmartSql.Middlewares
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                Next.Invoke<TResult>(executionContext);
+                InvokeNext<TResult>(executionContext);
             }
             finally
             {
@@ -116,7 +115,7 @@ namespace SmartSql.Middlewares
         }
 
 
-        public async Task InvokeAsync<TResult>(ExecutionContext executionContext)
+        public override async Task InvokeAsync<TResult>(ExecutionContext executionContext)
         {
             try
             {
@@ -154,7 +153,7 @@ namespace SmartSql.Middlewares
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                await Next.InvokeAsync<TResult>(executionContext);
+                await InvokeNextAsync<TResult>(executionContext);
             }
             finally
             {

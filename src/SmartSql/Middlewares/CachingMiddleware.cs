@@ -5,15 +5,14 @@ using SmartSql.Cache;
 
 namespace SmartSql.Middlewares
 {
-    public class CachingMiddleware : IMiddleware
+    public class CachingMiddleware : AbstractMiddleware
     {
         private readonly ICacheManager _cacheManager;
-        public IMiddleware Next { get; set; }
         public CachingMiddleware(SmartSqlConfig smartSqlConfig)
         {
             _cacheManager = smartSqlConfig.CacheManager;
         }
-        public void Invoke<TResult>(ExecutionContext executionContext)
+        public override void Invoke<TResult>(ExecutionContext executionContext)
         {
             if (executionContext.DbSession.Transaction == null
                 && _cacheManager.TryGetValue(executionContext, out var cacheItem))
@@ -21,10 +20,10 @@ namespace SmartSql.Middlewares
                 executionContext.Result.SetData(cacheItem, true);
                 return;
             }
-            Next.Invoke<TResult>(executionContext);
+            InvokeNext<TResult>(executionContext);
         }
 
-        public async Task InvokeAsync<TResult>(ExecutionContext executionContext)
+        public override async Task InvokeAsync<TResult>(ExecutionContext executionContext)
         {
             if (executionContext.DbSession.Transaction == null
                 && _cacheManager.TryGetValue(executionContext, out var cacheItem))
@@ -32,7 +31,7 @@ namespace SmartSql.Middlewares
                 executionContext.Result.SetData(cacheItem, true);
                 return;
             }
-            await Next.InvokeAsync<TResult>(executionContext);
+            await InvokeNextAsync<TResult>(executionContext);
         }
     }
 }

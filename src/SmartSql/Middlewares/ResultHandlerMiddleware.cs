@@ -1,5 +1,4 @@
-﻿
-using SmartSql.Configuration;
+﻿using SmartSql.Configuration;
 using SmartSql.Deserializer;
 using System;
 using System.Collections.Generic;
@@ -8,18 +7,20 @@ using System.Threading.Tasks;
 
 namespace SmartSql.Middlewares
 {
-    public class ResultHandlerMiddleware : IMiddleware
+    public class ResultHandlerMiddleware : AbstractMiddleware
     {
         private readonly IDeserializerFactory _deserializerFactory;
-        public IMiddleware Next { get; set; }
+
         public ResultHandlerMiddleware(SmartSqlConfig smartSqlConfig)
         {
             _deserializerFactory = smartSqlConfig.DeserializerFactory;
         }
-        public void Invoke<TResult>(ExecutionContext executionContext)
+
+        public override void Invoke<TResult>(ExecutionContext executionContext)
         {
             var resultContext = executionContext.Result;
-            var deser = _deserializerFactory.Get(executionContext, typeof(TResult), executionContext.Request.MultipleResultMap != null);
+            var deser = _deserializerFactory.Get(executionContext, typeof(TResult),
+                executionContext.Request.MultipleResultMap != null);
             if (resultContext.IsList)
             {
                 resultContext.SetData(deser.ToList<TResult>(executionContext));
@@ -28,9 +29,11 @@ namespace SmartSql.Middlewares
             {
                 resultContext.SetData(deser.ToSinge<TResult>(executionContext));
             }
+
+            InvokeNext<TResult>(executionContext);
         }
 
-        public async Task InvokeAsync<TResult>(ExecutionContext executionContext)
+        public override async Task InvokeAsync<TResult>(ExecutionContext executionContext)
         {
             var resultContext = executionContext.Result;
             var deser = _deserializerFactory.Get(executionContext, typeof(TResult));
@@ -41,6 +44,11 @@ namespace SmartSql.Middlewares
             else
             {
                 resultContext.SetData(await deser.ToSingeAsync<TResult>(executionContext));
+            }
+
+            if (Next != null)
+            {
+                await InvokeNextAsync<TResult>(executionContext);
             }
         }
     }

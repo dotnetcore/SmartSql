@@ -4,23 +4,22 @@ using System.Threading.Tasks;
 
 namespace SmartSql.Middlewares
 {
-    public class DataSourceFilterMiddleware : IMiddleware
+    public class DataSourceFilterMiddleware : AbstractMiddleware
     {
         private readonly IDataSourceFilter _dataSourceFilter;
-        public IMiddleware Next { get; set; }
         public DataSourceFilterMiddleware(SmartSqlConfig smartSqlConfig)
         {
             _dataSourceFilter = smartSqlConfig.DataSourceFilter;
         }
-        public void Invoke<TResult>(ExecutionContext executionContext)
+        public override void Invoke<TResult>(ExecutionContext executionContext)
         {
             SetDataSource(executionContext);
-            Next.Invoke<TResult>(executionContext);
+            InvokeNext<TResult>(executionContext);
         }
-        public async Task InvokeAsync<TResult>(ExecutionContext executionContext)
+        public override async Task InvokeAsync<TResult>(ExecutionContext executionContext)
         {
             SetDataSource(executionContext);
-            await Next.InvokeAsync<TResult>(executionContext);
+            await InvokeNextAsync<TResult>(executionContext);
         }
         private void SetDataSource(ExecutionContext executionContext)
         {
