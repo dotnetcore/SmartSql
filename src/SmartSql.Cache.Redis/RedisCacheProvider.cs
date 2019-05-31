@@ -14,6 +14,8 @@ namespace SmartSql.Cache.Redis
         private TimeSpan? _expiryInterval;
         private ConnectionMultiplexer _redis;
         private IDatabase _database;
+        public bool SupportExpire => true;
+
         public void Initialize(IDictionary<string, object> properties)
         {
             properties.EnsureValue("ConnectionString", out string connStr);

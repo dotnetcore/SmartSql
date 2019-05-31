@@ -48,8 +48,7 @@ namespace SmartSql.DbSession
         {
             EnsureDataSource();
             if (Connection != null) return;
-            Connection = DataSource.DbProvider.Factory.CreateConnection();
-            Connection.ConnectionString = DataSource.ConnectionString;
+            Connection = DataSource.CreateConnection();
         }
         public void SetDataSource(AbstractDataSource dataSource)
         {

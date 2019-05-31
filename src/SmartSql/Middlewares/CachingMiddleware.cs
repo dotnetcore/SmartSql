@@ -8,30 +8,50 @@ namespace SmartSql.Middlewares
     public class CachingMiddleware : AbstractMiddleware
     {
         private readonly ICacheManager _cacheManager;
+
         public CachingMiddleware(SmartSqlConfig smartSqlConfig)
         {
             _cacheManager = smartSqlConfig.CacheManager;
         }
+
         public override void Invoke<TResult>(ExecutionContext executionContext)
         {
-            if (executionContext.DbSession.Transaction == null
-                && _cacheManager.TryGetValue(executionContext, out var cacheItem))
+            if (executionContext.Request.Cache == null)
             {
-                executionContext.Result.SetData(cacheItem, true);
+                InvokeNext<TResult>(executionContext);
                 return;
             }
-            InvokeNext<TResult>(executionContext);
+
+            if (executionContext.DbSession.Transaction == null
+                && _cacheManager.TryGetCache(executionContext, out var cacheItem))
+            {
+                executionContext.Result.SetData(cacheItem, true);
+            }
+            else
+            {
+                InvokeNext<TResult>(executionContext);
+                _cacheManager.TryAddCache(executionContext);
+            }
         }
 
         public override async Task InvokeAsync<TResult>(ExecutionContext executionContext)
         {
-            if (executionContext.DbSession.Transaction == null
-                && _cacheManager.TryGetValue(executionContext, out var cacheItem))
+            if (executionContext.Request.Cache == null)
             {
-                executionContext.Result.SetData(cacheItem, true);
+                await InvokeNextAsync<TResult>(executionContext);
                 return;
             }
-            await InvokeNextAsync<TResult>(executionContext);
+
+            if (executionContext.DbSession.Transaction == null
+                && _cacheManager.TryGetCache(executionContext, out var cacheItem))
+            {
+                executionContext.Result.SetData(cacheItem, true);
+            }
+            else
+            {
+                await InvokeNextAsync<TResult>(executionContext);
+                _cacheManager.TryAddCache(executionContext);
+            }
         }
     }
 }

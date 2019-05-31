@@ -13,7 +13,7 @@ namespace SmartSql.Cache.Default
         private int _cacheSize = 100;
         private Dictionary<CacheKey, Object> _cache;
         private IList<CacheKey> _cacheKeys;
-
+        public bool SupportExpire => false;
         public void Dispose()
         {
             Flush();

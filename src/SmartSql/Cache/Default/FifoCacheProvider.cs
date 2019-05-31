@@ -28,6 +28,9 @@ namespace SmartSql.Cache.Default
                 _cache.Clear();
             }
         }
+
+        public bool SupportExpire => false;
+
         public void Initialize(IDictionary<string, object> properties)
         {
             if (properties.Value(CACHE_SIZE, out int cacheSize))

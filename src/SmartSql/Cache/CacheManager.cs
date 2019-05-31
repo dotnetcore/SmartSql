@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 
 namespace SmartSql.Cache
 {
-
     public class CacheManager : ICacheManager
     {
         private ConcurrentDictionary<String, IList<Configuration.Cache>> _statementMappedFlushCache;
@@ -18,17 +17,19 @@ namespace SmartSql.Cache
         private readonly TimeSpan _defaultPeriodTime = TimeSpan.FromMinutes(1);
         private readonly SmartSqlConfig _smartSqlConfig;
         private readonly ILogger _logger;
+
         public CacheManager(SmartSqlConfig smartSqlConfig)
         {
             _smartSqlConfig = smartSqlConfig;
             _logger = _smartSqlConfig.LoggerFactory.CreateLogger<CacheManager>();
             smartSqlConfig.InvokeSucceedListener.InvokeSucceeded += (sender, args) =>
             {
-                HandleCache(args.ExecutionContext);
+                FlushOnExecuted(args.ExecutionContext);
             };
             InitCacheMapped();
             _timer = new Timer(FlushOnInterval, null, _defaultDueTime, _defaultPeriodTime);
         }
+
         private void InitCacheMapped()
         {
             _statementMappedFlushCache = new ConcurrentDictionary<String, IList<Configuration.Cache>>();
@@ -46,9 +47,11 @@ namespace SmartSql.Cache
                                 mappedCaches = new List<Configuration.Cache>();
                                 _statementMappedFlushCache.TryAdd(onExecute.Statement, mappedCaches);
                             }
+
                             mappedCaches.Add(cache);
                         }
                     }
+
                     if (cache.FlushInterval != null && cache.FlushInterval.Interval != TimeSpan.MinValue)
                     {
                         _cacheMappedLastFlushTime.TryAdd(cache, DateTime.Now);
@@ -56,12 +59,14 @@ namespace SmartSql.Cache
                 }
             }
         }
+
         private void FlushOnExecuted(ExecutionContext executionContext)
         {
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug($"FlushOnExecuted Start");
+                _logger.LogDebug("FlushOnExecuted Start");
             }
+
             if (executionContext.Request.IsStatementSql)
             {
                 if (_statementMappedFlushCache.TryGetValue(executionContext.Request.FullSqlId, out var caches))
@@ -72,9 +77,10 @@ namespace SmartSql.Cache
                     }
                 }
             }
+
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug($"FlushOnExecuted End");
+                _logger.LogDebug("FlushOnExecuted End");
             }
         }
 
@@ -84,6 +90,7 @@ namespace SmartSql.Cache
             {
                 _logger.LogDebug($"FlushCache Cache.Id:{cache.Id} .");
             }
+
             cache.Provider.Flush();
             if (_cacheMappedLastFlushTime.TryGetValue(cache, out var lastFlushTime))
             {
@@ -97,38 +104,46 @@ namespace SmartSql.Cache
             {
                 _logger.LogDebug($"FlushOnInterval Start");
             }
+
             foreach (var cacheKV in _cacheMappedLastFlushTime)
             {
                 var cache = cacheKV.Key;
                 var lastFlushTime = cacheKV.Value;
                 var nextFlushTime = lastFlushTime.Add(cache.FlushInterval.Interval);
-                if (DateTime.Now >= nextFlushTime)
+                if (DateTime.Now < nextFlushTime) continue;
+                if (!cache.Provider.SupportExpire)
                 {
-                    FlushCache(cache);
+                    FlushCache(cache);    
                 }
             }
+
             if (_logger.IsEnabled(LogLevel.Debug))
             {
                 _logger.LogDebug($"FlushOnInterval End");
             }
         }
 
-        public void HandleCache(ExecutionContext executionContext)
+        public bool TryAddCache(ExecutionContext executionContext)
         {
-            FlushOnExecuted(executionContext);
             var cache = executionContext.Request.Cache;
-            if (cache != null)
+            if (cache == null)
             {
-                var cacheKey = new CacheKey(executionContext.Request);
-                var isSuccess = cache.Provider.TryAdd(cacheKey, executionContext.Result.GetData());
-                if (_logger.IsEnabled(LogLevel.Debug))
-                {
-                    _logger.LogDebug($"HandleCache Cache.Id:{cache.Id} try add from Cache.Key:{cacheKey.Key} ->{isSuccess}!");
-                }
+                return false;
             }
+
+            var cacheKey = new CacheKey(executionContext.Request);
+            var isSuccess = cache.Provider.TryAdd(cacheKey, executionContext.Result.GetData());
+            if (_logger.IsEnabled(LogLevel.Debug))
+            {
+                _logger.LogDebug(
+                    $"HandleCache Cache.Id:{cache.Id} try add from Cache.Key:{cacheKey.Key} ->{isSuccess}!");
+            }
+
+            return isSuccess;
         }
 
-        public bool TryGetValue(ExecutionContext executionContext, out object cacheItem)
+
+        public bool TryGetCache(ExecutionContext executionContext, out object cacheItem)
         {
             var cache = executionContext.Request.Cache;
             if (cache == null)
@@ -136,12 +151,14 @@ namespace SmartSql.Cache
                 cacheItem = default;
                 return false;
             }
+
             var cacheKey = new CacheKey(executionContext.Request);
             bool isSuccess = cache.Provider.TryGetValue(cacheKey, out cacheItem);
             if (_logger.IsEnabled(LogLevel.Debug))
             {
                 _logger.LogDebug($"TryGetValue Cache.Key:{cacheKey.Key}，Success:{isSuccess} !");
             }
+
             return isSuccess;
         }
 
@@ -151,6 +168,7 @@ namespace SmartSql.Cache
             {
                 _logger.LogDebug("Dispose.");
             }
+
             _timer.Dispose();
             foreach (var sqlMap in _smartSqlConfig.SqlMaps.Values)
             {

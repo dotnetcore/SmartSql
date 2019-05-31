@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Data.Common;
 
 namespace SmartSql.DataSource
 {
@@ -19,5 +18,12 @@ namespace SmartSql.DataSource
         public String ConnectionString { get; set; }
 
         public DbProvider DbProvider { get; set; }
+
+        public virtual DbConnection CreateConnection()
+        {
+            var dbConnection= DbProvider.Factory.CreateConnection();
+            dbConnection.ConnectionString = ConnectionString;
+            return dbConnection;
+        }
     }
 }

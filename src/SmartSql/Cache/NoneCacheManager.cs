@@ -12,18 +12,16 @@ namespace SmartSql.Cache
         {
             
         }
-
-
-
-        public bool TryGetValue(ExecutionContext executionContext, out object cacheItem)
+        
+        public bool TryGetCache(ExecutionContext executionContext, out object cacheItem)
         {
             cacheItem = null;
             return false;
         }
 
-        public void HandleCache(ExecutionContext executionContext)
+        public bool TryAddCache(ExecutionContext executionContext)
         {
-           
+            return false;
         }
     }
 }

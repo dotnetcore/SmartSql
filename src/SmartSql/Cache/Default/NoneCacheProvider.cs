@@ -5,6 +5,7 @@ namespace SmartSql.Cache.Default
 {
     public class NoneCacheProvider : ICacheProvider
     {
+        public bool SupportExpire => true;
         public void Dispose()
         {
            

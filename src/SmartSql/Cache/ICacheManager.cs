@@ -8,7 +8,7 @@ namespace SmartSql.Cache
 {
     public interface ICacheManager : IDisposable
     {
-        bool TryGetValue(ExecutionContext executionContext, out object cacheItem);
-        void HandleCache(ExecutionContext executionContext);
+        bool TryGetCache(ExecutionContext executionContext, out object cacheItem);
+        bool TryAddCache(ExecutionContext executionContext);
     }
 }
