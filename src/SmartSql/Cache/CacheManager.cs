@@ -22,12 +22,21 @@ namespace SmartSql.Cache
         {
             _smartSqlConfig = smartSqlConfig;
             _logger = _smartSqlConfig.LoggerFactory.CreateLogger<CacheManager>();
-            smartSqlConfig.InvokeSucceedListener.InvokeSucceeded += (sender, args) =>
-            {
-                FlushOnExecuted(args.ExecutionContext);
-            };
             InitCacheMapped();
+            ListenInvokeSucceeded();
             _timer = new Timer(FlushOnInterval, null, _defaultDueTime, _defaultPeriodTime);
+        }
+
+        protected virtual void ListenInvokeSucceeded()
+        {
+            _smartSqlConfig.InvokeSucceedListener.InvokeSucceeded += (sender, args) =>
+            {
+                var reqContext = args.ExecutionContext.Request;
+                if (reqContext.IsStatementSql)
+                {
+                    FlushOnExecuted(reqContext.FullSqlId);
+                }
+            };
         }
 
         private void InitCacheMapped()
@@ -60,27 +69,24 @@ namespace SmartSql.Cache
             }
         }
 
-        private void FlushOnExecuted(ExecutionContext executionContext)
+        protected void FlushOnExecuted(string fullSqlId)
         {
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug("FlushOnExecuted Start");
+                _logger.LogDebug($"FlushOnExecuted -> FullSqlId:[{fullSqlId}] Start");
             }
 
-            if (executionContext.Request.IsStatementSql)
+            if (_statementMappedFlushCache.TryGetValue(fullSqlId, out var caches))
             {
-                if (_statementMappedFlushCache.TryGetValue(executionContext.Request.FullSqlId, out var caches))
+                foreach (var cache in caches)
                 {
-                    foreach (var cache in caches)
-                    {
-                        FlushCache(cache);
-                    }
+                    FlushCache(cache);
                 }
             }
 
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug("FlushOnExecuted End");
+                _logger.LogDebug("$FlushOnExecuted  -> FullSqlId:[{fullSqlId}] End");
             }
         }
 
@@ -113,7 +119,7 @@ namespace SmartSql.Cache
                 if (DateTime.Now < nextFlushTime) continue;
                 if (!cache.Provider.SupportExpire)
                 {
-                    FlushCache(cache);    
+                    FlushCache(cache);
                 }
             }
 
@@ -162,7 +168,7 @@ namespace SmartSql.Cache
             return isSuccess;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             if (_logger.IsEnabled(LogLevel.Debug))
             {
