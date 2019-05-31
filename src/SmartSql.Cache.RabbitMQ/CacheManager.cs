@@ -4,6 +4,7 @@ namespace SmartSql.Cache.RabbitMQ
 {
     public class CacheManager : ICacheManager
     {
+        
         public void Dispose()
         {
             throw new NotImplementedException();

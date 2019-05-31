@@ -34,6 +34,7 @@ namespace SmartSql
         public SmartSqlConfig SmartSqlConfig { get; private set; }
         public IDbSessionFactory DbSessionFactory { get; private set; }
         public ISqlMapper SqlMapper { get; private set; }
+        public ICacheManager CacheManager { get; private set; }
         public bool Built { get; private set; }
         public bool Registered { get; private set; } = true;
 
@@ -132,7 +133,7 @@ namespace SmartSql
 
             if (UsedCache)
             {
-                SmartSqlConfig.CacheManager = new CacheManager(SmartSqlConfig);
+                SmartSqlConfig.CacheManager = CacheManager ?? new CacheManager(SmartSqlConfig);
                 SmartSqlConfig.Pipeline = new PipelineBuilder()
                     .Add(new InitializerMiddleware(SmartSqlConfig))
                     .Add(new TransactionMiddleware())
@@ -188,6 +189,11 @@ namespace SmartSql
         public SmartSqlBuilder UseCache(bool isCacheEnabled = true)
         {
             _isCacheEnabled = isCacheEnabled;
+            return this;
+        }
+        public SmartSqlBuilder UseCacheManager(ICacheManager cacheManager)
+        {
+            CacheManager = cacheManager;
             return this;
         }
 
