@@ -12,7 +12,12 @@ namespace SmartSql.Cache
         {
             
         }
-        
+
+        public void ListenInvokeSucceeded()
+        {
+            
+        }
+
         public bool TryGetCache(ExecutionContext executionContext, out object cacheItem)
         {
             cacheItem = null;

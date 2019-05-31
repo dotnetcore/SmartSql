@@ -134,6 +134,7 @@ namespace SmartSql
             if (UsedCache)
             {
                 SmartSqlConfig.CacheManager = CacheManager ?? new CacheManager(SmartSqlConfig);
+                SmartSqlConfig.CacheManager.ListenInvokeSucceeded();
                 SmartSqlConfig.Pipeline = new PipelineBuilder()
                     .Add(new InitializerMiddleware(SmartSqlConfig))
                     .Add(new TransactionMiddleware())
