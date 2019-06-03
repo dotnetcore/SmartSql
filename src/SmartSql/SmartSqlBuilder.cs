@@ -137,9 +137,9 @@ namespace SmartSql
                 SmartSqlConfig.CacheManager.ListenInvokeSucceeded();
                 SmartSqlConfig.Pipeline = new PipelineBuilder()
                     .Add(new InitializerMiddleware(SmartSqlConfig))
+                    .Add(new CachingMiddleware(SmartSqlConfig))
                     .Add(new TransactionMiddleware())
                     .Add(new PrepareStatementMiddleware(SmartSqlConfig))
-                    .Add(new CachingMiddleware(SmartSqlConfig))
                     .Add(new DataSourceFilterMiddleware(SmartSqlConfig))
                     .Add(new CommandExecuterMiddleware(SmartSqlConfig))
                     .Add(new ResultHandlerMiddleware(SmartSqlConfig)).Build();

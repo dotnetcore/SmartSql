@@ -10,33 +10,37 @@ namespace SmartSql.Cache
         /// StatementKey:ReusltType.FullName:QueryString
         /// </summary>
         public String StatementKey { get; }
+
         public String Key { get; }
-        public Type ResultType { get;}
+        public Type ResultType { get; }
 
         public CacheKey(AbstractRequestContext requestContext)
         {
             ResultType = requestContext.ExecutionContext.Result.ResultType;
             StatementKey = requestContext.IsStatementSql ? requestContext.FullSqlId : requestContext.RealSql;
             StringBuilder keyBuilder = new StringBuilder();
-            keyBuilder.AppendFormat("{0}:DbParams=", StatementKey);
-            if (requestContext.Parameters.DbParameters == null)
+            keyBuilder.Append(StatementKey);
+            if (requestContext.Parameters != null && requestContext.Parameters.Count > 0)
             {
-                keyBuilder.Append("NULL");
+                keyBuilder.Append(":Params=");
+                foreach (var dbParam in requestContext.Parameters)
+                {
+                    keyBuilder.AppendFormat("{0}={1}&", dbParam.Key, dbParam.Value.Value ?? "NULL");
+                }
+                Key = keyBuilder.ToString().TrimEnd('&');
             }
-            foreach (var dbParam in requestContext.Parameters.DbParameters)
-            {
-                keyBuilder.AppendFormat("{0}={1}&", dbParam.Key, dbParam.Value.Value ?? "NULL");
-            }
+
             Key = keyBuilder.ToString();
         }
 
         public override string ToString() => Key;
         public override int GetHashCode() => Key.GetHashCode();
+
         public override bool Equals(object obj)
         {
             if (this == obj) return true;
             if (!(obj is CacheKey)) return false;
-            CacheKey cacheKey = (CacheKey)obj;
+            CacheKey cacheKey = (CacheKey) obj;
             return cacheKey.Key == Key;
         }
     }
