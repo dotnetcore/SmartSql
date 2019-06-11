@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using SmartSql;
@@ -34,6 +35,10 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IDbSessionStore GetSessionStore(this IServiceProvider sp, string alias = SmartSqlBuilder.DEFAULT_ALIAS)
         {
             return sp.GetSmartSql(alias)?.SmartSqlConfig.SessionStore;
+        }
+        public static ITransaction GetTransaction(this IServiceProvider sp, string alias = SmartSqlBuilder.DEFAULT_ALIAS)
+        {
+            return sp.GetSmartSql(alias)?.SqlMapper;
         }
     }
 }

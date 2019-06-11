@@ -1,11 +1,12 @@
 ﻿using System.Data;
+using System.Data.Common;
 
 namespace SmartSql.DbSession
 {
     public interface ITransaction
     {
-        void BeginTransaction();
-        void BeginTransaction(IsolationLevel isolationLevel);
+        DbTransaction BeginTransaction();
+        DbTransaction BeginTransaction(IsolationLevel isolationLevel);
         void CommitTransaction();
         void RollbackTransaction();
     }

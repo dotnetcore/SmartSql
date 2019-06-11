@@ -110,7 +110,7 @@ namespace SmartSql.DbSession
                 throw new SmartSqlException($"OpenConnection Unable to open connection to { DataSource.Name }.", ex);
             }
         }
-        public void BeginTransaction()
+        public DbTransaction BeginTransaction()
         {
             var operationId = Guid.Empty;
             try
@@ -126,6 +126,7 @@ namespace SmartSql.DbSession
                 TransactionBegan?.Invoke(this, DbSessionEventArgs.None);
                 #endregion
                 _diagnosticListener.WriteDbSessionBeginTransactionAfter(operationId, this);
+                return Transaction;
             }
             catch (Exception ex)
             {
@@ -133,7 +134,7 @@ namespace SmartSql.DbSession
                 throw;
             }
         }
-        public void BeginTransaction(IsolationLevel isolationLevel)
+        public DbTransaction BeginTransaction(IsolationLevel isolationLevel)
         {
             var operationId = Guid.Empty;
             try
@@ -149,6 +150,7 @@ namespace SmartSql.DbSession
                 TransactionBegan?.Invoke(this, DbSessionEventArgs.None);
                 #endregion
                 _diagnosticListener.WriteDbSessionBeginTransactionAfter(operationId, this);
+                return Transaction;
             }
             catch (Exception ex)
             {

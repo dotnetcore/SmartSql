@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 using SmartSql.Configuration;
 using SmartSql.DbSession;
@@ -19,22 +20,26 @@ namespace SmartSql
             SessionStore = smartSqlConfig.SessionStore;
         }
 
-        public void BeginTransaction()
+        public DbTransaction BeginTransaction()
         {
             if (SessionStore.LocalSession != null)
             {
-                throw new SmartSqlException("SmartSqlMapper could not invoke BeginTransaction(). A LocalSession is already existed.");
+                throw new SmartSqlException(
+                    "SmartSqlMapper could not invoke BeginTransaction(). A LocalSession is already existed.");
             }
-            SessionStore.Open().BeginTransaction();
+
+            return SessionStore.Open().BeginTransaction();
         }
 
-        public void BeginTransaction(IsolationLevel isolationLevel)
+        public DbTransaction BeginTransaction(IsolationLevel isolationLevel)
         {
             if (SessionStore.LocalSession != null)
             {
-                throw new SmartSqlException("SmartSqlMapper could not invoke BeginTransaction(). A LocalSession is already existed.");
+                throw new SmartSqlException(
+                    "SmartSqlMapper could not invoke BeginTransaction(). A LocalSession is already existed.");
             }
-            SessionStore.Open().BeginTransaction(isolationLevel);
+
+            return SessionStore.Open().BeginTransaction(isolationLevel);
         }
 
         public void CommitTransaction()
@@ -42,8 +47,10 @@ namespace SmartSql
             var session = SessionStore.LocalSession;
             if (session == null)
             {
-                throw new SmartSqlException("SmartSqlMapper could not invoke CommitTransaction(). No Transaction was started. Call BeginTransaction() first.");
+                throw new SmartSqlException(
+                    "SmartSqlMapper could not invoke CommitTransaction(). No Transaction was started. Call BeginTransaction() first.");
             }
+
             try
             {
                 session.CommitTransaction();
@@ -59,8 +66,10 @@ namespace SmartSql
             var session = SessionStore.LocalSession;
             if (session == null)
             {
-                throw new SmartSqlException("SmartSqlMapper could not invoke RollBackTransaction(). No Transaction was started. Call BeginTransaction() first.");
+                throw new SmartSqlException(
+                    "SmartSqlMapper could not invoke RollBackTransaction(). No Transaction was started. Call BeginTransaction() first.");
             }
+
             try
             {
                 session.RollbackTransaction();
@@ -82,6 +91,7 @@ namespace SmartSql
                 {
                     dbSession = SessionStore.Open();
                 }
+
                 return executeFunc(dbSession);
             }
             finally
@@ -112,6 +122,7 @@ namespace SmartSql
         {
             return ExecuteImpl(dbSession => dbSession.QuerySingle<T>(requestContext));
         }
+
         public DataSet GetDataSet(AbstractRequestContext requestContext)
         {
             return ExecuteImpl(dbSession => dbSession.GetDataSet(requestContext));
@@ -133,6 +144,7 @@ namespace SmartSql
                 {
                     dbSession = SessionStore.Open();
                 }
+
                 return await executeFunc(dbSession);
             }
             finally
@@ -151,7 +163,8 @@ namespace SmartSql
 
         public async Task<TResult> ExecuteScalarAsync<TResult>(AbstractRequestContext requestContext)
         {
-            return await ExecuteImplAsync(async dbSession => await dbSession.ExecuteScalarAsync<TResult>(requestContext));
+            return await ExecuteImplAsync(
+                async dbSession => await dbSession.ExecuteScalarAsync<TResult>(requestContext));
         }
 
         public async Task<IList<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext)
