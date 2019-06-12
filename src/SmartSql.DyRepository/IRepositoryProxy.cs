@@ -6,6 +6,6 @@ namespace SmartSql.DyRepository
 {
     public interface IRepositoryProxy
     {
-        void Invoke();
+        
     }
 }
