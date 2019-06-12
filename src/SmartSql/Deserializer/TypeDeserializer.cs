@@ -38,7 +38,7 @@ namespace SmartSql.Deserializer
             {
                 deserMethod = IDataReaderDeserializerType.Method.MakeGenericToSinge(resultType);
             }
-            ilGen.Call(deserMethod);
+            ilGen.Callvirt(deserMethod);
             if (resultType.IsValueType)
             {
                 ilGen.Box(resultType);
