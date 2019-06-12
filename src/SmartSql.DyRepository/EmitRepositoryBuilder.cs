@@ -178,7 +178,7 @@ namespace SmartSql.DyRepository
             ilGen.LoadArg(0);
             ilGen.FieldGet(sqlMapperField);
             ilGen.LoadLocalVar(0);
-            ilGen.Call(executeMethod);
+            ilGen.Callvirt(executeMethod);
             if (returnType == CommonType.Void)
             {
                 ilGen.Pop();
