@@ -29,6 +29,9 @@
         <IsNotEmpty Prepend="And" Property="Status">
           T.Status = @Status
         </IsNotEmpty>
+        <Switch Prepend="And" Property="Index">
+          <Case CompareValue="1">1=1</Case>
+        </Switch>
       </Where>
     </Statement>
 

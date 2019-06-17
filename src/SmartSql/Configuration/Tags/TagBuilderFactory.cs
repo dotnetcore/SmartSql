@@ -9,6 +9,7 @@ namespace SmartSql.Configuration.Tags
     public class TagBuilderFactory : ITagBuilderFactory
     {
         private readonly IDictionary<String, ITagBuilder> _tagBuilderMap = new Dictionary<String, ITagBuilder>();
+
         public TagBuilderFactory()
         {
             _tagBuilderMap.Add(nameof(Dynamic), new DynamicBuilder());
@@ -27,6 +28,7 @@ namespace SmartSql.Configuration.Tags
             _tagBuilderMap.Add(nameof(IsNotNull), new IsNotNullBuilder());
             _tagBuilderMap.Add(nameof(IsNull), new IsNullBuilder());
             _tagBuilderMap.Add(nameof(IsProperty), new IsPropertyBuilder());
+            _tagBuilderMap.Add(nameof(IsNotProperty), new IsNotPropertyBuilder());
             _tagBuilderMap.Add(nameof(IsTrue), new IsTrueBuilder());
             _tagBuilderMap.Add(nameof(Placeholder), new PlaceholderBuilder());
             _tagBuilderMap.Add(nameof(Range), new RangeBuilder());
@@ -38,14 +40,15 @@ namespace SmartSql.Configuration.Tags
             _tagBuilderMap.Add(nameof(Switch.Default), new SwitchDefaultBuilder());
             _tagBuilderMap.Add(nameof(Where), new WhereBuilder());
             _tagBuilderMap.Add(nameof(IdGenerator), new IdGeneratorBuilder());
-
         }
+
         public ITagBuilder Get(string nodeName)
         {
             if (!_tagBuilderMap.ContainsKey(nodeName))
             {
                 throw new SmartSqlException($"Not support Node.Name:{nodeName}!");
             }
+
             return _tagBuilderMap[nodeName];
         }
 

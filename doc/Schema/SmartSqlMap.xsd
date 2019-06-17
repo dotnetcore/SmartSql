@@ -200,6 +200,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -229,6 +230,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -268,6 +270,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -299,6 +302,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -331,6 +335,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -363,6 +368,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -395,6 +401,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -427,6 +434,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -459,6 +467,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -490,6 +499,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -522,6 +532,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -553,6 +564,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -584,6 +596,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -615,6 +628,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -646,6 +660,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
@@ -678,6 +693,37 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
+        <xs:element ref="Placeholder" />
+        <xs:element ref="Dynamic" />
+        <xs:element ref="Where" />
+        <xs:element ref="For" />
+        <xs:element ref="Env" />
+      </xs:choice>
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsNotProperty">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="IsEmpty" />
+        <xs:element ref="IsEqual" />
+        <xs:element ref="IsGreaterEqual" />
+        <xs:element ref="IsGreaterThan" />
+        <xs:element ref="IsLessEqual" />
+        <xs:element ref="IsLessThan" />
+        <xs:element ref="IsNotEmpty" />
+        <xs:element ref="IsNotEqual" />
+        <xs:element ref="IsNotNull" />
+        <xs:element ref="IsNull" />
+        <xs:element ref="Include" />
+        <xs:element ref="Switch" />
+        <xs:element ref="IsTrue" />
+        <xs:element ref="IsFalse" />
+        <xs:element ref="Range" />
+        <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
         <xs:element ref="Where" />
@@ -707,6 +753,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -744,6 +791,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -775,6 +823,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -804,6 +853,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="For" />
@@ -831,6 +881,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -866,6 +917,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />
@@ -904,6 +956,7 @@
         <xs:element ref="IsFalse" />
         <xs:element ref="Range" />
         <xs:element ref="IsProperty" />
+        <xs:element ref="IsNotProperty" />
         <xs:element ref="Script" />
         <xs:element ref="Placeholder" />
         <xs:element ref="Dynamic" />

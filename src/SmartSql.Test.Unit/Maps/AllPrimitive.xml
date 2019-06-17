@@ -119,9 +119,9 @@
 
       </Where>
     </Statement>
-    <!--<Statement Id="QueryByRedisCache"  Cache="RedisCache">
+    <Statement Id="QueryByRedisCache"  Cache="RedisCache">
       SELECT Top 6 T.* From T_AllPrimitive T;
-    </Statement>-->
+    </Statement>
     <Statement Id="QueryByLruCache"  Cache="LruCache">
       SELECT Top 6 T.* From T_AllPrimitive T;
     </Statement>

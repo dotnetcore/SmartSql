@@ -16,7 +16,7 @@ namespace SmartSql.Test.Unit.Cache
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
-        //[Fact]
+        [Fact]
         public void QueryByRedisCache()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
