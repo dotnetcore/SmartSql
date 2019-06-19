@@ -16,12 +16,15 @@ namespace SmartSql.Test.Unit.IdGenerator
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
+
         [Fact]
         public void NextId()
         {
             var id = SnowflakeId.Default.NextId();
+            var idState = SnowflakeId.Default.FromId(id);
             Assert.NotEqual(0, id);
         }
+
         [Fact]
         public void Insert()
         {
