@@ -17,7 +17,7 @@ namespace SmartSql.IdGenerator
         public DateTimeOffset EpochTime { get; protected set; }
         public long MachineId { get; protected set; }
         public long Sequence { get; protected set; }
-        public int MaxMachineId { get; protected set; }
+        public int MaxMachineMask { get; protected set; }
         public int SequenceMask { get; protected set; }
         public int TimestampShift { get; protected set; }
         public long TimestampMask { get; protected set; }
@@ -42,14 +42,15 @@ namespace SmartSql.IdGenerator
                 epoch = DEFAULT_EPOCH;
             }
 
+            // EpochDate is Local Date
             if (parameters.Value("EpochDate", out string epochDateStr))
             {
-                if (!DateTime.TryParse(epochDateStr, out var epochDate))
+                if (!DateTimeOffset.TryParse(epochDateStr, out var epochDate))
                 {
                     throw new ArgumentException($"EpochDate:[{epochDateStr}] can not convert to DateTime.");
                 }
-                
-                epoch = new DateTimeOffset(epochDate).ToUnixTimeMilliseconds();
+
+                epoch = epochDate.ToUnixTimeMilliseconds();
             }
 
             InitStatus(machineId, sequence, machineIdBits, sequenceBits, epoch);
@@ -73,14 +74,14 @@ namespace SmartSql.IdGenerator
             MachineId = machineId;
             Sequence = sequence;
             MachineIdBits = machineIdBits;
-            MaxMachineId = (int) GetMask(MachineIdBits);
+            MaxMachineMask = (int) GetMask(MachineIdBits);
             SequenceBits = sequenceBits;
             SequenceMask = (int) GetMask(sequenceBits);
             TimestampShift = SequenceBits + MachineIdBits;
             TimestampMask = GetMask(DEFAULT_TOTAL_BITS - TimestampShift);
-            if (MachineId > MaxMachineId || MachineId < 0)
+            if (MachineId > MaxMachineMask || MachineId < 0)
             {
-                throw new ArgumentException($"worker Id can't be greater than {MaxMachineId} or less than 0");
+                throw new ArgumentException($"worker Id can't be greater than {MaxMachineMask} or less than 0");
             }
         }
 
@@ -126,12 +127,18 @@ namespace SmartSql.IdGenerator
 
         public SnowflakeIdState FromId(long snowflakeId)
         {
-            return new SnowflakeIdState
-            {
-                Sequence = snowflakeId & SequenceMask,
-                MachineId = (snowflakeId >> SequenceBits) & MaxMachineId,
-                Time = EpochTime.AddMilliseconds((snowflakeId >> TimestampShift) & TimestampMask).DateTime
-            };
+            return new SnowflakeIdState(snowflakeId, this);
+        }
+
+        public SnowflakeIdState FromId(string idString)
+        {
+            return new SnowflakeIdState(idString,this);
+        }
+
+        public long FromIdState(SnowflakeIdState idState)
+        {
+            var timestamp = idState.UtcTime.ToUnixTimeMilliseconds();
+            return ((timestamp - Epoch) << TimestampShift) | (idState.MachineId << SequenceBits) | idState.Sequence;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -22,6 +22,7 @@ namespace SmartSql.Test.Unit.IdGenerator
         {
             var id = SnowflakeId.Default.NextId();
             var idState = SnowflakeId.Default.FromId(id);
+            
             Assert.NotEqual(0, id);
         }
 

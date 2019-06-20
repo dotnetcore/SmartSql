@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SmartSql.Configuration.Tags;
 
 namespace SmartSql.IdGenerator
 {
@@ -11,20 +12,16 @@ namespace SmartSql.IdGenerator
         DateTimeOffset EpochTime { get; }
         long MachineId { get; }
         long Sequence { get; }
-        int MaxMachineId { get; }
+        int MaxMachineMask { get; }
         int SequenceMask { get; }
         int TimestampShift { get; }
         long LastTimestamp { get; }
+        long TimestampMask { get; }
         long TilNextMillis(long lastTimestamp);
         long TimeGen();
 
         SnowflakeIdState FromId(long snowflakeId);
-    }
-
-    public class SnowflakeIdState
-    {
-        public DateTime Time { get; set; }
-        public long MachineId { get;set;  }
-        public long Sequence { get;set;  }
+        SnowflakeIdState FromId(String idString);
+        long FromIdState(SnowflakeIdState idState);
     }
 }
