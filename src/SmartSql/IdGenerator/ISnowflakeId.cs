@@ -22,6 +22,5 @@ namespace SmartSql.IdGenerator
 
         SnowflakeIdState FromId(long snowflakeId);
         SnowflakeIdState FromId(String idString);
-        long FromIdState(SnowflakeIdState idState);
     }
 }
