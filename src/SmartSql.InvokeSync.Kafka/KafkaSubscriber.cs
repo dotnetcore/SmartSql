@@ -11,11 +11,12 @@ namespace SmartSql.InvokeSync.Kafka
     {
         private readonly KafkaOptions _kafkaOptions;
         private readonly ILogger<KafkaSubscriber> _logger;
-        private IConsumer<Null, string> _consumer;
+        private readonly IConsumer<Null, string> _consumer;
         private readonly CancellationTokenSource _tokenSource;
+        private Task _runTask;
         public event EventHandler<SyncRequest> Received;
 
-        public KafkaSubscriber(KafkaOptions kafkaOptions, ILogger<KafkaSubscriber> logger)
+        public KafkaSubscriber(KafkaOptions kafkaOptions, ILogger<KafkaSubscriber> logger, Task runTask)
         {
             _tokenSource = new CancellationTokenSource();
             _kafkaOptions = kafkaOptions;
@@ -28,12 +29,13 @@ namespace SmartSql.InvokeSync.Kafka
         public void Start()
         {
             _consumer.Subscribe(_kafkaOptions.Topic);
-            Task.Factory.StartNew(Loop, TaskCreationOptions.LongRunning);
+            _runTask = Task.Factory.StartNew(Loop, TaskCreationOptions.LongRunning);
         }
 
         public void Stop()
         {
             _tokenSource.Cancel();
+            _runTask.Dispose();
             _consumer.Dispose();
         }
 
