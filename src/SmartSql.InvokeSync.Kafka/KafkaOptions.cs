@@ -7,6 +7,7 @@ namespace SmartSql.InvokeSync.Kafka
     {
         private bool _isInitialize;
         private const string BOOTSTRAP_SERVERS = "bootstrap.servers";
+
         public KafkaOptions()
         {
             Config = new Dictionary<string, string>();
@@ -27,7 +28,7 @@ namespace SmartSql.InvokeSync.Kafka
             _isInitialize = true;
             if (!Config.ContainsKey(BOOTSTRAP_SERVERS))
             {
-                Config.Add(BOOTSTRAP_SERVERS,Servers);
+                Config.Add(BOOTSTRAP_SERVERS, Servers);
             }
 
             return Config;

@@ -6,6 +6,7 @@ namespace SmartSql.InvokeSync
     public interface ISubscriber
     {
         event EventHandler<SyncRequest> Received;
-        void Listening();
+        void Start();
+        void Stop();
     }
 }

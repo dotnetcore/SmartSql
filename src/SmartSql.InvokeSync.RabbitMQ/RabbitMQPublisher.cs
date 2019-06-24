@@ -17,7 +17,7 @@ namespace SmartSql.InvokeSync.RabbitMQ
 
         public RabbitMQPublisher(
             ILogger<RabbitMQPublisher> _logger
-            ,RabbitMQOptions rabbitMqOptions
+            , RabbitMQOptions rabbitMqOptions
             , PersistentConnection connection)
         {
             this._logger = _logger;
@@ -45,10 +45,11 @@ namespace SmartSql.InvokeSync.RabbitMQ
                 false,
                 new BasicProperties {Persistent = true},
                 body);
-            
+
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug($"Publish SyncRequest -> Id:{syncRequest.Id} succeeded.");
+                _logger.LogDebug(
+                    $"Publish SyncRequest -> Id:{syncRequest.Id} succeeded, {nameof(RabbitMQOptions.Exchange)}:[{_rabbitMqOptions.Exchange}], {nameof(RabbitMQOptions.ExchangeType)}:[{_rabbitMqOptions.ExchangeType}], {nameof(RabbitMQOptions.RoutingKey)}:[{_rabbitMqOptions.RoutingKey}].");
             }
 
             return Task.CompletedTask;

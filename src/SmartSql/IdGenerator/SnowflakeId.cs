@@ -55,7 +55,7 @@ namespace SmartSql.IdGenerator
         }
 
 
-        public void Initialize(IDictionary<string, object> parameters)
+        public override void Initialize(IDictionary<string, object> parameters)
         {
             parameters.EnsureValue(nameof(WorkerId), out long workerId);
             parameters.Value(nameof(DatacenterId), out long datacenterId);

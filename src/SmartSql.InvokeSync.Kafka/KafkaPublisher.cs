@@ -20,9 +20,9 @@ namespace SmartSql.InvokeSync.Kafka
             _producer = new ProducerBuilder<Null, String>(_kafkaOptions.AsKafkaConfig()).Build();
         }
 
-        public async Task PublishAsync(SyncRequest publishRequest)
+        public async Task PublishAsync(SyncRequest syncRequest)
         {
-            var data = JsonConvert.SerializeObject(publishRequest);
+            var data = JsonConvert.SerializeObject(syncRequest);
             var deliveryResult = await _producer.ProduceAsync(_kafkaOptions.Topic, new Message<Null, string>
             {
                 Value = data
@@ -33,12 +33,14 @@ namespace SmartSql.InvokeSync.Kafka
             {
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
-                    _logger.LogDebug($"kafka topic message [{_kafkaOptions.Topic}] has been published.");
+                    _logger.LogDebug(
+                        $"Publish SyncRequest -> Id:{syncRequest.Id} succeeded, {nameof(KafkaOptions.Topic)}:[{_kafkaOptions.Topic}], {nameof(deliveryResult.Offset)}:{deliveryResult.Offset}.");
                 }
             }
             else
             {
-                _logger.LogError($"kafka topic message [{_kafkaOptions.Topic}] publish failed.");
+                _logger.LogError(
+                    $"Publish SyncRequest -> Id:{syncRequest.Id} failed, {nameof(KafkaOptions.Topic)}:[{_kafkaOptions.Topic}], {nameof(deliveryResult.Offset)}:{deliveryResult.Offset}.");
             }
         }
 

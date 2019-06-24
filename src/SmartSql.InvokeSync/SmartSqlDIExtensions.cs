@@ -40,7 +40,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var subscriber = serviceProvider.GetRequiredService<ISubscriber>();
             subscriber.Received += (sender, request) => { onReceived(request); };
-            subscriber.Listening();
+            subscriber.Start();
             return serviceProvider;
         }
     }

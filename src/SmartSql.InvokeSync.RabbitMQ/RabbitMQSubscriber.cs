@@ -12,7 +12,7 @@ namespace SmartSql.InvokeSync.RabbitMQ
         private readonly ILogger<RabbitMQSubscriber> _logger;
         private readonly RabbitMQOptions _rabbitMqOptions;
         private readonly PersistentConnection _connection;
-
+        private IModel _consumerChannel;
         public RabbitMQSubscriber(
             ILogger<RabbitMQSubscriber> logger
             , RabbitMQOptions rabbitMqOptions
@@ -25,21 +25,21 @@ namespace SmartSql.InvokeSync.RabbitMQ
 
         public event EventHandler<SyncRequest> Received;
 
-        public void Listening()
+        public void Start()
         {
             if (!_connection.IsConnected)
             {
                 _connection.TryConnect();
             }
 
-            var consumerChannel = _connection.CreateModel();
-            consumerChannel.ExchangeDeclare(_rabbitMqOptions.Exchange,
+            _consumerChannel = _connection.CreateModel();
+            _consumerChannel.ExchangeDeclare(_rabbitMqOptions.Exchange,
                 _rabbitMqOptions.ExchangeType, true, false);
-            consumerChannel.QueueDeclare(_rabbitMqOptions.QueueName, true, false, false, null);
-            consumerChannel.QueueBind(_rabbitMqOptions.QueueName,
+            _consumerChannel.QueueDeclare(_rabbitMqOptions.QueueName, true, false, false, null);
+            _consumerChannel.QueueBind(_rabbitMqOptions.QueueName,
                 _rabbitMqOptions.Exchange,
                 _rabbitMqOptions.RoutingKey);
-            var consumer = new EventingBasicConsumer(consumerChannel);
+            var consumer = new EventingBasicConsumer(_consumerChannel);
             consumer.Received += (model, ea) =>
             {
                 var message = Encoding.UTF8.GetString(ea.Body);
@@ -57,13 +57,18 @@ namespace SmartSql.InvokeSync.RabbitMQ
                     _logger.LogError(new EventId(ex.HResult), ex, ex.Message);
                 }
             };
-            consumerChannel.BasicQos(0, 1, false);
-            consumerChannel.BasicConsume(_rabbitMqOptions.QueueName, true, consumer);
+            _consumerChannel.BasicQos(0, 1, false);
+            _consumerChannel.BasicConsume(_rabbitMqOptions.QueueName, true, consumer);
 
-            consumerChannel.CallbackException += (sender, ea) =>
+            _consumerChannel.CallbackException += (sender, ea) =>
             {
                 _logger.LogError(ea.Exception,$"consumerChannel callback exception:{ea.Exception?.Message}");
             };
+        }
+
+        public void Stop()
+        {
+            _consumerChannel.Dispose();
         }
     }
 }
