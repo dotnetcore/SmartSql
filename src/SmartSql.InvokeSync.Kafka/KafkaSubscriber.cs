@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 
 namespace SmartSql.InvokeSync.Kafka
 {
-    // TODO impl
     public class KafkaSubscriber : ISubscriber
     {
         private readonly KafkaOptions _kafkaOptions;

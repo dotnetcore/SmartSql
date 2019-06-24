@@ -35,9 +35,9 @@
   <IdGenerators>
     <IdGenerator Name="SnowflakeId" Type="SnowflakeId">
       <Properties>
-        <Property Name="WorkerIdBits" Value="10"/>
-        <Property Name="WorkerId" Value="888"/>
-        <Property Name="Sequence" Value="14"/>
+        <Property Name="WorkerIdBits" Value="8"/>
+        <Property Name="WorkerId" Value="8"/>
+        <Property Name="Sequence" Value="1"/>
       </Properties>
     </IdGenerator>
   </IdGenerators>
