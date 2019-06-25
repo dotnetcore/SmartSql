@@ -16,7 +16,7 @@ namespace SmartSql.InvokeSync.Kafka
         private Task _runTask;
         public event EventHandler<SyncRequest> Received;
 
-        public KafkaSubscriber(KafkaOptions kafkaOptions, ILogger<KafkaSubscriber> logger, Task runTask)
+        public KafkaSubscriber(KafkaOptions kafkaOptions, ILogger<KafkaSubscriber> logger)
         {
             _tokenSource = new CancellationTokenSource();
             _kafkaOptions = kafkaOptions;
