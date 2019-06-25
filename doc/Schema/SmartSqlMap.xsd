@@ -930,6 +930,11 @@
       <xs:attribute name="DbProvider" type="xs:string" use="required" />
     </xs:complexType>
   </xs:element>
+  <xs:element name="LogicTable">
+    <xs:complexType mixed="true">
+      <xs:attribute name="Name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
   <xs:element name="IdGenerator">
     <xs:complexType>
       <xs:attribute name="Id" type="xs:string" use="required" />
@@ -939,6 +944,7 @@
   <xs:element name="Statement">
     <xs:complexType mixed="true">
       <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="LogicTable" />
         <xs:element ref="IdGenerator" minOccurs="0" maxOccurs="1"/>
         <xs:element ref="IsEmpty" />
         <xs:element ref="IsEqual" />
