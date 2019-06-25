@@ -11,7 +11,7 @@ namespace SmartSql.InvokeSync.Kafka
     {
         private readonly KafkaOptions _kafkaOptions;
         private readonly ILogger<KafkaSubscriber> _logger;
-        private readonly IConsumer<Null, string> _consumer;
+        private readonly IConsumer<String, string> _consumer;
         private readonly CancellationTokenSource _tokenSource;
         private Task _runTask;
         public event EventHandler<SyncRequest> Received;
@@ -21,7 +21,7 @@ namespace SmartSql.InvokeSync.Kafka
             _tokenSource = new CancellationTokenSource();
             _kafkaOptions = kafkaOptions;
             _logger = logger;
-            _consumer = new ConsumerBuilder<Null, string>(kafkaOptions.AsKafkaConfig())
+            _consumer = new ConsumerBuilder<String, string>(kafkaOptions.AsKafkaConfig())
                 .SetErrorHandler(OnConsumeError)
                 .Build();
         }
@@ -62,7 +62,7 @@ namespace SmartSql.InvokeSync.Kafka
             }
         }
 
-        private void OnConsumeError(IConsumer<Null, string> consumer, Error error)
+        private void OnConsumeError(IConsumer<String, string> consumer, Error error)
         {
             _logger.LogError($"{nameof(Error.Code)} :[{error.Code}] , {nameof(Error.Reason)}:[{error.Reason}]");
         }

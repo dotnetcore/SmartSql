@@ -71,7 +71,7 @@ namespace SmartSql.Cache
 
             if (Logger.IsEnabled(LogLevel.Debug))
             {
-                Logger.LogDebug("$FlushOnExecuted  -> FullSqlId:[{fullSqlId}] End");
+                Logger.LogDebug($"FlushOnExecuted  -> FullSqlId:[{fullSqlId}] End");
             }
         }
         private void FlushCache(Configuration.Cache cache)
@@ -91,7 +91,7 @@ namespace SmartSql.Cache
         {
             if (Logger.IsEnabled(LogLevel.Debug))
             {
-                Logger.LogDebug($"FlushOnInterval Start");
+                Logger.LogDebug("FlushOnInterval Start");
             }
 
             foreach (var cacheKV in CacheMappedLastFlushTime)
@@ -108,7 +108,7 @@ namespace SmartSql.Cache
 
             if (Logger.IsEnabled(LogLevel.Debug))
             {
-                Logger.LogDebug($"FlushOnInterval End");
+                Logger.LogDebug("FlushOnInterval End");
             }
         }
         public abstract void ListenInvokeSucceeded();
