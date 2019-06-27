@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+//*******************************
+// Create By Ahoo Wang
+// Date 2019-04-18 12:59
+// Code Generate By SmartCode
+// Code Generate Github : https://github.com/Ahoo-Wang/SmartCode
+//*******************************-->
+
+<SmartSqlMap Scope="ShardingTable" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+
+  <Statements>
+    <!--新增-->
+    <Statement Id="Insert">
+      <IdGenerator Name="SnowflakeId" Id="Id"/>
+      INSERT INTO <ShardingTable Name="user"/>
+      (
+      UserName,
+      Status
+      )
+      VALUES
+      (
+      @UserName,
+      @Status
+      )
+    </Statement>
+  </Statements>
+</SmartSqlMap>

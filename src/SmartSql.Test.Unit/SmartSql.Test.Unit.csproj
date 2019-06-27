@@ -18,6 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Maps\ShardingTable.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Maps\User.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

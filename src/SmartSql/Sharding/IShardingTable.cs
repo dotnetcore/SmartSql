@@ -1,6 +1,6 @@
 namespace SmartSql.Sharding
 {
-    public interface IShardingTable
+    public interface IShardingTable : IInitialize
     {
         string ActualTable(AbstractRequestContext requestContext, string logicTableName);
     }
