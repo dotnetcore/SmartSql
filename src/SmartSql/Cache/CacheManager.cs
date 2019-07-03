@@ -10,11 +10,7 @@ namespace SmartSql.Cache
 {
     public class CacheManager : AbstractCacheManager
     {
-        public CacheManager(SmartSqlConfig smartSqlConfig) : base(smartSqlConfig)
-        {
-        }
-
-        public override void ListenInvokeSucceeded()
+        protected override void ListenInvokeSucceeded()
         {
             SmartSqlConfig.InvokeSucceedListener.InvokeSucceeded += (sender, args) =>
             {

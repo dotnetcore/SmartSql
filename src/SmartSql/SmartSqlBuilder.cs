@@ -35,6 +35,7 @@ namespace SmartSql
         public IDbSessionFactory DbSessionFactory { get; private set; }
         public ISqlMapper SqlMapper { get; private set; }
         public ICacheManager CacheManager { get; private set; }
+        public IDataSourceFilter DataSourceFilter { get; private set; }
         public bool Built { get; private set; }
         public bool Registered { get; private set; } = true;
 
@@ -61,6 +62,8 @@ namespace SmartSql
 
         private void SetupSmartSql()
         {
+            #region IdGen
+
             foreach (var idGen in SmartSqlConfig.IdGenerators.Values)
             {
                 if (idGen is ISetupSmartSql setupSmartSql)
@@ -68,6 +71,17 @@ namespace SmartSql
                     setupSmartSql.SetupSmartSql(this);
                 }
             }
+
+            #endregion
+
+            #region CacheManager
+
+            if (CacheManager is ISetupSmartSql cacheManager)
+            {
+                cacheManager.SetupSmartSql(this);
+            }
+
+            #endregion
         }
 
         public IDbSessionFactory GetDbSessionFactory()
@@ -85,7 +99,7 @@ namespace SmartSql
             SmartSqlConfig = ConfigBuilder.Build(_importProperties);
             SmartSqlConfig.Alias = Alias;
             SmartSqlConfig.LoggerFactory = LoggerFactory;
-            SmartSqlConfig.DataSourceFilter = _dataSourceFilter ?? new DataSourceFilter(SmartSqlConfig.LoggerFactory);
+            SmartSqlConfig.DataSourceFilter = DataSourceFilter ?? new DataSourceFilter(SmartSqlConfig.LoggerFactory);
             if (_isCacheEnabled.HasValue)
             {
                 SmartSqlConfig.Settings.IsCacheEnabled = _isCacheEnabled.Value;
@@ -133,8 +147,12 @@ namespace SmartSql
 
             if (UsedCache)
             {
-                SmartSqlConfig.CacheManager = CacheManager ?? new CacheManager(SmartSqlConfig);
-                SmartSqlConfig.CacheManager.ListenInvokeSucceeded();
+                if (CacheManager == null)
+                {
+                    CacheManager = new CacheManager();
+                }
+
+                SmartSqlConfig.CacheManager = CacheManager;
                 SmartSqlConfig.Pipeline = new PipelineBuilder()
                     .Add(new InitializerMiddleware(SmartSqlConfig))
                     .Add(new CachingMiddleware(SmartSqlConfig))
@@ -159,7 +177,6 @@ namespace SmartSql
 
         #region Instance
 
-        private IDataSourceFilter _dataSourceFilter;
         private bool? _isCacheEnabled;
         private IEnumerable<KeyValuePair<string, string>> _importProperties;
 
@@ -183,7 +200,7 @@ namespace SmartSql
 
         public SmartSqlBuilder UseDataSourceFilter(IDataSourceFilter dataSourceFilter)
         {
-            _dataSourceFilter = dataSourceFilter;
+            DataSourceFilter = dataSourceFilter;
             return this;
         }
 
@@ -192,6 +209,7 @@ namespace SmartSql
             _isCacheEnabled = isCacheEnabled;
             return this;
         }
+
         public SmartSqlBuilder UseCacheManager(ICacheManager cacheManager)
         {
             CacheManager = cacheManager;

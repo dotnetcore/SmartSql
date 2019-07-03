@@ -7,24 +7,16 @@ using SmartSql.Configuration;
 
 namespace SmartSql.Cache
 {
-    public abstract class AbstractCacheManager : ICacheManager
+    public abstract class AbstractCacheManager : ICacheManager, ISetupSmartSql
     {
         protected ConcurrentDictionary<string, IList<Configuration.Cache>> StatementMappedFlushCache { get; set; }
         protected ConcurrentDictionary<Configuration.Cache, DateTime> CacheMappedLastFlushTime { get; set; }
-        protected Timer Timer { get; }
+        protected Timer Timer { get; private set; }
         protected TimeSpan DueTime { get; } = TimeSpan.FromMinutes(1);
         protected TimeSpan PeriodTime { get; } = TimeSpan.FromMinutes(1);
-        protected SmartSqlConfig SmartSqlConfig { get; }
-        protected ILogger Logger { get; }
+        protected SmartSqlConfig SmartSqlConfig { get; private set; }
+        protected ILogger Logger { get; private set; }
 
-        protected AbstractCacheManager(SmartSqlConfig smartSqlConfig)
-        {
-            SmartSqlConfig = smartSqlConfig;
-            Logger = SmartSqlConfig.LoggerFactory.CreateLogger<AbstractCacheManager>();
-            InitCacheMapped();
-            Timer = new Timer(FlushOnInterval, null, DueTime, PeriodTime);
-        }
-        
         private void InitCacheMapped()
         {
             StatementMappedFlushCache = new ConcurrentDictionary<String, IList<Configuration.Cache>>();
@@ -54,6 +46,7 @@ namespace SmartSql.Cache
                 }
             }
         }
+
         protected void FlushOnExecuted(string fullSqlId)
         {
             if (Logger.IsEnabled(LogLevel.Debug))
@@ -74,6 +67,7 @@ namespace SmartSql.Cache
                 Logger.LogDebug($"FlushOnExecuted  -> FullSqlId:[{fullSqlId}] End");
             }
         }
+
         private void FlushCache(Configuration.Cache cache)
         {
             if (Logger.IsEnabled(LogLevel.Debug))
@@ -87,6 +81,7 @@ namespace SmartSql.Cache
                 CacheMappedLastFlushTime[cache] = DateTime.Now;
             }
         }
+
         private void FlushOnInterval(object state)
         {
             if (Logger.IsEnabled(LogLevel.Debug))
@@ -111,7 +106,9 @@ namespace SmartSql.Cache
                 Logger.LogDebug("FlushOnInterval End");
             }
         }
-        public abstract void ListenInvokeSucceeded();
+
+        protected abstract void ListenInvokeSucceeded();
+
         public virtual bool TryAddCache(ExecutionContext executionContext)
         {
             var cache = executionContext.Request.Cache;
@@ -130,7 +127,7 @@ namespace SmartSql.Cache
 
             return isSuccess;
         }
-        
+
         public virtual bool TryGetCache(ExecutionContext executionContext, out object cacheItem)
         {
             var cache = executionContext.Request.Cache;
@@ -165,6 +162,15 @@ namespace SmartSql.Cache
                     cache.Provider.Dispose();
                 }
             }
+        }
+
+        public virtual void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
+        {
+            SmartSqlConfig = smartSqlBuilder.SmartSqlConfig;
+            Logger = SmartSqlConfig.LoggerFactory.CreateLogger<AbstractCacheManager>();
+            InitCacheMapped();
+            Timer = new Timer(FlushOnInterval, null, DueTime, PeriodTime);
+            ListenInvokeSucceeded();
         }
     }
 }
