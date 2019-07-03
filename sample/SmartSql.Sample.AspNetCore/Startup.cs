@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SmartSql.Cache.Sync;
 using SmartSql.ConfigBuilder;
 using SmartSql.DIExtension;
+using SmartSql.InvokeSync;
 using SmartSql.InvokeSync.Kafka;
 using SmartSql.Sample.AspNetCore.Service;
 using Swashbuckle.AspNetCore.Swagger;
@@ -28,18 +30,23 @@ namespace SmartSql.Sample.AspNetCore
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services
-                .AddSmartSql((builder) => { builder.UseProperties(Configuration); })
+                .AddSmartSql((sp, builder) =>
+                {
+                    builder.UseProperties(Configuration);
+                    var subscriber = sp.GetRequiredService<ISubscriber>();
+                    builder.UseCacheManager(new SyncCacheManager(subscriber));
+                })
                 .AddRepositoryFromAssembly(o =>
                 {
                     o.AssemblyString = "SmartSql.Sample.AspNetCore";
                     o.Filter = (type) => type.Namespace == "SmartSql.Sample.AspNetCore.DyRepositories";
                 })
-                .AddInvokeSync(options => {  })
+                .AddInvokeSync(options => { })
                 .AddKafkaPublisher(options =>
                 {
                     options.Servers = "localhost:9092";
                     options.Topic = "smartsql.sync";
-                    options.Config.Add("group.id","SmartSql");
+                    options.Config.Add("group.id", "SmartSql");
                 });
             services.AddSingleton<UserService>();
             RegisterConfigureSwagger(services);

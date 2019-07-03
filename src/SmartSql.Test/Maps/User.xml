@@ -9,10 +9,7 @@
 
 <SmartSqlMap Scope="User" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Caches >
-    <Cache Id="RedisCache" Type="${RedisCacheProvider}">
-      <Property Name="DatabaseId" Value="3"/>
-      <Property Name="ConnectionString" Value="${Redis}"/>
-      <FlushOnExecute Statement="Insert"/>
+    <Cache Id="UserCache" Type="Lru">
       <FlushOnExecute Statement="Update"/>
       <FlushOnExecute Statement="Delete"/>
     </Cache>
@@ -106,7 +103,7 @@
     </Statement>
 
     <!--获取表映射实体-->
-    <Statement Id="GetEntity" >
+    <Statement Id="GetEntity" Cache="UserCache" >
       Select Top 1 T.* From T_User T With(NoLock)
       <Where Min="1">
         <IsNotEmpty Prepend="And" Property="Id">

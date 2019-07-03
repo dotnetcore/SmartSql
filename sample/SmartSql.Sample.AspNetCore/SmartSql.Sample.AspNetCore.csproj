@@ -28,6 +28,7 @@
     <ProjectReference Include="..\..\src\SmartSql.Bulk.SqlServer\SmartSql.Bulk.SqlServer.csproj" />
     <ProjectReference Include="..\..\src\SmartSql.Bulk\SmartSql.Bulk.csproj" />
     <ProjectReference Include="..\..\src\SmartSql.Cache.Redis\SmartSql.Cache.Redis.csproj" />
+    <ProjectReference Include="..\..\src\SmartSql.Cache.Sync\SmartSql.Cache.Sync.csproj" />
     <ProjectReference Include="..\..\src\SmartSql.DIExtension\SmartSql.DIExtension.csproj" />
     <ProjectReference Include="..\..\src\SmartSql.DyRepository\SmartSql.DyRepository.csproj" />
     <ProjectReference Include="..\..\src\SmartSql.InvokeSync.Kafka\SmartSql.InvokeSync.Kafka.csproj" />
