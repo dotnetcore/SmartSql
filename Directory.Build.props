@@ -6,7 +6,7 @@
     <Product>SmartSql</Product>
     <Copyright>2019 SmartSql, Inc.</Copyright>
     <PackageId>$(AssemblyName)</PackageId>
-    <Authors>Ahoo Wang</Authors>
+    <Authors>Ahoo Wang;ncc</Authors>
     <MaintainerEmail>ahoowang@qq.com</MaintainerEmail>
     <RepositoryUrl>https://github.com/Smart-Kit/SmartSql</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

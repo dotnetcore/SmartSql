@@ -9,7 +9,5 @@ namespace SmartSql.Reflection.PropertyAccessor
     {
         Action<object, object> Create(Type targetType, string propertyName);
         Action<object, object> Create(PropertyInfo propertyInfo);
-        
-        //Action<TTarget, TPropertyValue> Create<TTarget, TPropertyValue>(string propertyName);
     }
 }

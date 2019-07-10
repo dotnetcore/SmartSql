@@ -5,15 +5,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using SmartSql.Reflection.PropertyAccessor;
 
 namespace SmartSql.CUD
 {
     public static class EntityMetaDataCache<TEntity>
     {
+        private static readonly EmitGetAccessorFactory GetAccessorFactory = new EmitGetAccessorFactory();
         public const string DEFAULT_ID_NAME = "Id";
         public static Type EntityType { get; }
         public static EntityMetaData MetaData { get; }
         public static String TableName => MetaData.TableName;
+
         /// <summary>
         /// Key :PropertyName
         /// </summary>
@@ -29,9 +32,11 @@ namespace SmartSql.CUD
                 {
                     throw new SmartSqlException($"{EntityType.FullName} can not find PrimaryKey.");
                 }
+
                 return MetaData.PrimaryKey;
             }
         }
+
         static EntityMetaDataCache()
         {
             EntityType = typeof(TEntity);
@@ -49,41 +54,55 @@ namespace SmartSql.CUD
         {
             var columnIndex = 0;
             var columns = EntityType.GetProperties()
-               .Where(propInfo => propInfo.GetCustomAttribute<NotMappedAttribute>() == null)
-               .ToDictionary((propInfo) => propInfo.Name,
-                   (propInfo) =>
-               {
-                   var column = propInfo.GetCustomAttribute<ColumnAttribute>() ?? new ColumnAttribute(propInfo.Name)
-                   {
-                       IsPrimaryKey = String.Equals(propInfo.Name, DEFAULT_ID_NAME, StringComparison.CurrentCultureIgnoreCase)
-                   };
-                   column.Property = propInfo;
-                   if (String.IsNullOrEmpty(column.Name))
-                   {
-                       column.Name = propInfo.Name;
-                   }
-                   if (column.FieldType == null)
-                   {
-                       column.FieldType = Nullable.GetUnderlyingType(propInfo.PropertyType) ?? propInfo.PropertyType;
-                   }
-                   if (!column.Ordinal.HasValue)
-                   {
-                       column.Ordinal = columnIndex;
-                   }
-                   if (column.IsPrimaryKey)
-                   {
-                       MetaData.PrimaryKey = column;
-                   }
-                   columnIndex++;
-                   return column;
-               });
+                .Where(propInfo => propInfo.GetCustomAttribute<NotMappedAttribute>() == null)
+                .ToDictionary((propInfo) => propInfo.Name,
+                    (propInfo) =>
+                    {
+                        var column = propInfo.GetCustomAttribute<ColumnAttribute>() ??
+                                     new ColumnAttribute(propInfo.Name)
+                                     {
+                                         IsPrimaryKey = String.Equals(propInfo.Name, DEFAULT_ID_NAME,
+                                             StringComparison.CurrentCultureIgnoreCase)
+                                     };
+                        column.Property = propInfo;
+                        if (String.IsNullOrEmpty(column.Name))
+                        {
+                            column.Name = propInfo.Name;
+                        }
+
+                        if (column.FieldType == null)
+                        {
+                            column.FieldType = Nullable.GetUnderlyingType(propInfo.PropertyType) ??
+                                               propInfo.PropertyType;
+                        }
+
+                        if (column.GetPropertyValue == null)
+                        {
+                            column.GetPropertyValue = GetAccessorFactory.Create(propInfo);
+                        }
+
+                        if (!column.Ordinal.HasValue)
+                        {
+                            column.Ordinal = columnIndex;
+                        }
+
+                        if (column.IsPrimaryKey)
+                        {
+                            MetaData.PrimaryKey = column;
+                        }
+
+                        columnIndex++;
+                        return column;
+                    });
             MetaData.Columns = new SortedDictionary<string, ColumnAttribute>(columns);
             var indexColMap = MetaData.Columns.ToDictionary((col) =>
             {
                 if (!col.Value.Ordinal.HasValue)
                 {
-                    throw new SmartSqlException($"Entity:{EntityType.FullName} {col.Value.Name}.Ordinal can not be null.");
+                    throw new SmartSqlException(
+                        $"Entity:{EntityType.FullName} {col.Value.Name}.Ordinal can not be null.");
                 }
+
                 return col.Value.Ordinal.Value;
             }, col => col.Value);
             IndexColumnMaps = new SortedDictionary<int, ColumnAttribute>(indexColMap);
@@ -92,7 +111,7 @@ namespace SmartSql.CUD
         private static void InitTableName()
         {
             MetaData.TableName =
-               EntityType.GetCustomAttribute<TableAttribute>(false)?.Name;
+                EntityType.GetCustomAttribute<TableAttribute>(false)?.Name;
             if (String.IsNullOrEmpty(MetaData.TableName))
             {
                 MetaData.TableName = EntityType.Name;
