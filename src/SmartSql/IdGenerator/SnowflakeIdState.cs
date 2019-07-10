@@ -24,10 +24,10 @@ namespace SmartSql.IdGenerator
             }
 
             UtcTime = _idGen.EpochTime.AddMilliseconds((Id >> _idGen.TimestampShift) & _idGen.TimestampMask);
-            var sequenceFormat = $"D{MachineIdLength}";
-            var machineIdFormat = $"D{SequenceLength}";
+            var machineIdFormat = $"D{MachineIdLength}";
+            var sequenceFormat = $"D{SequenceLength}";
             IdString =
-                $"{UtcTime.ToString(TIME_FORMAT)}{MachineId.ToString(sequenceFormat)}{Sequence.ToString(machineIdFormat)}";
+                $"{UtcTime.ToString(TIME_FORMAT)}{MachineId.ToString(machineIdFormat)}{Sequence.ToString(sequenceFormat)}";
         }
 
         public SnowflakeIdState(String idString, ISnowflakeId idGen)
