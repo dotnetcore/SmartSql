@@ -12,6 +12,7 @@ using SmartSql.DbSession;
 using SmartSql.Cache;
 using SmartSql.IdGenerator;
 using Microsoft.Extensions.Logging.Abstractions;
+using SmartSql.Filters;
 
 namespace SmartSql.Configuration
 {
@@ -36,6 +37,7 @@ namespace SmartSql.Configuration
         public ICacheManager CacheManager { get; set; }
         public InvokeSucceedListener InvokeSucceedListener { get; set; }
         public IDictionary<String, IIdGenerator> IdGenerators { get; set; }
+        public FilterCollection Filters { get; set; }
 
         public SqlMap GetSqlMap(string scope)
         {
@@ -51,6 +53,7 @@ namespace SmartSql.Configuration
         {
             Settings = Settings.Default;
             SqlMaps = new Dictionary<string, SqlMap>();
+            Filters = new FilterCollection();
             ObjectFactoryBuilder = new ExpressionObjectFactoryBuilder();
             TagBuilderFactory = new TagBuilderFactory();
             TypeHandlerFactory = new TypeHandlerFactory();
@@ -65,10 +68,7 @@ namespace SmartSql.Configuration
             SessionStore = new DbSessionStore(DbSessionFactory);
             StatementAnalyzer = new StatementAnalyzer();
             InvokeSucceedListener = new InvokeSucceedListener();
-            DbSessionFactory.Opened += (sender, args) =>
-            {
-                InvokeSucceedListener.BindDbSessionEvent(args.DbSession);
-            };
+            DbSessionFactory.Opened += (sender, args) => { InvokeSucceedListener.BindDbSessionEvent(args.DbSession); };
         }
     }
 
