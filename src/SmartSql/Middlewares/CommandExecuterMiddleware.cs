@@ -18,51 +18,45 @@ namespace SmartSql.Middlewares
 
         public override void Invoke<TResult>(ExecutionContext executionContext)
         {
-            try
+            switch (executionContext.Type)
             {
-                switch (executionContext.Type)
+                case ExecutionType.Execute:
                 {
-                    case ExecutionType.Execute:
-                        {
-                            var recordsAffected = _commandExecuter.ExecuteNonQuery(executionContext);
-                            executionContext.Result.SetData(recordsAffected);
-                            return;
-                        }
-                    case ExecutionType.ExecuteScalar:
-                        {
-                            ParseExecuteScalarDbValue<TResult>(executionContext);
-                            return;
-                        }
-                    case ExecutionType.GetDataSet:
-                        {
-                            var resultData = _commandExecuter.GetDateSet(executionContext);
-                            executionContext.Result.SetData(resultData);
-                            return;
-                        }
-                    case ExecutionType.GetDataTable:
-                        {
-                            var resultData = _commandExecuter.GetDateTable(executionContext);
-                            executionContext.Result.SetData(resultData);
-                            return;
-                        }
-                    case ExecutionType.Query:
-                    case ExecutionType.QuerySingle:
-                        {
-                            executionContext.DataReaderWrapper = _commandExecuter.ExecuteReader(executionContext);
-                            break;
-                        }
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    var recordsAffected = _commandExecuter.ExecuteNonQuery(executionContext);
+                    executionContext.Result.SetData(recordsAffected);
+                    return;
                 }
-                InvokeNext<TResult>(executionContext);
-            }
-            finally
-            {
-                if (executionContext.DataReaderWrapper != null)
+
+                case ExecutionType.ExecuteScalar:
                 {
-                    executionContext.DataReaderWrapper.Close();
-                    executionContext.DataReaderWrapper.Dispose();
+                    ParseExecuteScalarDbValue<TResult>(executionContext);
+                    return;
                 }
+
+                case ExecutionType.GetDataSet:
+                {
+                    var resultData = _commandExecuter.GetDateSet(executionContext);
+                    executionContext.Result.SetData(resultData);
+                    return;
+                }
+
+                case ExecutionType.GetDataTable:
+                {
+                    var resultData = _commandExecuter.GetDateTable(executionContext);
+                    executionContext.Result.SetData(resultData);
+                    return;
+                }
+
+                case ExecutionType.Query:
+                case ExecutionType.QuerySingle:
+                {
+                    executionContext.DataReaderWrapper = _commandExecuter.ExecuteReader(executionContext);
+                    InvokeNext<TResult>(executionContext);
+                    break;
+                }
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -117,51 +111,45 @@ namespace SmartSql.Middlewares
 
         public override async Task InvokeAsync<TResult>(ExecutionContext executionContext)
         {
-            try
+            switch (executionContext.Type)
             {
-                switch (executionContext.Type)
+                case ExecutionType.Execute:
                 {
-                    case ExecutionType.Execute:
-                        {
-                            var recordsAffected = await _commandExecuter.ExecuteNonQueryAsync(executionContext);
-                            executionContext.Result.SetData(recordsAffected);
-                            return;
-                        }
-                    case ExecutionType.ExecuteScalar:
-                        {
-                            await ParseExecuteScalarDbValueAsync<TResult>(executionContext);
-                            return;
-                        }
-                    case ExecutionType.GetDataSet:
-                        {
-                            var resultData = await _commandExecuter.GetDateSetAsync(executionContext);
-                            executionContext.Result.SetData(resultData);
-                            return;
-                        }
-                    case ExecutionType.GetDataTable:
-                        {
-                            var resultData = await _commandExecuter.GetDateTableAsync(executionContext);
-                            executionContext.Result.SetData(resultData);
-                            return;
-                        }
-                    case ExecutionType.Query:
-                    case ExecutionType.QuerySingle:
-                        {
-                            executionContext.DataReaderWrapper = await _commandExecuter.ExecuteReaderAsync(executionContext);
-                            break;
-                        }
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    var recordsAffected = await _commandExecuter.ExecuteNonQueryAsync(executionContext);
+                    executionContext.Result.SetData(recordsAffected);
+                    return;
                 }
-                await InvokeNextAsync<TResult>(executionContext);
-            }
-            finally
-            {
-                if (executionContext.DataReaderWrapper != null)
+
+                case ExecutionType.ExecuteScalar:
                 {
-                    executionContext.DataReaderWrapper.Close();
-                    executionContext.DataReaderWrapper.Dispose();
+                    await ParseExecuteScalarDbValueAsync<TResult>(executionContext);
+                    return;
                 }
+
+                case ExecutionType.GetDataSet:
+                {
+                    var resultData = await _commandExecuter.GetDateSetAsync(executionContext);
+                    executionContext.Result.SetData(resultData);
+                    return;
+                }
+
+                case ExecutionType.GetDataTable:
+                {
+                    var resultData = await _commandExecuter.GetDateTableAsync(executionContext);
+                    executionContext.Result.SetData(resultData);
+                    return;
+                }
+
+                case ExecutionType.Query:
+                case ExecutionType.QuerySingle:
+                {
+                    executionContext.DataReaderWrapper = await _commandExecuter.ExecuteReaderAsync(executionContext);
+                    await InvokeNextAsync<TResult>(executionContext);
+                    break;
+                }
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }

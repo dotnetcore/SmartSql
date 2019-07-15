@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SmartSql.Deserializer;
+using SmartSql.Filters;
 using SmartSql.TypeHandlers;
 
 namespace SmartSql
@@ -39,8 +40,9 @@ namespace SmartSql
         public bool Built { get; private set; }
         public bool Registered { get; private set; } = true;
 
-        private readonly IList<IDataReaderDeserializer> _dataReaderDeserializers = new List<IDataReaderDeserializer>();
+        public IList<IDataReaderDeserializer> DataReaderDeserializers { get; } = new List<IDataReaderDeserializer>();
 
+        public FilterCollection Filters { get; } = new FilterCollection();
         public Action<ExecutionContext> InvokeSucceeded { get; set; }
 
         public SmartSqlBuilder Build()
@@ -115,8 +117,18 @@ namespace SmartSql
 
             SmartSqlConfig.SqlParamAnalyzer = new SqlParamAnalyzer(SmartSqlConfig.Settings.IgnoreParameterCase,
                 SmartSqlConfig.Database.DbProvider.ParameterPrefix);
+
             InitDeserializerFactory();
+            InitFilters();
             BuildPipeline();
+        }
+
+        private void InitFilters()
+        {
+            foreach (var filter in Filters)
+            {
+                SmartSqlConfig.Filters.Add(filter);
+            }
         }
 
         private void InitDeserializerFactory()
@@ -129,7 +141,7 @@ namespace SmartSql
             SmartSqlConfig.DeserializerFactory.Add(deser);
             deser = new DynamicDeserializer();
             SmartSqlConfig.DeserializerFactory.Add(deser);
-            foreach (var deserializer in _dataReaderDeserializers)
+            foreach (var deserializer in DataReaderDeserializers)
             {
                 SmartSqlConfig.DeserializerFactory.Add(deserializer);
             }
@@ -194,7 +206,19 @@ namespace SmartSql
 
         public SmartSqlBuilder AddDeserializer(IDataReaderDeserializer deserializer)
         {
-            _dataReaderDeserializers.Add(deserializer);
+            DataReaderDeserializers.Add(deserializer);
+            return this;
+        }
+
+        public SmartSqlBuilder AddFilter<TFilter>()
+            where TFilter : IFilter, new()
+        {
+            Filters.Add<TFilter>();
+            return this;
+        }
+        public SmartSqlBuilder AddFilter(IFilter filter)
+        {
+            Filters.Add(filter);
             return this;
         }
 

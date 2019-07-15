@@ -21,13 +21,24 @@ namespace SmartSql.Middlewares
             var resultContext = executionContext.Result;
             var deser = _deserializerFactory.Get(executionContext, typeof(TResult),
                 executionContext.Request.MultipleResultMap != null);
-            if (resultContext.IsList)
+            try
             {
-                resultContext.SetData(deser.ToList<TResult>(executionContext));
+                if (resultContext.IsList)
+                {
+                    resultContext.SetData(deser.ToList<TResult>(executionContext));
+                }
+                else
+                {
+                    resultContext.SetData(deser.ToSinge<TResult>(executionContext));
+                }
             }
-            else
+            finally
             {
-                resultContext.SetData(deser.ToSinge<TResult>(executionContext));
+                if (executionContext.DataReaderWrapper != null)
+                {
+                    executionContext.DataReaderWrapper.Close();
+                    executionContext.DataReaderWrapper.Dispose();
+                }
             }
 
             InvokeNext<TResult>(executionContext);
@@ -37,19 +48,26 @@ namespace SmartSql.Middlewares
         {
             var resultContext = executionContext.Result;
             var deser = _deserializerFactory.Get(executionContext, typeof(TResult));
-            if (resultContext.IsList)
+            try
             {
-                resultContext.SetData(await deser.ToListAsync<TResult>(executionContext));
+                if (resultContext.IsList)
+                {
+                    resultContext.SetData(await deser.ToListAsync<TResult>(executionContext));
+                }
+                else
+                {
+                    resultContext.SetData(await deser.ToSingeAsync<TResult>(executionContext));
+                }
             }
-            else
+            finally
             {
-                resultContext.SetData(await deser.ToSingeAsync<TResult>(executionContext));
+                if (executionContext.DataReaderWrapper != null)
+                {
+                    executionContext.DataReaderWrapper.Close();
+                    executionContext.DataReaderWrapper.Dispose();
+                }
             }
-
-            if (Next != null)
-            {
-                await InvokeNextAsync<TResult>(executionContext);
-            }
+            await InvokeNextAsync<TResult>(executionContext);
         }
     }
 }
