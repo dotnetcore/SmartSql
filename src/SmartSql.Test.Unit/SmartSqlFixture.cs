@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SmartSql.DbSession;
+using SmartSql.Middlewares.Filters;
 using Xunit;
 
 namespace SmartSql.Test.Unit
@@ -15,7 +17,7 @@ namespace SmartSql.Test.Unit
         public SmartSqlFixture()
         {
             LoggerFactory = new LoggerFactory(Enumerable.Empty<ILoggerProvider>(),
-                new LoggerFilterOptions { MinLevel = LogLevel.Debug });
+                new LoggerFilterOptions {MinLevel = LogLevel.Debug});
             var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "SmartSql.log");
             LoggerFactory.AddFile(logPath, LogLevel.Trace);
 
@@ -23,6 +25,7 @@ namespace SmartSql.Test.Unit
                 .UseXmlConfig()
                 .UseLoggerFactory(LoggerFactory)
                 .UseAlias(GLOBAL_SMART_SQL)
+                .AddFilter<TestPrepareStatementFilter>()
                 .Build();
             DbSessionFactory = SmartSqlBuilder.DbSessionFactory;
             SqlMapper = SmartSqlBuilder.SqlMapper;
@@ -42,5 +45,38 @@ namespace SmartSql.Test.Unit
     [CollectionDefinition(SmartSqlFixture.GLOBAL_SMART_SQL)]
     public class SmartSqlCollection : ICollectionFixture<SmartSqlFixture>
     {
+    }
+
+
+    public class TestPrepareStatementFilter : IPrepareStatementFilter, ISetupSmartSql
+    {
+        private ILogger<TestPrepareStatementFilter> _logger;
+
+        public void OnInvoking(ExecutionContext context)
+        {
+            _logger.LogDebug("TestPrepareStatementFilter.OnInvoking");
+        }
+
+        public void OnInvoked(ExecutionContext context)
+        {
+            _logger.LogDebug("TestPrepareStatementFilter.OnInvoked");
+        }
+
+        public Task OnInvokingAsync(ExecutionContext context)
+        {
+            _logger.LogDebug("TestPrepareStatementFilter.OnInvokingAsync");
+            return Task.CompletedTask;
+        }
+
+        public Task OnInvokedAsync(ExecutionContext context)
+        {
+            _logger.LogDebug("TestPrepareStatementFilter.OnInvokedAsync");
+            return Task.CompletedTask;
+        }
+
+        public void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
+        {
+            _logger = smartSqlBuilder.LoggerFactory.CreateLogger<TestPrepareStatementFilter>();
+        }
     }
 }

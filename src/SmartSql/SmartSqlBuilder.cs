@@ -85,6 +85,16 @@ namespace SmartSql
 
             #endregion
 
+            #region Filters
+
+            foreach (var filter in Filters)
+            {
+                var setupSmartSql = filter as ISetupSmartSql;
+                setupSmartSql?.SetupSmartSql(this);
+            }
+
+            #endregion
+            
             #region Pipeline
 
             var currentMiddleware = SmartSqlConfig.Pipeline;
