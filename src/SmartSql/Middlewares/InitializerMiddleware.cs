@@ -8,11 +8,8 @@ namespace SmartSql.Middlewares
 {
     public class InitializerMiddleware : AbstractMiddleware
     {
-        private readonly SmartSqlConfig _smartSqlConfig;
-        public InitializerMiddleware(SmartSqlConfig smartSqlConfig)
-        {
-            _smartSqlConfig = smartSqlConfig;
-        }
+        private SmartSqlConfig _smartSqlConfig;
+
         public override void Invoke<TResult>(ExecutionContext executionContext)
         {
             Init(executionContext);
@@ -30,12 +27,14 @@ namespace SmartSql.Middlewares
             InitRequest(executionContext.Request);
             InitParameterCollection(executionContext.Request);
         }
+
         private void InitRequest(AbstractRequestContext requestContext)
         {
             if (!String.IsNullOrEmpty(requestContext.RealSql))
             {
                 requestContext.IsStatementSql = false;
             }
+
             if (!String.IsNullOrEmpty(requestContext.Scope))
             {
                 var sqlMap = _smartSqlConfig.GetSqlMap(requestContext.Scope);
@@ -61,12 +60,16 @@ namespace SmartSql.Middlewares
             else
             {
                 requestContext.DataSourceChoice = (StatementType.Write & requestContext.Statement.StatementType)
-                                                  != StatementType.Unknown ? DataSourceChoice.Write : DataSourceChoice.Read;
+                                                  != StatementType.Unknown
+                    ? DataSourceChoice.Write
+                    : DataSourceChoice.Read;
             }
+
             if (requestContext.Statement.CommandType.HasValue)
             {
                 requestContext.CommandType = requestContext.Statement.CommandType.Value;
             }
+
             requestContext.Transaction = requestContext.Transaction ?? requestContext.Statement.Transaction;
             requestContext.CommandTimeout = requestContext.CommandTimeout ?? requestContext.Statement.CommandTimeout;
             requestContext.ReadDb = requestContext.Statement.ReadDb;
@@ -79,6 +82,7 @@ namespace SmartSql.Middlewares
             requestContext.MultipleResultMapId = requestContext.Statement.MultipleResultMapId;
             requestContext.MultipleResultMap = requestContext.Statement.MultipleResultMap;
         }
+
         private void InitByMap(AbstractRequestContext requestContext, SqlMap sqlMap)
         {
             if (!string.IsNullOrEmpty(requestContext.CacheId))
@@ -86,25 +90,34 @@ namespace SmartSql.Middlewares
                 var fullCacheId = $"{requestContext.Scope}.{requestContext.CacheId}";
                 requestContext.Cache = sqlMap.GetCache(fullCacheId);
             }
+
             if (!String.IsNullOrEmpty(requestContext.ParameterMapId))
             {
                 var fullParameterMapIdId = $"{requestContext.Scope}.{requestContext.ParameterMapId}";
                 requestContext.ParameterMap = sqlMap.GetParameterMap(fullParameterMapIdId);
             }
+
             if (!String.IsNullOrEmpty(requestContext.ResultMapId))
             {
                 var fullResultMapId = $"{requestContext.Scope}.{requestContext.ResultMapId}";
                 requestContext.ResultMap = sqlMap.GetResultMap(fullResultMapId);
             }
+
             if (!String.IsNullOrEmpty(requestContext.MultipleResultMapId))
             {
                 var fullMultipleResultMapId = $"{requestContext.Scope}.{requestContext.MultipleResultMapId}";
                 requestContext.MultipleResultMap = sqlMap.GetMultipleResultMap(fullMultipleResultMapId);
             }
         }
+
         private void InitParameterCollection(AbstractRequestContext requestContext)
         {
             requestContext.SetupParameters();
+        }
+
+        public override void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
+        {
+            _smartSqlConfig = smartSqlBuilder.SmartSqlConfig;
         }
     }
 }

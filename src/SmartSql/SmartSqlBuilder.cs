@@ -84,6 +84,21 @@ namespace SmartSql
             }
 
             #endregion
+
+            #region Pipeline
+
+            var currentMiddleware = SmartSqlConfig.Pipeline;
+            while (currentMiddleware != null)
+            {
+                if (currentMiddleware is ISetupSmartSql setupSmartSql)
+                {
+                    setupSmartSql.SetupSmartSql(this);
+                }
+
+                currentMiddleware = currentMiddleware.Next;
+            }
+
+            #endregion
         }
 
         public IDbSessionFactory GetDbSessionFactory()
@@ -166,24 +181,24 @@ namespace SmartSql
 
                 SmartSqlConfig.CacheManager = CacheManager;
                 SmartSqlConfig.Pipeline = new PipelineBuilder()
-                    .Add(new InitializerMiddleware(SmartSqlConfig))
-                    .Add(new CachingMiddleware(SmartSqlConfig))
+                    .Add(new InitializerMiddleware())
+                    .Add(new CachingMiddleware())
                     .Add(new TransactionMiddleware())
-                    .Add(new PrepareStatementMiddleware(SmartSqlConfig))
-                    .Add(new DataSourceFilterMiddleware(SmartSqlConfig))
-                    .Add(new CommandExecuterMiddleware(SmartSqlConfig))
-                    .Add(new ResultHandlerMiddleware(SmartSqlConfig)).Build();
+                    .Add(new PrepareStatementMiddleware())
+                    .Add(new DataSourceFilterMiddleware())
+                    .Add(new CommandExecuterMiddleware())
+                    .Add(new ResultHandlerMiddleware()).Build();
             }
             else
             {
                 SmartSqlConfig.CacheManager = new NoneCacheManager();
                 SmartSqlConfig.Pipeline = new PipelineBuilder()
-                    .Add(new InitializerMiddleware(SmartSqlConfig))
+                    .Add(new InitializerMiddleware())
                     .Add(new TransactionMiddleware())
-                    .Add(new PrepareStatementMiddleware(SmartSqlConfig))
-                    .Add(new DataSourceFilterMiddleware(SmartSqlConfig))
-                    .Add(new CommandExecuterMiddleware(SmartSqlConfig))
-                    .Add(new ResultHandlerMiddleware(SmartSqlConfig)).Build();
+                    .Add(new PrepareStatementMiddleware())
+                    .Add(new DataSourceFilterMiddleware())
+                    .Add(new CommandExecuterMiddleware())
+                    .Add(new ResultHandlerMiddleware()).Build();
             }
         }
 
@@ -216,6 +231,7 @@ namespace SmartSql
             Filters.Add<TFilter>();
             return this;
         }
+
         public SmartSqlBuilder AddFilter(IFilter filter)
         {
             Filters.Add(filter);

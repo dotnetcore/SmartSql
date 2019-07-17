@@ -34,5 +34,10 @@ namespace SmartSql.Middlewares
                       async () => { await InvokeNextAsync<TResult>(executionContext); });
             }
         }
+
+        public override void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
+        {
+            
+        }
     }
 }

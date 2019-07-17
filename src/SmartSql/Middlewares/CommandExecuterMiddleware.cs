@@ -9,12 +9,7 @@ namespace SmartSql.Middlewares
 {
     public class CommandExecuterMiddleware : AbstractMiddleware
     {
-        private readonly ICommandExecuter _commandExecuter;
-
-        public CommandExecuterMiddleware(SmartSqlConfig smartSqlConfig)
-        {
-            _commandExecuter = new CommandExecuter(smartSqlConfig.LoggerFactory.CreateLogger<CommandExecuter>());
-        }
+        private ICommandExecuter _commandExecuter;
 
         public override void Invoke<TResult>(ExecutionContext executionContext)
         {
@@ -151,6 +146,12 @@ namespace SmartSql.Middlewares
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public override void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
+        {
+            _commandExecuter =
+                new CommandExecuter(smartSqlBuilder.SmartSqlConfig.LoggerFactory.CreateLogger<CommandExecuter>());
         }
     }
 }

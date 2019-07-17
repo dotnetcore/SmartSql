@@ -7,12 +7,7 @@ namespace SmartSql.Middlewares
 {
     public class CachingMiddleware : AbstractMiddleware
     {
-        private readonly ICacheManager _cacheManager;
-
-        public CachingMiddleware(SmartSqlConfig smartSqlConfig)
-        {
-            _cacheManager = smartSqlConfig.CacheManager;
-        }
+        private ICacheManager _cacheManager;
 
         public override void Invoke<TResult>(ExecutionContext executionContext)
         {
@@ -52,6 +47,11 @@ namespace SmartSql.Middlewares
                 await InvokeNextAsync<TResult>(executionContext);
                 _cacheManager.TryAddCache(executionContext);
             }
+        }
+
+        public override void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
+        {
+            _cacheManager = smartSqlBuilder.SmartSqlConfig.CacheManager;
         }
     }
 }

@@ -9,12 +9,7 @@ namespace SmartSql.Middlewares
 {
     public class ResultHandlerMiddleware : AbstractMiddleware
     {
-        private readonly IDeserializerFactory _deserializerFactory;
-
-        public ResultHandlerMiddleware(SmartSqlConfig smartSqlConfig)
-        {
-            _deserializerFactory = smartSqlConfig.DeserializerFactory;
-        }
+        private IDeserializerFactory _deserializerFactory;
 
         public override void Invoke<TResult>(ExecutionContext executionContext)
         {
@@ -67,7 +62,13 @@ namespace SmartSql.Middlewares
                     executionContext.DataReaderWrapper.Dispose();
                 }
             }
+
             await InvokeNextAsync<TResult>(executionContext);
+        }
+
+        public override void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
+        {
+            _deserializerFactory = smartSqlBuilder.SmartSqlConfig.DeserializerFactory;
         }
     }
 }
