@@ -22,6 +22,10 @@ namespace System.Reflection.Emit
         {
             ilGen.Emit(OpCodes.Call, methodInfo);
         }
+        public static void Call(this ILGenerator ilGen, ConstructorInfo ctorInfo)
+        {
+            ilGen.Emit(OpCodes.Call, ctorInfo);
+        }
         public static void Callvirt(this ILGenerator ilGen, MethodInfo methodInfo)
         {
             ilGen.Emit(OpCodes.Callvirt, methodInfo);
@@ -149,6 +153,12 @@ namespace System.Reflection.Emit
                     break;
             }
         }
+
+        public static void Add(this ILGenerator ilGen)
+        {
+            ilGen.Emit(OpCodes.Add);
+        }
+
         public static void LoadInt32(this ILGenerator ilGen, int value)
         {
             switch (value)

@@ -56,7 +56,7 @@ namespace SmartSql.DyRepository
                 MethodAttributes.Public, CallingConventions.Standard, paramTypes);
             var ilGen = ctorBuilder.GetILGenerator();
             ilGen.LoadArg(0);
-            ilGen.Emit(OpCodes.Call, CommonType.Object.GetConstructor(Type.EmptyTypes));
+            ilGen.Call(CommonType.Object.GetConstructor(Type.EmptyTypes));
             ilGen.LoadArg(0);
             ilGen.LoadArg(1);
             ilGen.FieldSet(sqlMapperField);
