@@ -45,7 +45,7 @@ namespace SmartSql.Test.Unit.DbSessions
         {
             var entity = SqlMapper.QuerySingle<AllPrimitive>(new RequestContext
             {
-                EnableTrack = true,
+                EnablePropertyChangedTrack = true,
                 RealSql = "SELECT Top (1) T.* From T_AllPrimitive T With(NoLock)"
             });
             var entityProxy = entity as IEntityPropertyChangedTrackProxy;

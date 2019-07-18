@@ -91,7 +91,7 @@ namespace SmartSql.Deserializer
         private Delegate CreateDeserialize<TResult>(ExecutionContext executionContext)
         {
             var resultType = typeof(TResult);
-            if (executionContext.Request.EnableTrack == true)
+            if (executionContext.Request.EnablePropertyChangedTrack == true)
             {
                 resultType = EntityProxyCache<TResult>.ProxyType;
             }
@@ -170,7 +170,7 @@ namespace SmartSql.Deserializer
                 ilGen.Call(property.SetMethod);
             }
 
-            if (executionContext.Request.EnableTrack == true)
+            if (executionContext.Request.EnablePropertyChangedTrack == true)
             {
                 ilGen.LoadLocalVar(0);
                 ilGen.LoadInt32(1);
