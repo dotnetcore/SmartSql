@@ -10,7 +10,7 @@ using System.Reflection.Emit;
 using System.Threading.Tasks;
 using SmartSql.Configuration;
 using SmartSql.Reflection;
-using SmartSql.Reflection.Proxy;
+using SmartSql.Reflection.EntityProxy;
 using SmartSql.TypeHandlers;
 using SmartSql.Utils;
 
@@ -174,7 +174,7 @@ namespace SmartSql.Deserializer
             {
                 ilGen.LoadLocalVar(0);
                 ilGen.LoadInt32(1);
-                var setEnableTrackMethod = resultType.GetProperty(nameof(IEntityProxy.EnableTrack)).SetMethod;
+                var setEnableTrackMethod = resultType.GetProperty(nameof(IEntityPropertyChangedTrackProxy.EnablePropertyChangedTrack)).SetMethod;
                 ilGen.Call(setEnableTrackMethod);
             }
 

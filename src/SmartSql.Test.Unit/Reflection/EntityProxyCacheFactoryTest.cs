@@ -1,5 +1,5 @@
 using System;
-using SmartSql.Reflection.Proxy;
+using SmartSql.Reflection.EntityProxy;
 using SmartSql.Test.Entities;
 using Xunit;
 
@@ -11,18 +11,18 @@ namespace SmartSql.Test.Unit.Reflection
         public void Test()
         {
             var entity = EntityProxyCache<Entity>.CreateInstance();
-            var entityProxy = entity as IEntityProxy;
+            var entityProxy = entity as IEntityPropertyChangedTrackProxy;
 
-            var state = entityProxy.GetState(nameof(Entity.Id));
+            var state = entityProxy.GetPropertyVersion(nameof(Entity.Id));
             Assert.Equal(0, state);
 
             entity.Id = 1;
-            state = entityProxy.GetState(nameof(Entity.Id));
+            state = entityProxy.GetPropertyVersion(nameof(Entity.Id));
             Assert.Equal(0, state);
 
-            entityProxy.EnableTrack = true;
+            entityProxy.EnablePropertyChangedTrack = true;
             entity.Id = 1;
-            Assert.Equal(1, entityProxy.GetState(nameof(Entity.Id)));
+            Assert.Equal(1, entityProxy.GetPropertyVersion(nameof(Entity.Id)));
         }
 
         [Fact]
@@ -32,20 +32,20 @@ namespace SmartSql.Test.Unit.Reflection
 
             Assert.Equal(1, entity.Id);
 
-            var entityProxy = entity as IEntityProxy;
+            var entityProxy = entity as IEntityPropertyChangedTrackProxy;
 
-            var state = entityProxy.GetState(nameof(Entity.Id));
+            var state = entityProxy.GetPropertyVersion(nameof(Entity.Id));
             Assert.Equal(0, state);
             
-            entityProxy.EnableTrack = true;
+            entityProxy.EnablePropertyChangedTrack = true;
             
             entity.Id = 1;
-            state = entityProxy.GetState(nameof(Entity.Id));
+            state = entityProxy.GetPropertyVersion(nameof(Entity.Id));
             Assert.Equal(1, state);
 
             entity.Id = 1;
 
-            Assert.Equal(2, entityProxy.GetState(nameof(Entity.Id)));
+            Assert.Equal(2, entityProxy.GetPropertyVersion(nameof(Entity.Id)));
         }
     }
 }

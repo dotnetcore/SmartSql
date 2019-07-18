@@ -9,11 +9,13 @@ namespace SmartSql.Configuration.Tags
         public virtual String Prepend { get; set; }
         public String Property { get; set; }
         public bool Required { get; set; }
+        public bool? Changed { get; set; }
         public IList<ITag> ChildTags { get; set; }
         public ITag Parent { get; set; }
         public Statement Statement { get; set; }
 
         public abstract bool IsCondition(AbstractRequestContext context);
+
         public virtual void BuildSql(AbstractRequestContext context)
         {
             if (IsCondition(context))
@@ -27,6 +29,7 @@ namespace SmartSql.Configuration.Tags
                 {
                     context.IgnorePrepend = false;
                 }
+
                 context.SqlBuilder.Append(" ");
                 BuildChildSql(context);
             }
@@ -40,10 +43,12 @@ namespace SmartSql.Configuration.Tags
                 childTag.BuildSql(context);
             }
         }
+
         protected virtual String GetDbProviderPrefix(AbstractRequestContext context)
         {
             return context.ExecutionContext.SmartSqlConfig.Database.DbProvider.ParameterPrefix;
         }
+
         protected virtual object EnsurePropertyValue(AbstractRequestContext context)
         {
             var existProperty = context.Parameters.TryGetParameterValue(Property, out object paramVal);
@@ -51,6 +56,7 @@ namespace SmartSql.Configuration.Tags
             {
                 throw new TagRequiredFailException(this);
             }
+
             return paramVal;
         }
     }

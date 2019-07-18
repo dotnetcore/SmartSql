@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using SmartSql.Reflection.Proxy;
+using SmartSql.Reflection.EntityProxy;
 using SmartSql.Test.Entities;
 using Xunit;
 
@@ -48,13 +48,13 @@ namespace SmartSql.Test.Unit.DbSessions
                 EnableTrack = true,
                 RealSql = "SELECT Top (1) T.* From T_AllPrimitive T With(NoLock)"
             });
-            var entityProxy = entity as IEntityProxy;
+            var entityProxy = entity as IEntityPropertyChangedTrackProxy;
             Assert.NotNull(entityProxy);
 
-            var state = entityProxy.GetState(nameof(AllPrimitive.String));
+            var state = entityProxy.GetPropertyVersion(nameof(AllPrimitive.String));
             Assert.Equal(0, state);
             entity.String = "Updated";
-            state = entityProxy.GetState(nameof(AllPrimitive.String));
+            state = entityProxy.GetPropertyVersion(nameof(AllPrimitive.String));
             Assert.Equal(1, state);
         }
     }

@@ -1,6 +1,6 @@
 using System;
 
-namespace SmartSql.Reflection.Proxy
+namespace SmartSql.Reflection.EntityProxy
 {
     public static class EntityProxyCache<TEntity>
     {

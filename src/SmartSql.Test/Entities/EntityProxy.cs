@@ -1,45 +1,45 @@
 using System.Collections.Generic;
-using SmartSql.Reflection.Proxy;
+using SmartSql.Reflection.EntityProxy;
 
 namespace SmartSql.Test.Entities
 {
-    public class EntityProxy : Entity, IEntityProxy
+    public class EntityProxy : Entity, IEntityPropertyChangedTrackProxy
     {
-        private Dictionary<string, int> _updateStates;
+        private Dictionary<string, int> _changedVersion;
 
         public EntityProxy()
         {
-            _updateStates = new Dictionary<string, int>(2);
+            _changedVersion = new Dictionary<string, int>(2);
         }
 
 
-        public bool EnableTrack { get; set; }
+        public bool EnablePropertyChangedTrack { get; set; }
 
-        public void OnUpdated(string propName)
+        public void OnPropertyChanged(string propName)
         {
-            if (!EnableTrack)
+            if (!EnablePropertyChangedTrack)
             {
                 return;
             }
 
-            if (_updateStates.TryGetValue(propName, out var count))
+            if (_changedVersion.TryGetValue(propName, out var count))
             {
-                _updateStates[propName] = count + 1;
+                _changedVersion[propName] = count + 1;
             }
             else
             {
-                _updateStates.Add(propName, 1);
+                _changedVersion.Add(propName, 1);
             }
         }
 
-        public int GetState(string propName)
+        public int GetPropertyVersion(string propName)
         {
-            if (!EnableTrack)
+            if (!EnablePropertyChangedTrack)
             {
                 return 0;
             }
 
-            return _updateStates.TryGetValue(propName, out var count) ? count : 0;
+            return _changedVersion.TryGetValue(propName, out var count) ? count : 0;
         }
 
 
@@ -48,7 +48,7 @@ namespace SmartSql.Test.Entities
             set
             {
                 base.Id = value;
-                OnUpdated(nameof(Id));
+                OnPropertyChanged(nameof(Id));
             }
         }
 
@@ -57,7 +57,7 @@ namespace SmartSql.Test.Entities
             set
             {
                 base.Name = value;
-                OnUpdated(nameof(Name));
+                OnPropertyChanged(nameof(Name));
             }
         }
     }
