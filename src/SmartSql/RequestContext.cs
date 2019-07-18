@@ -16,6 +16,7 @@ namespace SmartSql
         public IsolationLevel? Transaction { get; set; }
         public String ReadDb { get; set; }
         public int? CommandTimeout { get; set; }
+        public bool? EnableTrack { get; set; }
         public Statement Statement { get; internal set; }
         public StringBuilder SqlBuilder { get; internal set; }
         public bool IsStatementSql { get; internal set; } = true;

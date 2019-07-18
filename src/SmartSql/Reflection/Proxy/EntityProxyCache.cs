@@ -3,7 +3,6 @@ using System;
 namespace SmartSql.Reflection.Proxy
 {
     public static class EntityProxyCache<TEntity>
-        where TEntity : class, new()
     {
         public static Type ProxyType { get; }
 
@@ -14,12 +13,12 @@ namespace SmartSql.Reflection.Proxy
 
         public static TEntity CreateInstance()
         {
-            return Activator.CreateInstance(ProxyType) as TEntity;
+            return (TEntity)Activator.CreateInstance(ProxyType);
         }
 
         public static TEntity CreateInstance(params object[] args)
         {
-            return Activator.CreateInstance(ProxyType, args) as TEntity;
+            return (TEntity)Activator.CreateInstance(ProxyType, args);
         }
     }
 }

@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using SmartSql.Reflection.Proxy;
 using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Unit.DbSessions
 {
     [Collection("GlobalSmartSql")]
-    public class SqlMapperTest 
+    public class SqlMapperTest
     {
         protected ISqlMapper SqlMapper { get; }
 
@@ -16,6 +17,7 @@ namespace SmartSql.Test.Unit.DbSessions
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
+
         [Fact]
         public async Task QueryAsync()
         {
@@ -26,6 +28,7 @@ namespace SmartSql.Test.Unit.DbSessions
 
             Assert.NotNull(list);
         }
+
         [Fact]
         public void Query()
         {
@@ -35,6 +38,24 @@ namespace SmartSql.Test.Unit.DbSessions
             });
 
             Assert.NotNull(list);
+        }
+
+        [Fact]
+        public void QueryEnableTrack()
+        {
+            var entity = SqlMapper.QuerySingle<AllPrimitive>(new RequestContext
+            {
+                EnableTrack = true,
+                RealSql = "SELECT Top (1) T.* From T_AllPrimitive T With(NoLock)"
+            });
+            var entityProxy = entity as IEntityProxy;
+            Assert.NotNull(entityProxy);
+
+            var state = entityProxy.GetState(nameof(AllPrimitive.String));
+            Assert.Equal(0, state);
+            entity.String = "Updated";
+            state = entityProxy.GetState(nameof(AllPrimitive.String));
+            Assert.Equal(1, state);
         }
     }
 }

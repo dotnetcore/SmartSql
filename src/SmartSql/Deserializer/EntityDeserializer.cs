@@ -10,6 +10,7 @@ using System.Reflection.Emit;
 using System.Threading.Tasks;
 using SmartSql.Configuration;
 using SmartSql.Reflection;
+using SmartSql.Reflection.Proxy;
 using SmartSql.TypeHandlers;
 using SmartSql.Utils;
 
@@ -43,6 +44,7 @@ namespace SmartSql.Deserializer
                 var entity = result;
                 list.Add(entity);
             }
+
             return list;
         }
 
@@ -55,6 +57,7 @@ namespace SmartSql.Deserializer
                 await dataReader.ReadAsync();
                 return deser(dataReader, executionContext.Request);
             }
+
             return default;
         }
 
@@ -72,55 +75,71 @@ namespace SmartSql.Deserializer
                     list.Add(entity);
                 }
             }
+
             return list;
         }
 
-        private Func<DataReaderWrapper, AbstractRequestContext, TResult> GetDeserialize<TResult>(ExecutionContext executionContext)
+        private Func<DataReaderWrapper, AbstractRequestContext, TResult> GetDeserialize<TResult>(
+            ExecutionContext executionContext)
         {
             var key = GenerateKey(executionContext);
             return CacheUtil<TypeWrapper<EntityDeserializer, TResult>, String, Delegate>.GetOrAdd(key,
-                   _ => CreateDeserialize<TResult>(executionContext))
-                   as Func<DataReaderWrapper, AbstractRequestContext, TResult>;
+                    _ => CreateDeserialize<TResult>(executionContext))
+                as Func<DataReaderWrapper, AbstractRequestContext, TResult>;
         }
+
         private Delegate CreateDeserialize<TResult>(ExecutionContext executionContext)
         {
             var resultType = typeof(TResult);
+            if (executionContext.Request.EnableTrack == true)
+            {
+                resultType = EntityProxyCache<TResult>.ProxyType;
+            }
+
             var dataReader = executionContext.DataReaderWrapper;
 
             var resultMap = executionContext.Request.GetCurrentResultMap();
 
             var constructorMap = resultMap?.Constructor;
             var columns = Enumerable.Range(0, dataReader.FieldCount)
-                .Select(i => new { Index = i, Name = dataReader.GetName(i), FieldType = dataReader.GetFieldType(i) })
+                .Select(i => new {Index = i, Name = dataReader.GetName(i), FieldType = dataReader.GetFieldType(i)})
                 .ToDictionary((col) => col.Name);
 
-            var deserFunc = new DynamicMethod("Deserialize" + Guid.NewGuid().ToString("N"), resultType, new[] { DataType.DataReaderWrapper, RequestContextType.AbstractType }, resultType, true);
+            var deserFunc = new DynamicMethod("Deserialize" + Guid.NewGuid().ToString("N"), resultType,
+                new[] {DataType.DataReaderWrapper, RequestContextType.AbstractType}, resultType, true);
             var ilGen = deserFunc.GetILGenerator();
             ilGen.DeclareLocal(resultType);
+
             #region New
+
             ConstructorInfo resultCtor = null;
             if (constructorMap == null)
             {
                 resultCtor = resultType.GetConstructor(
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
             }
             else
             {
                 var ctorArgTypes = constructorMap.Args.Select(arg => arg.CSharpType).ToArray();
                 resultCtor = resultType.GetConstructor(
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, ctorArgTypes, null);
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, ctorArgTypes, null);
                 foreach (var arg in constructorMap.Args)
                 {
                     var col = columns[arg.Column];
                     LoadPropertyValue(ilGen, executionContext, col.Index, arg.CSharpType, col.FieldType, null);
                 }
             }
+
             if (resultCtor == null)
             {
-                throw new SmartSqlException($"No parameterless constructor defined for the target type: [{resultType.FullName}]");
+                throw new SmartSqlException(
+                    $"No parameterless constructor defined for the target type: [{resultType.FullName}]");
             }
+
             ilGen.New(resultCtor);
+
             #endregion
+
             ilGen.StoreLocalVar(0);
             foreach (var col in columns)
             {
@@ -133,30 +152,53 @@ namespace SmartSql.Deserializer
                 {
                     propertyName = resultProperty.Name;
                 }
+
                 var property = resultType.GetProperty(propertyName);
-                if (property == null) { continue; }
-                if (!property.CanWrite) { continue; }
+                if (property == null)
+                {
+                    continue;
+                }
+
+                if (!property.CanWrite)
+                {
+                    continue;
+                }
+
                 var propertyType = property.PropertyType;
                 ilGen.LoadLocalVar(0);
                 LoadPropertyValue(ilGen, executionContext, colIndex, propertyType, filedType, resultProperty);
                 ilGen.Call(property.SetMethod);
             }
 
+            if (executionContext.Request.EnableTrack == true)
+            {
+                ilGen.LoadLocalVar(0);
+                ilGen.LoadInt32(1);
+                var setEnableTrackMethod = resultType.GetProperty(nameof(IEntityProxy.EnableTrack)).SetMethod;
+                ilGen.Call(setEnableTrackMethod);
+            }
+
             ilGen.LoadLocalVar(0);
             ilGen.Return();
             return deserFunc.CreateDelegate(typeof(Func<DataReaderWrapper, AbstractRequestContext, TResult>));
         }
-        private void LoadPropertyValue(ILGenerator ilGen, ExecutionContext executionContext, int colIndex, Type propertyType, Type fieldType, Property resultProperty)
+
+        private void LoadPropertyValue(ILGenerator ilGen, ExecutionContext executionContext, int colIndex,
+            Type propertyType, Type fieldType, Property resultProperty)
         {
             var typeHandlerFactory = executionContext.SmartSqlConfig.TypeHandlerFactory;
             var propertyUnderType = (Nullable.GetUnderlyingType(propertyType) ?? propertyType);
             var isEnum = propertyUnderType.IsEnum;
+
             #region Check Enum
+
             if (isEnum)
             {
                 typeHandlerFactory.TryRegisterEnumTypeHandler(propertyType, out _);
             }
+
             #endregion
+
             MethodInfo getValMethod = null;
             if (resultProperty?.Handler == null)
             {
@@ -178,12 +220,14 @@ namespace SmartSql.Deserializer
                         }
                     }
                 }
+
                 getValMethod = TypeHandlerCacheType.GetGetValueMethod(propertyType, mappedFieldType);
                 ilGen.Call(getValMethod);
             }
             else
             {
-                var typeHandlerField = NamedTypeHandlerCache.GetTypeHandlerField(executionContext.SmartSqlConfig.Alias, resultProperty.TypeHandler);
+                var typeHandlerField = NamedTypeHandlerCache.GetTypeHandlerField(executionContext.SmartSqlConfig.Alias,
+                    resultProperty.TypeHandler);
                 ilGen.FieldGet(typeHandlerField);
                 LoadTypeHandlerInvokeArgs(ilGen, colIndex, propertyType);
                 getValMethod = resultProperty.Handler.GetType().GetMethod("GetValue");
