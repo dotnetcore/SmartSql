@@ -79,12 +79,12 @@ namespace SmartSql.Configuration
             IgnoreParameterCase = false,
             IsCacheEnabled = false,
             ParameterPrefix = "$",
-            EntityTrack = false
+            EnableTrack = false
         };
 
         public bool IgnoreParameterCase { get; set; }
         public bool IsCacheEnabled { get; set; }
         public string ParameterPrefix { get; set; }
-        public bool EntityTrack { get; set; }
+        public bool EnableTrack { get; set; }
     }
 }

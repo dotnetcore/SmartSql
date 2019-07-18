@@ -79,6 +79,11 @@ namespace SmartSql.ConfigBuilder
             {
                 SmartSqlConfig.Settings.ParameterPrefix = parameterPrefix;
             }
+            if (settingsNode.Attributes.TryGetValueAsBoolean(nameof(Settings.EnableTrack),
+                out bool enableTrack))
+            {
+                SmartSqlConfig.Settings.EnableTrack = enableTrack;
+            }
         }
         #endregion
         #region 1. Properties

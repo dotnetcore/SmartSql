@@ -12,6 +12,7 @@ namespace SmartSql.Reflection.Proxy
 
     public interface IEntityProxy
     {
+        bool EnableTrack { get; set; }
         void OnUpdated(string propName);
         int GetState(string propName);
     }

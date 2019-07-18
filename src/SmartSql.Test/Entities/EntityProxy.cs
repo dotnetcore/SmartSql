@@ -13,8 +13,15 @@ namespace SmartSql.Test.Entities
         }
 
 
+        public bool EnableTrack { get; set; }
+
         public void OnUpdated(string propName)
         {
+            if (!EnableTrack)
+            {
+                return;
+            }
+
             if (_updateStates.TryGetValue(propName, out var count))
             {
                 _updateStates[propName] = count + 1;
@@ -27,6 +34,11 @@ namespace SmartSql.Test.Entities
 
         public int GetState(string propName)
         {
+            if (!EnableTrack)
+            {
+                return 0;
+            }
+
             return _updateStates.TryGetValue(propName, out var count) ? count : 0;
         }
 

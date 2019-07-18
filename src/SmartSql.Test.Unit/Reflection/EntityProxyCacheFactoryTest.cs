@@ -18,10 +18,11 @@ namespace SmartSql.Test.Unit.Reflection
 
             entity.Id = 1;
             state = entityProxy.GetState(nameof(Entity.Id));
-            Assert.Equal(1, state);
+            Assert.Equal(0, state);
 
+            entityProxy.EnableTrack = true;
             entity.Id = 1;
-            Assert.Equal(2, entityProxy.GetState(nameof(Entity.Id)));
+            Assert.Equal(1, entityProxy.GetState(nameof(Entity.Id)));
         }
 
         [Fact]
@@ -34,15 +35,17 @@ namespace SmartSql.Test.Unit.Reflection
             var entityProxy = entity as IEntityProxy;
 
             var state = entityProxy.GetState(nameof(Entity.Id));
+            Assert.Equal(0, state);
+            
+            entityProxy.EnableTrack = true;
+            
+            entity.Id = 1;
+            state = entityProxy.GetState(nameof(Entity.Id));
             Assert.Equal(1, state);
 
             entity.Id = 1;
-            state = entityProxy.GetState(nameof(Entity.Id));
-            Assert.Equal(2, state);
 
-            entity.Id = 1;
-
-            Assert.Equal(3, entityProxy.GetState(nameof(Entity.Id)));
+            Assert.Equal(2, entityProxy.GetState(nameof(Entity.Id)));
         }
     }
 }
