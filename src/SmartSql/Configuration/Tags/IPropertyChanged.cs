@@ -12,6 +12,13 @@ namespace SmartSql.Configuration.Tags
         ///  true : 如果属性值没有变更，IsCondition 直接返回 false,否则返回 true
         ///  false: 如果属性值有变更，IsCondition 直接返回 false,否则返回 true
         /// </summary>
-        bool? PropertyChanged { get; set; }
+        PropertyChangedState PropertyChanged { get; set; }
+    }
+
+    public enum PropertyChangedState
+    {
+        Ignore = 0,
+        Changed = 1,
+        Unchanged = 2
     }
 }

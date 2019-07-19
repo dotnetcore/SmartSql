@@ -58,10 +58,11 @@
     <Statement Id="Update">
       UPDATE T_User
       <Set>
-        <IsProperty Prepend="," Property="UserName">
+
+        <IsProperty Prepend="," Property="UserName"> 
           UserName = @UserName
         </IsProperty>
-        <IsProperty Prepend="," Property="Status">
+        <IsProperty Prepend="," Property="Status" PropertyChanged="Ignore">
           Status = @Status
         </IsProperty>
       </Set>
@@ -103,7 +104,7 @@
     </Statement>
 
     <!--获取表映射实体-->
-    <Statement Id="GetEntity" Cache="UserCache" >
+    <Statement Id="GetEntity" Cache="UserCache">
       Select Top 1 T.* From T_User T With(NoLock)
       <Where Min="1">
         <IsNotEmpty Prepend="And" Property="Id">

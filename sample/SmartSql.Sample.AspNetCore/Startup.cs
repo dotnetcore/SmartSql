@@ -33,21 +33,21 @@ namespace SmartSql.Sample.AspNetCore
                 .AddSmartSql((sp, builder) =>
                 {
                     builder.UseProperties(Configuration);
-                    var subscriber = sp.GetRequiredService<ISubscriber>();
-                    builder.UseCacheManager(new SyncCacheManager(subscriber));
+//                    var subscriber = sp.GetRequiredService<ISubscriber>();
+//                    builder.UseCacheManager(new SyncCacheManager(subscriber));
                 })
                 .AddRepositoryFromAssembly(o =>
                 {
                     o.AssemblyString = "SmartSql.Sample.AspNetCore";
                     o.Filter = (type) => type.Namespace == "SmartSql.Sample.AspNetCore.DyRepositories";
-                })
-                .AddInvokeSync(options => { })
-                .AddKafkaPublisher(options =>
-                {
-                    options.Servers = "localhost:9092";
-                    options.Topic = "smartsql.sync";
-                    options.Config.Add("group.id", "SmartSql");
                 });
+//                .AddInvokeSync(options => { })
+//                .AddKafkaPublisher(options =>
+//                {
+//                    options.Servers = "localhost:9092";
+//                    options.Topic = "smartsql.sync";
+//                    options.Config.Add("group.id", "SmartSql");
+//                });
             services.AddSingleton<UserService>();
             RegisterConfigureSwagger(services);
             return services.BuildAspectInjectorProvider();
@@ -81,11 +81,11 @@ namespace SmartSql.Sample.AspNetCore
                 app.UseDeveloperExceptionPage();
             }
 
-            app.ApplicationServices.UseSmartSqlSync();
-            app.ApplicationServices.UseSmartSqlSubscriber((syncRequest) =>
-            {
-                Console.Error.WriteLine(syncRequest.Scope);
-            });
+//            app.ApplicationServices.UseSmartSqlSync();
+//            app.ApplicationServices.UseSmartSqlSubscriber((syncRequest) =>
+//            {
+//                Console.Error.WriteLine(syncRequest.Scope);
+//            });
 
             app.UseMvc();
             app.UseStaticFiles();

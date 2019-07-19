@@ -6,7 +6,7 @@ namespace SmartSql.Test.Entities
 {
     public class UserInfo
     {
-        public int Weight { get; set; }
-        public int Height { get; set; }
+        public virtual int Weight { get; set; }
+        public virtual int Height { get; set; }
     }
 }

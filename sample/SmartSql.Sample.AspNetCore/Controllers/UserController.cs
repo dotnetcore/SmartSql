@@ -47,7 +47,13 @@ namespace SmartSql.Sample.AspNetCore.Controllers
             var userJson = Newtonsoft.Json.JsonConvert.SerializeObject(user);
             return user;
         }
-
+        [HttpPost]
+        public int UpdateTrack(long id)
+        {
+            var user = _userRepository.GetById(id);
+            user.UserName = "Updated";
+            return _userRepository.Update(user);
+        }
         [HttpPost]
         public int Update(User user)
         {

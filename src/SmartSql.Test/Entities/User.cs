@@ -24,9 +24,9 @@ namespace SmartSql.Test.Entities
             UserName = name;
             Status = status;
         }
-        public long Id { get; set; }
-        public String UserName { get; set; }
-        public UserStatus Status { get; set; }
+        public virtual long Id { get; set; }
+        public virtual String UserName { get; set; }
+        public virtual UserStatus Status { get; set; }
     }
     public enum UserStatus : Int16
     {

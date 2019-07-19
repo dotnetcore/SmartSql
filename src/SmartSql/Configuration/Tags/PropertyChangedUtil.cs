@@ -16,7 +16,7 @@ namespace SmartSql.Configuration.Tags
         /// <returns></returns>
         public static bool IsCondition(IPropertyChanged propertyChanged, AbstractRequestContext context)
         {
-            if (!propertyChanged.PropertyChanged.HasValue)
+            if (propertyChanged.PropertyChanged == PropertyChangedState.Ignore)
             {
                 return true;
             }
@@ -32,12 +32,12 @@ namespace SmartSql.Configuration.Tags
 
                 case 0:
                 {
-                    return !propertyChanged.PropertyChanged.Value;
+                    return propertyChanged.PropertyChanged == PropertyChangedState.Unchanged;
                 }
 
                 case int version when version > 0:
                 {
-                    return propertyChanged.PropertyChanged.Value;
+                    return propertyChanged.PropertyChanged == PropertyChangedState.Changed;
                 }
 
                 default:
@@ -47,26 +47,42 @@ namespace SmartSql.Configuration.Tags
             }
         }
 
-        public static bool? GetPropertyChanged(XmlNode xmlNode, Statement statement)
+        public static PropertyChangedState GetPropertyChanged(XmlNode xmlNode, Statement statement)
         {
             string strVal = xmlNode.Attributes?[PROPERTY_CHANGED]?.Value?.Trim();
             if (String.IsNullOrEmpty(strVal))
             {
                 if (statement.EnablePropertyChangedTrack)
                 {
-                    return statement.EnablePropertyChangedTrack;
+                    return PropertyChangedState.Changed;
                 }
 
-                return null;
+                return PropertyChangedState.Ignore;
             }
 
-            if (!Boolean.TryParse(strVal, out var boolVal))
+            switch (strVal)
             {
-                throw new SmartSqlException($"can not convert {strVal} to Boolean from xml-node:{xmlNode.Value}.");
+                case nameof(PropertyChangedState.Ignore):
+                {
+                    return PropertyChangedState.Ignore;
+                }
+
+                case nameof(PropertyChangedState.Changed):
+                {
+                    return PropertyChangedState.Changed;
+                }
+
+                case nameof(PropertyChangedState.Unchanged):
+                {
+                    return PropertyChangedState.Unchanged;
+                }
+
+                default:
+                {
+                    throw new SmartSqlException(
+                        $"can not convert {strVal} to PropertyChangedState from xml-node:{xmlNode.Value}.");
+                }
             }
-
-            return boolVal;
-
         }
     }
 }

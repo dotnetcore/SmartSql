@@ -7,8 +7,8 @@ namespace SmartSql.Test.Entities
 {
     public class UserExtendedInfo
     {
-        public long UserId { get; set; }
+        public virtual long UserId { get; set; }
         [Column(FieldType = typeof(String))]
-        public UserInfo Data { get; set; }
+        public virtual UserInfo Data { get; set; }
     }
 }

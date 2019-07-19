@@ -38,6 +38,13 @@
       <xs:enumeration value="Read"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:simpleType name="PropertyChangedState">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Ignore"/>
+      <xs:enumeration value="Changed"/>
+      <xs:enumeration value="Unchanged"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:simpleType name="Transaction">
     <xs:restriction base="xs:NMTOKEN">
       <xs:enumeration value="Unspecified"/>
@@ -702,7 +709,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
-      <xs:attribute name="PropertyChanged" type="xs:boolean" use="optional"/>
+      <xs:attribute name="PropertyChanged" type="PropertyChangedState" use="optional"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="IsNotProperty">

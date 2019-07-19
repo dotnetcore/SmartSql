@@ -18,7 +18,6 @@ namespace SmartSql.Configuration.Tags
             return PropertyChangedUtil.IsCondition(this, context);
         }
 
-
-        public bool? PropertyChanged { get; set; }
+        public PropertyChangedState PropertyChanged { get; set; }
     }
 }
