@@ -5,7 +5,8 @@ namespace SmartSql.Reflection.EntityProxy
 {
     public interface IEntityPropertyChangedTrackProxy
     {
-        bool EnablePropertyChangedTrack { get; set; }
+        bool GetEnablePropertyChangedTrack();
+        void SetEnablePropertyChangedTrack(bool enablePropertyChangedTrack);
         void OnPropertyChanged(string propName);
         int GetPropertyVersion(string propName);
     }

@@ -174,7 +174,7 @@ namespace SmartSql.Deserializer
             {
                 ilGen.LoadLocalVar(0);
                 ilGen.LoadInt32(1);
-                var setEnableTrackMethod = resultType.GetProperty(nameof(IEntityPropertyChangedTrackProxy.EnablePropertyChangedTrack)).SetMethod;
+                var setEnableTrackMethod = resultType.GetMethod(nameof(IEntityPropertyChangedTrackProxy.SetEnablePropertyChangedTrack));
                 ilGen.Call(setEnableTrackMethod);
             }
 

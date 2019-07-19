@@ -7,17 +7,26 @@ namespace SmartSql.Test.Entities
     {
         private Dictionary<string, int> _changedVersion;
 
-        public EntityProxy()
+        public EntityProxy(bool enablePropertyChangedTrack)
         {
             _changedVersion = new Dictionary<string, int>(2);
         }
 
+        private bool _enablePropertyChangedTrack;
 
-        public bool EnablePropertyChangedTrack { get; set; }
+        public bool GetEnablePropertyChangedTrack()
+        {
+            return _enablePropertyChangedTrack;
+        }
+
+        public void SetEnablePropertyChangedTrack(bool enablePropertyChangedTrack)
+        {
+            _enablePropertyChangedTrack = enablePropertyChangedTrack;
+        }
 
         public void OnPropertyChanged(string propName)
         {
-            if (!EnablePropertyChangedTrack)
+            if (!_enablePropertyChangedTrack)
             {
                 return;
             }
@@ -34,7 +43,7 @@ namespace SmartSql.Test.Entities
 
         public int GetPropertyVersion(string propName)
         {
-            if (!EnablePropertyChangedTrack)
+            if (!_enablePropertyChangedTrack)
             {
                 return 0;
             }

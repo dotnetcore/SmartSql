@@ -99,7 +99,8 @@ namespace SmartSql.Test.Unit.CUD
         [Fact]
         public void UpdateByTrack()
         {
-            var entity = SqlMapper.GetById<AllPrimitive, long>(2, true);
+            InsertReturnIdImpl(out long id0);
+            var entity = SqlMapper.GetById<AllPrimitive, long>(id0, true);
             entity.String = "Updated";
             SqlMapper.Update(entity);
         }

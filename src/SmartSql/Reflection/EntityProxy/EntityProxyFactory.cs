@@ -33,16 +33,19 @@ namespace SmartSql.Reflection.EntityProxy
             string implName = $"{entityType.FullName}_Proxy_{Guid.NewGuid():N}";
             var typeBuilder = _moduleBuilder.DefineType(implName, TypeAttributes.Public, entityType);
             typeBuilder.AddInterfaceImplementation(typeof(IEntityPropertyChangedTrackProxy));
-            var enableTrackPropertyBuilder = typeBuilder.DefineProperty(nameof(IEntityPropertyChangedTrackProxy.EnablePropertyChangedTrack),
-                PropertyAttributes.HasDefault
-                , CommonType.Boolean, Type.EmptyTypes);
-            BuildEnableTrackProperty(typeBuilder, enableTrackPropertyBuilder);
+
             var changedVersionField =
                 typeBuilder.DefineField("_changedVersion", DictionaryStringIntType.Type, FieldAttributes.Private);
+            var enableTrackField = typeBuilder.DefineField("_enablePropertyChangedTrack", CommonType.Boolean,
+                FieldAttributes.Private | FieldAttributes.HasDefault);
             var properties = entityType.GetProperties();
             BuildCtor(typeBuilder, entityType, changedVersionField, properties.Length);
-            var onUpdatedMethodInfo = BuildOnUpdatedMethod(typeBuilder, enableTrackPropertyBuilder, changedVersionField);
-            BuildGetPropertyVersionMethod(typeBuilder, enableTrackPropertyBuilder, changedVersionField);
+
+            BuildGetEnableTrackMethod(typeBuilder, enableTrackField);
+            BuildSetEnableTrackMethod(typeBuilder, enableTrackField);
+
+            var onUpdatedMethodInfo = BuildOnUpdatedMethod(typeBuilder, enableTrackField, changedVersionField);
+            BuildGetPropertyVersionMethod(typeBuilder, enableTrackField, changedVersionField);
 
             foreach (var propertyInfo in properties)
             {
@@ -52,17 +55,10 @@ namespace SmartSql.Reflection.EntityProxy
             return typeBuilder.CreateTypeInfo();
         }
 
-        private void BuildEnableTrackProperty(TypeBuilder typeBuilder, PropertyBuilder enableTrackPropertyBuilder)
+        private MethodBuilder BuildSetEnableTrackMethod(TypeBuilder typeBuilder, FieldBuilder enableTrackField)
         {
-            var enableTrackField = typeBuilder.DefineField("_enablePropertyChangedTrack", CommonType.Boolean, FieldAttributes.Private);
-            BuildGetEnableTrackMethod(typeBuilder, enableTrackPropertyBuilder, enableTrackField);
-            BuildSetEnableTrackMethod(typeBuilder, enableTrackPropertyBuilder, enableTrackField);
-        }
-
-        private void BuildSetEnableTrackMethod(TypeBuilder typeBuilder, PropertyBuilder enableTrackPropertyBuilder,
-            FieldBuilder enableTrackField)
-        {
-            var setEnableTrackMethodBuilder = typeBuilder.DefineMethod($"set_{nameof(IEntityPropertyChangedTrackProxy.EnablePropertyChangedTrack)}",
+            var setEnableTrackMethodBuilder = typeBuilder.DefineMethod(
+                nameof(IEntityPropertyChangedTrackProxy.SetEnablePropertyChangedTrack),
                 MethodAttributes.Public | MethodAttributes.Final | MethodAttributes.HideBySig |
                 MethodAttributes.Virtual | MethodAttributes.NewSlot | MethodAttributes.SpecialName,
                 CommonType.Void,
@@ -72,13 +68,13 @@ namespace SmartSql.Reflection.EntityProxy
             ilGen.LoadArg(1);
             ilGen.FieldSet(enableTrackField);
             ilGen.Return();
-            enableTrackPropertyBuilder.SetSetMethod(setEnableTrackMethodBuilder);
+            return setEnableTrackMethodBuilder;
         }
 
-        private void BuildGetEnableTrackMethod(TypeBuilder typeBuilder,
-            PropertyBuilder enableTrackPropertyBuilder, FieldBuilder enableTrackField)
+        private MethodBuilder BuildGetEnableTrackMethod(TypeBuilder typeBuilder, FieldBuilder enableTrackField)
         {
-            var getEnableTrackMethodBuilder = typeBuilder.DefineMethod($"get_{nameof(IEntityPropertyChangedTrackProxy.EnablePropertyChangedTrack)}",
+            var getEnableTrackMethodBuilder = typeBuilder.DefineMethod(
+                nameof(IEntityPropertyChangedTrackProxy.GetEnablePropertyChangedTrack),
                 MethodAttributes.Public | MethodAttributes.Final | MethodAttributes.HideBySig |
                 MethodAttributes.Virtual | MethodAttributes.NewSlot | MethodAttributes.SpecialName,
                 CommonType.Boolean,
@@ -87,7 +83,7 @@ namespace SmartSql.Reflection.EntityProxy
             ilGen.LoadArg(0);
             ilGen.FieldGet(enableTrackField);
             ilGen.Return();
-            enableTrackPropertyBuilder.SetGetMethod(getEnableTrackMethodBuilder);
+            return getEnableTrackMethodBuilder;
         }
 
         private void BuildCtor(TypeBuilder typeBuilder, Type entityType, FieldBuilder changedVersionField,
@@ -156,7 +152,7 @@ namespace SmartSql.Reflection.EntityProxy
             ilGen.Return();
         }
 
-        private MethodInfo BuildOnUpdatedMethod(TypeBuilder typeBuilder, PropertyBuilder enableTrackPropertyBuilder,
+        private MethodInfo BuildOnUpdatedMethod(TypeBuilder typeBuilder, FieldBuilder enableTrackField,
             FieldBuilder changedVersionField)
         {
             var onUpdatedBuilder = typeBuilder.DefineMethod(nameof(IEntityPropertyChangedTrackProxy.OnPropertyChanged),
@@ -166,7 +162,7 @@ namespace SmartSql.Reflection.EntityProxy
             var ilGen = onUpdatedBuilder.GetILGenerator();
             var countLocalBuilder = ilGen.DeclareLocal(CommonType.Int32);
 
-            CheckEnableTrack(enableTrackPropertyBuilder, ilGen);
+            CheckEnableTrack(enableTrackField, ilGen);
 
             ilGen.LoadArg(0);
             ilGen.FieldGet(changedVersionField);
@@ -195,11 +191,11 @@ namespace SmartSql.Reflection.EntityProxy
             return onUpdatedBuilder;
         }
 
-        private static void CheckEnableTrack(PropertyBuilder enableTrackPropertyBuilder, ILGenerator ilGen,
+        private static void CheckEnableTrack(FieldBuilder enableTrackField, ILGenerator ilGen,
             int? returnVal = null)
         {
             ilGen.LoadArg(0);
-            ilGen.Call(enableTrackPropertyBuilder.GetMethod);
+            ilGen.FieldGet(enableTrackField);
             var enableTrackLabel = ilGen.DefineLabel();
             ilGen.Emit(OpCodes.Brtrue_S, enableTrackLabel);
             if (returnVal.HasValue)
@@ -211,17 +207,18 @@ namespace SmartSql.Reflection.EntityProxy
             ilGen.MarkLabel(enableTrackLabel);
         }
 
-        private void BuildGetPropertyVersionMethod(TypeBuilder typeBuilder, PropertyBuilder enableTrackPropertyBuilder,
+        private void BuildGetPropertyVersionMethod(TypeBuilder typeBuilder, FieldBuilder enableTrackField,
             FieldBuilder changedVersionField)
         {
-            var getStateMethodBuilder = typeBuilder.DefineMethod(nameof(IEntityPropertyChangedTrackProxy.GetPropertyVersion),
+            var getStateMethodBuilder = typeBuilder.DefineMethod(
+                nameof(IEntityPropertyChangedTrackProxy.GetPropertyVersion),
                 MethodAttributes.Public | MethodAttributes.Final | MethodAttributes.HideBySig |
                 MethodAttributes.Virtual | MethodAttributes.NewSlot,
                 CommonType.Int32, new[] {CommonType.String});
             var ilGen = getStateMethodBuilder.GetILGenerator();
             var countLocalBuilder = ilGen.DeclareLocal(CommonType.Int32);
 
-            CheckEnableTrack(enableTrackPropertyBuilder, ilGen, 0);
+            CheckEnableTrack(enableTrackField, ilGen, 0);
 
             ilGen.LoadArg(0);
             ilGen.FieldGet(changedVersionField);

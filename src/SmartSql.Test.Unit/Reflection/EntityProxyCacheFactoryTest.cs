@@ -20,7 +20,7 @@ namespace SmartSql.Test.Unit.Reflection
             state = entityProxy.GetPropertyVersion(nameof(Entity.Id));
             Assert.Equal(0, state);
 
-            entityProxy.EnablePropertyChangedTrack = true;
+            entityProxy.SetEnablePropertyChangedTrack(true);
             entity.Id = 1;
             Assert.Equal(1, entityProxy.GetPropertyVersion(nameof(Entity.Id)));
         }
@@ -37,7 +37,7 @@ namespace SmartSql.Test.Unit.Reflection
             var state = entityProxy.GetPropertyVersion(nameof(Entity.Id));
             Assert.Equal(0, state);
             
-            entityProxy.EnablePropertyChangedTrack = true;
+            entityProxy.SetEnablePropertyChangedTrack(true);
             
             entity.Id = 1;
             state = entityProxy.GetPropertyVersion(nameof(Entity.Id));
