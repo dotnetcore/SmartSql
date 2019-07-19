@@ -45,10 +45,12 @@ namespace SmartSql.ConfigBuilder
                 ResultMaps = new Dictionary<String, ResultMap> { },
                 MultipleResultMaps = new Dictionary<String, MultipleResultMap> { }
             };
-            if (!XmlSqlMapRoot.Attributes.TryGetValueAsString(nameof(SqlMap.Scope), out string scope, SmartSqlConfig.Properties))
+            if (!XmlSqlMapRoot.Attributes.TryGetValueAsString(nameof(SqlMap.Scope), out string scope,
+                SmartSqlConfig.Properties))
             {
                 throw new SmartSqlException("SqlMap.Code can not be null.");
             }
+
             SqlMap.Scope = scope;
             BuildCaches();
             BuildParameterMaps();
@@ -60,6 +62,7 @@ namespace SmartSql.ConfigBuilder
         }
 
         #region Caches
+
         private void BuildCaches()
         {
             var cacheNodes = XmlSqlMapRoot.SelectNodes($"{SQLMAP_PREFIX}:Caches/{SQLMAP_PREFIX}:Cache", XmlNsManager);
@@ -69,10 +72,13 @@ namespace SmartSql.ConfigBuilder
                     BuildCache(cacheNode);
                 }
         }
+
         private void BuildCache(XmlElement cacheNode)
         {
-            cacheNode.Attributes.TryGetValueAsString(nameof(Configuration.Cache.Id), out var id, SmartSqlConfig.Properties);
-            cacheNode.Attributes.TryGetValueAsString(nameof(Configuration.Cache.Type), out var type, SmartSqlConfig.Properties);
+            cacheNode.Attributes.TryGetValueAsString(nameof(Configuration.Cache.Id), out var id,
+                SmartSqlConfig.Properties);
+            cacheNode.Attributes.TryGetValueAsString(nameof(Configuration.Cache.Type), out var type,
+                SmartSqlConfig.Properties);
 
             var cache = new Configuration.Cache
             {
@@ -91,86 +97,102 @@ namespace SmartSql.ConfigBuilder
                 switch (childNode.Name)
                 {
                     case "Property":
-                        {
-                            childNode.Attributes.TryGetValueAsString("Name", out var name, SmartSqlConfig.Properties);
-                            childNode.Attributes.TryGetValueAsString("Value", out var propVal, SmartSqlConfig.Properties);
-                            cache.Parameters.Add(name, propVal);
-                            break;
-                        }
-                    case "FlushInterval":
-                        {
-                            childNode.Attributes.TryGetValueAsInt32("Hours", out var hours, SmartSqlConfig.Properties);
-                            childNode.Attributes.TryGetValueAsInt32("Minutes", out var minutes, SmartSqlConfig.Properties);
-                            childNode.Attributes.TryGetValueAsInt32("Seconds", out var seconds, SmartSqlConfig.Properties);
-                            cache.FlushInterval = new FlushInterval
-                            {
-                                Hours = hours,
-                                Minutes = minutes,
-                                Seconds = seconds
-                            };
+                    {
+                        childNode.Attributes.TryGetValueAsString("Name", out var name, SmartSqlConfig.Properties);
+                        childNode.Attributes.TryGetValueAsString("Value", out var propVal, SmartSqlConfig.Properties);
+                        cache.Parameters.Add(name, propVal);
+                        break;
+                    }
 
-                            cache.Parameters.Add("FlushInterval", cache.FlushInterval);
-                            break;
-                        }
-                    case "FlushOnExecute":
+                    case "FlushInterval":
+                    {
+                        childNode.Attributes.TryGetValueAsInt32("Hours", out var hours, SmartSqlConfig.Properties);
+                        childNode.Attributes.TryGetValueAsInt32("Minutes", out var minutes, SmartSqlConfig.Properties);
+                        childNode.Attributes.TryGetValueAsInt32("Seconds", out var seconds, SmartSqlConfig.Properties);
+                        cache.FlushInterval = new FlushInterval
                         {
-                            childNode.Attributes.TryGetValueAsString("Statement", out var statementId, SmartSqlConfig.Properties);
-                            if (!String.IsNullOrEmpty(statementId))
+                            Hours = hours,
+                            Minutes = minutes,
+                            Seconds = seconds
+                        };
+
+                        cache.Parameters.Add("FlushInterval", cache.FlushInterval);
+                        break;
+                    }
+
+                    case "FlushOnExecute":
+                    {
+                        childNode.Attributes.TryGetValueAsString("Statement", out var statementId,
+                            SmartSqlConfig.Properties);
+                        if (!String.IsNullOrEmpty(statementId))
+                        {
+                            if (statementId.IndexOf('.') < 0)
                             {
-                                if (statementId.IndexOf('.') < 0)
-                                {
-                                    statementId = $"{SqlMap.Scope}.{statementId}";
-                                }
-                                cache.FlushOnExecutes.Add(new FlushOnExecute
-                                {
-                                    Statement = statementId
-                                });
+                                statementId = $"{SqlMap.Scope}.{statementId}";
                             }
-                            break;
+
+                            cache.FlushOnExecutes.Add(new FlushOnExecute
+                            {
+                                Statement = statementId
+                            });
                         }
+
+                        break;
+                    }
                 }
             }
+
             cache.Parameters.Add("Cache.Id", cache.Id);
             cache.Provider = CreateCacheProvider(cache);
             SqlMap.Caches.Add(cache.Id, cache);
         }
+
         private ICacheProvider CreateCacheProvider(Configuration.Cache cache)
         {
             ICacheProvider cacheProvider = null;
             switch (cache.Type)
             {
                 case "Lru":
-                    {
-                        cacheProvider = new LruCacheProvider();
-                        break;
-                    }
+                {
+                    cacheProvider = new LruCacheProvider();
+                    break;
+                }
+
                 case "Fifo":
-                    {
-                        cacheProvider = new FifoCacheProvider();
-                        break;
-                    }
+                {
+                    cacheProvider = new FifoCacheProvider();
+                    break;
+                }
+
                 default:
-                    {
-                        Type cacheProviderType = TypeUtils.GetType(cache.Type);
-                        cacheProvider = SmartSqlConfig.ObjectFactoryBuilder
-                                .GetObjectFactory(cacheProviderType, Type.EmptyTypes)(null) as ICacheProvider;
-                        break;
-                    }
+                {
+                    Type cacheProviderType = TypeUtils.GetType(cache.Type);
+                    cacheProvider = SmartSqlConfig.ObjectFactoryBuilder
+                        .GetObjectFactory(cacheProviderType, Type.EmptyTypes)(null) as ICacheProvider;
+                    break;
+                }
             }
+
             cacheProvider.Initialize(cache.Parameters);
             return cacheProvider;
         }
+
         #endregion
+
         #region  ParameterMaps
+
         private void BuildParameterMaps()
         {
-            var parameterMapsNodes = XmlSqlMapRoot.SelectNodes($"//{SQLMAP_PREFIX}:ParameterMaps/{SQLMAP_PREFIX}:ParameterMap", XmlNsManager);
+            var parameterMapsNodes =
+                XmlSqlMapRoot.SelectNodes($"//{SQLMAP_PREFIX}:ParameterMaps/{SQLMAP_PREFIX}:ParameterMap",
+                    XmlNsManager);
             if (parameterMapsNodes != null)
                 foreach (XmlElement xmlNode in parameterMapsNodes)
                 {
                     BuildParameterMap(xmlNode);
                 }
         }
+
         private void BuildParameterMap(XmlElement xmlNode)
         {
             xmlNode.Attributes.TryGetValueAsString(nameof(ParameterMap.Id), out var id, SmartSqlConfig.Properties);
@@ -183,6 +205,7 @@ namespace SmartSql.ConfigBuilder
             {
                 parameterMap.Id = $"{SqlMap.Scope}.{parameterMap.Id}";
             }
+
             BuildParameters(xmlNode, parameterMap);
             SqlMap.ParameterMaps.Add(parameterMap.Id, parameterMap);
         }
@@ -193,8 +216,10 @@ namespace SmartSql.ConfigBuilder
             if (parameterNodes != null)
                 foreach (XmlNode parameterNode in parameterNodes)
                 {
-                    parameterNode.Attributes.TryGetValueAsString("Property", out var property, SmartSqlConfig.Properties);
-                    if (!parameterNode.Attributes.TryGetValueAsString("Column", out var column, SmartSqlConfig.Properties))
+                    parameterNode.Attributes.TryGetValueAsString("Property", out var property,
+                        SmartSqlConfig.Properties);
+                    if (!parameterNode.Attributes.TryGetValueAsString("Column", out var column,
+                        SmartSqlConfig.Properties))
                     {
                         column = property;
                     }
@@ -204,24 +229,31 @@ namespace SmartSql.ConfigBuilder
                         Property = property,
                         Name = column
                     };
-                    if (parameterNode.Attributes.TryGetValueAsString("TypeHandler", out var handlerName, SmartSqlConfig.Properties))
+                    if (parameterNode.Attributes.TryGetValueAsString("TypeHandler", out var handlerName,
+                        SmartSqlConfig.Properties))
                     {
                         parameter.Handler = SmartSqlConfig.TypeHandlerFactory.GetTypeHandler(handlerName);
                     }
+
                     parameterMap.Parameters.Add(parameter.Name, parameter);
                 }
         }
+
         #endregion
+
         #region  ResultMaps
+
         private void BuildResultMaps()
         {
-            var resultMapsNodes = XmlSqlMapRoot.SelectNodes($"//{SQLMAP_PREFIX}:ResultMaps/{SQLMAP_PREFIX}:ResultMap", XmlNsManager);
+            var resultMapsNodes =
+                XmlSqlMapRoot.SelectNodes($"//{SQLMAP_PREFIX}:ResultMaps/{SQLMAP_PREFIX}:ResultMap", XmlNsManager);
             if (resultMapsNodes != null)
                 foreach (XmlElement xmlNode in resultMapsNodes)
                 {
                     BuildResultMap(xmlNode);
                 }
         }
+
         private void BuildResultMap(XmlElement xmlNode)
         {
             xmlNode.Attributes.TryGetValueAsString(nameof(ResultMap.Id), out var id, SmartSqlConfig.Properties);
@@ -234,10 +266,12 @@ namespace SmartSql.ConfigBuilder
             {
                 resultMap.Id = $"{SqlMap.Scope}.{resultMap.Id}";
             }
+
             BuildResultCtor(xmlNode, resultMap);
             BuildResultProperty(xmlNode, resultMap);
             SqlMap.ResultMaps.Add(resultMap.Id, resultMap);
         }
+
         private void BuildResultCtor(XmlElement xmlNode, ResultMap resultMap)
         {
             var ctorNode = xmlNode.SelectSingleNode($"./{SQLMAP_PREFIX}:Constructor", XmlNsManager);
@@ -250,10 +284,12 @@ namespace SmartSql.ConfigBuilder
             foreach (XmlNode argNode in argNodes)
             {
                 argNode.Attributes.TryGetValueAsString(nameof(Arg.Column), out var column, SmartSqlConfig.Properties);
-                argNode.Attributes.TryGetValueAsString(nameof(Arg.CSharpType), out var argTypeStr, SmartSqlConfig.Properties);
+                argNode.Attributes.TryGetValueAsString(nameof(Arg.CSharpType), out var argTypeStr,
+                    SmartSqlConfig.Properties);
                 var arg = new Arg {Column = column, CSharpType = ArgTypeConvert(argTypeStr)};
                 ctorMap.Args.Add(arg);
             }
+
             resultMap.Constructor = ctorMap;
         }
 
@@ -261,23 +297,90 @@ namespace SmartSql.ConfigBuilder
         {
             switch (typeStr)
             {
-                case "Boolean": { return typeof(Boolean); }
-                case "Char": { return typeof(Char); }
-                case "SByte": { return typeof(SByte); }
-                case "Byte": { return typeof(Byte); }
-                case "Int16": { return typeof(Int16); }
-                case "UInt16": { return typeof(UInt16); }
-                case "Int32": { return typeof(Int32); }
-                case "UInt32": { return typeof(UInt32); }
-                case "Int64": { return typeof(Int64); }
-                case "UInt64": { return typeof(UInt64); }
-                case "Single": { return typeof(Single); }
-                case "Double": { return typeof(Double); }
-                case "Decimal": { return typeof(Decimal); }
-                case "DateTime": { return typeof(DateTime); }
-                case "String": { return typeof(String); }
-                case "Guid": { return typeof(Guid); }
-                default: { return Type.GetType(typeStr, true); }
+                case "Boolean":
+                {
+                    return typeof(Boolean);
+                }
+
+                case "Char":
+                {
+                    return typeof(Char);
+                }
+
+                case "SByte":
+                {
+                    return typeof(SByte);
+                }
+
+                case "Byte":
+                {
+                    return typeof(Byte);
+                }
+
+                case "Int16":
+                {
+                    return typeof(Int16);
+                }
+
+                case "UInt16":
+                {
+                    return typeof(UInt16);
+                }
+
+                case "Int32":
+                {
+                    return typeof(Int32);
+                }
+
+                case "UInt32":
+                {
+                    return typeof(UInt32);
+                }
+
+                case "Int64":
+                {
+                    return typeof(Int64);
+                }
+
+                case "UInt64":
+                {
+                    return typeof(UInt64);
+                }
+
+                case "Single":
+                {
+                    return typeof(Single);
+                }
+
+                case "Double":
+                {
+                    return typeof(Double);
+                }
+
+                case "Decimal":
+                {
+                    return typeof(Decimal);
+                }
+
+                case "DateTime":
+                {
+                    return typeof(DateTime);
+                }
+
+                case "String":
+                {
+                    return typeof(String);
+                }
+
+                case "Guid":
+                {
+                    return typeof(Guid);
+                }
+
+                default:
+                {
+                    return Type.GetType(typeStr, true);
+                }
             }
         }
 
@@ -298,20 +401,26 @@ namespace SmartSql.ConfigBuilder
                     Name = name,
                     Column = column
                 };
-                if (resultNode.Attributes.TryGetValueAsString("TypeHandler", out var handlerName, SmartSqlConfig.Properties))
+                if (resultNode.Attributes.TryGetValueAsString("TypeHandler", out var handlerName,
+                    SmartSqlConfig.Properties))
                 {
                     property.TypeHandler = handlerName;
                     property.Handler = SmartSqlConfig.TypeHandlerFactory.GetTypeHandler(handlerName);
                 }
+
                 resultMap.Properties.Add(property.Column, property);
             }
         }
+
         #endregion
+
         #region  MultipleResultMaps
 
         private void BuildMultipleResultMaps()
         {
-            var multipleResultMapsNode = XmlSqlMapRoot.SelectNodes($"{SQLMAP_PREFIX}:MultipleResultMaps/{SQLMAP_PREFIX}:MultipleResultMap", XmlNsManager);
+            var multipleResultMapsNode =
+                XmlSqlMapRoot.SelectNodes($"{SQLMAP_PREFIX}:MultipleResultMaps/{SQLMAP_PREFIX}:MultipleResultMap",
+                    XmlNsManager);
             if (multipleResultMapsNode == null) return;
             foreach (XmlElement xmlNode in multipleResultMapsNode)
             {
@@ -321,7 +430,8 @@ namespace SmartSql.ConfigBuilder
 
         private void BuildMultipleResultMap(XmlNode mulResultNode)
         {
-            mulResultNode.Attributes.TryGetValueAsString(nameof(MultipleResultMap.Id), out var id, SmartSqlConfig.Properties);
+            mulResultNode.Attributes.TryGetValueAsString(nameof(MultipleResultMap.Id), out var id,
+                SmartSqlConfig.Properties);
             var multipleResultMap = new MultipleResultMap
             {
                 Id = id,
@@ -331,6 +441,7 @@ namespace SmartSql.ConfigBuilder
             {
                 multipleResultMap.Id = $"{SqlMap.Scope}.{multipleResultMap.Id}";
             }
+
             foreach (XmlNode childNode in mulResultNode.ChildNodes)
             {
                 childNode.Attributes.TryGetValueAsString("Property", out var property, SmartSqlConfig.Properties);
@@ -354,15 +465,18 @@ namespace SmartSql.ConfigBuilder
                     multipleResultMap.Results.Add(result);
                 }
             }
+
             SqlMap.MultipleResultMaps.Add(multipleResultMap.Id, multipleResultMap);
         }
 
         #endregion
+
         #region  Statements
 
         private void BuildStatements()
         {
-            var statementNodes = XmlSqlMapRoot.SelectNodes($"{SQLMAP_PREFIX}:Statements/{SQLMAP_PREFIX}:Statement", XmlNsManager);
+            var statementNodes =
+                XmlSqlMapRoot.SelectNodes($"{SQLMAP_PREFIX}:Statements/{SQLMAP_PREFIX}:Statement", XmlNsManager);
             if (statementNodes == null) return;
             foreach (XmlElement statementNode in statementNodes)
             {
@@ -373,13 +487,34 @@ namespace SmartSql.ConfigBuilder
         private void BuildStatement(XmlNode statementNode)
         {
             statementNode.Attributes.TryGetValueAsString(nameof(Statement.Id), out var id, SmartSqlConfig.Properties);
-            statementNode.Attributes.TryGetValueAsString(nameof(Statement.ReadDb), out var readDb, SmartSqlConfig.Properties);
-            statementNode.Attributes.TryGetValueAsString("Cache", out var cacheId, SmartSqlConfig.Properties);
-            statementNode.Attributes.TryGetValueAsString("ParameterMap", out var parameterId, SmartSqlConfig.Properties);
-            statementNode.Attributes.TryGetValueAsString("ResultMap", out var resultMapId, SmartSqlConfig.Properties);
-            statementNode.Attributes.TryGetValueAsString("MultipleResultMap", out var multipleResultMapId, SmartSqlConfig.Properties);
-            int? commandTimeout=null;
-            if (statementNode.Attributes.TryGetValueAsInt32(nameof(Statement.CommandTimeout), out var cmdTimeout, SmartSqlConfig.Properties))
+            statementNode.Attributes.TryGetValueAsString(nameof(Statement.ReadDb), out var readDb,
+                SmartSqlConfig.Properties);
+            statementNode.Attributes.TryGetValueAsString(nameof(Statement.Cache), out var cacheId,
+                SmartSqlConfig.Properties);
+            statementNode.Attributes.TryGetValueAsString(nameof(Statement.ParameterMap), out var parameterId,
+                SmartSqlConfig.Properties);
+            statementNode.Attributes.TryGetValueAsString(nameof(Statement.ResultMap), out var resultMapId,
+                SmartSqlConfig.Properties);
+            statementNode.Attributes.TryGetValueAsString(nameof(Statement.MultipleResultMap),
+                out var multipleResultMapId, SmartSqlConfig.Properties);
+            if (!statementNode.Attributes.TryGetValueAsBoolean(nameof(Statement.EnablePropertyChangedTrack),
+                out var enablePropertyChangedTrack, SmartSqlConfig.Properties))
+            {
+                if (SmartSqlConfig.Settings.EnablePropertyChangedTrack &&
+                    (
+                        id.Equals("GetEntity", StringComparison.OrdinalIgnoreCase)
+                        ||
+                        id.Equals("Update", StringComparison.OrdinalIgnoreCase)
+                    ))
+                {
+                    enablePropertyChangedTrack = true;
+                }
+            }
+
+
+            int? commandTimeout = null;
+            if (statementNode.Attributes.TryGetValueAsInt32(nameof(Statement.CommandTimeout), out var cmdTimeout,
+                SmartSqlConfig.Properties))
             {
                 commandTimeout = cmdTimeout;
             }
@@ -389,6 +524,7 @@ namespace SmartSql.ConfigBuilder
                 Id = id,
                 SqlTags = new List<ITag> { },
                 ReadDb = readDb,
+                EnablePropertyChangedTrack = enablePropertyChangedTrack,
                 SqlMap = SqlMap,
                 CacheId = cacheId,
                 ParameterMapId = parameterId,
@@ -402,51 +538,70 @@ namespace SmartSql.ConfigBuilder
             {
                 if (!SmartSqlConfig.Database.Reads.ContainsKey(statement.ReadDb))
                 {
-                    throw new SmartSqlException($"Statement.Id:{statement.FullSqlId} can not find ReadDb:{statement.ReadDb}!");
+                    throw new SmartSqlException(
+                        $"Statement.Id:{statement.FullSqlId} can not find ReadDb:{statement.ReadDb}!");
                 }
             }
+
             #region Init CacheId & ResultMapId & ParameterMapId & MultipleResultMapId
+
             if (statement.CacheId?.IndexOf('.') < 0)
             {
                 statement.CacheId = $"{SqlMap.Scope}.{statement.CacheId}";
             }
+
             if (statement.ParameterMapId?.IndexOf('.') < 0)
             {
                 statement.ParameterMapId = $"{SqlMap.Scope}.{statement.ParameterMapId}";
             }
+
             if (statement.ResultMapId?.IndexOf('.') < 0)
             {
                 statement.ResultMapId = $"{SqlMap.Scope}.{statement.ResultMapId}";
             }
+
             if (statement.MultipleResultMapId?.IndexOf('.') < 0)
             {
                 statement.MultipleResultMapId = $"{SqlMap.Scope}.{statement.MultipleResultMapId}";
             }
+
             #endregion
+
             #region Init CommandType & SourceChoice & Transaction
-            statementNode.Attributes.TryGetValueAsString(nameof(Statement.CommandType), out var cmdTypeStr, SmartSqlConfig.Properties);
-            statementNode.Attributes.TryGetValueAsString(nameof(Statement.SourceChoice), out var sourceChoiceStr, SmartSqlConfig.Properties);
-            statementNode.Attributes.TryGetValueAsString(nameof(Statement.Transaction), out var transactionStr, SmartSqlConfig.Properties);
+
+            statementNode.Attributes.TryGetValueAsString(nameof(Statement.CommandType), out var cmdTypeStr,
+                SmartSqlConfig.Properties);
+            statementNode.Attributes.TryGetValueAsString(nameof(Statement.SourceChoice), out var sourceChoiceStr,
+                SmartSqlConfig.Properties);
+            statementNode.Attributes.TryGetValueAsString(nameof(Statement.Transaction), out var transactionStr,
+                SmartSqlConfig.Properties);
             if (Enum.TryParse<CommandType>(cmdTypeStr, out CommandType cmdType))
             {
                 statement.CommandType = cmdType;
             }
+
             if (Enum.TryParse<DataSourceChoice>(sourceChoiceStr, out DataSourceChoice sourceChoice))
             {
                 statement.SourceChoice = sourceChoice;
             }
+
             if (Enum.TryParse<IsolationLevel>(transactionStr, out IsolationLevel isolationLevel))
             {
                 statement.Transaction = isolationLevel;
             }
+
             #endregion
 
             var tagNodes = statementNode.ChildNodes;
             foreach (XmlNode tagNode in tagNodes)
             {
                 var tag = LoadTag(tagNode, statement);
-                if (tag != null) { statement.SqlTags.Add(tag); }
+                if (tag != null)
+                {
+                    statement.SqlTags.Add(tag);
+                }
             }
+
             SqlMap.Statements.Add(statement.FullSqlId, statement);
         }
 
@@ -454,21 +609,31 @@ namespace SmartSql.ConfigBuilder
         private ITag LoadTag(XmlNode xmlNode, Statement statement)
         {
             ITag tag = null;
+
             #region Init Tag
+
             switch (xmlNode.Name)
             {
-                case "#comment": { return null; }
+                case "#comment":
+                {
+                    return null;
+                }
+
                 case "#text":
                 case "#cdata-section":
-                    {
-                        return SmartSqlConfig.TagBuilderFactory.Get(xmlNode.Name).Build(xmlNode, statement);
-                    }
+                {
+                    return SmartSqlConfig.TagBuilderFactory.Get(xmlNode.Name).Build(xmlNode, statement);
+                }
+
                 default:
-                    {
-                        tag = SmartSqlConfig.TagBuilderFactory.Get(xmlNode.Name).Build(xmlNode, statement); break;
-                    };
+                {
+                    tag = SmartSqlConfig.TagBuilderFactory.Get(xmlNode.Name).Build(xmlNode, statement);
+                    break;
+                }
             }
+
             #endregion
+
             foreach (XmlNode childNode in xmlNode)
             {
                 ITag childTag = LoadTag(childNode, statement);
@@ -476,6 +641,7 @@ namespace SmartSql.ConfigBuilder
                 childTag.Parent = tag;
                 (tag as Tag).ChildTags.Add(childTag);
             }
+
             return tag;
         }
 

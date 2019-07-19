@@ -14,6 +14,7 @@ namespace SmartSql.Configuration
         public CommandType? CommandType { get; set; }
         public DataSourceChoice? SourceChoice { get; set; }
         public IsolationLevel? Transaction { get; set; }
+        public bool EnablePropertyChangedTrack { get; set; }    
         public String ReadDb { get; set; }
         public int? CommandTimeout { get; set; }
         public String FullSqlId => $"{SqlMap.Scope}.{Id}";

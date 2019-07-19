@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using System.Text;
 using SmartSql.Data;
+using SmartSql.Reflection.EntityProxy;
 
 namespace SmartSql
 {
@@ -22,19 +23,24 @@ namespace SmartSql
         public bool IsStatementSql { get; internal set; } = true;
         internal bool IgnorePrepend { get; set; } = false;
         public String RealSql { get; set; }
+
         /// <summary>
         /// SmartSqlMap.Scope
         /// </summary>
         public String Scope { get; set; }
+
         /// <summary>
         /// Statement.Id
         /// </summary>
         public String SqlId { get; set; }
+
         /// <summary>
         /// Statement.FullSqlId
         /// </summary>
         public String FullSqlId => $"{Scope}.{SqlId}";
+
         #region Map
+
         public String CacheId { get; set; }
         public Configuration.Cache Cache { get; internal set; }
         public string ParameterMapId { get; set; }
@@ -43,17 +49,26 @@ namespace SmartSql
         public ResultMap ResultMap { get; internal set; }
         public string MultipleResultMapId { get; set; }
         public MultipleResultMap MultipleResultMap { get; internal set; }
+
         #endregion
+
         public SqlParameterCollection Parameters { get; set; }
 
         public ResultMap GetCurrentResultMap()
         {
-            return MultipleResultMap != null ?
-                MultipleResultMap.Results[ExecutionContext.DataReaderWrapper.ResultIndex]?.Map : ResultMap;
+            return MultipleResultMap != null
+                ? MultipleResultMap.Results[ExecutionContext.DataReaderWrapper.ResultIndex]?.Map
+                : ResultMap;
         }
 
         public abstract void SetupParameters();
         public abstract void SetRequest(object requestObj);
+        /// <summary>
+        /// 获取请求实体变更的版本号
+        /// </summary>
+        /// <param name="propName">属性名</param>
+        /// <returns>变更次数,如果返回值是 -1 则实体对象不为增强后的代理对象</returns>
+        public abstract int GetPropertyVersion(string propName);
     }
 
     public class RequestContext<TRequest> : AbstractRequestContext where TRequest : class
@@ -69,10 +84,19 @@ namespace SmartSql
         {
             Request = (TRequest) requestObj;
         }
+
+        public override int GetPropertyVersion(string propName)
+        {
+            if (Request is IEntityPropertyChangedTrackProxy trackProxy)
+            {
+                return trackProxy.GetPropertyVersion(propName);
+            }
+
+            return -1;
+        }
     }
 
     public class RequestContext : RequestContext<object>
     {
-
     }
 }

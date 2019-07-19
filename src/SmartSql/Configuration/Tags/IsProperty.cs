@@ -5,11 +5,20 @@ using System.Linq;
 
 namespace SmartSql.Configuration.Tags
 {
-    public class IsProperty : Tag
+    public class IsProperty : Tag, IPropertyChanged
     {
         public override bool IsCondition(AbstractRequestContext context)
         {
-            return context.Parameters.ContainsKey(Property);
+            var isCondition = context.Parameters.ContainsKey(Property);
+            if (!isCondition)
+            {
+                return false;
+            }
+
+            return PropertyChangedUtil.IsCondition(this, context);
         }
+
+
+        public bool? PropertyChanged { get; set; }
     }
 }

@@ -702,6 +702,7 @@
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="PropertyChanged" type="xs:boolean" use="optional"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="IsNotProperty">

@@ -8,8 +8,10 @@ namespace SmartSql.Configuration.Tags
     {
         public virtual String Prepend { get; set; }
         public String Property { get; set; }
+        /// <summary>
+        ///  验证属性是否存在，如果不存在则抛出异常 : TagRequiredFailException
+        /// </summary>
         public bool Required { get; set; }
-        public bool? Changed { get; set; }
         public IList<ITag> ChildTags { get; set; }
         public ITag Parent { get; set; }
         public Statement Statement { get; set; }

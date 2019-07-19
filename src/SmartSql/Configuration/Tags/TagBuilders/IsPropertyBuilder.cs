@@ -9,11 +9,17 @@ namespace SmartSql.Configuration.Tags.TagBuilders
     {
         public override ITag Build(XmlNode xmlNode, Statement statement)
         {
+            var propertyChanged = GetPropertyChanged(xmlNode);
+            if (statement.EnablePropertyChangedTrack && !propertyChanged.HasValue)
+            {
+                propertyChanged = statement.EnablePropertyChangedTrack;
+            }
             return new IsProperty
             {
                 Property = GetProperty(xmlNode),
                 Prepend = GetPrepend(xmlNode),
                 ChildTags = new List<ITag>(),
+                PropertyChanged = propertyChanged,
                 Statement = statement
             };
         }

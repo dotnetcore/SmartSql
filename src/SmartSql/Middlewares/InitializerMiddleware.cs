@@ -70,6 +70,11 @@ namespace SmartSql.Middlewares
                 requestContext.CommandType = requestContext.Statement.CommandType.Value;
             }
 
+            if (!requestContext.EnablePropertyChangedTrack.HasValue)
+            {
+                requestContext.EnablePropertyChangedTrack = requestContext.Statement.EnablePropertyChangedTrack;
+            }
+
             requestContext.Transaction = requestContext.Transaction ?? requestContext.Statement.Transaction;
             requestContext.CommandTimeout = requestContext.CommandTimeout ?? requestContext.Statement.CommandTimeout;
             requestContext.ReadDb = requestContext.Statement.ReadDb;
