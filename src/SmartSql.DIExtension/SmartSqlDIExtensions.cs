@@ -7,6 +7,7 @@ using SmartSql;
 using SmartSql.Configuration;
 using SmartSql.DbSession;
 using SmartSql.DIExtension;
+using SmartSql.Utils;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -59,7 +60,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 configPath = $"SmartSqlMapConfig.{envStr}.xml";
             }
 
-            if (!File.Exists(configPath))
+            if (!ResourceUtil.FileExists(configPath))
             {
                 configPath = SmartSqlBuilder.DEFAULT_SMARTSQL_CONFIG_PATH;
             }

@@ -37,6 +37,16 @@ namespace SmartSql.Utils
                     }
             }
         }
+        
+        public static bool FileExists(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                filePath = Path.Combine(BaseDirectory, filePath);
+            }
+
+            return File.Exists(filePath);
+        }
 
         public static XmlDocument LoadFileAsXml(string filePath)
         {
