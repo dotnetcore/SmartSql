@@ -8,7 +8,7 @@ namespace SmartSql.Configuration.Tags.TagBuilders
 {
     public abstract class AbstractTagBuilder : ITagBuilder
     {
-        private const String PROPERTY_CHANGED = nameof(IPropertyChanged.PropertyChanged);
+
         private const String PREPEND = nameof(Tag.Prepend);
         private const String PROPERTY = nameof(Tag.Property);
         private const String REQUIRED = nameof(Tag.Required);
@@ -31,32 +31,6 @@ namespace SmartSql.Configuration.Tags.TagBuilders
             }
 
             return decimalVal;
-        }
-
-        public bool TryGetXmlAttributeValueAsBool(XmlNode xmlNode, string attributeName, out bool boolVal)
-        {
-            string strVal = GetXmlAttributeValue(xmlNode, attributeName);
-            if (String.IsNullOrEmpty(strVal))
-            {
-                boolVal = false;
-                return false;
-            }
-
-            if (!Boolean.TryParse(strVal, out boolVal))
-            {
-                throw new SmartSqlException($"can not convert {strVal} to Boolean from xml-node:{xmlNode.Value}.");
-            }
-
-            return true;
-        }
-
-        public bool? GetPropertyChanged(XmlNode xmlNode)
-        {
-            if (TryGetXmlAttributeValueAsBool(xmlNode, PROPERTY_CHANGED, out var boolVal))
-            {
-                return boolVal;
-            }
-            return null;
         }
 
         public String GetPrepend(XmlNode xmlNode)
