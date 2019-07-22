@@ -20,21 +20,19 @@ namespace SmartSql.Configuration.Tags
 
         public virtual void BuildSql(AbstractRequestContext context)
         {
-            if (IsCondition(context))
+            if (!IsCondition(context)) return;
+            context.SqlBuilder.Append(" ");
+            if (!context.IgnorePrepend)
             {
-                context.SqlBuilder.Append(" ");
-                if (!context.IgnorePrepend)
-                {
-                    context.SqlBuilder.Append(Prepend);
-                }
-                else
-                {
-                    context.IgnorePrepend = false;
-                }
-
-                context.SqlBuilder.Append(" ");
-                BuildChildSql(context);
+                context.SqlBuilder.Append(Prepend);
             }
+            else
+            {
+                context.IgnorePrepend = false;
+            }
+
+            context.SqlBuilder.Append(" ");
+            BuildChildSql(context);
         }
 
         public virtual void BuildChildSql(AbstractRequestContext context)

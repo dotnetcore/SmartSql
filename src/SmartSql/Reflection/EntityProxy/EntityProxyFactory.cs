@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -20,7 +21,7 @@ namespace SmartSql.Reflection.EntityProxy
 
         private void Init()
         {
-            string assemblyName = "SmartSql.EntityProxyFactory";
+            string assemblyName = "SmartSql.EntityProxy";
             _assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName
             {
                 Name = assemblyName
@@ -30,7 +31,14 @@ namespace SmartSql.Reflection.EntityProxy
 
         public Type CreateProxyType(Type entityType)
         {
-            string implName = $"{entityType.FullName}_Proxy_{Guid.NewGuid():N}";
+            if (entityType.GetProperties().Any(p => !p.SetMethod.IsVirtual))
+            {
+                return entityType;
+            }
+            
+            var virtualProperties = entityType.GetProperties().Where(p => p.SetMethod.IsVirtual).ToArray();
+
+            string implName = $"{entityType.FullName}Proxy";
             var typeBuilder = _moduleBuilder.DefineType(implName, TypeAttributes.Public, entityType);
             typeBuilder.AddInterfaceImplementation(typeof(IEntityPropertyChangedTrackProxy));
 
@@ -38,8 +46,8 @@ namespace SmartSql.Reflection.EntityProxy
                 typeBuilder.DefineField("_changedVersion", DictionaryStringIntType.Type, FieldAttributes.Private);
             var enableTrackField = typeBuilder.DefineField("_enablePropertyChangedTrack", CommonType.Boolean,
                 FieldAttributes.Private | FieldAttributes.HasDefault);
-            var properties = entityType.GetProperties();
-            BuildCtor(typeBuilder, entityType, changedVersionField, properties.Length);
+
+            BuildCtor(typeBuilder, entityType, changedVersionField, virtualProperties.Length);
 
             BuildGetEnableTrackMethod(typeBuilder, enableTrackField);
             BuildSetEnableTrackMethod(typeBuilder, enableTrackField);
@@ -47,7 +55,7 @@ namespace SmartSql.Reflection.EntityProxy
             var onUpdatedMethodInfo = BuildOnUpdatedMethod(typeBuilder, enableTrackField, changedVersionField);
             BuildGetPropertyVersionMethod(typeBuilder, enableTrackField, changedVersionField);
 
-            foreach (var propertyInfo in properties)
+            foreach (var propertyInfo in virtualProperties)
             {
                 BuildSetMethod(typeBuilder, propertyInfo, onUpdatedMethodInfo);
             }
@@ -120,11 +128,6 @@ namespace SmartSql.Reflection.EntityProxy
         private void BuildSetMethod(TypeBuilder typeBuilder, PropertyInfo propertyInfo, MethodInfo onUpdatedMethodInfo)
         {
             var setMethod = propertyInfo.SetMethod;
-            if (!setMethod.IsVirtual)
-            {
-                return;
-            }
-
             var paramTypes = setMethod.GetParameters().Select(p => p.ParameterType).ToArray();
             var getMethodBuilder = typeBuilder.DefineMethod(setMethod.Name,
                 setMethod.Attributes ^ MethodAttributes.NewSlot,

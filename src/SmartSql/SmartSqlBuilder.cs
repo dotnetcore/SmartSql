@@ -94,6 +94,17 @@ namespace SmartSql
             }
 
             #endregion
+
+
+            #region Deserializer
+
+            foreach (var deserializer in DataReaderDeserializers)
+            {
+                var setupSmartSql = deserializer as ISetupSmartSql;
+                setupSmartSql?.SetupSmartSql(this);
+            }
+
+            #endregion
             
             #region Pipeline
 
@@ -159,13 +170,15 @@ namespace SmartSql
         private void InitDeserializerFactory()
         {
             IDataReaderDeserializer deser = new MultipleResultDeserializer(SmartSqlConfig.DeserializerFactory);
-            SmartSqlConfig.DeserializerFactory.Add(deser);
+            DataReaderDeserializers.Insert(0, deser);
             deser = new ValueTupleDeserializer(SmartSqlConfig.DeserializerFactory);
-            SmartSqlConfig.DeserializerFactory.Add(deser);
+            DataReaderDeserializers.Insert(1, deser);
             deser = new ValueTypeDeserializer();
-            SmartSqlConfig.DeserializerFactory.Add(deser);
+            DataReaderDeserializers.Insert(2, deser);
             deser = new DynamicDeserializer();
-            SmartSqlConfig.DeserializerFactory.Add(deser);
+            DataReaderDeserializers.Insert(3, deser);
+            deser = new EntityDeserializer();
+            DataReaderDeserializers.Insert(4, deser);
             foreach (var deserializer in DataReaderDeserializers)
             {
                 SmartSqlConfig.DeserializerFactory.Add(deserializer);

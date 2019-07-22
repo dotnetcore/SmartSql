@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+//*******************************
+// Create By Rocher Kong
+// Date 2019-04-17 17:54
+// Code Generate By SmartCode
+// Code Generate Github : https://github.com/Ahoo-Wang/SmartCode
+//*******************************-->
+
+<SmartSqlMap Scope="OrderByTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+  <Statements>
+    <Statement Id="OrderBy">
+    Select  '<OrderBy Property="OrderBy"/>'
+    </Statement>
+  </Statements>
+</SmartSqlMap>

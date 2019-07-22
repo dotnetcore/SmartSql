@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SmartSql.Configuration;
 using SmartSql.Reflection;
 using SmartSql.Reflection.EntityProxy;
@@ -16,8 +17,9 @@ using SmartSql.Utils;
 
 namespace SmartSql.Deserializer
 {
-    public class EntityDeserializer : IDataReaderDeserializer
+    public class EntityDeserializer : IDataReaderDeserializer,ISetupSmartSql
     {
+        private ILogger<EntityDeserializer> _logger;
         public bool CanDeserialize(ExecutionContext executionContext, Type resultType, bool isMultiple = false)
         {
             return true;
@@ -93,7 +95,14 @@ namespace SmartSql.Deserializer
             var resultType = typeof(TResult);
             if (executionContext.Request.EnablePropertyChangedTrack == true)
             {
-                resultType = EntityProxyCache<TResult>.ProxyType;
+                if (resultType.GetProperties().Any(p => !p.SetMethod.IsVirtual))
+                {
+                    _logger.LogWarning($"Type:{resultType.FullName} contain Non-Virtual Method,can not be enhanced by EntityProxy!");
+                }
+                else
+                {
+                    resultType = EntityProxyCache<TResult>.ProxyType;
+                }
             }
 
             var dataReader = executionContext.DataReaderWrapper;
@@ -246,6 +255,11 @@ namespace SmartSql.Deserializer
         {
             return
                 $"Index:{executionContext.DataReaderWrapper.ResultIndex}_{(executionContext.Request.IsStatementSql ? executionContext.Request.FullSqlId : executionContext.Request.RealSql)}";
+        }
+
+        public void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
+        {
+            _logger = smartSqlBuilder.SmartSqlConfig.LoggerFactory.CreateLogger<EntityDeserializer>();
         }
     }
 }

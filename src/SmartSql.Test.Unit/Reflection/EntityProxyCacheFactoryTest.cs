@@ -47,5 +47,6 @@ namespace SmartSql.Test.Unit.Reflection
 
             Assert.Equal(2, entityProxy.GetPropertyVersion(nameof(Entity.Id)));
         }
+        
     }
 }

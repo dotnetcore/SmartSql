@@ -14,5 +14,7 @@ namespace SmartSql.Test.Entities
         public virtual long Id { get; 
             set; }
         public virtual string Name { get; set; }
+        
+        
     }
 }

@@ -59,6 +59,11 @@ namespace SmartSql.Middlewares
         {
             var singleResult = executionContext.Result as SingleResultContext<TResult>;
             var dbResult = _commandExecuter.ExecuteScalar(executionContext);
+            SetResultData(dbResult, singleResult);
+        }
+
+        private void SetResultData<TResult>(object dbResult, SingleResultContext<TResult> singleResult)
+        {
             if (dbResult == null || dbResult == DBNull.Value)
             {
                 singleResult.SetData(default(TResult));
@@ -84,23 +89,7 @@ namespace SmartSql.Middlewares
         {
             var singleResult = executionContext.Result as SingleResultContext<TResult>;
             var dbResult = await _commandExecuter.ExecuteScalarAsync(executionContext);
-            if (dbResult == null || dbResult == DBNull.Value)
-            {
-                singleResult.SetData(default(TResult));
-            }
-            else
-            {
-                var convertType = singleResult.ResultType;
-                convertType = Nullable.GetUnderlyingType(convertType) ?? convertType;
-                if (convertType.IsEnum)
-                {
-                    singleResult.SetData(Enum.ToObject(convertType, dbResult));
-                }
-                else
-                {
-                    singleResult.SetData(Convert.ChangeType(dbResult, convertType));
-                }
-            }
+            SetResultData(dbResult, singleResult);
         }
 
 
