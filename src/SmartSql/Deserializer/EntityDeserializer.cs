@@ -178,8 +178,8 @@ namespace SmartSql.Deserializer
                 LoadPropertyValue(ilGen, executionContext, colIndex, propertyType, filedType, resultProperty);
                 ilGen.Call(property.SetMethod);
             }
-
-            if (executionContext.Request.EnablePropertyChangedTrack == true)
+           
+            if (resultType.IsAssignableFrom(typeof(IEntityPropertyChangedTrackProxy)))
             {
                 ilGen.LoadLocalVar(0);
                 ilGen.LoadInt32(1);
