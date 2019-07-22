@@ -17,9 +17,10 @@ using SmartSql.Utils;
 
 namespace SmartSql.Deserializer
 {
-    public class EntityDeserializer : IDataReaderDeserializer,ISetupSmartSql
+    public class EntityDeserializer : IDataReaderDeserializer, ISetupSmartSql
     {
         private ILogger<EntityDeserializer> _logger;
+
         public bool CanDeserialize(ExecutionContext executionContext, Type resultType, bool isMultiple = false)
         {
             return true;
@@ -97,7 +98,8 @@ namespace SmartSql.Deserializer
             {
                 if (resultType.GetProperties().Any(p => !p.SetMethod.IsVirtual))
                 {
-                    _logger.LogWarning($"Type:{resultType.FullName} contain Non-Virtual Method,can not be enhanced by EntityProxy!");
+                    _logger.LogWarning(
+                        $"Type:{resultType.FullName} contain Non-Virtual Method,can not be enhanced by EntityProxy!");
                 }
                 else
                 {
@@ -178,12 +180,13 @@ namespace SmartSql.Deserializer
                 LoadPropertyValue(ilGen, executionContext, colIndex, propertyType, filedType, resultProperty);
                 ilGen.Call(property.SetMethod);
             }
-           
-            if (resultType.IsAssignableFrom(typeof(IEntityPropertyChangedTrackProxy)))
+
+            if (typeof(IEntityPropertyChangedTrackProxy).IsAssignableFrom(resultType))
             {
                 ilGen.LoadLocalVar(0);
                 ilGen.LoadInt32(1);
-                var setEnableTrackMethod = resultType.GetMethod(nameof(IEntityPropertyChangedTrackProxy.SetEnablePropertyChangedTrack));
+                var setEnableTrackMethod =
+                    resultType.GetMethod(nameof(IEntityPropertyChangedTrackProxy.SetEnablePropertyChangedTrack));
                 ilGen.Call(setEnableTrackMethod);
             }
 
