@@ -10,15 +10,16 @@ namespace SmartSql.Reflection.TypeConstants
 
         public static class Method
         {
-            public static readonly MethodInfo TryGetValue = Type.GetMethod("TryGetValue");
-            
+            public static readonly MethodInfo TryGetValue = Type.GetMethod(nameof(Dictionary<String, int>.TryGetValue));
+
             public static readonly MethodInfo IndexerSet = Type.GetMethod("set_Item");
-            public static readonly MethodInfo Add = Type.GetMethod("Add");
+            public static readonly MethodInfo Add = Type.GetMethod(nameof(Dictionary<String, int>.Add));
+            public static readonly MethodInfo Clear = Type.GetMethod(nameof(Dictionary<String, int>.Clear));
         }
-        
+
         public static class Ctor
         {
-            public static readonly ConstructorInfo Capacity = Type.GetConstructor(new Type[] { CommonType.Int32 });
+            public static readonly ConstructorInfo Capacity = Type.GetConstructor(new Type[] {CommonType.Int32});
         }
     }
 }
