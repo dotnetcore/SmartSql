@@ -11,6 +11,11 @@ namespace SmartSql.Reflection.PropertyAccessor
 {
     public class EmitSetAccessorFactory : ISetAccessorFactory
     {
+        public static readonly ISetAccessorFactory Instance = new EmitSetAccessorFactory();
+
+        private EmitSetAccessorFactory()
+        {
+        }
         public Action<object, object> Create(Type targetType, string propertyName)
         {
             var propertyInfo = targetType.GetProperty(propertyName);

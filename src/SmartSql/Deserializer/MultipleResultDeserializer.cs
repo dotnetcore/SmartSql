@@ -17,7 +17,7 @@ namespace SmartSql.Deserializer
         public MultipleResultDeserializer(IDeserializerFactory deserializerFactory)
         {
             _deserializerFactory = deserializerFactory;
-            _setAccessorFactory = new EmitSetAccessorFactory();
+            _setAccessorFactory = EmitSetAccessorFactory.Instance;
         }
 
         public bool CanDeserialize(ExecutionContext executionContext, Type resultType, bool isMultiple = false)

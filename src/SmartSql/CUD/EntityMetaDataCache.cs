@@ -11,7 +11,7 @@ namespace SmartSql.CUD
 {
     public static class EntityMetaDataCache<TEntity>
     {
-        private static readonly EmitGetAccessorFactory GetAccessorFactory = new EmitGetAccessorFactory();
+        private static readonly IGetAccessorFactory GetAccessorFactory = EmitGetAccessorFactory.Instance;
         public const string DEFAULT_ID_NAME = "Id";
         public static Type EntityType { get; }
         public static EntityMetaData MetaData { get; }

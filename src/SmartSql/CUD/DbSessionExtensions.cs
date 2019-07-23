@@ -82,7 +82,7 @@ namespace SmartSql
             });
         }
 
-        private static readonly ISetAccessorFactory _setAccessorFactory = new EmitSetAccessorFactory();
+        private static readonly ISetAccessorFactory _setAccessorFactory = EmitSetAccessorFactory.Instance;
 
         public static TPrimaryKey Insert<TEntity, TPrimaryKey>(this IDbSession dbSession, TEntity entity)
         {
