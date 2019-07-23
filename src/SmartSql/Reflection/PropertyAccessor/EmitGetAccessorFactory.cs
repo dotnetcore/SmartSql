@@ -28,7 +28,7 @@ namespace SmartSql.Reflection.PropertyAccessor
                     TryCreateImpl(targetType, propertyTokenizer, out var getMethod);
                     return getMethod;
                 });
-            return getMethodImpl == null;
+            return getMethodImpl != null;
         }
 
         private bool TryCreateImpl(Type targetType, PropertyTokenizer propertyTokenizer,

@@ -13,6 +13,9 @@ using SmartSql.Middlewares.Filters;
 
 namespace SmartSql.Middlewares
 {
+    /// <summary>
+    /// TODO nest object access
+    /// </summary>
     public class PrepareStatementMiddleware : AbstractMiddleware
     {
         private ILogger _logger;

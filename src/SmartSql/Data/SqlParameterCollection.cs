@@ -161,10 +161,46 @@ namespace SmartSql.Data
                 return true;
             }
 
-            return false;
-
+            return TryCreateParameter(key, out value);
         }
 
+        private bool TryCreateParameter(string key, out SqlParameter value)
+        {
+            value = default;
+            PropertyTokenizer propertyTokenizer = new PropertyTokenizer(key);
+            if (propertyTokenizer.FullName == propertyTokenizer.Name)
+            {
+                return false;
+            }
+
+            if (!_sqlParameters.TryGetValue(propertyTokenizer.Name, out var root))
+            {
+                return false;
+            }
+
+            if (!propertyTokenizer.MoveNext())
+            {
+                return false;
+            }
+
+            if (!_getAccessorFactory.TryCreate(root.ParameterType, propertyTokenizer.Current, out var getMethodImpl))
+            {
+                return false;
+            }
+
+            var paramVal = getMethodImpl(root.Value);
+            value = new SqlParameter(key, paramVal, paramVal == null ? CommonType.Object : paramVal.GetType());
+            Add(value);
+            return true;
+        }
+
+        /// <summary>
+        /// TODO Parameter name convert, ContainsKey [.]
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <param name="paramVal"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public bool TryGetParameterValue<T>(string propertyName, out T paramVal)
         {
             if (TryGetValue(propertyName, out var sqlParameter))
@@ -185,8 +221,15 @@ namespace SmartSql.Data
 
         #region Contains
 
-        public bool ContainsKey(string key) => _sqlParameters.ContainsKey(key);
-        public bool Contains(KeyValuePair<string, SqlParameter> item) => _sqlParameters.Contains(item);
+        public bool ContainsKey(string key)
+        {
+            return _sqlParameters.ContainsKey(key);
+        }
+
+        public bool Contains(KeyValuePair<string, SqlParameter> item)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 
