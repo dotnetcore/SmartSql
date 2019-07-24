@@ -58,16 +58,6 @@ namespace SmartSql.Test.Unit.DbSessions
             Assert.Equal(1, state);
         }
 
-        [Fact]
-        public void QueryNest()
-        {
-            var result = SqlMapper.ExecuteScalar<int>(new RequestContext
-            {
-                RealSql = "SELECT @User.Id",
-                Request = new {User = new {Id = 0}}
-            });
 
-            Assert.Equal(0,result);
-        }
     }
 }

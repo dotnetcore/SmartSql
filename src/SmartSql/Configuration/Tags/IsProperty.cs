@@ -9,7 +9,7 @@ namespace SmartSql.Configuration.Tags
     {
         public override bool IsCondition(AbstractRequestContext context)
         {
-            var isCondition = context.Parameters.ContainsKey(Property);
+            var isCondition = context.Parameters.TryGetValue(Property, out _);
             if (!isCondition)
             {
                 return false;

@@ -74,12 +74,21 @@ namespace SmartSql.Reflection.PropertyAccessor
 
                         ilGen.Call(propertyInfo.GetMethod);
 
-                        var indexerGet = propertyInfo.PropertyType.GetMethod("get_Item");
+                        MethodInfo indexerGet;
+                        if (propertyInfo.PropertyType.IsArray)
+                        {
+                            indexerGet = propertyInfo.PropertyType.GetMethod("Get", new[] {CommonType.Int32});
+                        }
+                        else
+                        {
+                            indexerGet = propertyInfo.PropertyType.GetMethod("get_Item");
+                        }
 
                         if (indexerGet == null)
                         {
                             throw new SmartSqlException($"can not find Get Indexer:{propertyInfo.PropertyType}");
                         }
+
 
                         var indexerGetParamType = indexerGet.GetParameters().First().ParameterType;
 
@@ -98,9 +107,10 @@ namespace SmartSql.Reflection.PropertyAccessor
                         }
 
                         ilGen.Call(indexerGet);
-                        if (indexerGet.ReturnType.IsValueType)
+                        propertyType = indexerGet.ReturnType;
+                        if (propertyType.IsValueType)
                         {
-                            ilGen.Box(indexerGet.ReturnType);
+                            ilGen.Box(propertyType);
                         }
 
                         break;

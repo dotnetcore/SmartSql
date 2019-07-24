@@ -4,7 +4,7 @@ namespace SmartSql.Configuration.Tags
     {
         public override bool IsCondition(AbstractRequestContext context)
         {
-            return !context.Parameters.ContainsKey(Property);
+            return !context.Parameters.TryGetValue(Property, out _);
         }
     }
 }

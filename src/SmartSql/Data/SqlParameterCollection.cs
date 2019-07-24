@@ -111,9 +111,9 @@ namespace SmartSql.Data
 
         #region Add
 
-        public void Add(SqlParameter sqlParameter)
+        public void Add(string key, SqlParameter sqlParameter)
         {
-            _sqlParameters.Add(sqlParameter.Name, sqlParameter);
+            _sqlParameters.Add(key, sqlParameter);
             sqlParameter.OnSetSourceParameter = (sqlParam) =>
             {
                 if (!DbParameters.ContainsKey(sqlParam.SourceParameter.ParameterName))
@@ -123,19 +123,32 @@ namespace SmartSql.Data
             };
         }
 
-        public void Add(string key, SqlParameter value)
+        public bool TryAdd(string key, SqlParameter sqlParameter)
         {
-            Add(value);
+            if (ContainsKey(sqlParameter.Name))
+            {
+                return false;
+            }
+
+            Add(key, sqlParameter);
+            return true;
         }
+
+        public void Add(SqlParameter sqlParameter)
+        {
+            Add(sqlParameter.Name, sqlParameter);
+        }
+
 
         public void Add(KeyValuePair<string, SqlParameter> item)
         {
-            Add(item.Value);
+            Add(item.Key, item.Value);
         }
+
 
         public bool TryAdd(string propertyName, object paramVal)
         {
-            return TryAdd(new SqlParameter(propertyName, paramVal,
+            return TryAdd(propertyName, new SqlParameter(propertyName, paramVal,
                 paramVal == null ? CommonType.Object : paramVal.GetType()));
         }
 
@@ -189,18 +202,12 @@ namespace SmartSql.Data
             }
 
             var paramVal = getMethodImpl(root.Value);
-            value = new SqlParameter(key, paramVal, paramVal == null ? CommonType.Object : paramVal.GetType());
-            Add(value);
+            var parameterName = key.Replace(".", "_").Replace("[", "_Idx_").Replace("]", "");
+            value = new SqlParameter(parameterName, paramVal, paramVal == null ? CommonType.Object : paramVal.GetType());
+            Add(key, value);
             return true;
         }
 
-        /// <summary>
-        /// TODO Parameter name convert, ContainsKey [.]
-        /// </summary>
-        /// <param name="propertyName"></param>
-        /// <param name="paramVal"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public bool TryGetParameterValue<T>(string propertyName, out T paramVal)
         {
             if (TryGetValue(propertyName, out var sqlParameter))
@@ -220,7 +227,11 @@ namespace SmartSql.Data
         #endregion
 
         #region Contains
-
+        /// <summary>
+        /// 不再进行嵌套类检查
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public bool ContainsKey(string key)
         {
             return _sqlParameters.ContainsKey(key);

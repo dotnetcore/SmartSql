@@ -17,7 +17,7 @@ namespace SmartSql.Utils
             {
                 regOptions = regOptions | RegexOptions.IgnoreCase;
             }
-            _sqlParamsTokens = new Regex(@"[" + dbPrefix + @"]([\p{L}\p{N}_.]+)", regOptions);
+            _sqlParamsTokens = new Regex(@"[" + dbPrefix + @"]([\p{L}\p{N}_.\[\]]+)", regOptions);
         }
         public IEnumerable<string> Analyse(string realSql)
         {
