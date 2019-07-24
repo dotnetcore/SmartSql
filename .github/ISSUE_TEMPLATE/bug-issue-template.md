@@ -1,9 +1,9 @@
 ---
-name: bug-issue-template
-about: submit bug issue template
+name: Bug issue template
+about: Submit bug issue template
 title: ''
 labels: ''
-assignees: ''
+assignees: Ahoo-Wang
 
 ---
 
