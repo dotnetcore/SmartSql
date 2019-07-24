@@ -30,7 +30,7 @@ namespace SmartSql.Utils
             return matchs.Cast<Match>().Select(m => m.Groups[1].Value).Distinct();
         }
 
-        public string Replace(string realSql, Func<string, string, string> action)
+        public string Replace(string realSql, ReplaceEval action)
         {
             if (!_sqlParamsTokens.IsMatch(realSql)) { return realSql; }
             return _sqlParamsTokens.Replace(realSql, match =>
@@ -40,5 +40,7 @@ namespace SmartSql.Utils
                 return action(paramName, nameWithPrefix);
             });
         }
+        
+        public delegate String ReplaceEval(string paramName, string nameWithPrefix);
     }
 }

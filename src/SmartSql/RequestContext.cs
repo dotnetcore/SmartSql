@@ -3,6 +3,7 @@ using SmartSql.DataSource;
 using System;
 using System.Data;
 using System.Text;
+using SmartSql.Cache;
 using SmartSql.Data;
 using SmartSql.Reflection.EntityProxy;
 
@@ -61,8 +62,16 @@ namespace SmartSql
                 : ResultMap;
         }
 
+        public CacheKey CacheKey { get; set; }
+
+        public CacheKey EnsureCacheKey()
+        {
+            return CacheKey ?? (CacheKey = new CacheKey(this));
+        }
+
         public abstract void SetupParameters();
         public abstract void SetRequest(object requestObj);
+
         /// <summary>
         /// 获取请求实体变更的版本号
         /// </summary>

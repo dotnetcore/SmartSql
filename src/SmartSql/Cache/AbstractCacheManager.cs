@@ -117,7 +117,8 @@ namespace SmartSql.Cache
                 return false;
             }
 
-            var cacheKey = new CacheKey(executionContext.Request);
+            var cacheKey = executionContext.Request.EnsureCacheKey();
+
             var isSuccess = cache.Provider.TryAdd(cacheKey, executionContext.Result.GetData());
             if (Logger.IsEnabled(LogLevel.Debug))
             {
@@ -137,7 +138,8 @@ namespace SmartSql.Cache
                 return false;
             }
 
-            var cacheKey = new CacheKey(executionContext.Request);
+            var cacheKey = executionContext.Request.EnsureCacheKey();
+
             bool isSuccess = cache.Provider.TryGetValue(cacheKey, out cacheItem);
             if (Logger.IsEnabled(LogLevel.Debug))
             {

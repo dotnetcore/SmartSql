@@ -17,10 +17,11 @@
     <Cache Id="FifoCache" Type="Fifo">
       <Property Name="CacheSize" Value="10"/>
     </Cache>
-<!--    <Cache Id="RedisCache" Type="${RedisCacheProvider}">-->
-<!--      <Property Name="ConnectionString" Value="${Redis}" />-->
-<!--      <FlushInterval Seconds="60"/>-->
-<!--    </Cache>-->
+    <Cache Id="RedisCache" Type="${RedisCacheProvider}">
+      <Property Name="ConnectionString" Value="${Redis}" />
+      <Property Name="Prefix" Value="RedisCache"/>
+      <FlushInterval Seconds="120"/>
+    </Cache>
   </Caches>
   <MultipleResultMaps>
     <MultipleResultMap Id="GetByPage">
@@ -119,15 +120,19 @@
 
       </Where>
     </Statement>
-<!--    <Statement Id="QueryByRedisCache"  Cache="RedisCache">-->
-<!--      SELECT Top 6 T.* From T_AllPrimitive T;-->
-<!--    </Statement>-->
+    <Statement Id="QueryByRedisCache"  Cache="RedisCache">
+      SELECT Top (@Taken) T.* From T_AllPrimitive T;
+    </Statement>
     <Statement Id="QueryByLruCache"  Cache="LruCache">
-      SELECT Top 6 T.* From T_AllPrimitive T;
+      SELECT Top (@Taken) T.* From T_AllPrimitive T;
+    </Statement>
+    <Statement Id="QueryByLruCacheFromRequest"  Cache="LruCache">
+      SELECT Top (@Request.Taken) T.* From T_AllPrimitive T;
     </Statement>
     <Statement Id="QueryByFifoCache"  Cache="FifoCache">
-      SELECT Top 6 T.* From T_AllPrimitive T;
+      SELECT Top (@Taken) T.* From T_AllPrimitive T;
     </Statement>
+
     <Statement Id="GetByPage" MultipleResultMap="GetByPage">
       Select T.* From T_AllPrimitive T With(NoLock)
       <Include RefId="QueryParams" />

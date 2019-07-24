@@ -205,9 +205,9 @@ namespace SmartSql
                 SmartSqlConfig.CacheManager = CacheManager;
                 SmartSqlConfig.Pipeline = new PipelineBuilder()
                     .Add(new InitializerMiddleware())
+                    .Add(new PrepareStatementMiddleware())
                     .Add(new CachingMiddleware())
                     .Add(new TransactionMiddleware())
-                    .Add(new PrepareStatementMiddleware())
                     .Add(new DataSourceFilterMiddleware())
                     .Add(new CommandExecuterMiddleware())
                     .Add(new ResultHandlerMiddleware()).Build();
@@ -217,8 +217,8 @@ namespace SmartSql
                 SmartSqlConfig.CacheManager = new NoneCacheManager();
                 SmartSqlConfig.Pipeline = new PipelineBuilder()
                     .Add(new InitializerMiddleware())
-                    .Add(new TransactionMiddleware())
                     .Add(new PrepareStatementMiddleware())
+                    .Add(new TransactionMiddleware())
                     .Add(new DataSourceFilterMiddleware())
                     .Add(new CommandExecuterMiddleware())
                     .Add(new ResultHandlerMiddleware()).Build();

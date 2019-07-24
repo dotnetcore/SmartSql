@@ -11,9 +11,11 @@ namespace SmartSql.Data
     {
         private DbParameter _sourceParameter;
         private object _value;
+
         public SqlParameter()
         {
         }
+
         public SqlParameter(string name, object val)
         {
             Name = name;
@@ -23,13 +25,16 @@ namespace SmartSql.Data
                 ParameterType = val.GetType();
             }
         }
+
         public SqlParameter(string name, object val, Type parameterType)
         {
             Name = name;
             Value = val;
             ParameterType = parameterType;
         }
+
         public string Name { get; set; }
+
         public object Value
         {
             get => _value;
@@ -42,17 +47,20 @@ namespace SmartSql.Data
                 }
             }
         }
+
         public Type ParameterType { get; set; }
         public Action<SqlParameter> OnSetSourceParameter { get; set; }
 
         public DbParameter SourceParameter
         {
-            get => _sourceParameter; set
+            get => _sourceParameter;
+            set
             {
                 _sourceParameter = value;
                 OnSetSourceParameter?.Invoke(this);
             }
         }
+
         public byte? Precision { get; set; }
         public byte? Scale { get; set; }
         public int? Size { get; set; }

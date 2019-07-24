@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using StackExchange.Redis;
 using Xunit;
 
 namespace SmartSql.Test.Unit.DbSessions
@@ -247,7 +248,7 @@ namespace SmartSql.Test.Unit.DbSessions
                     }
                 }
             });
-
+            
             Assert.Equal("SmartSql", result);
         }
 

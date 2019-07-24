@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SmartSql.Cache;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Cache
@@ -22,12 +23,14 @@ namespace SmartSql.Test.Unit.Cache
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
-                SqlId = "QueryByFifoCache"
+                SqlId = "QueryByFifoCache",
+                Request = new {Taken = 8},
             });
             var cachedList = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
-                SqlId = "QueryByFifoCache"
+                SqlId = "QueryByFifoCache",
+                Request = new {Taken = 8}
             });
             Assert.Equal(list.GetHashCode(), cachedList.GetHashCode());
         }
