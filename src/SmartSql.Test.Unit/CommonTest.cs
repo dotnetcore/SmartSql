@@ -16,6 +16,7 @@ using SmartSql.Test.Repositories;
 
 namespace SmartSql.Test.Unit
 {
+
     public class CommonTest
     {
         [Fact]
@@ -25,5 +26,10 @@ namespace SmartSql.Test.Unit
         }
     }
 
-
+    public class CacheAttribute : Attribute
+    {
+        public Type Type { get; set; }
+        public string[] Strings { get; set; }
+        public Entity Entity { get; set; }
+    }
 }
