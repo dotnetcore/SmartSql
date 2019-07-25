@@ -9,7 +9,7 @@ namespace SmartSql.Configuration
     {
         public string Id { get; set; }
         /// <summary>
-        /// Key:Column
+        ///  Key : Property
         /// </summary>
         public IDictionary<String, Parameter> Parameters { get; set; }
         public Parameter GetParameter(string columnName)
@@ -24,8 +24,6 @@ namespace SmartSql.Configuration
     public class Parameter
     {
         public string Property { get; set; }
-        [Obsolete]
-        public string Name { get; set; }
         public ITypeHandler Handler { get; set; }
     }
 }

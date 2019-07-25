@@ -219,16 +219,9 @@ namespace SmartSql.ConfigBuilder
                 {
                     parameterNode.Attributes.TryGetValueAsString("Property", out var property,
                         SmartSqlConfig.Properties);
-                    if (!parameterNode.Attributes.TryGetValueAsString("Column", out var column,
-                        SmartSqlConfig.Properties))
-                    {
-                        column = property;
-                    }
-
                     var parameter = new Parameter
                     {
-                        Property = property,
-                        Name = column
+                        Property = property
                     };
                     if (parameterNode.Attributes.TryGetValueAsString("TypeHandler", out var handlerName,
                         SmartSqlConfig.Properties))
@@ -236,7 +229,7 @@ namespace SmartSql.ConfigBuilder
                         parameter.Handler = SmartSqlConfig.TypeHandlerFactory.GetTypeHandler(handlerName);
                     }
 
-                    parameterMap.Parameters.Add(parameter.Name, parameter);
+                    parameterMap.Parameters.Add(parameter.Property, parameter);
                 }
         }
 

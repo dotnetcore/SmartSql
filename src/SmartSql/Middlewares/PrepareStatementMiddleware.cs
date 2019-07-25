@@ -8,6 +8,7 @@ using System.Data.Common;
 using SmartSql.TypeHandlers;
 using Microsoft.Extensions.Logging;
 using System.Data;
+using SmartSql.CUD;
 using SmartSql.Data;
 using SmartSql.Middlewares.Filters;
 
@@ -60,18 +61,17 @@ namespace SmartSql.Middlewares
             {
                 reqConetxt.RealSql = _sqlParamAnalyzer.Replace(reqConetxt.RealSql, (paramName, nameWithPrefix) =>
                 {
-                    var parameter = reqConetxt.ParameterMap?.GetParameter(paramName);
-                    var propertyName = paramName;
-                    ITypeHandler typeHandler = null;
-                    if (parameter != null)
-                    {
-                        propertyName = parameter.Property;
-                        typeHandler = parameter.Handler;
-                    }
-
-                    if (!reqConetxt.Parameters.TryGetValue(propertyName, out var sqlParameter))
+                    if (!reqConetxt.Parameters.TryGetValue(paramName, out var sqlParameter))
                     {
                         return nameWithPrefix;
+                    }
+
+                    ITypeHandler typeHandler = sqlParameter.TypeHandler;
+
+                    var parameter = reqConetxt.ParameterMap?.GetParameter(paramName);
+                    if (parameter?.Handler != null)
+                    {
+                        typeHandler = parameter.Handler;
                     }
 
                     var sourceParam = _dbProviderFactory.CreateParameter();
@@ -80,8 +80,7 @@ namespace SmartSql.Middlewares
 
                     if (typeHandler == null)
                     {
-                        typeHandler = sqlParameter.TypeHandler ??
-                                      _typeHandlerFactory.GetTypeHandler(sqlParameter.ParameterType);
+                        typeHandler = _typeHandlerFactory.GetTypeHandler(sqlParameter.ParameterType);
                     }
 
                     typeHandler.SetParameter(sourceParam, sqlParameter.Value);
@@ -89,7 +88,8 @@ namespace SmartSql.Middlewares
                     InitSourceDbParameter(sourceParam, sqlParameter);
                     if (sqlParameter.Name != paramName)
                     {
-                        return $"{reqConetxt.ExecutionContext.SmartSqlConfig.Database.DbProvider.ParameterPrefix}{sqlParameter.Name}";
+                        return
+                            $"{reqConetxt.ExecutionContext.SmartSqlConfig.Database.DbProvider.ParameterPrefix}{sqlParameter.Name}";
                     }
 
                     return nameWithPrefix;

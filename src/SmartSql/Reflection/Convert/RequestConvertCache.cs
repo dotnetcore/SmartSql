@@ -12,7 +12,11 @@ namespace SmartSql.Reflection.Convert
 {
     public static class RequestConvertCache<TRequest>
     {
+        /// <summary>
+        /// TODO add SmartSqlAlias parameter
+        /// </summary>
         public static Func<object, SqlParameterCollection> Convert { get; private set; }
+
         static RequestConvertCache()
         {
             Convert = RequestConvertCache<TRequest, object>.Convert;
@@ -32,7 +36,8 @@ namespace SmartSql.Reflection.Convert
         {
             var requestType = typeof(TRequest);
             var sourceProps = requestType.GetProperties().Where(p => p.CanRead);
-            var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString("N"), SqlParameterType.SqlParameterCollection, new[] { CommonType.Object }, requestType, true);
+            var dynamicMethod = new DynamicMethod(Guid.NewGuid().ToString("N"), SqlParameterType.SqlParameterCollection,
+                new[] {CommonType.Object}, requestType, true);
             var ilGen = dynamicMethod.GetILGenerator();
             ilGen.DeclareLocal(SqlParameterType.SqlParameterCollection);
             var ignoreCase = typeof(TIgnoreCase) == typeof(IgnoreCaseType);
@@ -49,19 +54,23 @@ namespace SmartSql.Reflection.Convert
                 {
                     ilGen.Box(prop.PropertyType);
                 }
+
                 ilGen.LoadType(prop.PropertyType);
                 ilGen.New(SqlParameterType.Ctor.SqlParameter);
                 ilGen.Dup();
                 var column = prop.GetCustomAttribute<ColumnAttribute>();
-                var getHandlerMethod = column?.FieldType != null ? TypeHandlerCacheType.GetHandlerMethod(prop.PropertyType, column?.FieldType)
+                var getHandlerMethod = column?.FieldType != null
+                    ? TypeHandlerCacheType.GetHandlerMethod(prop.PropertyType, column?.FieldType)
                     : PropertyTypeHandlerCacheType.GetHandlerMethod(prop.PropertyType);
                 ilGen.Call(getHandlerMethod);
                 ilGen.Call(SqlParameterType.Method.SetTypeHandler);
                 ilGen.Call(SqlParameterType.Method.Add);
             }
+
             ilGen.LoadLocalVar(0);
             ilGen.Return();
-            Convert = (Func<object, SqlParameterCollection>)dynamicMethod.CreateDelegate(typeof(Func<object, SqlParameterCollection>));
+            Convert = (Func<object, SqlParameterCollection>) dynamicMethod.CreateDelegate(
+                typeof(Func<object, SqlParameterCollection>));
         }
     }
 }
