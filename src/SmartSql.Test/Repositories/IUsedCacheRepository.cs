@@ -8,7 +8,7 @@ namespace SmartSql.Test.Repositories
     /// TODO
     /// </summary>
     [Cache("DateCache", "Lru", FlushInterval = 6000)]
-    [Cache("LruCache", "Lru", FlushInterval = 6000, FlushOnExecutes = new[] {""})]
+    [Cache("LruCache", "Lru", FlushInterval = 6000)]
     [Cache("UserCache", "Fifo", FlushOnExecutes = new[] {"UpdateUserName"})]
     public interface IUsedCacheRepository
     {
