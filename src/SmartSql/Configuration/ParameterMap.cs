@@ -24,6 +24,7 @@ namespace SmartSql.Configuration
     public class Parameter
     {
         public string Property { get; set; }
+        [Obsolete]
         public string Name { get; set; }
         public ITypeHandler Handler { get; set; }
     }

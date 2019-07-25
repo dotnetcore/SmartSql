@@ -17,11 +17,6 @@ namespace SmartSql.CUD
         public static EntityMetaData MetaData { get; }
         public static String TableName => MetaData.TableName;
 
-        /// <summary>
-        /// Key :PropertyName
-        /// </summary>
-        public static SortedDictionary<string, ColumnAttribute> Columns => MetaData.Columns;
-
         public static SortedDictionary<int, ColumnAttribute> IndexColumnMaps { get; private set; }
 
         public static ColumnAttribute PrimaryKey
@@ -35,6 +30,22 @@ namespace SmartSql.CUD
 
                 return MetaData.PrimaryKey;
             }
+        }
+
+        public static bool TryGetColumnByColumnName(String columnName, out ColumnAttribute columnAttribute)
+        {
+            columnAttribute = MetaData.Columns.Values.FirstOrDefault(col => col.Name == columnName);
+            if (columnAttribute != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool TryGetColumnByPropertyName(String propertyName, out ColumnAttribute columnAttribute)
+        {
+            return MetaData.Columns.TryGetValue(propertyName, out columnAttribute);
         }
 
         static EntityMetaDataCache()

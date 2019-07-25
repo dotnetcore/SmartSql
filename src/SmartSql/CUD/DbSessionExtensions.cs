@@ -112,14 +112,13 @@ namespace SmartSql
         private static StringBuilder BuildInsertSql<TEntity>(DbProvider dbProvider, SqlParameterCollection dyParams)
         {
             var tableName = EntityMetaDataCache<TEntity>.TableName;
-            var columns = EntityMetaDataCache<TEntity>.Columns;
             var isFirst = true;
             var columnBuilder = new StringBuilder();
             var paramBuilder = new StringBuilder();
 
             foreach (var paramKV in dyParams)
             {
-                if (!columns.TryGetValue(paramKV.Key, out var column))
+                if (!EntityMetaDataCache<TEntity>.TryGetColumnByPropertyName(paramKV.Key, out var column))
                 {
                     continue;
                 }
@@ -242,14 +241,13 @@ namespace SmartSql
 
             var dyParams = RequestConvert.Instance.ToSqlParameters(entity, false);
             var tableName = EntityMetaDataCache<TEntity>.TableName;
-            var columns = EntityMetaDataCache<TEntity>.Columns;
             var pkCol = EntityMetaDataCache<TEntity>.PrimaryKey;
             var sqlBuilder = new StringBuilder();
             sqlBuilder.AppendFormat("Update {0} Set ", tableName);
             var isFirst = true;
             foreach (var paramKV in dyParams)
             {
-                if (!columns.TryGetValue(paramKV.Key, out var column))
+                if (!EntityMetaDataCache<TEntity>.TryGetColumnByPropertyName(paramKV.Key, out var column))
                 {
                     continue;
                 }

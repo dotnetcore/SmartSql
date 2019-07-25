@@ -9,8 +9,9 @@ namespace SmartSql.CUD
     {
         public string TableName { get; set; }
         public ColumnAttribute PrimaryKey { get; set; }
+
         /// <summary>
-        /// Key :PropertyName
+        /// Key : PropertyName
         /// </summary>
         public SortedDictionary<String, ColumnAttribute> Columns { get; set; }
     }

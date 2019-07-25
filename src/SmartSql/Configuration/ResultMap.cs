@@ -40,6 +40,5 @@ namespace SmartSql.Configuration
         public string Name { get; set; }
         public string Column { get; set; }
         public String TypeHandler { get; set; }
-        public ITypeHandler Handler { get; set; }
     }
 }

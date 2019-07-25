@@ -10,6 +10,7 @@ using SmartSql.Configuration.Tags;
 using SmartSql.DataSource;
 using SmartSql.Exceptions;
 using SmartSql.Reflection;
+using SmartSql.Reflection.TypeConstants;
 
 namespace SmartSql.ConfigBuilder
 {
@@ -405,7 +406,7 @@ namespace SmartSql.ConfigBuilder
                     SmartSqlConfig.Properties))
                 {
                     property.TypeHandler = handlerName;
-                    property.Handler = SmartSqlConfig.TypeHandlerFactory.GetTypeHandler(handlerName);
+                    SmartSqlConfig.TypeHandlerFactory.GetTypeHandler(handlerName); //Check Named TypeHandler
                 }
 
                 resultMap.Properties.Add(property.Column, property);

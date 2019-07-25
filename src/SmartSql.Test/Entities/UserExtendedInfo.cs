@@ -8,7 +8,8 @@ namespace SmartSql.Test.Entities
     public class UserExtendedInfo
     {
         public virtual long UserId { get; set; }
-        [Column(FieldType = typeof(String))]
+
+        [Column(FieldType = typeof(String), TypeHandler = "Json")]
         public virtual UserInfo Data { get; set; }
     }
 }

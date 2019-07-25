@@ -18,7 +18,7 @@ namespace SmartSql
     {
         public override Type ResultType => typeof(TResult);
         public override bool IsList => false;
-        public TResult Data { get; set; }
+        public TResult Data { get; private set; }
         public override object GetData() => Data;
 
         public override void SetData(object data, bool fromCache = false)
@@ -33,7 +33,7 @@ namespace SmartSql
     {
         public override Type ResultType => typeof(IList<TResult>);
         public override bool IsList => true;
-        public IList<TResult> Data { get; set; }
+        public IList<TResult> Data { get; private set; }
         public override object GetData() => Data;
 
         public override void SetData(object data, bool fromCache = false)

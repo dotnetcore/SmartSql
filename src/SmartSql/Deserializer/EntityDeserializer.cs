@@ -10,6 +10,7 @@ using System.Reflection.Emit;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SmartSql.Configuration;
+using SmartSql.CUD;
 using SmartSql.Reflection;
 using SmartSql.Reflection.EntityProxy;
 using SmartSql.TypeHandlers;
@@ -108,7 +109,6 @@ namespace SmartSql.Deserializer
             }
 
             var dataReader = executionContext.DataReaderWrapper;
-
             var resultMap = executionContext.Request.GetCurrentResultMap();
 
             var constructorMap = resultMap?.Constructor;
@@ -155,30 +155,46 @@ namespace SmartSql.Deserializer
             foreach (var col in columns)
             {
                 var colName = col.Key;
-                var propertyName = colName;
                 var colIndex = col.Value.Index;
                 var filedType = col.Value.FieldType;
-                Property resultProperty = null;
-                if (resultMap?.Properties != null && resultMap.Properties.TryGetValue(colName, out resultProperty))
+                PropertyInfo propertyInfo = null;
+                string typeHandler = null;
+
+                #region Ensure Property & TypeHanlder
+                if (resultMap?.Properties != null)
                 {
-                    propertyName = resultProperty.Name;
+                    var propertyName = colName;
+                    if (resultMap.Properties.TryGetValue(colName, out var resultProperty))
+                    {
+                        propertyName = resultProperty.Name;
+                        typeHandler = resultProperty.TypeHandler;
+                    }
+
+                    propertyInfo = resultType.GetProperty(propertyName);
                 }
 
-                var property = resultType.GetProperty(propertyName);
-                if (property == null)
+                if (EntityMetaDataCache<TResult>.TryGetColumnByColumnName(colName, out var columnAttribute))
+                {
+                    propertyInfo = columnAttribute.Property;
+                    if (!String.IsNullOrEmpty(columnAttribute.TypeHandler))
+                    {
+                        typeHandler = columnAttribute.TypeHandler;
+                    }
+                }
+                if (propertyInfo == null)
                 {
                     continue;
                 }
 
-                if (!property.CanWrite)
+                if (!propertyInfo.CanWrite)
                 {
                     continue;
                 }
-
-                var propertyType = property.PropertyType;
+                #endregion
+                var propertyType = propertyInfo.PropertyType;
                 ilGen.LoadLocalVar(0);
-                LoadPropertyValue(ilGen, executionContext, colIndex, propertyType, filedType, resultProperty);
-                ilGen.Call(property.SetMethod);
+                LoadPropertyValue(ilGen, executionContext, colIndex, propertyType, filedType, typeHandler);
+                ilGen.Call(propertyInfo.SetMethod);
             }
 
             if (typeof(IEntityPropertyChangedTrackProxy).IsAssignableFrom(resultType))
@@ -196,7 +212,7 @@ namespace SmartSql.Deserializer
         }
 
         private void LoadPropertyValue(ILGenerator ilGen, ExecutionContext executionContext, int colIndex,
-            Type propertyType, Type fieldType, Property resultProperty)
+            Type propertyType, Type fieldType, String typeHandler)
         {
             var typeHandlerFactory = executionContext.SmartSqlConfig.TypeHandlerFactory;
             var propertyUnderType = (Nullable.GetUnderlyingType(propertyType) ?? propertyType);
@@ -212,7 +228,7 @@ namespace SmartSql.Deserializer
             #endregion
 
             MethodInfo getValMethod = null;
-            if (resultProperty?.Handler == null)
+            if (String.IsNullOrEmpty(typeHandler))
             {
                 LoadTypeHandlerInvokeArgs(ilGen, colIndex, propertyType);
                 var mappedFieldType = fieldType;
@@ -228,7 +244,6 @@ namespace SmartSql.Deserializer
                         if (!typeHandlerFactory.TryGetTypeHandler(propertyType, mappedFieldType, out _))
                         {
                             propertyType = CommonType.Object;
-                            //throw new SmartSqlException($"Can not find TypeHandler:{nameof(ITypeHandler.PropertyType)}:{propertyType.FullName},{nameof(ITypeHandler.FieldType)}:{mappedFieldType.FullName}");
                         }
                     }
                 }
@@ -238,11 +253,12 @@ namespace SmartSql.Deserializer
             }
             else
             {
-                var typeHandlerField = NamedTypeHandlerCache.GetTypeHandlerField(executionContext.SmartSqlConfig.Alias,
-                    resultProperty.TypeHandler);
+                var typeHandlerField =
+                    NamedTypeHandlerCache.GetTypeHandlerField(executionContext.SmartSqlConfig.Alias, typeHandler);
                 ilGen.FieldGet(typeHandlerField);
                 LoadTypeHandlerInvokeArgs(ilGen, colIndex, propertyType);
-                getValMethod = resultProperty.Handler.GetType().GetMethod("GetValue");
+                getValMethod = executionContext.SmartSqlConfig.TypeHandlerFactory.GetTypeHandler(typeHandler).GetType()
+                    .GetMethod("GetValue");
                 ilGen.Callvirt(getValMethod);
             }
         }
