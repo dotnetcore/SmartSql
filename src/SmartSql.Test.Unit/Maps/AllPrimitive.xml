@@ -20,7 +20,7 @@
     <Cache Id="RedisCache" Type="${RedisCacheProvider}">
       <Property Name="ConnectionString" Value="${Redis}" />
       <Property Name="Prefix" Value="RedisCache"/>
-      <FlushInterval Seconds="120"/>
+      <FlushInterval Minutes="60"/>
     </Cache>
   </Caches>
   <MultipleResultMaps>
