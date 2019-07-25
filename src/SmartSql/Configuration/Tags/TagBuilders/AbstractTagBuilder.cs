@@ -8,7 +8,6 @@ namespace SmartSql.Configuration.Tags.TagBuilders
 {
     public abstract class AbstractTagBuilder : ITagBuilder
     {
-
         private const String PREPEND = nameof(Tag.Prepend);
         private const String PROPERTY = nameof(Tag.Property);
         private const String REQUIRED = nameof(Tag.Required);
@@ -40,7 +39,11 @@ namespace SmartSql.Configuration.Tags.TagBuilders
 
         public String GetProperty(XmlNode xmlNode)
         {
-            return GetXmlAttributeValue(xmlNode, PROPERTY);
+            if (xmlNode.Attributes.TryGetValueAsString(PROPERTY, out var propertyStr))
+            {
+                return propertyStr;
+            }
+            throw new SmartSqlException($"can not find [{PROPERTY}] from xml-node:{xmlNode.Value}.");
         }
 
         public bool GetRequired(XmlNode xmlNode)
