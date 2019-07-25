@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
+    <Settings IgnoreParameterCase="false" ParameterPrefix="$" IsCacheEnabled="true" EnablePropertyChangedTrack="true"/>
+    <Properties>
+        <Property Name="JsonTypeHandler`" Value="SmartSql.TypeHandler.JsonTypeHandler`1,SmartSql.TypeHandler"/>
+        <Property Name="JsonTypeHandler" Value="SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"/>
+        <Property Name="ScriptBuilder" Value="SmartSql.ScriptTag.ScriptBuilder,SmartSql.ScriptTag"/>
+        <Property Name="RedisCacheProvider" Value="SmartSql.Cache.Redis.RedisCacheProvider,SmartSql.Cache.Redis"/>
+        <Property Name="Redis" Value="127.0.0.1"/>
+    </Properties>
+    <Database>
+        <DbProvider Name="SQLite"/>
+        <Write Name="WriteDB" ConnectionString="${ConnectionString}"/>
+        <Read Name="ReadDb-1" ConnectionString="${ConnectionString}" Weight="100"/>
+        <Read Name="ReadDb-2" ConnectionString="${ConnectionString}" Weight="100"/>
+    </Database>
+    <TypeHandlers>
+        <TypeHandler Name="Json" Type="${JsonTypeHandler}">
+            <Properties>
+                <Property Name="DateFormat" Value="yyyy-MM-dd mm:ss"/>
+                <Property Name="NamingStrategy" Value="Camel"/>
+            </Properties>
+        </TypeHandler>
+        <TypeHandler PropertyType="SmartSql.Test.Entities.UserInfo,SmartSql.Test" Type="${JsonTypeHandler`}">
+            <Properties>
+                <Property Name="DateFormat" Value="yyyy-MM-dd mm:ss"/>
+                <Property Name="NamingStrategy" Value="Camel"/>
+            </Properties>
+        </TypeHandler>
+        <TypeHandler PropertyType="SmartSql.Test.Entities.NumericalEnum,SmartSql.Test" Type="SmartSql.TypeHandlers.EnumTypeHandler`1, SmartSql"/>
+    </TypeHandlers>
+    <TagBuilders>
+        <TagBuilder Name="Script" Type="${ScriptBuilder}"/>
+    </TagBuilders>
+    <IdGenerators>
+        <IdGenerator Name="SnowflakeId" Type="SnowflakeId">
+            <Properties>
+                <Property Name="WorkerIdBits" Value="8"/>
+                <Property Name="WorkerId" Value="8"/>
+                <Property Name="Sequence" Value="1"/>
+            </Properties>
+        </IdGenerator>
+    </IdGenerators>
+    <SmartSqlMaps>
+        <SmartSqlMap Path="Maps" Type="Directory"></SmartSqlMap>
+    </SmartSqlMaps>
+</SmartSqlMapConfig>

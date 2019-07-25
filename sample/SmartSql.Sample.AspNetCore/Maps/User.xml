@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+//*******************************
+// Create By Ahoo Wang
+// Date 2019-04-18 12:59
+// Code Generate By SmartCode
+// Code Generate Github : https://github.com/Ahoo-Wang/SmartCode
+//*******************************-->
+
+<SmartSqlMap Scope="User" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+    <Caches>
+        <Cache Id="UserCache" Type="Lru">
+            <FlushOnExecute Statement="Update"/>
+            <FlushOnExecute Statement="Delete"/>
+        </Cache>
+    </Caches>
+    <MultipleResultMaps>
+        <MultipleResultMap Id="QueryByPageResult">
+            <Result Property="List"/>
+            <Result Property="Total"/>
+        </MultipleResultMap>
+    </MultipleResultMaps>
+    <Statements>
+        <Statement Id="QueryParams">
+            <Where>
+                <IsNotEmpty Prepend="And" Property="Id">
+                    T.Id = @Id
+                </IsNotEmpty>
+                <IsNotEmpty Prepend="And" Property="UserName">
+                    T.UserName = @UserName
+                </IsNotEmpty>
+                <IsNotEmpty Prepend="And" Property="Status">
+                    T.Status = @Status
+                </IsNotEmpty>
+                <Switch Prepend="And" Property="Index">
+                    <Case CompareValue="1">1=1</Case>
+                </Switch>
+            </Where>
+        </Statement>
+
+
+        <!--新增-->
+        <Statement Id="Insert">
+            INSERT INTO T_User
+            (
+            UserName,
+            Status
+            )
+            VALUES
+            (
+            @UserName,
+            @Status
+            )
+            ;select last_insert_rowid() from T_User
+        </Statement>
+
+        <!--删除-->
+        <Statement Id="Delete">
+            Delete From T_User
+            Where Id=@Id
+        </Statement>
+
+        <!--更新-->
+        <Statement Id="Update">
+            UPDATE T_User
+            <Set>
+                <IsProperty Prepend="," Property="UserName">
+                    UserName = @UserName
+                </IsProperty>
+                <IsProperty Prepend="," Property="Status" PropertyChanged="Ignore">
+                    Status = @Status
+                </IsProperty>
+            </Set>
+            Where Id=@Id
+        </Statement>
+
+        <!--获取数据列-->
+        <Statement Id="Query">
+            SELECT
+            T.* From T_User T
+            <Include RefId="QueryParams"/>
+            <Switch Prepend="Order By" Property="OrderBy">
+                <Default>
+                    T.Id Desc
+                </Default>
+            </Switch>
+            <IsNotEmpty Property="Taken">
+                Limit @Taken
+            </IsNotEmpty>
+        </Statement>
+
+        <!--获取分页数据-->
+        <Statement Id="QueryByPage" MultipleResultMap="QueryByPageResult">
+            Select T.* From T_User T
+            <Include RefId="QueryParams"/>
+            Limit @PageSize Offset 0;
+            Select Count(1) From T_User T
+            <Include RefId="QueryParams"/>;
+        </Statement>
+
+        <!--获取记录数-->
+        <Statement Id="GetRecord">
+            Select Count(1) From T_User T
+            <Include RefId="QueryParams"/>
+        </Statement>
+
+        <!--获取表映射实体-->
+        <Statement Id="GetEntity">
+            Select T.* From T_User T
+            <Where Min="1">
+                <IsNotEmpty Prepend="And" Property="Id">
+                    T.Id=@Id
+                </IsNotEmpty>
+            </Where>
+            Limit 1
+        </Statement>
+
+
+        <!--是否存在该记录-->
+        <Statement Id="IsExist">
+            Select Count(1) From T_User T
+            <Include RefId="QueryParams"/>
+        </Statement>
+
+
+    </Statements>
+</SmartSqlMap>
