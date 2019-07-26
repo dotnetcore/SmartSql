@@ -13,7 +13,13 @@ namespace SmartSql.Test.Repositories
         [Statement(Sql = "Select Top 1 T.* From t_column_annotation_entity T where T.id=@id")]
         ColumnAnnotationEntity GetEntity(long id);
 
-        [Statement(Sql = "INSERT INTO t_column_annotation_entity(name,extend_data)VALUES(@Name,@Data);Select Scope_Identity();")]
+        [Statement(Sql =
+            "INSERT INTO t_column_annotation_entity(name,extend_data)VALUES(@Name,@Data);Select Scope_Identity();")]
         int Insert(ColumnAnnotationEntity entity);
+
+        [Statement(Sql =
+            "INSERT INTO t_column_annotation_entity(name,extend_data)VALUES(@Name,@Data);Select Scope_Identity();")]
+        int Insert([Param("Name")] string name,
+            [Param("Data", TypeHandler = "Json")] ColumnAnnotationEntity.ExtendData data);
     }
 }

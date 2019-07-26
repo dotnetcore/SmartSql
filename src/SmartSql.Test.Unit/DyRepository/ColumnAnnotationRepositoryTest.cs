@@ -29,7 +29,7 @@ namespace SmartSql.Test.Unit.DyRepository
             var id = Insert();
             var entity = _repository.GetEntity(id);
             Assert.NotNull(entity);
-            Assert.Equal(id,entity.Id);
+            Assert.Equal(id, entity.Id);
         }
 
         [Fact]
@@ -42,6 +42,17 @@ namespace SmartSql.Test.Unit.DyRepository
                 {
                     Info = nameof(IColumnAnnotationRepository)
                 }
+            });
+            Assert.NotEqual(0, id);
+            return id;
+        }
+
+        [Fact]
+        public int InsertByParamAnnotations()
+        {
+            var id = _repository.Insert(nameof(InsertByParamAnnotations), new ColumnAnnotationEntity.ExtendData
+            {
+                Info = nameof(InsertByParamAnnotations)
             });
             Assert.NotEqual(0, id);
             return id;
