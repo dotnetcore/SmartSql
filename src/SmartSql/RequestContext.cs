@@ -62,11 +62,36 @@ namespace SmartSql
                 : ResultMap;
         }
 
-        public CacheKey CacheKey { get; set; }
+        public String CacheKeyTemplate { get; set; }
+        public CacheKey CacheKey { get; private set; }
 
         public CacheKey EnsureCacheKey()
         {
-            return CacheKey ?? (CacheKey = new CacheKey(this));
+            if (CacheKey != null)
+            {
+                return CacheKey;
+            }
+
+            if (!String.IsNullOrEmpty(CacheKeyTemplate))
+            {
+                var key = ExecutionContext.SmartSqlConfig.CacheTemplateAnalyzer.Replace(CacheKeyTemplate,
+                    (paramName, nameWithPrefix) =>
+                    {
+                        if (Parameters.TryGetValue(paramName, out var sqlParameter))
+                        {
+                            return sqlParameter.Value.ToString();
+                        }
+                        return nameWithPrefix;
+                    });
+
+                CacheKey = new CacheKey(key, ExecutionContext.Result.ResultType);
+            }
+            else
+            {
+                CacheKey = new CacheKey(this);
+            }
+
+            return CacheKey;
         }
 
         public abstract void SetupParameters();

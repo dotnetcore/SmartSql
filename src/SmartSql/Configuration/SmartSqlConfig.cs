@@ -30,6 +30,7 @@ namespace SmartSql.Configuration
         public ITagBuilderFactory TagBuilderFactory { get; set; }
         public StatementAnalyzer StatementAnalyzer { get; set; }
         public SqlParamAnalyzer SqlParamAnalyzer { get; set; }
+        public SqlParamAnalyzer CacheTemplateAnalyzer { get; set; }
         public IMiddleware Pipeline { get; set; }
         public IDataSourceFilter DataSourceFilter { get; set; }
         public IDbSessionStore SessionStore { get; set; }

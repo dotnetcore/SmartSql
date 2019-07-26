@@ -17,11 +17,11 @@ namespace SmartSql.Test.Repositories
         [Statement(Sql = "Select Now();")]
         DateTime GetNow();
 
-        [ResultCache("LruCache", Key = "GetId:{id}")]
+        [ResultCache("LruCache", Key = "GetId:$id")]
         [Statement(Sql = "Select @id;")]
         int GetId(long id);
 
-        [ResultCache("UserCache", Key = "GetUserById:{id}")]
+        [ResultCache("UserCache", Key = "GetUserById:$id")]
         [Statement(Sql = "select * from T_User where id=@id;")]
         User GetUserById(long id);
 

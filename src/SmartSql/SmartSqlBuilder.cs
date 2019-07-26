@@ -105,7 +105,7 @@ namespace SmartSql
             }
 
             #endregion
-            
+
             #region Pipeline
 
             var currentMiddleware = SmartSqlConfig.Pipeline;
@@ -153,7 +153,8 @@ namespace SmartSql
 
             SmartSqlConfig.SqlParamAnalyzer = new SqlParamAnalyzer(SmartSqlConfig.Settings.IgnoreParameterCase,
                 SmartSqlConfig.Database.DbProvider.ParameterPrefix);
-
+            SmartSqlConfig.CacheTemplateAnalyzer = new SqlParamAnalyzer(SmartSqlConfig.Settings.IgnoreParameterCase,
+                SmartSqlConfig.Settings.ParameterPrefix);
             InitDeserializerFactory();
             InitFilters();
             BuildPipeline();

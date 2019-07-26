@@ -34,7 +34,6 @@ namespace SmartSql.ConfigBuilder
             BuildTypeHandlers();
             BuildTagBuilders();
             BuildSqlMaps();
-            BuildSqlParamAnalyzer();
             EnsureDependency();
             OnAfterBuild();
             return SmartSqlConfig;
@@ -49,13 +48,6 @@ namespace SmartSql.ConfigBuilder
         protected abstract void BuildSettings();
         public abstract void Dispose();
 
-        protected void BuildSqlParamAnalyzer()
-        {
-            if (SmartSqlConfig.SqlParamAnalyzer == null)
-            {
-                SmartSqlConfig.SqlParamAnalyzer = new SqlParamAnalyzer(SmartSqlConfig.Settings.IgnoreParameterCase, SmartSqlConfig.Database.DbProvider.ParameterPrefix);
-            }
-        }
         protected void ImportProperties(IEnumerable<KeyValuePair<string, string>> importProperties)
         {
             if (importProperties != null) { SmartSqlConfig.Properties.Import(importProperties); }

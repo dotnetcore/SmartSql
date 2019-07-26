@@ -44,16 +44,29 @@ namespace SmartSql.Test.Unit.Cache
                 Scope = nameof(AllPrimitive),
                 SqlId = "QueryByRedisCache",
                 Request = new {Taken = 8},
-                CacheKey = new CacheKey("QueryByRedisCacheWithKey", typeof(IList<AllPrimitive>))
+                CacheKeyTemplate = "QueryByRedisCacheWithKey"
             });
             var cachedList = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "QueryByRedisCache",
                 Request = new {Taken = 8},
-                CacheKey = new CacheKey("QueryByRedisCacheWithKey", typeof(IList<AllPrimitive>))
+                CacheKeyTemplate = "QueryByRedisCacheWithKey"
             });
             Assert.Equal(list.Count(), cachedList.Count());
+        }
+
+        [Fact]
+        public void QueryByRedisCacheWithKeyParam()
+        {
+            var list = SqlMapper.Query<AllPrimitive>(new RequestContext
+            {
+                Scope = nameof(AllPrimitive),
+                SqlId = "QueryByRedisCache",
+                Request = new {Taken = 8, UserId = 1},
+                CacheKeyTemplate = "QueryByRedisCacheWithKeyParam:uid:$UserId:taken:$Taken"
+            });
+            Assert.NotNull(list);
         }
     }
 }
