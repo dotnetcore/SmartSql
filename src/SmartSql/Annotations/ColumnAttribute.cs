@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
-using SmartSql.TypeHandlers;
 
 namespace SmartSql.Annotations
 {
@@ -25,6 +22,7 @@ namespace SmartSql.Annotations
         public string Name { get; set; }
         public bool IsPrimaryKey { get; set; }
         public bool IsAutoIncrement { get; set; }
+        public String Alias { get; set; } = SmartSqlBuilder.DEFAULT_ALIAS;
         public String TypeHandler { get; set; }
     }
 }

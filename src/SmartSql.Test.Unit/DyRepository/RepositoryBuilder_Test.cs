@@ -39,6 +39,7 @@ namespace SmartSql.Test.Unit.DyRepository
             var repository =
                 _repositoryFactory.CreateInstance(typeof(IAllPrimitiveRepository),
                     SqlMapper) as IAllPrimitiveRepository;
+            Assert.True(repository.IsDyRepository());
             var list = repository.Query(10);
             var id = repository.Insert(new Entities.AllPrimitive
             {
@@ -74,31 +75,6 @@ namespace SmartSql.Test.Unit.DyRepository
         }
 
 
-        [Fact]
-        public void NoMapperRepository_GetGuidFromDb()
-        {
-            var repository =
-                _repositoryFactory.CreateInstance(typeof(INoMapperRepository), SqlMapper) as INoMapperRepository;
-            var innerSqlMapper = repository.SqlMapper;
-            var guid = repository.GetGuidFromDb();
-        }
 
-        [Fact]
-        public void NoMapperRepository_GetEntity()
-        {
-            var repository =
-                _repositoryFactory.CreateInstance(typeof(INoMapperRepository), SqlMapper) as INoMapperRepository;
-
-            var entity = repository.GetAllPrimitive();
-        }
-
-        [Fact]
-        public void IsDyRepository()
-        {
-            var repository =
-                _repositoryFactory.CreateInstance(typeof(INoMapperRepository), SqlMapper) as INoMapperRepository;
-            var isDyRepository = repository.IsDyRepository();
-            Assert.True(isDyRepository);
-        }
     }
 }

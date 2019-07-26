@@ -12,6 +12,7 @@ using SmartSql.DataSource;
 using SmartSql.DyRepository.Annotations;
 using SmartSql.Exceptions;
 using SmartSql.Reflection.TypeConstants;
+using SmartSql.TypeHandlers;
 using SmartSql.Utils;
 
 namespace SmartSql.DyRepository
@@ -179,13 +180,32 @@ namespace SmartSql.DyRepository
 
                     ilGen.LoadType(reqParam.ParameterType);
                     ilGen.New(SqlParameterType.Ctor.SqlParameter);
+
+                    #region Ensure TypeHanlder
+
                     ilGen.Dup();
-                    var getHandlerMethod = paramAttr?.FieldType != null
-                        ? TypeHandlerCacheType.GetHandlerMethod(reqParam.ParameterType, paramAttr?.FieldType)
-                        : PropertyTypeHandlerCacheType.GetHandlerMethod(reqParam.ParameterType);
-                    ilGen.Call(getHandlerMethod);
+                    if (paramAttr != null && !String.IsNullOrEmpty(paramAttr.TypeHandler))
+                    {
+                        var typeHandlerField =
+                            NamedTypeHandlerCache.GetTypeHandlerField(smartSqlConfig.Alias, paramAttr.TypeHandler);
+                        if (typeHandlerField == null)
+                        {
+                            throw new SmartSqlException(
+                                $"Can not find NamedTypeHandler SmartSql.Alias:[{smartSqlConfig.Alias}],Name :[{paramAttr.TypeHandler}].");
+                        }
+
+                        ilGen.FieldGet(typeHandlerField);
+                    }
+                    else
+                    {
+                        var getHandlerMethod = PropertyTypeHandlerCacheType.GetHandlerMethod(reqParam.ParameterType);
+                        ilGen.Call(getHandlerMethod);
+                    }
+
                     ilGen.Call(SqlParameterType.Method.SetTypeHandler);
                     ilGen.Call(SqlParameterType.Method.Add);
+
+                    #endregion
                 }
 
                 ilGen.LoadLocalVar(0);

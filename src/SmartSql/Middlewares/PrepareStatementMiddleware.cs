@@ -14,9 +14,6 @@ using SmartSql.Middlewares.Filters;
 
 namespace SmartSql.Middlewares
 {
-    /// <summary>
-    /// TODO nest object access
-    /// </summary>
     public class PrepareStatementMiddleware : AbstractMiddleware
     {
         private ILogger _logger;
@@ -66,23 +63,11 @@ namespace SmartSql.Middlewares
                         return nameWithPrefix;
                     }
 
-                    ITypeHandler typeHandler = sqlParameter.TypeHandler;
-
-                    var parameter = reqConetxt.ParameterMap?.GetParameter(paramName);
-                    if (parameter?.Handler != null)
-                    {
-                        typeHandler = parameter.Handler;
-                    }
+                    ITypeHandler typeHandler = (reqConetxt.ParameterMap?.GetParameter(paramName)?.Handler ?? sqlParameter.TypeHandler) ??
+                                               _typeHandlerFactory.GetTypeHandler(sqlParameter.ParameterType);
 
                     var sourceParam = _dbProviderFactory.CreateParameter();
-
                     sourceParam.ParameterName = sqlParameter.Name;
-
-                    if (typeHandler == null)
-                    {
-                        typeHandler = _typeHandlerFactory.GetTypeHandler(sqlParameter.ParameterType);
-                    }
-
                     typeHandler.SetParameter(sourceParam, sqlParameter.Value);
                     sqlParameter.SourceParameter = sourceParam;
                     InitSourceDbParameter(sourceParam, sqlParameter);
