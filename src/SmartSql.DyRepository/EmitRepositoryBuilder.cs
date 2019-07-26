@@ -332,8 +332,8 @@ namespace SmartSql.DyRepository
 
                 if (resultCacheAttr != null)
                 {
-                    statement.CacheId = resultCacheAttr.CacheId;
-                    statement.Cache = sqlMap.GetCache(resultCacheAttr.CacheId);
+                    statement.CacheId = ParseCacheFullId(sqlMap.Scope, resultCacheAttr.CacheId);
+                    statement.Cache = sqlMap.GetCache(statement.CacheId);
                 }
 
                 sqlMap.Statements.Add(statement.FullSqlId, statement);
@@ -613,10 +613,7 @@ namespace SmartSql.DyRepository
                     FlushInterval = new FlushInterval()
                 };
 
-                if (cacheAttribute.Id.IndexOf('.') < 0)
-                {
-                    cache.Id = $"{sqlMap.Scope}.{cacheAttribute.Id}";
-                }
+                cache.Id = ParseCacheFullId(sqlMap.Scope, cacheAttribute.Id);
 
                 if (cacheAttribute.FlushInterval > 0)
                 {
@@ -631,8 +628,21 @@ namespace SmartSql.DyRepository
                     }).ToList();
                 }
 
+                cache.Type = cacheAttribute.Type;
                 cache.Provider = CacheProviderUtil.Create(cache);
                 sqlMap.Caches.Add(cache.Id, cache);
+            }
+        }
+
+        private static String ParseCacheFullId(String scope, String cacheId)
+        {
+            if (cacheId.IndexOf('.') < 0)
+            {
+                return $"{scope}.{cacheId}";
+            }
+            else
+            {
+                return cacheId;
             }
         }
 

@@ -14,7 +14,7 @@ namespace SmartSql.Test.Repositories
     public interface IUsedCacheRepository
     {
         [ResultCache("DateCache", Key = "GetNow")]
-        [Statement(Sql = "Select Now();")]
+        [Statement(Sql = "Select GetDate();")]
         DateTime GetNow();
 
         [ResultCache("LruCache", Key = "GetId:$id")]

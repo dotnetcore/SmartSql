@@ -10,14 +10,14 @@ using Microsoft.Extensions.Logging;
 namespace SmartSql.Test.Unit.DyRepository
 {
     [Collection("GlobalSmartSql")]
-    public class RepositoryBuilder_Test
+    public class RepositoryBuilderTest
     {
         protected ISqlMapper SqlMapper { get; }
 
         IRepositoryBuilder _repositoryBuilder;
         IRepositoryFactory _repositoryFactory;
 
-        public RepositoryBuilder_Test(SmartSqlFixture smartSqlFixture)
+        public RepositoryBuilderTest(SmartSqlFixture smartSqlFixture)
         {
             SqlMapper = smartSqlFixture.SqlMapper;
             _repositoryBuilder = new EmitRepositoryBuilder(null, null,
