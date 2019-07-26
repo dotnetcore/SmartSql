@@ -601,21 +601,51 @@ namespace SmartSql.DyRepository
 
         #region AddSqlMapIfNull
 
-        private void AddSqlMapIfNull(SmartSqlConfig smartSqlConfig, Type interfaceType, string scope)
+        private SqlMap AddSqlMapIfNull(SmartSqlConfig smartSqlConfig, Type interfaceType, string scope)
         {
-            if (!smartSqlConfig.SqlMaps.TryGetValue(scope, out var sqlMap))
+            if (smartSqlConfig.SqlMaps.TryGetValue(scope, out var sqlMap)) return sqlMap;
+            sqlMap = new SqlMap
             {
-                smartSqlConfig.SqlMaps.Add(scope, new SqlMap
+                Path = interfaceType.AssemblyQualifiedName,
+                Scope = scope,
+                SmartSqlConfig = smartSqlConfig,
+                Statements = new Dictionary<string, Statement>(),
+                Caches = new Dictionary<string, Configuration.Cache>(),
+                MultipleResultMaps = new Dictionary<string, MultipleResultMap>(),
+                ParameterMaps = new Dictionary<string, ParameterMap>(),
+                ResultMaps = new Dictionary<string, ResultMap>()
+            };
+            smartSqlConfig.SqlMaps.Add(scope, sqlMap);
+            return sqlMap;
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="sqlMap"></param>
+        /// <param name="interfaceType"></param>
+        private void BuildCache(SqlMap sqlMap, Type interfaceType)
+        {
+            var cacheAttrs = interfaceType.GetCustomAttributes<CacheAttribute>();
+            foreach (var cacheAttribute in cacheAttrs)
+            {
+                Configuration.Cache cache = new Configuration.Cache
                 {
-                    Path = interfaceType.AssemblyQualifiedName,
-                    Scope = scope,
-                    SmartSqlConfig = smartSqlConfig,
-                    Statements = new Dictionary<string, Statement>(),
-                    Caches = new Dictionary<string, Configuration.Cache>(),
-                    MultipleResultMaps = new Dictionary<string, MultipleResultMap>(),
-                    ParameterMaps = new Dictionary<string, ParameterMap>(),
-                    ResultMaps = new Dictionary<string, ResultMap>()
-                });
+                    FlushInterval = new FlushInterval()
+                };
+
+                if (cacheAttribute.Id.IndexOf('.') < 0)
+                {
+                    cache.Id = $"{sqlMap.Scope}.{cacheAttribute.Id}";
+                }
+
+                if (cacheAttribute.FlushInterval > 0)
+                {
+                    cache.FlushInterval.Seconds = cacheAttribute.FlushInterval;
+                }
+                
+
+                sqlMap.Caches.Add(cache.Id, cache);
             }
         }
 
