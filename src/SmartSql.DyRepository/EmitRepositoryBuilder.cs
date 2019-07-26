@@ -624,7 +624,7 @@ namespace SmartSql.DyRepository
                 {
                     cache.FlushOnExecutes = cacheAttribute.FlushOnExecutes.Select(m => new FlushOnExecute
                     {
-                        Statement = m
+                        Statement = m.IndexOf('.') > 0 ? m : $"{sqlMap.Scope}.{m}"
                     }).ToList();
                 }
 
@@ -684,7 +684,7 @@ namespace SmartSql.DyRepository
 
             if (sqlMap.Path == interfaceType.AssemblyQualifiedName)
             {
-                if (sqlMap.Caches?.Count>0)
+                if (sqlMap.Caches?.Count > 0)
                 {
                     smartSqlConfig.CacheManager.Reset();
                 }

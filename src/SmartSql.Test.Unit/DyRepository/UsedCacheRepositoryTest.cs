@@ -32,18 +32,28 @@ namespace SmartSql.Test.Unit.DyRepository
         }
 
         [Fact]
+        public void GetUserById()
+        {
+            var user = _userRepository.GetUserById(1);
+            var user1 = _userRepository.GetUserById(1);
+            Assert.Equal(user, user1);
+        }
+
+        [Fact]
+        public void FlushOnExecute()
+        {
+            var user = _userRepository.GetUserById(1);
+            _userRepository.UpdateUserName(1, "SmartSql");
+
+            var user1 = _userRepository.GetUserById(1);
+            Assert.NotEqual(user, user1);
+        }
+
+        [Fact]
         public void GetId()
         {
             var id = _userRepository.GetId(1);
             var id1 = _userRepository.GetId(1);
-            Assert.Equal(id, id1);
-        }
-
-        [Fact]
-        public void GetUserById()
-        {
-            var id = _userRepository.GetUserById(1);
-            var id1 = _userRepository.GetUserById(1);
             Assert.Equal(id, id1);
         }
 

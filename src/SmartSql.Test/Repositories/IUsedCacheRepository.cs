@@ -4,10 +4,6 @@ using SmartSql.Test.Entities;
 
 namespace SmartSql.Test.Repositories
 {
-    /// <summary>
-    /// TODO
-    /// </summary>
-    
     [Cache("DateCache", "Lru", FlushInterval = 6000)]
     [Cache("LruCache", "Lru", FlushInterval = 6000)]
     [Cache("UserCache", "Fifo", FlushOnExecutes = new[] {"UpdateUserName"})]
