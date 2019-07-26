@@ -2,7 +2,7 @@ using System;
 
 namespace SmartSql.Test.Entities
 {
-    [Annotations.Table("t_annotation_entity")]
+    [Annotations.Table("t_column_annotation_entity")]
     public class ColumnAnnotationEntity
     {
         [Annotations.Column("id", IsAutoIncrement = true)]

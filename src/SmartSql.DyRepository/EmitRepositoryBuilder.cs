@@ -98,12 +98,12 @@ namespace SmartSql.DyRepository
                 throw new SmartSqlException(
                     "SmartSql.DyRepository method parameters do not support generic parameters for the time being!");
             }
-            
+
             var implMethod = typeBuilder.DefineMethod(methodInfo.Name
                 , MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot |
                   MethodAttributes.Virtual | MethodAttributes.Final
                 , returnType, paramTypes);
-            
+
             if (methodInfo.IsGenericMethod)
             {
                 var genericArgs = methodInfo.GetGenericArguments();
@@ -320,6 +320,11 @@ namespace SmartSql.DyRepository
                     },
                     CommandType = statementAttr.CommandType
                 };
+                if (sqlMap.Statements.ContainsKey(fullSqlId))
+                {
+                    statement.Id = $"{statementAttr.Id}-{Guid.NewGuid():N}";
+                }
+
                 if (statementAttr.SourceChoice != DataSourceChoice.Unknow)
                 {
                     statement.SourceChoice = statementAttr.SourceChoice;
@@ -331,7 +336,7 @@ namespace SmartSql.DyRepository
                     statement.Cache = sqlMap.GetCache(resultCacheAttr.CacheId);
                 }
 
-                sqlMap.Statements.Add(fullSqlId, statement);
+                sqlMap.Statements.Add(statement.FullSqlId, statement);
             }
 
             returnType = isTaskReturnType ? returnType.GetGenericArguments().FirstOrDefault() : returnType;
