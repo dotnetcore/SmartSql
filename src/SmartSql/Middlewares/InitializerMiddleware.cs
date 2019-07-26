@@ -3,6 +3,7 @@ using SmartSql.Data;
 using SmartSql.DataSource;
 using System;
 using System.Threading.Tasks;
+using SmartSql.Exceptions;
 
 namespace SmartSql.Middlewares
 {
@@ -35,34 +36,39 @@ namespace SmartSql.Middlewares
                 requestContext.IsStatementSql = false;
             }
 
+            SqlMap sqlMap = null;
+
             if (!String.IsNullOrEmpty(requestContext.Scope))
             {
-                var sqlMap = _smartSqlConfig.GetSqlMap(requestContext.Scope);
+                sqlMap = _smartSqlConfig.GetSqlMap(requestContext.Scope);
+            }
 
-                if (requestContext.IsStatementSql)
-                {
-                    InitByStatement(requestContext, sqlMap);
-                }
-                else
-                {
-                    InitByMap(requestContext, sqlMap);
-                }
+            if (requestContext.IsStatementSql)
+            {
+                InitByStatement(requestContext, sqlMap);
+            }
+            else
+            {
+                InitByMap(requestContext, sqlMap);
             }
         }
 
         private void InitByStatement(AbstractRequestContext requestContext, SqlMap sqlMap)
         {
             requestContext.Statement = sqlMap.GetStatement(requestContext.FullSqlId);
-            if (requestContext.Statement.SourceChoice.HasValue)
+            if (requestContext.DataSourceChoice == DataSourceChoice.Unknow)
             {
-                requestContext.DataSourceChoice = requestContext.Statement.SourceChoice.Value;
-            }
-            else
-            {
-                requestContext.DataSourceChoice = (StatementType.Write & requestContext.Statement.StatementType)
-                                                  != StatementType.Unknown
-                    ? DataSourceChoice.Write
-                    : DataSourceChoice.Read;
+                if (requestContext.Statement.SourceChoice.HasValue)
+                {
+                    requestContext.DataSourceChoice = requestContext.Statement.SourceChoice.Value;
+                }
+                else
+                {
+                    requestContext.DataSourceChoice = (StatementType.Write & requestContext.Statement.StatementType)
+                                                      != StatementType.Unknown
+                        ? DataSourceChoice.Write
+                        : DataSourceChoice.Read;
+                }
             }
 
             if (requestContext.Statement.CommandType.HasValue)
@@ -77,7 +83,11 @@ namespace SmartSql.Middlewares
 
             requestContext.Transaction = requestContext.Transaction ?? requestContext.Statement.Transaction;
             requestContext.CommandTimeout = requestContext.CommandTimeout ?? requestContext.Statement.CommandTimeout;
-            requestContext.ReadDb = requestContext.Statement.ReadDb;
+            if (String.IsNullOrEmpty(requestContext.ReadDb))
+            {
+                requestContext.ReadDb = requestContext.Statement.ReadDb;
+            }
+
             if (String.IsNullOrEmpty(requestContext.CacheId))
             {
                 requestContext.CacheId = requestContext.Statement.CacheId;
@@ -128,13 +138,22 @@ namespace SmartSql.Middlewares
             if (!requestContext.CacheId.Contains("."))
             {
                 fullCacheId = $"{requestContext.Scope}.{requestContext.CacheId}";
+                requestContext.Cache = sqlMap.GetCache(fullCacheId);
             }
             else
             {
                 fullCacheId = requestContext.CacheId;
-            }
+                var fullCacheIdSplit = fullCacheId.Split('.');
+                if (fullCacheIdSplit.Length != 2)
+                {
+                    throw new SmartSqlException($"Wrong CacheId:[{requestContext.CacheId}]");
+                }
 
-            requestContext.Cache = sqlMap.GetCache(fullCacheId);
+                var scope = fullCacheIdSplit[0];
+                requestContext.Cache = sqlMap.Scope == scope
+                    ? sqlMap.GetCache(fullCacheId)
+                    : sqlMap.SmartSqlConfig.GetSqlMap(scope).GetCache(fullCacheId);
+            }
         }
 
         private void InitParameterCollection(AbstractRequestContext requestContext)

@@ -136,9 +136,9 @@ namespace SmartSql.DyRepository
             EmitSetDataSourceChoice(ilGen, statementAttr);
             EmitSetTransaction(ilGen, methodInfo);
             EmitSetCache(ilGen, methodInfo);
+            EmitSetScope(ilGen, statementAttr.Scope);
             if (String.IsNullOrEmpty(statementAttr.Sql))
             {
-                EmitSetScope(ilGen, statementAttr.Scope);
                 EmitSetSqlId(ilGen, statementAttr);
             }
             else
@@ -559,6 +559,7 @@ namespace SmartSql.DyRepository
                 ilGen.Callvirt(RequestContextType.Method.SetTransaction);
             }
         }
+
         private static void EmitSetCache(ILGenerator ilGen, MethodInfo methodInfo)
         {
             var resultCacheAttr = methodInfo.GetCustomAttribute<ResultCacheAttribute>();
@@ -598,6 +599,28 @@ namespace SmartSql.DyRepository
 
         #endregion
 
+        #region AddSqlMapIfNull
+
+        private void AddSqlMapIfNull(SmartSqlConfig smartSqlConfig, Type interfaceType, string scope)
+        {
+            if (!smartSqlConfig.SqlMaps.TryGetValue(scope, out var sqlMap))
+            {
+                smartSqlConfig.SqlMaps.Add(scope, new SqlMap
+                {
+                    Path = interfaceType.FullName,
+                    Scope = scope,
+                    SmartSqlConfig = smartSqlConfig,
+                    Statements = new Dictionary<string, Statement>(),
+                    Caches = new Dictionary<string, Configuration.Cache>(),
+                    MultipleResultMaps = new Dictionary<string, MultipleResultMap>(),
+                    ParameterMaps = new Dictionary<string, ParameterMap>(),
+                    ResultMaps = new Dictionary<string, ResultMap>()
+                });
+            }
+        }
+
+        #endregion
+
         public Type Build(Type interfaceType, SmartSqlConfig smartSqlConfig, string scope = "")
         {
             string implName = $"{interfaceType.Name.TrimStart('I')}_Impl_{Guid.NewGuid():N}";
@@ -607,6 +630,7 @@ namespace SmartSql.DyRepository
             var sqlMapperField = typeBuilder.DefineField("sqlMapper", ISqlMapperType.Type, FieldAttributes.Family);
             var scopeField = typeBuilder.DefineField("scope", CommonType.String, FieldAttributes.Family);
             scope = PreScope(interfaceType, scope);
+            AddSqlMapIfNull(smartSqlConfig, interfaceType, scope);
             EmitBuildCtor(scope, typeBuilder, sqlMapperField, scopeField);
             var interfaceMethods = new List<MethodInfo>();
 
