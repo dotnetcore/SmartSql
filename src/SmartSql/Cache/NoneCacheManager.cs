@@ -18,6 +18,11 @@ namespace SmartSql.Cache
             
         }
 
+        public void Reset()
+        {
+            
+        }
+
         public bool TryGetCache(ExecutionContext executionContext, out object cacheItem)
         {
             cacheItem = null;

@@ -17,7 +17,7 @@ namespace SmartSql.Cache
         protected SmartSqlConfig SmartSqlConfig { get; private set; }
         protected ILogger Logger { get; private set; }
 
-        private void InitCacheMapped()
+        public void Reset()
         {
             StatementMappedFlushCache = new ConcurrentDictionary<String, IList<Configuration.Cache>>();
             CacheMappedLastFlushTime = new ConcurrentDictionary<Configuration.Cache, DateTime>();
@@ -129,6 +129,7 @@ namespace SmartSql.Cache
             return isSuccess;
         }
 
+
         public virtual bool TryGetCache(ExecutionContext executionContext, out object cacheItem)
         {
             var cache = executionContext.Request.Cache;
@@ -170,7 +171,7 @@ namespace SmartSql.Cache
         {
             SmartSqlConfig = smartSqlBuilder.SmartSqlConfig;
             Logger = SmartSqlConfig.LoggerFactory.CreateLogger<AbstractCacheManager>();
-            InitCacheMapped();
+            Reset();
             Timer = new Timer(FlushOnInterval, null, DueTime, PeriodTime);
             ListenInvokeSucceeded();
         }
