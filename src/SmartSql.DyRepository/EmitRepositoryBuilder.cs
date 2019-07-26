@@ -135,6 +135,7 @@ namespace SmartSql.DyRepository
             EmitSetCommandType(ilGen, statementAttr);
             EmitSetDataSourceChoice(ilGen, statementAttr);
             EmitSetTransaction(ilGen, methodInfo);
+            EmitSetCache(ilGen, methodInfo);
             if (String.IsNullOrEmpty(statementAttr.Sql))
             {
                 EmitSetScope(ilGen, statementAttr.Scope);
@@ -556,6 +557,28 @@ namespace SmartSql.DyRepository
                 ilGen.LoadInt32(isolationLevel.GetHashCode());
                 ilGen.New(NullableType<IsolationLevel>.Ctor);
                 ilGen.Callvirt(RequestContextType.Method.SetTransaction);
+            }
+        }
+        private static void EmitSetCache(ILGenerator ilGen, MethodInfo methodInfo)
+        {
+            var resultCacheAttr = methodInfo.GetCustomAttribute<ResultCacheAttribute>();
+            if (resultCacheAttr != null)
+            {
+                if (String.IsNullOrEmpty(resultCacheAttr.CacheId))
+                {
+                    throw new SmartSqlException(
+                        $"Type:[{methodInfo.DeclaringType.FullName}] Method:[{methodInfo.Name}] can not find CacheId:[{resultCacheAttr.CacheId}].");
+                }
+
+                ilGen.LoadLocalVar(0);
+                ilGen.LoadString(resultCacheAttr.CacheId);
+                ilGen.Callvirt(RequestContextType.Method.SetCacheId);
+                if (!String.IsNullOrEmpty(resultCacheAttr.Key))
+                {
+                    ilGen.LoadLocalVar(0);
+                    ilGen.LoadString(resultCacheAttr.Key);
+                    ilGen.Callvirt(RequestContextType.Method.SetCacheKeyTemplate);
+                }
             }
         }
 
