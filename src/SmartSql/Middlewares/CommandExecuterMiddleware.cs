@@ -73,6 +73,12 @@ namespace SmartSql.Middlewares
                 var convertType = singleResult.ResultType;
                 convertType = Nullable.GetUnderlyingType(convertType) ?? convertType;
 
+                if (convertType.IsInstanceOfType(dbResult))
+                {
+                    singleResult.SetData(dbResult);
+                    return;
+                }
+
                 if (convertType.IsEnum)
                 {
                     singleResult.SetData(Enum.ToObject(convertType, dbResult));
