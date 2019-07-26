@@ -607,7 +607,7 @@ namespace SmartSql.DyRepository
             {
                 smartSqlConfig.SqlMaps.Add(scope, new SqlMap
                 {
-                    Path = interfaceType.FullName,
+                    Path = interfaceType.AssemblyQualifiedName,
                     Scope = scope,
                     SmartSqlConfig = smartSqlConfig,
                     Statements = new Dictionary<string, Statement>(),
