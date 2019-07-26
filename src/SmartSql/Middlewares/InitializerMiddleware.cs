@@ -78,8 +78,16 @@ namespace SmartSql.Middlewares
             requestContext.Transaction = requestContext.Transaction ?? requestContext.Statement.Transaction;
             requestContext.CommandTimeout = requestContext.CommandTimeout ?? requestContext.Statement.CommandTimeout;
             requestContext.ReadDb = requestContext.Statement.ReadDb;
-            requestContext.CacheId = requestContext.Statement.CacheId;
-            requestContext.Cache = requestContext.Statement.Cache;
+            if (String.IsNullOrEmpty(requestContext.CacheId))
+            {
+                requestContext.CacheId = requestContext.Statement.CacheId;
+                requestContext.Cache = requestContext.Statement.Cache;
+            }
+            else
+            {
+                SetCache(requestContext, sqlMap);
+            }
+
             requestContext.ParameterMapId = requestContext.Statement.ParameterMapId;
             requestContext.ParameterMap = requestContext.Statement.ParameterMap;
             requestContext.ResultMapId = requestContext.Statement.ResultMapId;
@@ -92,8 +100,7 @@ namespace SmartSql.Middlewares
         {
             if (!string.IsNullOrEmpty(requestContext.CacheId))
             {
-                var fullCacheId = $"{requestContext.Scope}.{requestContext.CacheId}";
-                requestContext.Cache = sqlMap.GetCache(fullCacheId);
+                SetCache(requestContext, sqlMap);
             }
 
             if (!String.IsNullOrEmpty(requestContext.ParameterMapId))
@@ -113,6 +120,21 @@ namespace SmartSql.Middlewares
                 var fullMultipleResultMapId = $"{requestContext.Scope}.{requestContext.MultipleResultMapId}";
                 requestContext.MultipleResultMap = sqlMap.GetMultipleResultMap(fullMultipleResultMapId);
             }
+        }
+
+        private static void SetCache(AbstractRequestContext requestContext, SqlMap sqlMap)
+        {
+            string fullCacheId;
+            if (!requestContext.CacheId.Contains("."))
+            {
+                fullCacheId = $"{requestContext.Scope}.{requestContext.CacheId}";
+            }
+            else
+            {
+                fullCacheId = requestContext.CacheId;
+            }
+
+            requestContext.Cache = sqlMap.GetCache(fullCacheId);
         }
 
         private void InitParameterCollection(AbstractRequestContext requestContext)
