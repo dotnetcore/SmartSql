@@ -8,7 +8,6 @@ namespace SmartSql.Configuration.Tags.TagBuilders
 {
     public abstract class AbstractTagBuilder : ITagBuilder
     {
-
         private const String PREPEND = nameof(Tag.Prepend);
         private const String PROPERTY = nameof(Tag.Property);
         private const String REQUIRED = nameof(Tag.Required);
@@ -27,7 +26,7 @@ namespace SmartSql.Configuration.Tags.TagBuilders
             string strVal = GetXmlAttributeValue(xmlNode, attributeName);
             if (!Decimal.TryParse(strVal, out var decimalVal))
             {
-                throw new SmartSqlException($"can not convert {strVal} to decimal from xml-node:{xmlNode.Value}.");
+                throw new SmartSqlException($"can not convert {strVal} to decimal from xml-node -> {nameof(xmlNode.BaseURI)}:[{xmlNode.BaseURI}],[{nameof(xmlNode.OuterXml)}]:[{xmlNode.OuterXml}].");
             }
 
             return decimalVal;
@@ -40,7 +39,11 @@ namespace SmartSql.Configuration.Tags.TagBuilders
 
         public String GetProperty(XmlNode xmlNode)
         {
-            return GetXmlAttributeValue(xmlNode, PROPERTY);
+            if (xmlNode.Attributes.TryGetValueAsString(PROPERTY, out var propertyStr))
+            {
+                return propertyStr;
+            }
+            throw new SmartSqlException($"can not find [{PROPERTY}] from xml-node -> {nameof(xmlNode.BaseURI)}:[{xmlNode.BaseURI}],[{nameof(xmlNode.OuterXml)}]:[{xmlNode.OuterXml}].");
         }
 
         public bool GetRequired(XmlNode xmlNode)

@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace SmartSql.Cache
 {
+    /// <summary>
+    /// TODO HASH collision
+    /// </summary>
     public class CacheKey
     {
-        /// <summary>
-        /// StatementKey:ReusltType.FullName:QueryString
-        /// </summary>
-        public String StatementKey { get; }
-
         public String Key { get; }
         public Type ResultType { get; }
 
@@ -24,20 +21,34 @@ namespace SmartSql.Cache
         public CacheKey(AbstractRequestContext requestContext)
         {
             ResultType = requestContext.ExecutionContext.Result.ResultType;
-            StatementKey = requestContext.IsStatementSql ? requestContext.FullSqlId : requestContext.RealSql;
-            StringBuilder keyBuilder = new StringBuilder();
-            keyBuilder.Append(StatementKey);
             var dbParameters = requestContext.Parameters.DbParameters?.Values;
             if (dbParameters != null && dbParameters.Count > 0)
             {
-                keyBuilder.Append("?");
+                StringBuilder keyBuilder = new StringBuilder();
+                keyBuilder.Append(requestContext.RealSql);
+                keyBuilder.Append("|?");
                 foreach (var dbParam in dbParameters)
                 {
                     keyBuilder.AppendFormat("{0}={1}&", dbParam.ParameterName, dbParam.Value ?? "NULL");
                 }
-            }
 
-            Key = keyBuilder.ToString().TrimEnd('&');
+                Key = keyBuilder.ToString().TrimEnd('&');
+            }
+            else
+            {
+                Key = requestContext.RealSql;
+            }
+            
+            using (HashAlgorithm hashAlg = SHA256.Create())
+            {
+                var sqlBytes = UTF8Encoding.Default.GetBytes(Key);
+                var hashData = hashAlg.ComputeHash(sqlBytes);
+                Key = Convert.ToBase64String(hashData);
+                if (requestContext.IsStatementSql)
+                {
+                    Key = $"{requestContext.FullSqlId}:{Key}";
+                }
+            }
         }
 
         public override string ToString() => Key;

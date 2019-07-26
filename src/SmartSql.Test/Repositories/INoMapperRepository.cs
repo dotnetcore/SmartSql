@@ -9,9 +9,13 @@ namespace SmartSql.Test.Repositories
     public interface INoMapperRepository
     {
         ISqlMapper SqlMapper { get; }
+
         [Statement(Sql = "Select NewId();")]
         Guid GetGuidFromDb();
+
         [Statement(Sql = "Select Top 1 T.* From T_AllPrimitive T With(NoLock)")]
         AllPrimitive GetAllPrimitive();
+        
+        
     }
 }

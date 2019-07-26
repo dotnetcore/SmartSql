@@ -29,5 +29,11 @@
         @Item.Id,@Separator
       </For>
     </Statement>
+    <Statement Id="For_NotDirectNestValue_WithKey_Test">
+      Select Concat
+      <For Property="Items" Open="(" Separator="," Close=")" Key="Item">
+        @Item.Info.Id,@Separator
+      </For>
+    </Statement>
   </Statements>
 </SmartSqlMap>

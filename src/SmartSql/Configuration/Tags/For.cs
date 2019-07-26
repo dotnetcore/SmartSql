@@ -86,7 +86,7 @@ namespace SmartSql.Configuration.Tags
                             return nameWithPrefix;
                         }
 
-                        string keyName = $"{Key}{FOR_KEY_SUFFIX}_{Property}_{itemIndex}";
+                        string keyName = $"{Key}{FOR_KEY_SUFFIX}_{itemIndex}";
                         context.Parameters.TryAdd(keyName, itemVal);
                         return $"{dbPrefix}{keyName}";
                     });
@@ -100,16 +100,16 @@ namespace SmartSql.Configuration.Tags
             var reqVal = (EnsurePropertyValue(context) as IEnumerable);
             int itemIndex = 0;
             string dbPrefix = GetDbProviderPrefix(context);
+            var keyPrefix = $"{Key}.";
             foreach (var itemVal in reqVal)
             {
                 if (itemIndex > 0)
                 {
                     context.SqlBuilder.AppendFormat(" {0} ", Separator);
                 }
-
                 var itemParams = RequestConvert.Instance.ToSqlParameters(itemVal,
                     context.ExecutionContext.SmartSqlConfig.Settings.IgnoreParameterCase);
-                var keyPrefix = $"{Key}.";
+                
                 var itemSql = context.ExecutionContext.SmartSqlConfig.SqlParamAnalyzer
                     .Replace(itemSqlStr, (paramName, nameWithPrefix) =>
                     {
@@ -120,12 +120,13 @@ namespace SmartSql.Configuration.Tags
                         Parameter paramMap = null;
                         context.ParameterMap?.Parameters?.TryGetValue(paramName, out paramMap);
                         var propertyName = paramMap != null ? paramMap.Property : paramName;
-                        string keyName = $"{Key}{FOR_KEY_SUFFIX}_{Property}_{paramName}_{itemIndex}";
+
                         if (!itemParams.TryGetValue(propertyName, out SqlParameter propertyVal))
                         {
                             return nameWithPrefix;
                         }
-
+                        
+                        string keyName = $"{Key}{FOR_KEY_SUFFIX}_{propertyVal.Name}_{itemIndex}";
                         if (!context.Parameters.ContainsKey(keyName))
                         {
                             var itemSqlParameter =
