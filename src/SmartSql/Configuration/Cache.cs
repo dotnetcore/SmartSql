@@ -9,12 +9,12 @@ namespace SmartSql.Configuration
     {
         public String Id { get; set; }
         public String Type { get; set; }
-        public IDictionary<String,Object> Parameters { get; set; }
+        public IDictionary<String, Object> Parameters { get; set; }
         public IList<FlushOnExecute> FlushOnExecutes { get; set; }
         public FlushInterval FlushInterval { get; set; }
-        public ICacheProvider Provider { get; internal set; }
-
+        public ICacheProvider Provider { get; set; }
     }
+
     public class FlushInterval
     {
         public TimeSpan Interval => new TimeSpan(Hours, Minutes, Seconds);
@@ -23,6 +23,7 @@ namespace SmartSql.Configuration
         public int Minutes { get; set; }
         public int Seconds { get; set; }
     }
+
     public class FlushOnExecute
     {
         public String Statement { get; set; }

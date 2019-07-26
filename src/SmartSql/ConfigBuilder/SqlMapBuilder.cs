@@ -144,38 +144,9 @@ namespace SmartSql.ConfigBuilder
             }
 
             cache.Parameters.Add("Cache.Id", cache.Id);
-            cache.Provider = CreateCacheProvider(cache);
+
+            cache.Provider = CacheProviderUtil.Create(cache);
             SqlMap.Caches.Add(cache.Id, cache);
-        }
-
-        private ICacheProvider CreateCacheProvider(Configuration.Cache cache)
-        {
-            ICacheProvider cacheProvider = null;
-            switch (cache.Type)
-            {
-                case "Lru":
-                {
-                    cacheProvider = new LruCacheProvider();
-                    break;
-                }
-
-                case "Fifo":
-                {
-                    cacheProvider = new FifoCacheProvider();
-                    break;
-                }
-
-                default:
-                {
-                    Type cacheProviderType = TypeUtils.GetType(cache.Type);
-                    cacheProvider = SmartSqlConfig.ObjectFactoryBuilder
-                        .GetObjectFactory(cacheProviderType, Type.EmptyTypes)(null) as ICacheProvider;
-                    break;
-                }
-            }
-
-            cacheProvider.Initialize(cache.Parameters);
-            return cacheProvider;
         }
 
         #endregion

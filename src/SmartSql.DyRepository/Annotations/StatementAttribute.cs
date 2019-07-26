@@ -11,10 +11,6 @@ namespace SmartSql.DyRepository.Annotations
     public class StatementAttribute : Attribute
     {
         /// <summary>
-        /// 定义 SmartSqlMap.Scope 该属性可选，默认使用仓储接口的Scope
-        /// </summary>
-        public string Scope { get; set; }
-        /// <summary>
         /// 可选，默认使用函数名作为 Statement.Id
         /// </summary>
         public string Id { get; set; }

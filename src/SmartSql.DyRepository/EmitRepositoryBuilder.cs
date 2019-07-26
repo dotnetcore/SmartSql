@@ -7,7 +7,9 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.Extensions.Logging;
 using SmartSql.Annotations;
+using SmartSql.Cache;
 using SmartSql.Configuration;
+using SmartSql.Configuration.Tags;
 using SmartSql.DataSource;
 using SmartSql.DyRepository.Annotations;
 using SmartSql.Exceptions;
@@ -80,8 +82,13 @@ namespace SmartSql.DyRepository
         }
 
         private void BuildMethod(Type interfaceType, TypeBuilder typeBuilder, MethodInfo methodInfo,
-            FieldBuilder sqlMapperField, SmartSqlConfig smartSqlConfig, string scope)
+            FieldBuilder sqlMapperField, SmartSqlConfig smartSqlConfig, SqlMap sqlMap)
         {
+            var returnType = methodInfo.ReturnType;
+            var isTaskReturnType = CommonType.Task.IsAssignableFrom(returnType);
+            Statement statement = PreStatement(interfaceType, sqlMap, methodInfo, returnType, isTaskReturnType,
+                out var executeBehavior);
+
             var methodParams = methodInfo.GetParameters();
             var paramTypes = methodParams.Select(m => m.ParameterType).ToArray();
             if (paramTypes.Any(p => p.IsGenericParameter))
@@ -91,16 +98,12 @@ namespace SmartSql.DyRepository
                 throw new SmartSqlException(
                     "SmartSql.DyRepository method parameters do not support generic parameters for the time being!");
             }
-
-            var returnType = methodInfo.ReturnType;
-
+            
             var implMethod = typeBuilder.DefineMethod(methodInfo.Name
                 , MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot |
                   MethodAttributes.Virtual | MethodAttributes.Final
                 , returnType, paramTypes);
-
-            var isTaskReturnType = CommonType.Task.IsAssignableFrom(returnType);
-
+            
             if (methodInfo.IsGenericMethod)
             {
                 var genericArgs = methodInfo.GetGenericArguments();
@@ -114,8 +117,6 @@ namespace SmartSql.DyRepository
                 }
             }
 
-            StatementAttribute statementAttr = PreStatement(interfaceType, scope, methodInfo, returnType,
-                isTaskReturnType, smartSqlConfig);
             var ilGen = implMethod.GetILGenerator();
             bool onlyOneParam = paramTypes.Length == 1;
             Type firstParamType = paramTypes.FirstOrDefault();
@@ -132,20 +133,10 @@ namespace SmartSql.DyRepository
 
             bool isOnlyOneClassParam = onlyOneParam && !IsSimpleParam(firstParamType);
             EmitNewRequestContext(ilGen, isOnlyOneClassParam, firstParamType);
-            EmitSetCommandType(ilGen, statementAttr);
-            EmitSetDataSourceChoice(ilGen, statementAttr);
             EmitSetTransaction(ilGen, methodInfo);
+            EmitSetScope(ilGen, sqlMap.Scope);
+            EmitSetSqlId(ilGen, statement);
             EmitSetCache(ilGen, methodInfo);
-            EmitSetScope(ilGen, statementAttr.Scope);
-            if (String.IsNullOrEmpty(statementAttr.Sql))
-            {
-                EmitSetSqlId(ilGen, statementAttr);
-            }
-            else
-            {
-                EmitSetRealSql(ilGen, statementAttr);
-            }
-
             if (isOnlyOneClassParam)
             {
                 ilGen.LoadLocalVar(0);
@@ -214,7 +205,7 @@ namespace SmartSql.DyRepository
                 ilGen.Callvirt(RequestContextType.Method.SetRequest);
             }
 
-            MethodInfo executeMethod = PreExecuteMethod(statementAttr, returnType, isTaskReturnType);
+            MethodInfo executeMethod = PreExecuteMethod(executeBehavior, returnType, isTaskReturnType);
             ilGen.LoadArg(0);
             ilGen.FieldGet(sqlMapperField);
             ilGen.LoadLocalVar(0);
@@ -228,7 +219,7 @@ namespace SmartSql.DyRepository
             if (_logger.IsEnabled(LogLevel.Debug))
             {
                 _logger.LogDebug(
-                    $"RepositoryBuilder.BuildMethod:{methodInfo.Name}->Statement:[Scope:{statementAttr.Scope},Id:{statementAttr.Id},Execute:{statementAttr.Execute},Sql:{statementAttr.Sql},IsAsync:{isTaskReturnType}]");
+                    $"RepositoryBuilder.BuildMethod:{methodInfo.Name}->Statement:[Scope:{sqlMap.Scope},Id:{statement.Id},Execute:{executeBehavior},IsAsync:{isTaskReturnType}]");
             }
         }
 
@@ -284,12 +275,10 @@ namespace SmartSql.DyRepository
             return scope;
         }
 
-        private StatementAttribute PreStatement(Type interfaceType, string scope, MethodInfo methodInfo,
-            Type returnType, bool isTaskReturnType, SmartSqlConfig smartSqlConfig)
+        private Statement PreStatement(Type interfaceType, SqlMap sqlMap, MethodInfo methodInfo,
+            Type returnType, bool isTaskReturnType, out ExecuteBehavior executeBehavior)
         {
-            returnType = isTaskReturnType ? returnType.GetGenericArguments().FirstOrDefault() : returnType;
             var statementAttr = methodInfo.GetCustomAttribute<StatementAttribute>();
-
             var methodName = _sqlIdNamingConvert == null
                 ? methodInfo.Name
                 : _sqlIdNamingConvert.Invoke(interfaceType, methodInfo);
@@ -302,43 +291,62 @@ namespace SmartSql.DyRepository
             if (statementAttr != null)
             {
                 statementAttr.Id = !String.IsNullOrEmpty(statementAttr.Id) ? statementAttr.Id : methodName;
-                statementAttr.Scope = !String.IsNullOrEmpty(statementAttr.Scope) ? statementAttr.Scope : scope;
             }
             else
             {
                 statementAttr = new StatementAttribute
                 {
-                    Scope = scope,
                     Id = methodName
                 };
             }
 
+            var fullSqlId = $"{sqlMap.Scope}.{statementAttr.Id}";
+            Statement statement;
+            if (String.IsNullOrEmpty(statementAttr.Sql))
+            {
+                statement = sqlMap.GetStatement(fullSqlId);
+            }
+            else
+            {
+                var resultCacheAttr = methodInfo.GetCustomAttribute<ResultCacheAttribute>();
+                statement = new Statement
+                {
+                    SqlMap = sqlMap,
+                    Id = statementAttr.Id,
+                    StatementType = _statementAnalyzer.Analyse(statementAttr.Sql),
+                    SqlTags = new List<ITag>
+                    {
+                        new SqlText(statementAttr.Sql, sqlMap.SmartSqlConfig.Database.DbProvider.ParameterPrefix)
+                    },
+                    CommandType = statementAttr.CommandType
+                };
+                if (statementAttr.SourceChoice != DataSourceChoice.Unknow)
+                {
+                    statement.SourceChoice = statementAttr.SourceChoice;
+                }
+
+                if (resultCacheAttr != null)
+                {
+                    statement.CacheId = resultCacheAttr.CacheId;
+                    statement.Cache = sqlMap.GetCache(resultCacheAttr.CacheId);
+                }
+
+                sqlMap.Statements.Add(fullSqlId, statement);
+            }
+
+            returnType = isTaskReturnType ? returnType.GetGenericArguments().FirstOrDefault() : returnType;
             if (returnType == typeof(DataTable))
             {
                 statementAttr.Execute = ExecuteBehavior.GetDataTable;
-                return statementAttr;
             }
 
             if (returnType == typeof(DataSet))
             {
                 statementAttr.Execute = ExecuteBehavior.GetDataSet;
-                return statementAttr;
             }
 
             if (statementAttr.Execute == ExecuteBehavior.Auto)
             {
-                Configuration.StatementType statementType = Configuration.StatementType.Unknown;
-                if (String.IsNullOrEmpty(statementAttr.Sql))
-                {
-                    var sqlStatement = smartSqlConfig.GetSqlMap(statementAttr.Scope)
-                        .GetStatement($"{statementAttr.Scope}.{statementAttr.Id}");
-                    statementType = sqlStatement.StatementType;
-                }
-                else
-                {
-                    statementType = _statementAnalyzer.Analyse(statementAttr.Sql);
-                }
-
                 if (CommonType.IsValueTuple(returnType))
                 {
                     statementAttr.Execute = ExecuteBehavior.QuerySingle;
@@ -348,7 +356,7 @@ namespace SmartSql.DyRepository
                     statementAttr.Execute = ExecuteBehavior.Execute;
                     if (returnType == CommonType.Int32)
                     {
-                        if (statementType.HasFlag(Configuration.StatementType.Select))
+                        if (statement.StatementType.HasFlag(Configuration.StatementType.Select))
                         {
                             statementAttr.Execute = ExecuteBehavior.ExecuteScalar;
                         }
@@ -357,7 +365,7 @@ namespace SmartSql.DyRepository
                 else if (returnType.IsValueType || returnType == CommonType.String)
                 {
                     statementAttr.Execute = ExecuteBehavior.ExecuteScalar;
-                    if (!statementType.HasFlag(Configuration.StatementType.Select))
+                    if (!statement.StatementType.HasFlag(Configuration.StatementType.Select))
                     {
                         statementAttr.Execute = ExecuteBehavior.Execute;
                     }
@@ -369,16 +377,17 @@ namespace SmartSql.DyRepository
                 }
             }
 
-            return statementAttr;
+            executeBehavior = statementAttr.Execute;
+            return statement;
         }
 
-        private MethodInfo PreExecuteMethod(StatementAttribute statementAttr, Type returnType, bool isTaskReturnType)
+        private MethodInfo PreExecuteMethod(ExecuteBehavior executeBehavior, Type returnType, bool isTaskReturnType)
         {
             MethodInfo executeMethod;
             if (isTaskReturnType)
             {
                 var realReturnType = returnType.GenericTypeArguments.FirstOrDefault();
-                switch (statementAttr.Execute)
+                switch (executeBehavior)
                 {
                     case ExecuteBehavior.Execute:
                     {
@@ -426,7 +435,7 @@ namespace SmartSql.DyRepository
             }
             else
             {
-                switch (statementAttr.Execute)
+                switch (executeBehavior)
                 {
                     case ExecuteBehavior.Execute:
                     {
@@ -499,26 +508,6 @@ namespace SmartSql.DyRepository
             ilGen.Callvirt(RequestContextType.Method.SetScope);
         }
 
-        private static void EmitSetCommandType(ILGenerator ilGen, StatementAttribute statementAttr)
-        {
-            if (statementAttr.CommandType != CommandType.Text)
-            {
-                ilGen.LoadLocalVar(0);
-                ilGen.LoadInt32(statementAttr.CommandType.GetHashCode());
-                ilGen.Callvirt(RequestContextType.Method.SetCommandType);
-            }
-        }
-
-        private static void EmitSetDataSourceChoice(ILGenerator ilGen, StatementAttribute statementAttr)
-        {
-            if (statementAttr.SourceChoice != DataSourceChoice.Unknow)
-            {
-                ilGen.LoadLocalVar(0);
-                ilGen.LoadInt32(statementAttr.SourceChoice.GetHashCode());
-                ilGen.Callvirt(RequestContextType.Method.SetDataSourceChoice);
-            }
-        }
-
         private void EmitSetTransaction(ILGenerator ilGen, MethodInfo methodInfo)
         {
             IsolationLevel? isolationLevel = null;
@@ -565,15 +554,6 @@ namespace SmartSql.DyRepository
             var resultCacheAttr = methodInfo.GetCustomAttribute<ResultCacheAttribute>();
             if (resultCacheAttr != null)
             {
-                if (String.IsNullOrEmpty(resultCacheAttr.CacheId))
-                {
-                    throw new SmartSqlException(
-                        $"Type:[{methodInfo.DeclaringType.FullName}] Method:[{methodInfo.Name}] can not find CacheId:[{resultCacheAttr.CacheId}].");
-                }
-
-                ilGen.LoadLocalVar(0);
-                ilGen.LoadString(resultCacheAttr.CacheId);
-                ilGen.Callvirt(RequestContextType.Method.SetCacheId);
                 if (!String.IsNullOrEmpty(resultCacheAttr.Key))
                 {
                     ilGen.LoadLocalVar(0);
@@ -583,25 +563,18 @@ namespace SmartSql.DyRepository
             }
         }
 
-        private void EmitSetRealSql(ILGenerator ilGen, StatementAttribute statementAttr)
+        private void EmitSetSqlId(ILGenerator ilGen, Statement statement)
         {
             ilGen.LoadLocalVar(0);
-            ilGen.LoadString(statementAttr.Sql);
-            ilGen.Callvirt(RequestContextType.Method.SetRealSql);
-        }
-
-        private void EmitSetSqlId(ILGenerator ilGen, StatementAttribute statementAttr)
-        {
-            ilGen.LoadLocalVar(0);
-            ilGen.LoadString(statementAttr.Id);
+            ilGen.LoadString(statement.Id);
             ilGen.Callvirt(RequestContextType.Method.SetSqlId);
         }
 
         #endregion
 
-        #region AddSqlMapIfNull
+        #region GetOrAddSqlMap
 
-        private SqlMap AddSqlMapIfNull(SmartSqlConfig smartSqlConfig, Type interfaceType, string scope)
+        private SqlMap GetOrAddSqlMap(SmartSqlConfig smartSqlConfig, Type interfaceType, string scope)
         {
             if (smartSqlConfig.SqlMaps.TryGetValue(scope, out var sqlMap)) return sqlMap;
             sqlMap = new SqlMap
@@ -615,11 +588,11 @@ namespace SmartSql.DyRepository
                 ParameterMaps = new Dictionary<string, ParameterMap>(),
                 ResultMaps = new Dictionary<string, ResultMap>()
             };
+            BuildCache(sqlMap, interfaceType);
             smartSqlConfig.SqlMaps.Add(scope, sqlMap);
             return sqlMap;
         }
 
-        
         /// <summary>
         /// TODO
         /// </summary>
@@ -644,8 +617,16 @@ namespace SmartSql.DyRepository
                 {
                     cache.FlushInterval.Seconds = cacheAttribute.FlushInterval;
                 }
-                
 
+                if (cacheAttribute.FlushOnExecutes != null && cacheAttribute.FlushOnExecutes.Length > 0)
+                {
+                    cache.FlushOnExecutes = cacheAttribute.FlushOnExecutes.Select(m => new FlushOnExecute
+                    {
+                        Statement = m
+                    }).ToList();
+                }
+
+                cache.Provider = CacheProviderUtil.Create(cache);
                 sqlMap.Caches.Add(cache.Id, cache);
             }
         }
@@ -661,7 +642,7 @@ namespace SmartSql.DyRepository
             var sqlMapperField = typeBuilder.DefineField("sqlMapper", ISqlMapperType.Type, FieldAttributes.Family);
             var scopeField = typeBuilder.DefineField("scope", CommonType.String, FieldAttributes.Family);
             scope = PreScope(interfaceType, scope);
-            AddSqlMapIfNull(smartSqlConfig, interfaceType, scope);
+            var sqlMap = GetOrAddSqlMap(smartSqlConfig, interfaceType, scope);
             EmitBuildCtor(scope, typeBuilder, sqlMapperField, scopeField);
             var interfaceMethods = new List<MethodInfo>();
 
@@ -682,7 +663,7 @@ namespace SmartSql.DyRepository
                 }
                 else
                 {
-                    BuildMethod(interfaceType, typeBuilder, methodInfo, sqlMapperField, smartSqlConfig, scope);
+                    BuildMethod(interfaceType, typeBuilder, methodInfo, sqlMapperField, smartSqlConfig, sqlMap);
                 }
             }
 
