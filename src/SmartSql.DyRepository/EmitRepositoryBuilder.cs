@@ -682,6 +682,14 @@ namespace SmartSql.DyRepository
                 }
             }
 
+            if (sqlMap.Path == interfaceType.AssemblyQualifiedName)
+            {
+                if (sqlMap.Caches?.Count>0)
+                {
+                    smartSqlConfig.CacheManager.Reset();
+                }
+            }
+
             return typeBuilder.CreateTypeInfo();
         }
     }
