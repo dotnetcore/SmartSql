@@ -598,11 +598,6 @@ namespace SmartSql.DyRepository
             return sqlMap;
         }
 
-        /// <summary>
-        /// TODO
-        /// </summary>
-        /// <param name="sqlMap"></param>
-        /// <param name="interfaceType"></param>
         private void BuildCache(SqlMap sqlMap, Type interfaceType)
         {
             var cacheAttrs = interfaceType.GetCustomAttributes<CacheAttribute>();
