@@ -628,6 +628,10 @@ namespace SmartSql.DyRepository
                     }).ToList();
                 }
 
+                cache.Parameters = new Dictionary<string, object>
+                {
+                    {nameof(CacheAttribute.CacheSize), cacheAttribute.CacheSize}
+                };
                 cache.Type = cacheAttribute.Type;
                 cache.Provider = CacheProviderUtil.Create(cache);
                 sqlMap.Caches.Add(cache.Id, cache);

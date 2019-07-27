@@ -19,5 +19,7 @@ namespace SmartSql.DyRepository.Annotations
         /// Unit seconds
         /// </summary>
         public int FlushInterval { get; set; }
+
+        public int CacheSize { get; set; } = 100;
     }
 }
