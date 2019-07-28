@@ -50,6 +50,36 @@ namespace SmartSql.Configuration
             return sqlMap;
         }
 
+        public Statement GetStatement(String fullId)
+        {
+            var scopeWithId = FullIdUtil.Parse(fullId);
+            return GetSqlMap(scopeWithId.Item1).GetStatement(fullId);
+        }
+
+        public Cache GetCache(String fullId)
+        {
+            var scopeWithId = FullIdUtil.Parse(fullId);
+            return GetSqlMap(scopeWithId.Item1).GetCache(fullId);
+        }
+
+        public ResultMap GetResultMap(string fullId)
+        {
+            var scopeWithId = FullIdUtil.Parse(fullId);
+            return GetSqlMap(scopeWithId.Item1).GetResultMap(fullId);
+        }
+
+        public ParameterMap GetParameterMap(String fullId)
+        {
+            var scopeWithId = FullIdUtil.Parse(fullId);
+            return GetSqlMap(scopeWithId.Item1).GetParameterMap(fullId);
+        }
+
+        public MultipleResultMap GetMultipleResultMap(String fullId)
+        {
+            var scopeWithId = FullIdUtil.Parse(fullId);
+            return GetSqlMap(scopeWithId.Item1).GetMultipleResultMap(fullId);
+        }
+        
         public SmartSqlConfig()
         {
             Settings = Settings.Default;
