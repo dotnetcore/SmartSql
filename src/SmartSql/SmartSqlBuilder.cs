@@ -9,6 +9,7 @@ using SmartSql.Exceptions;
 using SmartSql.Middlewares;
 using SmartSql.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using SmartSql.Deserializer;
@@ -47,6 +48,9 @@ namespace SmartSql
         public IList<TypeHandler> TypeHandlers { get; } = new List<TypeHandler>();
         public FilterCollection Filters { get; } = new FilterCollection();
         public Action<ExecutionContext> InvokeSucceeded { get; set; }
+
+        public IList<KeyValuePair<string, string>> ImportProperties { get; } =
+            new List<KeyValuePair<string, string>>();
 
         public IList<Type> EntityTypes { get; } = new List<Type>();
 
@@ -147,7 +151,7 @@ namespace SmartSql
 
         private void BeforeBuildInitService()
         {
-            SmartSqlConfig = ConfigBuilder.Build(_importProperties);
+            SmartSqlConfig = ConfigBuilder.Build(ImportProperties);
             SmartSqlConfig.Alias = Alias;
             SmartSqlConfig.LoggerFactory = LoggerFactory;
             SmartSqlConfig.DataSourceFilter = DataSourceFilter ?? new DataSourceFilter(SmartSqlConfig.LoggerFactory);
@@ -255,8 +259,6 @@ namespace SmartSql
 
         #region Instance
 
-        private IEnumerable<KeyValuePair<string, string>> _importProperties;
-
         public SmartSqlBuilder ListenInvokeSucceeded(Action<ExecutionContext> invokeSucceeded)
         {
             InvokeSucceeded = invokeSucceeded;
@@ -351,11 +353,36 @@ namespace SmartSql
             return this;
         }
 
+        #region UseProperties
+
         public SmartSqlBuilder UseProperties(IEnumerable<KeyValuePair<string, string>> importProperties)
         {
-            _importProperties = importProperties;
+            foreach (var property in importProperties)
+            {
+                ImportProperties.Add(property);
+            }
+
             return this;
         }
+
+        public SmartSqlBuilder UseProperties(IDictionary dictionary)
+        {
+            foreach (DictionaryEntry envVar in dictionary)
+            {
+                ImportProperties.Add(new KeyValuePair<string, string>(envVar.Key.ToString(), envVar.Value.ToString()));
+            }
+
+            return this;
+        }
+        public SmartSqlBuilder UsePropertiesFromEnv(
+            EnvironmentVariableTarget target = EnvironmentVariableTarget.Process)
+        {
+            var envVars = Environment.GetEnvironmentVariables(target);
+            return UseProperties(envVars);
+        }
+
+        #endregion
+
 
         public SmartSqlBuilder UseLoggerFactory(ILoggerFactory loggerFactory)
         {
