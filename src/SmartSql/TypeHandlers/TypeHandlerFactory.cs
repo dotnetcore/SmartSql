@@ -333,13 +333,12 @@ namespace SmartSql.TypeHandlers
             PropertyTypeHandlerCacheType.SetHandler(typeHandler);
         }
 
-        private void Register(string handlerName, ITypeHandler typeHandler)
+        public void Register(string handlerName, ITypeHandler typeHandler)
         {
             if (_nameHandlerMap.ContainsKey(handlerName))
                 _nameHandlerMap[handlerName] = typeHandler;
             else
                 _nameHandlerMap.Add(handlerName, typeHandler);
-            //Register(typeHandler);
         }
 
         public IDictionary<string, ITypeHandler> GetNamedTypeHandlers()

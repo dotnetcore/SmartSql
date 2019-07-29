@@ -41,7 +41,7 @@ namespace SmartSql
         public bool Registered { get; private set; } = true;
 
         public IList<IDataReaderDeserializer> DataReaderDeserializers { get; } = new List<IDataReaderDeserializer>();
-
+        public IList<TypeHandler> TypeHandlers { get; } = new List<TypeHandler>();
         public FilterCollection Filters { get; } = new FilterCollection();
         public Action<ExecutionContext> InvokeSucceeded { get; set; }
 
@@ -157,6 +157,7 @@ namespace SmartSql
                 SmartSqlConfig.Settings.ParameterPrefix);
             InitDeserializerFactory();
             InitFilters();
+            InitTypeHandlers();
             BuildPipeline();
         }
 
@@ -165,6 +166,14 @@ namespace SmartSql
             foreach (var filter in Filters)
             {
                 SmartSqlConfig.Filters.Add(filter);
+            }
+        }
+
+        private void InitTypeHandlers()
+        {
+            foreach (var typeHandler in TypeHandlers)
+            {
+                SmartSqlConfig.TypeHandlerFactory.Register(typeHandler);
             }
         }
 
@@ -246,6 +255,12 @@ namespace SmartSql
         public SmartSqlBuilder AddDeserializer(IDataReaderDeserializer deserializer)
         {
             DataReaderDeserializers.Add(deserializer);
+            return this;
+        }
+
+        public SmartSqlBuilder AddTypeHandler(TypeHandler typeHandler)
+        {
+            TypeHandlers.Add(typeHandler);
             return this;
         }
 

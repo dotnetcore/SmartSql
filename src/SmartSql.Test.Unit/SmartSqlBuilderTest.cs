@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
+using SmartSql.TypeHandler;
 using Xunit;
 
 namespace SmartSql.Test.Unit
@@ -16,6 +17,11 @@ namespace SmartSql.Test.Unit
             var dbSessionFactory = new SmartSqlBuilder()
                 .UseDataSource(DbProvider.SQLSERVER, ConnectionString)
                 .UseAlias("Build_By_DataSource")
+                .AddTypeHandler(new Configuration.TypeHandler
+                {
+                    Name = "Json",
+                    HandlerType = typeof(JsonTypeHandler)
+                })
                 .Build().GetDbSessionFactory();
 
             using (var dbSession = dbSessionFactory.Open())
