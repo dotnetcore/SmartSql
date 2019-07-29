@@ -1,6 +1,6 @@
 using System;
 
-namespace SmartSql.TypeHandler
+namespace SmartSql.TypeHandler.Crypto
 {
     public interface ICrypto : IInitialize, IDisposable
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SmartSql.TypeHandler
+namespace SmartSql.TypeHandler.Crypto
 {
     public class CryptoFactory
     {

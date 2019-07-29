@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
-namespace SmartSql.TypeHandler
+namespace SmartSql.TypeHandler.Crypto
 {
-    public class RSACrypto : ICrypto
+    public class AESCrypto : ICrypto
     {
         public void Initialize(IDictionary<string, object> parameters)
         {

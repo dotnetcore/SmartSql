@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using SmartSql.Data;
+using SmartSql.TypeHandler.Crypto;
 using SmartSql.TypeHandlers;
 
 namespace SmartSql.TypeHandler
