@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using SmartSql.Exceptions;
+using SmartSql.Utils;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -74,8 +75,7 @@ namespace Microsoft.Extensions.DependencyInjection
             };
             setupOptions(options);
             ScopeTemplateParser templateParser = new ScopeTemplateParser(options.ScopeTemplate);
-            var assembly = Assembly.Load(options.AssemblyString);
-            var allTypes = assembly.GetTypes().Where(options.Filter);
+            var allTypes = TypeScan.Scan(options);
             foreach (var type in allTypes)
             {
                 builder.Services.AddSingleton(type, sp =>

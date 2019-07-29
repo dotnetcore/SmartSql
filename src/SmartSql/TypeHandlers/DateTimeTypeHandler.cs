@@ -24,6 +24,11 @@ namespace SmartSql.TypeHandlers
             var colName = dataReader.GetName(columnIndex);
             throw new SmartSqlException($"Column.Name:{colName} String:[{strVal}] can not convert to DateTime.");
         }
+
+        public override object GetSetParameterValue(object parameterValue)
+        {
+            return parameterValue.ToString();
+        }
     }
     public class DateTimeAnyTypeHandler : AbstractTypeHandler<DateTime, AnyFieldType>
     {

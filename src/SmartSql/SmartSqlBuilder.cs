@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SmartSql.Deserializer;
 using SmartSql.Filters;
+using SmartSql.Reflection.TypeConstants;
 using SmartSql.TypeHandlers;
 
 namespace SmartSql
@@ -45,6 +46,8 @@ namespace SmartSql
         public FilterCollection Filters { get; } = new FilterCollection();
         public Action<ExecutionContext> InvokeSucceeded { get; set; }
 
+        public IList<Type> EntityTypes { get; } = new List<Type>();
+
         public SmartSqlBuilder Build()
         {
             if (Built) return this;
@@ -59,7 +62,16 @@ namespace SmartSql
 
             NamedTypeHandlerCache.Build(Alias, SmartSqlConfig.TypeHandlerFactory.GetNamedTypeHandlers());
             SetupSmartSql();
+            InitEntityMetaDataCache();
             return this;
+        }
+
+        private void InitEntityMetaDataCache()
+        {
+            foreach (var entityType in EntityTypes)
+            {
+                EntityMetaDataCacheType.InitTypeHandler(entityType);
+            }
         }
 
         private void SetupSmartSql()
@@ -251,6 +263,28 @@ namespace SmartSql
             Registered = registered;
             return this;
         }
+
+        #region RegisterEntity
+
+        public SmartSqlBuilder RegisterEntity(Type entityType)
+        {
+            EntityTypes.Add(entityType);
+            return this;
+        }
+
+        public SmartSqlBuilder RegisterEntity(TypeScanOptions typeScanOptions)
+        {
+            var entityTypes = TypeScan.Scan(typeScanOptions);
+
+            foreach (var entityType in entityTypes)
+            {
+                EntityTypes.Add(entityType);
+            }
+
+            return this;
+        }
+
+        #endregion
 
         public SmartSqlBuilder AddDeserializer(IDataReaderDeserializer deserializer)
         {

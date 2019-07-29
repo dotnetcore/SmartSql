@@ -10,7 +10,7 @@ namespace SmartSql.TypeHandlers
     {
         Type PropertyType { get; }
         Type FieldType { get; }
-        
+        object GetSetParameterValue(object parameterValue);
         void SetParameter(IDataParameter dataParameter, object parameterValue);
     }
     public interface ITypeHandler<out TProperty, TField> : ITypeHandler

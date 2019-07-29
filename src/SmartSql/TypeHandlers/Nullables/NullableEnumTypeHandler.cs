@@ -8,26 +8,21 @@ namespace SmartSql.TypeHandlers
     {
         private readonly Type _enumType;
         private readonly Type _enumUnderlyingType;
+
         public NullableEnumTypeHandler()
         {
             _enumType = Nullable.GetUnderlyingType(PropertyType);
             _enumUnderlyingType = Enum.GetUnderlyingType(_enumType);
         }
-
-        public override void SetParameter(IDataParameter dataParameter, object parameterValue)
+        
+        protected override object GetSetParameterValueWhenNotNull(object parameterValue)
         {
-            if (parameterValue == null && IsNullable)
-            {
-                dataParameter.Value = DBNull.Value;
-            }
-            else
-            {
-                dataParameter.Value = Convert.ChangeType(parameterValue, _enumUnderlyingType);
-            }
+            return Convert.ChangeType(parameterValue, _enumUnderlyingType);
         }
+
         protected override TEnum GetValueWhenNotNull(DataReaderWrapper dataReader, int columnIndex)
         {
-            return (TEnum)Enum.ToObject(_enumType, dataReader.GetValue(columnIndex));
+            return (TEnum) Enum.ToObject(_enumType, dataReader.GetValue(columnIndex));
         }
     }
 }

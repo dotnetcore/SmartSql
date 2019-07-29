@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using SmartSql.Reflection.TypeConstants;
 
 namespace SmartSql.TypeHandlers
 {
@@ -18,6 +19,11 @@ namespace SmartSql.TypeHandlers
         public override Int16 GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)
         {
             return dataReader.GetByte(columnIndex);
+        }
+
+        public override object GetSetParameterValue(object parameterValue)
+        {
+            return Convert.ToByte(parameterValue);
         }
     }
     public class Int16AnyTypeHandler : AbstractTypeHandler<Int16, AnyFieldType>

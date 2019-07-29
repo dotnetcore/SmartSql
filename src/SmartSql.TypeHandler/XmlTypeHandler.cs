@@ -15,20 +15,9 @@ namespace SmartSql.TypeHandler
             var xmlStr = dataReader.GetString(columnIndex);
             return XmlSerializeUtil.Deserialize(xmlStr, targetType);
         }
-        public object GetSetParameterValue(object parameterValue)
+        protected override object GetSetParameterValueWhenNotNull(object parameterValue)
         {
-            if (parameterValue == null)
-            {
-                return DBNull.Value;
-            }
-            else
-            {
-                return XmlSerializeUtil.Serializer(parameterValue);
-            }
-        }
-        public override void SetParameter(IDataParameter dataParameter, object parameterValue)
-        {
-            dataParameter.Value = GetSetParameterValue(parameterValue);
+            return XmlSerializeUtil.Serializer(parameterValue);
         }
     }
 }

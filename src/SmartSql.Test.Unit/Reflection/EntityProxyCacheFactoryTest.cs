@@ -21,8 +21,13 @@ namespace SmartSql.Test.Unit.Reflection
             Assert.Equal(0, state);
 
             entityProxy.SetEnablePropertyChangedTrack(true);
+            
             entity.Id = 1;
             Assert.Equal(1, entityProxy.GetPropertyVersion(nameof(Entity.Id)));
+            
+
+            entity.Deleted = true;
+            Assert.Equal(1, entityProxy.GetPropertyVersion(nameof(Entity.Deleted)));
         }
 
         [Fact]

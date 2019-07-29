@@ -5,6 +5,7 @@ using Xunit;
 using SmartSql.Bulk.SqlServer;
 using SmartSql.Bulk;
 using System.Threading.Tasks;
+using SmartSql.CUD;
 using SmartSql.Test.Entities;
 
 namespace SmartSql.Test.Unit.Bulk
@@ -47,6 +48,22 @@ namespace SmartSql.Test.Unit.Bulk
                     SqlId = "Query",
                     Request = new { Taken = 100 }
                 });
+                bulkInsert.Insert(list);
+            }
+        }
+        [Fact]
+        public void InsertByListWithTypeHandler()
+        {
+            using (var dbSession = SqlMapper.SessionStore.Open())
+            {
+                IBulkInsert bulkInsert = new BulkInsert(dbSession);
+                var list = SqlMapper.Query<UserExtendedInfo>(new RequestContext
+                {
+                    Scope = nameof(UserExtendedInfo),
+                    SqlId = "Query",
+                    Request = new { Taken = 100 }
+                });
+                
                 bulkInsert.Insert(list);
             }
         }

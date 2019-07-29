@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using SmartSql.TypeHandlers;
 
 namespace SmartSql.Annotations
 {
@@ -24,5 +25,6 @@ namespace SmartSql.Annotations
         public bool IsAutoIncrement { get; set; }
         public String Alias { get; set; } = SmartSqlBuilder.DEFAULT_ALIAS;
         public String TypeHandler { get; set; }
+        public ITypeHandler Handler { get; set; }
     }
 }

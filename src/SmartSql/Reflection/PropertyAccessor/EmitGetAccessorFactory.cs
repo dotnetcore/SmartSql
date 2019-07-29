@@ -136,6 +136,12 @@ namespace SmartSql.Reflection.PropertyAccessor
 
         private Func<object, object> CreateImpl(PropertyInfo propertyInfo)
         {
+            if (propertyInfo.GetMethod == null)
+            {
+                throw new SmartSqlException(
+                    $"Can not find GetMethod -> Type:[{propertyInfo.DeclaringType.FullName}],PropertyInfo :[{propertyInfo.Name}]. ");
+            }
+
             var dynamicMethod = new DynamicMethod("Get_" + Guid.NewGuid().ToString("N"), CommonType.Object,
                 new[] {CommonType.Object}, propertyInfo.DeclaringType, true);
             var ilGen = dynamicMethod.GetILGenerator();

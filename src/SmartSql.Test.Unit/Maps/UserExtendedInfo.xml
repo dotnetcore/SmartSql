@@ -13,6 +13,11 @@
       <Result Property="Data" TypeHandler="Json"/>
     </ResultMap>
   </ResultMaps>
+  <ParameterMaps>
+    <ParameterMap Id="UserParameter">
+      <Parameter Property="Data" TypeHandler="Json"/>
+    </ParameterMap>
+  </ParameterMaps>
   <Statements>
     <Statement Id="QueryParams">
       <Where>
@@ -27,7 +32,7 @@
 
 
     <!--新增-->
-    <Statement Id="Insert">
+    <Statement Id="Insert" ParameterMap="UserParameter">
       INSERT INTO T_UserExtendedInfo
       (
       UserId,
@@ -47,7 +52,7 @@
     </Statement>
 
     <!--更新-->
-    <Statement Id="Update">
+    <Statement Id="Update" ParameterMap="UserParameter">
       UPDATE T_UserExtendedInfo
       <Set>
         <IsProperty Prepend="," Property="Data">

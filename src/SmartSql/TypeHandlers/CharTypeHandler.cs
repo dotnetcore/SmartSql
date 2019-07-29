@@ -12,7 +12,13 @@ namespace SmartSql.TypeHandlers
         {
             return dataReader.GetString(columnIndex)[0];
         }
+
+        public override object GetSetParameterValue(object parameterValue)
+        {
+            return Convert.ToString(parameterValue);
+        }
     }
+
     public class CharAnyTypeHandler : AbstractTypeHandler<Char, AnyFieldType>
     {
         public override Char GetValue(DataReaderWrapper dataReader, int columnIndex, Type targetType)

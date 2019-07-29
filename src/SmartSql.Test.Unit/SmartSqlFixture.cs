@@ -7,6 +7,7 @@ using SmartSql.DbSession;
 using SmartSql.DyRepository;
 using SmartSql.Middlewares.Filters;
 using SmartSql.Test.Repositories;
+using SmartSql.Utils;
 using Xunit;
 
 namespace SmartSql.Test.Unit
@@ -28,12 +29,17 @@ namespace SmartSql.Test.Unit
                 .UseLoggerFactory(LoggerFactory)
                 .UseAlias(GLOBAL_SMART_SQL)
                 .AddFilter<TestPrepareStatementFilter>()
+                .RegisterEntity(new TypeScanOptions
+                {
+                    AssemblyString = "SmartSql.Test",
+                    Filter = type => type.Namespace == "SmartSql.Test.Entities"
+                })
                 .Build();
             DbSessionFactory = SmartSqlBuilder.DbSessionFactory;
             SqlMapper = SmartSqlBuilder.SqlMapper;
-            
-            
-            RepositoryBuilder= new EmitRepositoryBuilder(null, null,
+
+
+            RepositoryBuilder = new EmitRepositoryBuilder(null, null,
                 LoggerFactory.CreateLogger<EmitRepositoryBuilder>());
             RepositoryFactory = new RepositoryFactory(RepositoryBuilder,
                 LoggerFactory.CreateLogger<RepositoryFactory>());
@@ -55,15 +61,16 @@ namespace SmartSql.Test.Unit
         public IDbSessionFactory DbSessionFactory { get; }
         public ISqlMapper SqlMapper { get; }
         public ILoggerFactory LoggerFactory { get; }
-        public IRepositoryBuilder RepositoryBuilder { get;  }
-        public IRepositoryFactory RepositoryFactory { get;  }
+        public IRepositoryBuilder RepositoryBuilder { get; }
+        public IRepositoryFactory RepositoryFactory { get; }
 
         #region Repository
 
-        public IUsedCacheRepository UsedCacheRepository { get;  }
-        public IAllPrimitiveRepository AllPrimitiveRepository { get;  }
-        public IUserRepository UserRepository { get;  }
-        public IColumnAnnotationRepository ColumnAnnotationRepository { get;  }
+        public IUsedCacheRepository UsedCacheRepository { get; }
+        public IAllPrimitiveRepository AllPrimitiveRepository { get; }
+        public IUserRepository UserRepository { get; }
+        public IColumnAnnotationRepository ColumnAnnotationRepository { get; }
+
         #endregion
 
         public void Dispose()

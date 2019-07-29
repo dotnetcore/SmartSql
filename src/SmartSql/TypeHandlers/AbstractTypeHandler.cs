@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Runtime.CompilerServices;
 
 namespace SmartSql.TypeHandlers
 {
@@ -24,31 +25,37 @@ namespace SmartSql.TypeHandlers
 
         public virtual void Initialize(IDictionary<string, object> parameters)
         {
-            if (parameters == null) { return; }
+            if (parameters == null)
+            {
+                return;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public virtual object GetSetParameterValue(object parameterValue)
+        {
+            if (parameterValue != null)
+            {
+                return GetSetParameterValueWhenNotNull(parameterValue);
+            }
+
+            if (IsNullable)
+            {
+                return DBNull.Value;
+            }
+
+            return Default;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected virtual object GetSetParameterValueWhenNotNull(object parameterValue)
+        {
+            return parameterValue;
         }
 
         public virtual void SetParameter(IDataParameter dataParameter, object parameterValue)
         {
-            if (parameterValue != null)
-            {
-                SetParameterWhenNotNull(dataParameter, parameterValue);
-            }
-            else
-            {
-                if (IsNullable)
-                {
-                    dataParameter.Value = DBNull.Value;
-                }
-                else
-                {
-                    dataParameter.Value = Default;
-                }
-            }
+            dataParameter.Value = GetSetParameterValue(parameterValue);
         }
-        protected virtual void SetParameterWhenNotNull(IDataParameter dataParameter, object parameterValue)
-        {
-            dataParameter.Value = parameterValue;
-        }
-
     }
 }

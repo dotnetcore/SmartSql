@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using SmartSql.Configuration;
 using SmartSql.Reflection.PropertyAccessor;
+using SmartSql.TypeHandlers;
 
 namespace SmartSql.CUD
 {
@@ -87,7 +89,7 @@ namespace SmartSql.CUD
                                                propInfo.PropertyType;
                         }
 
-                        if (column.GetPropertyValue == null)
+                        if (propInfo.GetMethod != null && column.GetPropertyValue == null)
                         {
                             column.GetPropertyValue = GetAccessorFactory.Create(propInfo);
                         }
@@ -126,6 +128,26 @@ namespace SmartSql.CUD
             if (String.IsNullOrEmpty(MetaData.TableName))
             {
                 MetaData.TableName = EntityType.Name;
+            }
+        }
+
+        public static void InitTypeHandler()
+        {
+            foreach (var colValue in MetaData.Columns.Values)
+            {
+                if (String.IsNullOrEmpty(colValue.TypeHandler))
+                {
+                    continue;
+                }
+
+                if (colValue.Handler != null)
+                {
+                    continue;
+                }
+
+                var typeHandlerFactory = SmartSqlContainer.Instance.GetSmartSql(colValue.Alias).SmartSqlConfig
+                    .TypeHandlerFactory;
+                colValue.Handler = typeHandlerFactory.GetTypeHandler(colValue.TypeHandler);
             }
         }
     }

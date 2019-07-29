@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Runtime.CompilerServices;
 
 namespace SmartSql.TypeHandlers
 {
@@ -12,7 +13,7 @@ namespace SmartSql.TypeHandlers
             if (dataReader.IsDBNull(columnIndex)) { return Default; }
             return GetValueWhenNotNull(dataReader, columnIndex);
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected virtual TProperty GetValueWhenNotNull(DataReaderWrapper dataReader, int columnIndex)
         {
             return (TProperty)dataReader.GetValue(columnIndex);

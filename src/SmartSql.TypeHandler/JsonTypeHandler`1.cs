@@ -55,17 +55,10 @@ namespace SmartSql.TypeHandler
             var jsonStr = dataReader.GetString(columnIndex);
             return (TProperty)JsonConvert.DeserializeObject(jsonStr, targetType, JsonSerializerSettings);
         }
-
-        public override void SetParameter(IDataParameter dataParameter, object parameterValue)
+        
+        protected override object GetSetParameterValueWhenNotNull(object parameterValue)
         {
-            if (parameterValue == null)
-            {
-                dataParameter.Value = DBNull.Value;
-            }
-            else
-            {
-                dataParameter.Value = JsonConvert.SerializeObject(parameterValue, JsonSerializerSettings);
-            }
+            return JsonConvert.SerializeObject(parameterValue, JsonSerializerSettings);
         }
     }
 }

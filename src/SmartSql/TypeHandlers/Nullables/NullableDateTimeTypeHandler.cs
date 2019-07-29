@@ -14,6 +14,7 @@ namespace SmartSql.TypeHandlers
             return dataReader.GetDateTime(columnIndex);
         }
     }
+
     public class NullableDateTimeStringTypeHandler : AbstractNullableTypeHandler<DateTime?, String>
     {
         protected override DateTime? GetValueWhenNotNull(DataReaderWrapper dataReader, int columnIndex)
@@ -23,7 +24,13 @@ namespace SmartSql.TypeHandlers
             var colName = dataReader.GetName(columnIndex);
             throw new SmartSqlException($"Column.Name:{colName} String:[{strVal}] can not convert to DateTime.");
         }
+
+        protected override object GetSetParameterValueWhenNotNull(object parameterValue)
+        {
+            return parameterValue.ToString();
+        }
     }
+
     public class NullableDateTimeAnyTypeHandler : AbstractNullableTypeHandler<DateTime?, AnyFieldType>
     {
         protected override DateTime? GetValueWhenNotNull(DataReaderWrapper dataReader, int columnIndex)
