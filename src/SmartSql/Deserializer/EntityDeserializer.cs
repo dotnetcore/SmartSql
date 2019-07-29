@@ -151,7 +151,7 @@ namespace SmartSql.Deserializer
 
             #endregion
 
-            var enableDbNullToDefault = executionContext.SmartSqlConfig.Settings.EnableDbNullToDefault;
+            var ignoreDbNull = executionContext.SmartSqlConfig.Settings.IgnoreDbNull;
             ilGen.StoreLocalVar(0);
             foreach (var col in columns)
             {
@@ -198,17 +198,18 @@ namespace SmartSql.Deserializer
                 #endregion
 
                 var propertyType = propertyInfo.PropertyType;
-                if (enableDbNullToDefault)
+                if (ignoreDbNull)
                 {
                     ilGen.LoadArg(0);
                     ilGen.LoadInt32(colIndex);
+                    ilGen.Call(DataType.Method.IsDBNull);
                     ilGen.IfTrueS(isDbNullLabel);
                 }
 
                 ilGen.LoadLocalVar(0);
                 LoadPropertyValue(ilGen, executionContext, colIndex, propertyType, filedType, typeHandler);
                 ilGen.Call(propertyInfo.SetMethod);
-                if (enableDbNullToDefault)
+                if (ignoreDbNull)
                 {
                     ilGen.MarkLabel(isDbNullLabel);
                 }

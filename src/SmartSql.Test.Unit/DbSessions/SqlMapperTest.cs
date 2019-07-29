@@ -63,7 +63,7 @@ namespace SmartSql.Test.Unit.DbSessions
         [Fact]
         public void DbNullToDefaultEntity()
         {
-            var entity = SqlMapper.QuerySingle<DbNullToDefaultEntity>(new RequestContext
+            var entity = SqlMapper.QuerySingle<IgnoreDbNullEntity>(new RequestContext
             {
                 RealSql = "SELECT Top (1) T.* From T_DbNullToDefaultEntity T"
             });

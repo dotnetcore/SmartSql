@@ -32,6 +32,7 @@
       <xs:attribute name="IgnoreParameterCase" type="xs:boolean" default="false"/>
       <xs:attribute name="IsCacheEnabled" type="xs:boolean" default="false"/>
       <xs:attribute name="EnablePropertyChangedTrack" type="xs:boolean" default="false"/>
+      <xs:attribute name="IgnoreDbNull" type="xs:boolean" default="false"/>
       <xs:attribute name="ParameterPrefix" type="xs:string" default="$"/>
     </xs:complexType>
   </xs:element>

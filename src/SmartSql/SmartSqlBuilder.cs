@@ -38,6 +38,8 @@ namespace SmartSql
         public ISqlMapper SqlMapper { get; private set; }
         public ICacheManager CacheManager { get; private set; }
         public IDataSourceFilter DataSourceFilter { get; private set; }
+        public bool? IsCacheEnabled { get; private set; }
+        public bool? IgnoreDbNull { get; private set; }
         public bool Built { get; private set; }
         public bool Registered { get; private set; } = true;
 
@@ -107,7 +109,6 @@ namespace SmartSql
 
             #endregion
 
-
             #region Deserializer
 
             foreach (var deserializer in DataReaderDeserializers)
@@ -150,9 +151,14 @@ namespace SmartSql
             SmartSqlConfig.Alias = Alias;
             SmartSqlConfig.LoggerFactory = LoggerFactory;
             SmartSqlConfig.DataSourceFilter = DataSourceFilter ?? new DataSourceFilter(SmartSqlConfig.LoggerFactory);
-            if (_isCacheEnabled.HasValue)
+            if (IsCacheEnabled.HasValue)
             {
-                SmartSqlConfig.Settings.IsCacheEnabled = _isCacheEnabled.Value;
+                SmartSqlConfig.Settings.IsCacheEnabled = IsCacheEnabled.Value;
+            }
+
+            if (IgnoreDbNull.HasValue)
+            {
+                SmartSqlConfig.Settings.IgnoreDbNull = IgnoreDbNull.Value;
             }
 
             if (InvokeSucceeded != null)
@@ -249,7 +255,6 @@ namespace SmartSql
 
         #region Instance
 
-        private bool? _isCacheEnabled;
         private IEnumerable<KeyValuePair<string, string>> _importProperties;
 
         public SmartSqlBuilder ListenInvokeSucceeded(Action<ExecutionContext> invokeSucceeded)
@@ -319,7 +324,13 @@ namespace SmartSql
 
         public SmartSqlBuilder UseCache(bool isCacheEnabled = true)
         {
-            _isCacheEnabled = isCacheEnabled;
+            IsCacheEnabled = isCacheEnabled;
+            return this;
+        }
+
+        public SmartSqlBuilder UseIgnoreDbNull(bool ignoreDbNull = false)
+        {
+            IgnoreDbNull = ignoreDbNull;
             return this;
         }
 

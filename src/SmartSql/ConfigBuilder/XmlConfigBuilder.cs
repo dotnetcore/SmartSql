@@ -84,10 +84,10 @@ namespace SmartSql.ConfigBuilder
             {
                 SmartSqlConfig.Settings.EnablePropertyChangedTrack = enableTrack;
             }
-            if (settingsNode.Attributes.TryGetValueAsBoolean(nameof(Settings.EnableDbNullToDefault),
-                out bool enableDbNullToDefault))
+            if (settingsNode.Attributes.TryGetValueAsBoolean(nameof(Settings.IgnoreDbNull),
+                out bool ignoreDbNull))
             {
-                SmartSqlConfig.Settings.EnableDbNullToDefault = enableDbNullToDefault;
+                SmartSqlConfig.Settings.IgnoreDbNull = ignoreDbNull;
             }
         }
         #endregion

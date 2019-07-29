@@ -111,13 +111,13 @@ namespace SmartSql.Configuration
             IsCacheEnabled = false,
             ParameterPrefix = "$",
             EnablePropertyChangedTrack = false,
-            EnableDbNullToDefault = false
+            IgnoreDbNull = false
         };
 
         public bool IgnoreParameterCase { get; set; }
         public bool IsCacheEnabled { get; set; }
         public string ParameterPrefix { get; set; }
         public bool EnablePropertyChangedTrack { get; set; }
-        public bool EnableDbNullToDefault { get; set; }
+        public bool IgnoreDbNull { get; set; }
     }
 }
