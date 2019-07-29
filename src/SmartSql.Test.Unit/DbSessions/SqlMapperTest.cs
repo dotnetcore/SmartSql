@@ -65,7 +65,7 @@ namespace SmartSql.Test.Unit.DbSessions
         {
             var entity = SqlMapper.QuerySingle<IgnoreDbNullEntity>(new RequestContext
             {
-                RealSql = "SELECT Top (1) T.* From T_DbNullToDefaultEntity T"
+                RealSql = "SELECT Top (1) T.* From T_IgnoreDbNullEntity T"
             });
             Assert.Equal(0, entity.DbNullId);
         }
