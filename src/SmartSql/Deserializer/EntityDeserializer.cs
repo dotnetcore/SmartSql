@@ -202,7 +202,7 @@ namespace SmartSql.Deserializer
                 {
                     ilGen.LoadArg(0);
                     ilGen.LoadInt32(colIndex);
-                    ilGen.IfTrueS( isDbNullLabel);
+                    ilGen.IfTrueS(isDbNullLabel);
                 }
 
                 ilGen.LoadLocalVar(0);
@@ -210,7 +210,7 @@ namespace SmartSql.Deserializer
                 ilGen.Call(propertyInfo.SetMethod);
                 if (enableDbNullToDefault)
                 {
-                    ilGen.MarkLabel(isDbNullLabel);    
+                    ilGen.MarkLabel(isDbNullLabel);
                 }
             }
 

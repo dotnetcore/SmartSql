@@ -60,6 +60,14 @@ namespace SmartSql.Test.Unit.DbSessions
             SqlMapper.Update(entity);
         }
 
-
+        [Fact]
+        public void DbNullToDefaultEntity()
+        {
+            var entity = SqlMapper.QuerySingle<DbNullToDefaultEntity>(new RequestContext
+            {
+                RealSql = "SELECT Top (1) T.* From T_DbNullToDefaultEntity T"
+            });
+            Assert.Equal(0, entity.DbNullId);
+        }
     }
 }
