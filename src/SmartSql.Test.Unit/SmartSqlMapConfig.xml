@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
-  <Settings IgnoreParameterCase="false" ParameterPrefix="$"  IsCacheEnabled="true" EnablePropertyChangedTrack="true"/>
+  <Settings IgnoreParameterCase="false" ParameterPrefix="$"  IsCacheEnabled="true" EnablePropertyChangedTrack="true" />
   <Properties>
     <Property Name="Redis" Value="localhost"/>
     <Property Name="ConnectionString" Value="Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True"/>

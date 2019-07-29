@@ -151,6 +151,7 @@ namespace SmartSql.Deserializer
 
             #endregion
 
+            var enableDbNullToDefault = executionContext.SmartSqlConfig.Settings.EnableDbNullToDefault;
             ilGen.StoreLocalVar(0);
             foreach (var col in columns)
             {
@@ -159,8 +160,10 @@ namespace SmartSql.Deserializer
                 var filedType = col.Value.FieldType;
                 PropertyInfo propertyInfo = null;
                 string typeHandler = null;
+                var isDbNullLabel = ilGen.DefineLabel();
 
                 #region Ensure Property & TypeHanlder
+
                 if (resultMap?.Properties != null)
                 {
                     var propertyName = colName;
@@ -181,6 +184,7 @@ namespace SmartSql.Deserializer
                         typeHandler = columnAttribute.TypeHandler;
                     }
                 }
+
                 if (propertyInfo == null)
                 {
                     continue;
@@ -190,11 +194,24 @@ namespace SmartSql.Deserializer
                 {
                     continue;
                 }
+
                 #endregion
+
                 var propertyType = propertyInfo.PropertyType;
+                if (enableDbNullToDefault)
+                {
+                    ilGen.LoadArg(0);
+                    ilGen.LoadInt32(colIndex);
+                    ilGen.IfTrueS( isDbNullLabel);
+                }
+
                 ilGen.LoadLocalVar(0);
                 LoadPropertyValue(ilGen, executionContext, colIndex, propertyType, filedType, typeHandler);
                 ilGen.Call(propertyInfo.SetMethod);
+                if (enableDbNullToDefault)
+                {
+                    ilGen.MarkLabel(isDbNullLabel);    
+                }
             }
 
             if (typeof(IEntityPropertyChangedTrackProxy).IsAssignableFrom(resultType))

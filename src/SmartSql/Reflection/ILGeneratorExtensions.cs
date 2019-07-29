@@ -13,28 +13,33 @@ namespace System.Reflection.Emit
         {
             ilGen.Emit(OpCodes.Pop);
         }
+
         public static void Dup(this ILGenerator ilGen)
         {
             ilGen.Emit(OpCodes.Dup);
         }
-        
+
         public static void Call(this ILGenerator ilGen, MethodInfo methodInfo)
         {
             ilGen.Emit(OpCodes.Call, methodInfo);
         }
+
         public static void Call(this ILGenerator ilGen, ConstructorInfo ctorInfo)
         {
             ilGen.Emit(OpCodes.Call, ctorInfo);
         }
+
         public static void Callvirt(this ILGenerator ilGen, MethodInfo methodInfo)
         {
             ilGen.Emit(OpCodes.Callvirt, methodInfo);
         }
+
         public static void LoadType(this ILGenerator ilGen, Type type)
         {
             ilGen.Emit(OpCodes.Ldtoken, type);
             ilGen.Emit(OpCodes.Call, SmartSql.Reflection.TypeConstants.TypeType.Method.GetTypeFromHandle);
         }
+
         public static void New(this ILGenerator ilGen, ConstructorInfo ctorInfo)
         {
             ilGen.Emit(OpCodes.Newobj, ctorInfo);
@@ -44,22 +49,47 @@ namespace System.Reflection.Emit
         {
             ilGen.Emit(OpCodes.Ret);
         }
+
         public static void LoadNull(this ILGenerator ilGen)
         {
             ilGen.Emit(OpCodes.Ldnull);
         }
+
+        public static void IfTrue(this ILGenerator ilGen, Label target)
+        {
+            ilGen.Emit(OpCodes.Brtrue, target);
+        }
+
+        public static void IfFalse(this ILGenerator ilGen, Label target)
+        {
+            ilGen.Emit(OpCodes.Brfalse, target);
+        }
+
+        public static void IfTrueS(this ILGenerator ilGen, Label target)
+        {
+            ilGen.Emit(OpCodes.Brtrue_S, target);
+        }
+
+        public static void IfFalseS(this ILGenerator ilGen, Label target)
+        {
+            ilGen.Emit(OpCodes.Brfalse_S, target);
+        }
+
         public static void LoadString(this ILGenerator ilGen, string value)
         {
             ilGen.Emit(OpCodes.Ldstr, value);
         }
+
         public static void Unbox(this ILGenerator ilGen, Type type)
         {
             if (type.IsEnum)
             {
                 type = Enum.GetUnderlyingType(type);
             }
+
             ilGen.Emit(OpCodes.Unbox, type);
         }
+
         public static void Box(this ILGenerator ilGen, Type type)
         {
             ilGen.Emit(OpCodes.Box, type);
@@ -108,6 +138,7 @@ namespace System.Reflection.Emit
                     {
                         ilGen.Emit(OpCodes.Ldind_Ref);
                     }
+
                     break;
             }
         }
@@ -150,6 +181,7 @@ namespace System.Reflection.Emit
                     {
                         ilGen.Emit(OpCodes.Stind_Ref);
                     }
+
                     break;
             }
         }
@@ -163,50 +195,81 @@ namespace System.Reflection.Emit
         {
             switch (value)
             {
-                case -1: ilGen.Emit(OpCodes.Ldc_I4_M1); break;
-                case 0: ilGen.Emit(OpCodes.Ldc_I4_0); break;
-                case 1: ilGen.Emit(OpCodes.Ldc_I4_1); break;
-                case 2: ilGen.Emit(OpCodes.Ldc_I4_2); break;
-                case 3: ilGen.Emit(OpCodes.Ldc_I4_3); break;
-                case 4: ilGen.Emit(OpCodes.Ldc_I4_4); break;
-                case 5: ilGen.Emit(OpCodes.Ldc_I4_5); break;
-                case 6: ilGen.Emit(OpCodes.Ldc_I4_6); break;
-                case 7: ilGen.Emit(OpCodes.Ldc_I4_7); break;
-                case 8: ilGen.Emit(OpCodes.Ldc_I4_8); break;
+                case -1:
+                    ilGen.Emit(OpCodes.Ldc_I4_M1);
+                    break;
+                case 0:
+                    ilGen.Emit(OpCodes.Ldc_I4_0);
+                    break;
+                case 1:
+                    ilGen.Emit(OpCodes.Ldc_I4_1);
+                    break;
+                case 2:
+                    ilGen.Emit(OpCodes.Ldc_I4_2);
+                    break;
+                case 3:
+                    ilGen.Emit(OpCodes.Ldc_I4_3);
+                    break;
+                case 4:
+                    ilGen.Emit(OpCodes.Ldc_I4_4);
+                    break;
+                case 5:
+                    ilGen.Emit(OpCodes.Ldc_I4_5);
+                    break;
+                case 6:
+                    ilGen.Emit(OpCodes.Ldc_I4_6);
+                    break;
+                case 7:
+                    ilGen.Emit(OpCodes.Ldc_I4_7);
+                    break;
+                case 8:
+                    ilGen.Emit(OpCodes.Ldc_I4_8);
+                    break;
                 default:
                     if (value >= sbyte.MinValue && value <= sbyte.MaxValue)
                     {
-                        ilGen.Emit(OpCodes.Ldc_I4_S, (sbyte)value);
+                        ilGen.Emit(OpCodes.Ldc_I4_S, (sbyte) value);
                     }
                     else
                     {
                         ilGen.Emit(OpCodes.Ldc_I4, value);
                     }
+
                     break;
             }
         }
+
         public static void LoadArg(this ILGenerator ilGen, int index)
         {
             if (index < 0 || index >= short.MaxValue) throw new ArgumentNullException(nameof(index));
             switch (index)
             {
-                case 0: ilGen.Emit(OpCodes.Ldarg_0); break;
-                case 1: ilGen.Emit(OpCodes.Ldarg_1); break;
-                case 2: ilGen.Emit(OpCodes.Ldarg_2); break;
-                case 3: ilGen.Emit(OpCodes.Ldarg_3); break;
+                case 0:
+                    ilGen.Emit(OpCodes.Ldarg_0);
+                    break;
+                case 1:
+                    ilGen.Emit(OpCodes.Ldarg_1);
+                    break;
+                case 2:
+                    ilGen.Emit(OpCodes.Ldarg_2);
+                    break;
+                case 3:
+                    ilGen.Emit(OpCodes.Ldarg_3);
+                    break;
                 default:
                     if (index <= byte.MaxValue)
                     {
-                        ilGen.Emit(OpCodes.Ldarg_S, (byte)index);
+                        ilGen.Emit(OpCodes.Ldarg_S, (byte) index);
                     }
                     else
                     {
-
-                        ilGen.Emit(OpCodes.Ldarg, (short)index);
+                        ilGen.Emit(OpCodes.Ldarg, (short) index);
                     }
+
                     break;
             }
         }
+
         /// <summary>
         /// Ldloc
         /// </summary>
@@ -217,43 +280,63 @@ namespace System.Reflection.Emit
             if (index < 0 || index >= short.MaxValue) throw new ArgumentNullException(nameof(index));
             switch (index)
             {
-                case 0: ilGen.Emit(OpCodes.Ldloc_0); break;
-                case 1: ilGen.Emit(OpCodes.Ldloc_1); break;
-                case 2: ilGen.Emit(OpCodes.Ldloc_2); break;
-                case 3: ilGen.Emit(OpCodes.Ldloc_3); break;
+                case 0:
+                    ilGen.Emit(OpCodes.Ldloc_0);
+                    break;
+                case 1:
+                    ilGen.Emit(OpCodes.Ldloc_1);
+                    break;
+                case 2:
+                    ilGen.Emit(OpCodes.Ldloc_2);
+                    break;
+                case 3:
+                    ilGen.Emit(OpCodes.Ldloc_3);
+                    break;
                 default:
                     if (index <= 255)
                     {
-                        ilGen.Emit(OpCodes.Ldloc_S, (byte)index);
+                        ilGen.Emit(OpCodes.Ldloc_S, (byte) index);
                     }
                     else
                     {
-                        ilGen.Emit(OpCodes.Ldloc, (short)index);
+                        ilGen.Emit(OpCodes.Ldloc, (short) index);
                     }
+
                     break;
             }
         }
+
         public static void StoreLocalVar(this ILGenerator ilGen, int index)
         {
             if (index < 0 || index >= short.MaxValue) throw new ArgumentNullException(nameof(index));
             switch (index)
             {
-                case 0: ilGen.Emit(OpCodes.Stloc_0); break;
-                case 1: ilGen.Emit(OpCodes.Stloc_1); break;
-                case 2: ilGen.Emit(OpCodes.Stloc_2); break;
-                case 3: ilGen.Emit(OpCodes.Stloc_3); break;
+                case 0:
+                    ilGen.Emit(OpCodes.Stloc_0);
+                    break;
+                case 1:
+                    ilGen.Emit(OpCodes.Stloc_1);
+                    break;
+                case 2:
+                    ilGen.Emit(OpCodes.Stloc_2);
+                    break;
+                case 3:
+                    ilGen.Emit(OpCodes.Stloc_3);
+                    break;
                 default:
                     if (index <= 255)
                     {
-                        ilGen.Emit(OpCodes.Stloc_S, (byte)index);
+                        ilGen.Emit(OpCodes.Stloc_S, (byte) index);
                     }
                     else
                     {
-                        ilGen.Emit(OpCodes.Stloc, (short)index);
+                        ilGen.Emit(OpCodes.Stloc, (short) index);
                     }
+
                     break;
             }
         }
+
         public static void StoreElement(this ILGenerator ilGen, Type type)
         {
             switch (Type.GetTypeCode(type))
@@ -291,9 +374,11 @@ namespace System.Reflection.Emit
                     {
                         ilGen.Emit(OpCodes.Stelem_Ref);
                     }
+
                     break;
             }
         }
+
         public static void LoadElement(this ILGenerator il, Type type)
         {
             if (!type.IsValueType)
@@ -340,6 +425,7 @@ namespace System.Reflection.Emit
                 }
             }
         }
+
         public static void FieldGet(this ILGenerator ilGen, FieldInfo fi)
         {
             ilGen.Emit(fi.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld, fi);
@@ -349,6 +435,5 @@ namespace System.Reflection.Emit
         {
             ilGen.Emit(fi.IsStatic ? OpCodes.Stsfld : OpCodes.Stfld, fi);
         }
-
     }
 }

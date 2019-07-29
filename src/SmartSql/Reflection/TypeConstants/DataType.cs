@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Data;
+using System.Reflection;
 
 namespace SmartSql.Reflection.TypeConstants
 {
@@ -13,5 +14,10 @@ namespace SmartSql.Reflection.TypeConstants
         public static readonly Type Dictionary = typeof(IDictionary);
         public static readonly Type DataReaderWrapper = typeof(DataReaderWrapper);
         public static readonly Type DynamicRow = typeof(DynamicRow);
+
+        public class Method
+        {
+            public static readonly MethodInfo IsDBNull = DataReaderWrapper.GetMethod(nameof(IsDBNull));
+        }
     }
 }

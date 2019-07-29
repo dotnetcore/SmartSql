@@ -56,6 +56,8 @@ namespace SmartSql.Test.Unit.DbSessions
             entity.String = "Updated";
             state = entityProxy.GetPropertyVersion(nameof(AllPrimitive.String));
             Assert.Equal(1, state);
+
+            SqlMapper.Update(entity);
         }
 
 

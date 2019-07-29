@@ -84,6 +84,11 @@ namespace SmartSql.ConfigBuilder
             {
                 SmartSqlConfig.Settings.EnablePropertyChangedTrack = enableTrack;
             }
+            if (settingsNode.Attributes.TryGetValueAsBoolean(nameof(Settings.EnableDbNullToDefault),
+                out bool enableDbNullToDefault))
+            {
+                SmartSqlConfig.Settings.EnableDbNullToDefault = enableDbNullToDefault;
+            }
         }
         #endregion
         #region 1. Properties

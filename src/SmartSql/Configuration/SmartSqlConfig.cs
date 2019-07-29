@@ -79,7 +79,7 @@ namespace SmartSql.Configuration
             var scopeWithId = FullIdUtil.Parse(fullId);
             return GetSqlMap(scopeWithId.Item1).GetMultipleResultMap(fullId);
         }
-        
+
         public SmartSqlConfig()
         {
             Settings = Settings.Default;
@@ -110,12 +110,14 @@ namespace SmartSql.Configuration
             IgnoreParameterCase = false,
             IsCacheEnabled = false,
             ParameterPrefix = "$",
-            EnablePropertyChangedTrack = false
+            EnablePropertyChangedTrack = false,
+            EnableDbNullToDefault = false
         };
 
         public bool IgnoreParameterCase { get; set; }
         public bool IsCacheEnabled { get; set; }
         public string ParameterPrefix { get; set; }
         public bool EnablePropertyChangedTrack { get; set; }
+        public bool EnableDbNullToDefault { get; set; }
     }
 }

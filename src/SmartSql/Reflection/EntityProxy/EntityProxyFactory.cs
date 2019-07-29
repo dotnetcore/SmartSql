@@ -35,7 +35,7 @@ namespace SmartSql.Reflection.EntityProxy
             {
                 return entityType;
             }
-            
+
             var virtualProperties = entityType.GetProperties().Where(p => p.SetMethod.IsVirtual).ToArray();
 
             string implName = $"{entityType.FullName}Proxy";
@@ -52,7 +52,8 @@ namespace SmartSql.Reflection.EntityProxy
             BuildGetEnableTrackMethod(typeBuilder, enableTrackField);
             BuildSetEnableTrackMethod(typeBuilder, enableTrackField);
             BuildClearPropertyVersionMethod(typeBuilder, changedVersionField);
-            var onPropertyChangedMethodInfo = BuildOnPropertyChangedMethod(typeBuilder, enableTrackField, changedVersionField);
+            var onPropertyChangedMethodInfo =
+                BuildOnPropertyChangedMethod(typeBuilder, enableTrackField, changedVersionField);
             BuildGetPropertyVersionMethod(typeBuilder, enableTrackField, changedVersionField);
 
             foreach (var propertyInfo in virtualProperties)
@@ -93,7 +94,7 @@ namespace SmartSql.Reflection.EntityProxy
             ilGen.Return();
             return getEnableTrackMethodBuilder;
         }
-        
+
         private MethodBuilder BuildClearPropertyVersionMethod(TypeBuilder typeBuilder, FieldBuilder changedVersionField)
         {
             var clearPropertyVersionBuilder = typeBuilder.DefineMethod(
@@ -109,7 +110,7 @@ namespace SmartSql.Reflection.EntityProxy
             ilGen.Return();
             return clearPropertyVersionBuilder;
         }
-        
+
         private void BuildCtor(TypeBuilder typeBuilder, Type entityType, FieldBuilder changedVersionField,
             int propertyCount)
         {
@@ -141,7 +142,8 @@ namespace SmartSql.Reflection.EntityProxy
             }
         }
 
-        private void BuildSetMethod(TypeBuilder typeBuilder, PropertyInfo propertyInfo, MethodInfo onPropertyChangedMethodInfo)
+        private void BuildSetMethod(TypeBuilder typeBuilder, PropertyInfo propertyInfo,
+            MethodInfo onPropertyChangedMethodInfo)
         {
             var setMethod = propertyInfo.SetMethod;
             var paramTypes = setMethod.GetParameters().Select(p => p.ParameterType).ToArray();
@@ -189,7 +191,7 @@ namespace SmartSql.Reflection.EntityProxy
             ilGen.Emit(OpCodes.Ldloca_S, countLocalBuilder);
             ilGen.Call(DictionaryStringIntType.Method.TryGetValue);
             var containedLabel = ilGen.DefineLabel();
-            ilGen.Emit(OpCodes.Brfalse_S, containedLabel);
+            ilGen.IfFalseS(containedLabel);
 
             ilGen.LoadArg(0);
             ilGen.FieldGet(changedVersionField);
@@ -216,7 +218,7 @@ namespace SmartSql.Reflection.EntityProxy
             ilGen.LoadArg(0);
             ilGen.FieldGet(enableTrackField);
             var enableTrackLabel = ilGen.DefineLabel();
-            ilGen.Emit(OpCodes.Brtrue_S, enableTrackLabel);
+            ilGen.IfTrueS(enableTrackLabel);
             if (returnVal.HasValue)
             {
                 ilGen.LoadInt32(returnVal.Value);
@@ -246,7 +248,7 @@ namespace SmartSql.Reflection.EntityProxy
             ilGen.Call(DictionaryStringIntType.Method.TryGetValue);
 
             var containedLabel = ilGen.DefineLabel();
-            ilGen.Emit(OpCodes.Brtrue_S, containedLabel);
+            ilGen.IfTrueS(containedLabel);
             ilGen.LoadInt32(0);
             ilGen.Return();
             ilGen.MarkLabel(containedLabel);
