@@ -4,7 +4,7 @@ namespace SmartSql.TypeHandler
 {
     public interface ICrypto : IInitialize, IDisposable
     {
-        string Decrypt(string data);
-        string Encrypt(string data);
+        string Decrypt(string cipherText);
+        string Encrypt(string plainText);
     }
 }
