@@ -589,20 +589,24 @@ namespace SmartSql.DyRepository
 
         private SqlMap GetOrAddSqlMap(SmartSqlConfig smartSqlConfig, Type interfaceType, string scope)
         {
-            if (smartSqlConfig.SqlMaps.TryGetValue(scope, out var sqlMap)) return sqlMap;
-            sqlMap = new SqlMap
+            if (!smartSqlConfig.SqlMaps.TryGetValue(scope, out var sqlMap))
             {
-                Path = interfaceType.AssemblyQualifiedName,
-                Scope = scope,
-                SmartSqlConfig = smartSqlConfig,
-                Statements = new Dictionary<string, Statement>(),
-                Caches = new Dictionary<string, Configuration.Cache>(),
-                MultipleResultMaps = new Dictionary<string, MultipleResultMap>(),
-                ParameterMaps = new Dictionary<string, ParameterMap>(),
-                ResultMaps = new Dictionary<string, ResultMap>()
-            };
+                sqlMap = new SqlMap
+                {
+                    Path = interfaceType.AssemblyQualifiedName,
+                    Scope = scope,
+                    SmartSqlConfig = smartSqlConfig,
+                    Statements = new Dictionary<string, Statement>(),
+                    Caches = new Dictionary<string, Configuration.Cache>(),
+                    MultipleResultMaps = new Dictionary<string, MultipleResultMap>(),
+                    ParameterMaps = new Dictionary<string, ParameterMap>(),
+                    ResultMaps = new Dictionary<string, ResultMap>()
+                };
+                smartSqlConfig.SqlMaps.Add(scope, sqlMap);
+            }
+
             BuildCache(sqlMap, interfaceType);
-            smartSqlConfig.SqlMaps.Add(scope, sqlMap);
+
             return sqlMap;
         }
 
@@ -613,10 +617,12 @@ namespace SmartSql.DyRepository
             {
                 Configuration.Cache cache = new Configuration.Cache
                 {
-                    FlushInterval = new FlushInterval()
+                    FlushInterval = new FlushInterval(), Id = ParseCacheFullId(sqlMap.Scope, cacheAttribute.Id)
                 };
-
-                cache.Id = ParseCacheFullId(sqlMap.Scope, cacheAttribute.Id);
+                if (sqlMap.Caches.ContainsKey(cache.Id))
+                {
+                    throw new SmartSqlException($"Cache.FullId:[{cache.Id}] already exists!");
+                }
 
                 if (cacheAttribute.FlushInterval > 0)
                 {
