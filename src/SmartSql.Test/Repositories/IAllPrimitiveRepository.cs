@@ -10,7 +10,7 @@ namespace SmartSql.Test.Repositories
 {
     public interface IAllPrimitiveRepository
     {
-        [Statement(Sql = "SELECT Top (@Taken) T.* From T_AllPrimitive T With(NoLock)")]
+        [Statement(Id = "QueryByTaken",Sql = "SELECT Top (@Taken) T.* From T_AllPrimitive T With(NoLock)")]
         IList<AllPrimitive> Query([Param("Taken")]int taken);
         long Insert(AllPrimitive entity);
 

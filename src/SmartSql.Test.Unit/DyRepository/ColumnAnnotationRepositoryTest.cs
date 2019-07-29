@@ -14,13 +14,7 @@ namespace SmartSql.Test.Unit.DyRepository
 
         public ColumnAnnotationRepositoryTest(SmartSqlFixture smartSqlFixture)
         {
-            var repositoryBuilder = new EmitRepositoryBuilder(null, null,
-                smartSqlFixture.LoggerFactory.CreateLogger<EmitRepositoryBuilder>());
-            var repositoryFactory = new RepositoryFactory(repositoryBuilder,
-                smartSqlFixture.LoggerFactory.CreateLogger<RepositoryFactory>());
-            _repository =
-                repositoryFactory.CreateInstance(typeof(IColumnAnnotationRepository), smartSqlFixture.SqlMapper) as
-                    IColumnAnnotationRepository;
+            _repository = smartSqlFixture.ColumnAnnotationRepository;
         }
 
         [Fact]

@@ -15,9 +15,7 @@ namespace SmartSql.Test.Unit.DyRepository
         private IUserRepository _userRepository;
         public UserRepository_Test(SmartSqlFixture smartSqlFixture)
         {
-            var repositoryBuilder = new EmitRepositoryBuilder(null, null, smartSqlFixture.LoggerFactory.CreateLogger<EmitRepositoryBuilder>());
-            var repositoryFactory = new RepositoryFactory(repositoryBuilder, smartSqlFixture.LoggerFactory.CreateLogger<RepositoryFactory>());
-            _userRepository = repositoryFactory.CreateInstance(typeof(IUserRepository), smartSqlFixture.SqlMapper) as IUserRepository;
+            _userRepository = smartSqlFixture.UserRepository;
         }
 
 

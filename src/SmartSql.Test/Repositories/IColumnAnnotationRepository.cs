@@ -17,7 +17,7 @@ namespace SmartSql.Test.Repositories
             "INSERT INTO t_column_annotation_entity(name,extend_data)VALUES(@Name,@Data);Select Scope_Identity();")]
         int Insert(ColumnAnnotationEntity entity);
 
-        [Statement(Sql =
+        [Statement(Id = "InsertWithParam",Sql =
             "INSERT INTO t_column_annotation_entity(name,extend_data)VALUES(@Name,@Data);Select Scope_Identity();")]
         int Insert([Param("Name")] string name,
             [Param("Data", TypeHandler = "Json")] ColumnAnnotationEntity.ExtendData data);

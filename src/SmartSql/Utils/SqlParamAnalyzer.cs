@@ -19,15 +19,15 @@ namespace SmartSql.Utils
             }
             _sqlParamsTokens = new Regex(@"[" + dbPrefix + @"]([\p{L}\p{N}_.\[\]]+)", regOptions);
         }
-        public IEnumerable<string> Analyse(string realSql)
+        public IList<string> Analyse(string realSql)
         {
-            return CacheUtil<SqlParamAnalyzer, String, IEnumerable<string>>.GetOrAdd(realSql, AnalyseImpl);
+            return CacheUtil<SqlParamAnalyzer, String, IList<string>>.GetOrAdd(realSql, AnalyseImpl);
         }
 
-        private IEnumerable<string> AnalyseImpl(string realSql)
+        private IList<string> AnalyseImpl(string realSql)
         {
-            var matchs = _sqlParamsTokens.Matches(realSql);
-            return matchs.Cast<Match>().Select(m => m.Groups[1].Value).Distinct();
+            var matches = _sqlParamsTokens.Matches(realSql);
+            return matches.Cast<Match>().Select(m => m.Groups[1].Value).Distinct().ToList();
         }
 
         public string Replace(string realSql, ReplaceEval action)

@@ -2,6 +2,8 @@
 using SmartSql.DyRepository;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 using SmartSql.Test.Repositories;
 using Xunit;
@@ -9,7 +11,6 @@ using Microsoft.Extensions.Logging;
 
 namespace SmartSql.Test.Unit.DyRepository
 {
-    [Collection("GlobalSmartSql")]
     public class RepositoryBuilderTest
     {
         protected ISqlMapper SqlMapper { get; }
@@ -17,13 +18,25 @@ namespace SmartSql.Test.Unit.DyRepository
         IRepositoryBuilder _repositoryBuilder;
         IRepositoryFactory _repositoryFactory;
 
-        public RepositoryBuilderTest(SmartSqlFixture smartSqlFixture)
+        public RepositoryBuilderTest()
         {
-            SqlMapper = smartSqlFixture.SqlMapper;
+            var loggerFactory = new LoggerFactory(Enumerable.Empty<ILoggerProvider>(),
+                new LoggerFilterOptions {MinLevel = LogLevel.Debug});
+            var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs",
+                "SmartSql-RepositoryBuilderTest.log");
+            loggerFactory.AddFile(logPath, LogLevel.Trace);
+
+            var smartSqlBuilder = new SmartSqlBuilder()
+                .UseXmlConfig()
+                .UseLoggerFactory(loggerFactory)
+                .UseAlias(nameof(RepositoryBuilderTest) + Guid.NewGuid())
+                .AddFilter<TestPrepareStatementFilter>()
+                .Build();
+            SqlMapper = smartSqlBuilder.SqlMapper;
             _repositoryBuilder = new EmitRepositoryBuilder(null, null,
-                smartSqlFixture.LoggerFactory.CreateLogger<EmitRepositoryBuilder>());
+                loggerFactory.CreateLogger<EmitRepositoryBuilder>());
             _repositoryFactory = new RepositoryFactory(_repositoryBuilder,
-                smartSqlFixture.LoggerFactory.CreateLogger<RepositoryFactory>());
+                loggerFactory.CreateLogger<RepositoryFactory>());
         }
 
         [Fact]
@@ -73,8 +86,5 @@ namespace SmartSql.Test.Unit.DyRepository
                 DateTime = DateTime.Now
             });
         }
-
-
-
     }
 }

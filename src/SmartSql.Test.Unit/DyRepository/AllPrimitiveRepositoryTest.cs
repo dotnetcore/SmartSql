@@ -14,9 +14,7 @@ namespace SmartSql.Test.Unit.DyRepository
         private IAllPrimitiveRepository _repository;
         public AllPrimitiveRepositoryTest(SmartSqlFixture smartSqlFixture)
         {
-            var repositoryBuilder = new EmitRepositoryBuilder(null, null, smartSqlFixture.LoggerFactory.CreateLogger<EmitRepositoryBuilder>());
-            var repositoryFactory = new RepositoryFactory(repositoryBuilder, smartSqlFixture.LoggerFactory.CreateLogger<RepositoryFactory>());
-            _repository = repositoryFactory.CreateInstance(typeof(IAllPrimitiveRepository), smartSqlFixture.SqlMapper) as IAllPrimitiveRepository;
+            _repository = smartSqlFixture.AllPrimitiveRepository;
         }
         [Fact]
         public void GetByPage_ValueTuple()

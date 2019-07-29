@@ -30,6 +30,9 @@ namespace SmartSql.DyRepository.Annotations
         /// 数据源
         /// </summary>
         public DataSourceChoice SourceChoice { get; set; } = DataSourceChoice.Unknow;
+        public bool EnablePropertyChangedTrack { get; set; }
+        public String ReadDb { get; set; }
+        public int CommandTimeout { get; set; }
     }
     /// <summary>
     /// 执行行为

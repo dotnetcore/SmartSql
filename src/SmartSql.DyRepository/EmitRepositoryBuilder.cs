@@ -308,6 +308,11 @@ namespace SmartSql.DyRepository
             }
             else
             {
+                if (sqlMap.Statements.ContainsKey(fullSqlId))
+                {
+                    throw new SmartSqlException($"Statement.FullSqlId:[{fullSqlId}] already exists!");
+                }
+
                 var resultCacheAttr = methodInfo.GetCustomAttribute<ResultCacheAttribute>();
                 statement = new Statement
                 {
@@ -318,12 +323,15 @@ namespace SmartSql.DyRepository
                     {
                         new SqlText(statementAttr.Sql, sqlMap.SmartSqlConfig.Database.DbProvider.ParameterPrefix)
                     },
-                    CommandType = statementAttr.CommandType
+                    CommandType = statementAttr.CommandType,
+                    EnablePropertyChangedTrack = statementAttr.EnablePropertyChangedTrack,
+                    ReadDb = statementAttr.ReadDb
                 };
-                if (sqlMap.Statements.ContainsKey(fullSqlId))
+                if (statementAttr.CommandTimeout > 0)
                 {
-                    statement.Id = $"{statementAttr.Id}-{Guid.NewGuid():N}";
+                    statement.CommandTimeout = statementAttr.CommandTimeout;
                 }
+
 
                 if (statementAttr.SourceChoice != DataSourceChoice.Unknow)
                 {

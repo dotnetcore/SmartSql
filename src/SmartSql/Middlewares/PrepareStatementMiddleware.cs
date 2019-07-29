@@ -42,7 +42,6 @@ namespace SmartSql.Middlewares
 
         private void BuildDbParameters(AbstractRequestContext reqConetxt)
         {
-            var dbParameterNames = _sqlParamAnalyzer.Analyse(reqConetxt.RealSql);
             if (reqConetxt.CommandType == CommandType.StoredProcedure)
             {
                 foreach (var sqlParameter in reqConetxt.Parameters.Values)
