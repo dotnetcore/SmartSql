@@ -63,6 +63,7 @@
     <ProjectReference Include="..\SmartSql.Cache.Redis\SmartSql.Cache.Redis.csproj" />
     <ProjectReference Include="..\SmartSql.DIExtension\SmartSql.DIExtension.csproj" />
     <ProjectReference Include="..\SmartSql.DyRepository\SmartSql.DyRepository.csproj" />
+    <ProjectReference Include="..\SmartSql.InvokeSync\SmartSql.InvokeSync.csproj" />
     <ProjectReference Include="..\SmartSql.Options\SmartSql.Options.csproj" />
     <ProjectReference Include="..\SmartSql.ScriptTag\SmartSql.ScriptTag.csproj" />
     <ProjectReference Include="..\SmartSql.Test\SmartSql.Test.csproj" />

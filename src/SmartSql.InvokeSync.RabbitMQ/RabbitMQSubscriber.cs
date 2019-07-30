@@ -9,17 +9,22 @@ namespace SmartSql.InvokeSync.RabbitMQ
 {
     public class RabbitMQSubscriber : ISubscriber
     {
+        public String QueueName { get; }
+        public String RouterKey { get; }
         private readonly ILogger<RabbitMQSubscriber> _logger;
-        private readonly SubscriberOptions _subscriberOptions;
+        public SubscriberOptions SubscriberOptions { get; }
         private readonly PersistentConnection _connection;
         private IModel _consumerChannel;
+
         public RabbitMQSubscriber(
             ILogger<RabbitMQSubscriber> logger
             , SubscriberOptions subscriberOptions
             , PersistentConnection connection)
         {
             _logger = logger;
-            _subscriberOptions = subscriberOptions;
+            SubscriberOptions = subscriberOptions;
+            QueueName = subscriberOptions.QueueName;
+            RouterKey = subscriberOptions.RoutingKey;
             _connection = connection;
         }
 
@@ -33,12 +38,12 @@ namespace SmartSql.InvokeSync.RabbitMQ
             }
 
             _consumerChannel = _connection.CreateModel();
-            _consumerChannel.ExchangeDeclare(_subscriberOptions.Exchange,
-                _subscriberOptions.ExchangeType, true, false);
-            _consumerChannel.QueueDeclare(_subscriberOptions.QueueName, true, false, false, null);
-            _consumerChannel.QueueBind(_subscriberOptions.QueueName,
-                _subscriberOptions.Exchange,
-                _subscriberOptions.RoutingKey);
+            _consumerChannel.ExchangeDeclare(SubscriberOptions.Exchange,
+                SubscriberOptions.ExchangeType, true, false);
+            _consumerChannel.QueueDeclare(SubscriberOptions.QueueName, true, false, false, null);
+            _consumerChannel.QueueBind(SubscriberOptions.QueueName,
+                SubscriberOptions.Exchange,
+                SubscriberOptions.RoutingKey);
             var consumer = new EventingBasicConsumer(_consumerChannel);
             consumer.Received += (model, ea) =>
             {
@@ -49,7 +54,8 @@ namespace SmartSql.InvokeSync.RabbitMQ
                     Received?.Invoke(this, syncMsg);
                     if (_logger.IsEnabled(LogLevel.Debug))
                     {
-                         _logger.LogDebug($"Received Invoke -> Id:[{syncMsg.Id}],Scope:[{syncMsg.Scope}],[{syncMsg.SqlId}] succeeded.");
+                        _logger.LogDebug(
+                            $"Received Invoke -> Id:[{syncMsg.Id}],Scope:[{syncMsg.Scope}],[{syncMsg.SqlId}] succeeded.");
                     }
                 }
                 catch (Exception ex)
@@ -58,11 +64,11 @@ namespace SmartSql.InvokeSync.RabbitMQ
                 }
             };
             _consumerChannel.BasicQos(0, 1, false);
-            _consumerChannel.BasicConsume(_subscriberOptions.QueueName, true, consumer);
+            _consumerChannel.BasicConsume(SubscriberOptions.QueueName, true, consumer);
 
             _consumerChannel.CallbackException += (sender, ea) =>
             {
-                _logger.LogError(ea.Exception,$"consumerChannel callback exception:{ea.Exception?.Message}");
+                _logger.LogError(ea.Exception, $"consumerChannel callback exception:{ea.Exception?.Message}");
             };
         }
 
