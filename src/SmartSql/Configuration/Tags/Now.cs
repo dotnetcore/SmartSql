@@ -14,13 +14,6 @@ namespace SmartSql.Configuration.Tags
 
         public override void BuildSql(AbstractRequestContext context)
         {
-            if (!String.IsNullOrEmpty(Prepend))
-            {
-                context.SqlBuilder.Append(Prepend);
-            }
-
-            context.SqlBuilder.AppendFormat("{0}{1}",
-                context.ExecutionContext.SmartSqlConfig.Database.DbProvider.ParameterPrefix, Property);
             context.Parameters.TryAdd(Property, GetNow());
         }
 

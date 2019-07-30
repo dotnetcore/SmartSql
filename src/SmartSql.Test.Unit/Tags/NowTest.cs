@@ -25,6 +25,17 @@ namespace SmartSql.Test.Unit.Tags
             });
             Assert.True(true);
         }
+        
+        public void GetExpNow()
+        {
+            var msg = SqlMapper.ExecuteScalar<DateTime>(new RequestContext
+            {
+                Scope = nameof(NowTest),
+                SqlId = "GetExpNow"
+            });
+            Assert.True(true);
+        }
+        
 
         [Fact]
         public void UpdateDateTime()

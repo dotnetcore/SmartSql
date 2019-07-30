@@ -10,14 +10,19 @@
 <SmartSqlMap Scope="NowTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
   <Statements>
     <Statement Id="GetNow">
-      Select <Now Property="CreateTime"/>;
+      <Now Property="CreateTime"/>
+      Select @CreateTime;
     </Statement>
     <Statement Id="UpdateDateTime">
+      <Now Property="CreateTime"/>
       UPDATE T_AllPrimitive
       <Set>
-        <Now Prepend="DateTime =" Property="DateTime"/>
+        DateTime =@CreateTime
       </Set>
       Where Id=@Id
+    </Statement>
+    <Statement Id="GetExpNow">
+      Select @Now();
     </Statement>
   </Statements>
 </SmartSqlMap>
