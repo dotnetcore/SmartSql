@@ -11,6 +11,7 @@ using SmartSql.ConfigBuilder;
 using SmartSql.DIExtension;
 using SmartSql.InvokeSync;
 using SmartSql.InvokeSync.Kafka;
+using SmartSql.InvokeSync.RabbitMQ;
 using SmartSql.Sample.AspNetCore.Service;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -42,11 +43,27 @@ namespace SmartSql.Sample.AspNetCore
                     o.Filter = (type) => type.Namespace == "SmartSql.Sample.AspNetCore.DyRepositories";
                 });
 //                .AddInvokeSync(options => { })
-//                .AddKafkaPublisher(options =>
+//                .AddRabbitMQPublisher(options =>
 //                {
-//                    options.Servers = "localhost:9092";
-//                    options.Topic = "smartsql.sync";
-//                    options.Config.Add("group.id", "SmartSql");
+//                    options.HostName = "localhost";
+//                    options.UserName = "maidao";
+//                    options.Password = "maidao";
+//                    options.RoutingKey = "smartsql-sync-1";
+//
+//                }).AddRabbitMQSubscriber(options =>
+//                {
+//                    options.HostName = "localhost";
+//                    options.UserName = "maidao";
+//                    options.Password = "maidao";
+//                    options.RoutingKey = "smartsql-sync-1";
+//                    options.QueueName = "first";
+//                }).AddRabbitMQSubscriber(options =>
+//                {
+//                    options.HostName = "localhost";
+//                    options.UserName = "maidao";
+//                    options.Password = "maidao";
+//                    options.RoutingKey = "smartsql-sync-1";
+//                    options.QueueName = "second";
 //                });
             services.AddSingleton<UserService>();
             RegisterConfigureSwagger(services);
@@ -81,11 +98,11 @@ namespace SmartSql.Sample.AspNetCore
                 app.UseDeveloperExceptionPage();
             }
 
-//            app.ApplicationServices.UseSmartSqlSync();
-//            app.ApplicationServices.UseSmartSqlSubscriber((syncRequest) =>
-//            {
-//                Console.Error.WriteLine(syncRequest.Scope);
-//            });
+            app.ApplicationServices.UseSmartSqlSync();
+            app.ApplicationServices.UseSmartSqlSubscriber((syncRequest) =>
+            {
+                Console.Error.WriteLine(syncRequest.Scope);
+            });
 
             app.UseMvc();
             app.UseStaticFiles();

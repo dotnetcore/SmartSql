@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -7,16 +8,16 @@ namespace SmartSql.InvokeSync
     {
         private readonly ILogger<SyncService> _logger;
         private readonly ISyncFilter _syncFilter;
-        private readonly IPublisher _publisher;
+        private readonly IEnumerable<IPublisher> _publishers;
 
         public SyncService(
             ILogger<SyncService> logger
-            ,ISyncFilter syncFilter
-            ,IPublisher publisher)
+            , ISyncFilter syncFilter
+            , IEnumerable<IPublisher> publishers)
         {
             _logger = logger;
             _syncFilter = syncFilter;
-            _publisher = publisher;
+            _publishers = publishers;
         }
 
         public async Task Sync(ExecutionContext executionContext)
@@ -25,16 +26,23 @@ namespace SmartSql.InvokeSync
             {
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
-                    _logger.LogDebug($"Sync Request -> StatementType:[{executionContext.Request.Statement?.StatementType}], Scope:[{executionContext.Request.Scope}],SqlId:[{executionContext.Request.SqlId}] Filter false.");
+                    _logger.LogDebug(
+                        $"Sync Request -> StatementType:[{executionContext.Request.Statement?.StatementType}], Scope:[{executionContext.Request.Scope}],SqlId:[{executionContext.Request.SqlId}] Filter false.");
                 }
+
                 return;
             }
 
             var syncRequest = executionContext.AsSyncRequest();
-            await _publisher.PublishAsync(syncRequest);
+            foreach (var publisher in _publishers)
+            {
+                await publisher.PublishAsync(syncRequest);
+            }
+
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug($"Sync Request -> Id:[{syncRequest.Id}],StatementType:[{syncRequest.StatementType}],Scope:[{syncRequest.Scope}],SqlId:[{syncRequest.SqlId}] succeeded.");
+                _logger.LogDebug(
+                    $"Sync Request -> Id:[{syncRequest.Id}],StatementType:[{syncRequest.StatementType}],Scope:[{syncRequest.Scope}],SqlId:[{syncRequest.SqlId}] succeeded.");
             }
         }
     }

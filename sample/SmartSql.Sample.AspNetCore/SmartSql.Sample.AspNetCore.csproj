@@ -24,6 +24,7 @@
     <ProjectReference Include="..\..\src\SmartSql.DIExtension\SmartSql.DIExtension.csproj" />
     <ProjectReference Include="..\..\src\SmartSql.DyRepository\SmartSql.DyRepository.csproj" />
     <ProjectReference Include="..\..\src\SmartSql.InvokeSync.Kafka\SmartSql.InvokeSync.Kafka.csproj" />
+    <ProjectReference Include="..\..\src\SmartSql.InvokeSync.RabbitMQ\SmartSql.InvokeSync.RabbitMQ.csproj" />
     <ProjectReference Include="..\..\src\SmartSql.ScriptTag\SmartSql.ScriptTag.csproj" />
     <ProjectReference Include="..\..\src\SmartSql.Test\SmartSql.Test.csproj" />
     <ProjectReference Include="..\..\src\SmartSql.TypeHandler.PostgreSql\SmartSql.TypeHandler.PostgreSql.csproj" />

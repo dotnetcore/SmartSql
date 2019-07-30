@@ -43,6 +43,10 @@ namespace SmartSql.Configuration
 
         public string GetPropertyValue(string propExp)
         {
+            if (String.IsNullOrEmpty(propExp))
+            {
+                return propExp;
+            }
             if (!_propertyTokens.IsMatch(propExp))
             {
                 return propExp;

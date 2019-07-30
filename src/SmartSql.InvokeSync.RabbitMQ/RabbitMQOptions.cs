@@ -13,6 +13,6 @@ namespace SmartSql.InvokeSync.RabbitMQ
         public ushort RequestedHeartbeat { get; set; } = 60;
         public bool AutomaticRecoveryEnabled { get; set; } = true;
         public String RoutingKey { get; set; } = "sync";
-        public String QueueName { get; set; } = "smartsql.listen";
+
     }
 }

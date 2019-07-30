@@ -38,9 +38,13 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             if (onReceived == null) throw new ArgumentNullException(nameof(onReceived));
 
-            var subscriber = serviceProvider.GetRequiredService<ISubscriber>();
-            subscriber.Received += (sender, request) => { onReceived(request); };
-            subscriber.Start();
+            var subscribers = serviceProvider.GetServices<ISubscriber>();
+            foreach (var subscriber in subscribers)
+            {
+                subscriber.Received += (sender, request) => { onReceived(request); };
+                subscriber.Start();
+            }
+
             return serviceProvider;
         }
     }
