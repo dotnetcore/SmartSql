@@ -14,6 +14,7 @@ namespace SmartSql.InvokeSync
         public CommandType CommandType { get; set; } = CommandType.Text;
         public StatementType? StatementType { get; set; }
         public IsolationLevel? Transaction { get; set; }
+        public String ParameterPrefix { get; set; }
         public String ReadDb { get; set; }
         public bool IsStatementSql { get; internal set; } = true;
         public String RealSql { get; set; }

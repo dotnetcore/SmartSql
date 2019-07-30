@@ -55,8 +55,9 @@ namespace SmartSql.Sample.AspNetCore
 //                    options.HostName = "localhost";
 //                    options.UserName = "maidao";
 //                    options.Password = "maidao";
-//                    options.RoutingKey = "smartsql-sync-1";
-//                    options.QueueName = "first";
+//                    options.Exchange= "data.sync";            
+//                    options.RoutingKey = "eq";
+//                    options.QueueName = "data.sync.eq.crm";
 //                }).AddRabbitMQSubscriber(options =>
 //                {
 //                    options.HostName = "localhost";

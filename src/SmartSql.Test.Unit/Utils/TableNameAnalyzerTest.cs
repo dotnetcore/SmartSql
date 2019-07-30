@@ -33,13 +33,20 @@ namespace SmartSql.Test.Unit.Utils
 
             var newSql = _tableNameAnalyzer.Replace(StatementType.Insert, insertSql, (tableName, operation) =>
             {
-                if (tableName == "T_User")
-                {
-                    return operation + " new_user";
-                }
-
-                throw new ArgumentException();
+                return operation + "new_user";
             });
+            
+            Assert.Equal(@"Insert Into new_user
+            (
+            UserName,
+            Status
+            )
+            VALUES
+            (
+            @UserName,
+            @Status
+            )
+            ;select last_insert_rowid() from T_User",newSql);
         }
 
         [Fact]
@@ -52,13 +59,13 @@ namespace SmartSql.Test.Unit.Utils
                 Where Id=@Id";
             var newSql = _tableNameAnalyzer.Replace(StatementType.Update, updateSql, (tableName, operation) =>
             {
-                if (tableName == "T_User")
-                {
-                    return operation + " new_user";
-                }
-
-                throw new ArgumentException();
+                return operation + "new_user";
             });
+            Assert.Equal(@"UPDATE new_user
+            Set
+                UserName = @UserName
+                Status = @Status
+                Where Id=@Id",newSql);
         }
 
         [Fact]
@@ -68,13 +75,10 @@ namespace SmartSql.Test.Unit.Utils
       Where Id=@Id";
             var newSql = _tableNameAnalyzer.Replace(StatementType.Delete, updateSql, (tableName, operation) =>
             {
-                if (tableName == "T_User")
-                {
-                    return operation + " new_user";
-                }
-
-                throw new ArgumentException();
+                return operation + "new_user";
             });
+            Assert.Equal(@"Delete new_user
+      Where Id=@Id",newSql);
         }
 
         [Fact]
@@ -84,13 +88,10 @@ namespace SmartSql.Test.Unit.Utils
       Where Id=@Id";
             var newSql = _tableNameAnalyzer.Replace(StatementType.Delete, updateSql, (tableName, operation) =>
             {
-                if (tableName == "T_User")
-                {
-                    return operation + " new_user";
-                }
-
-                throw new ArgumentException();
+                return operation + "new_user";
             });
+            Assert.Equal(@"Delete From new_user
+      Where Id=@Id",newSql);
         }
     }
 }
