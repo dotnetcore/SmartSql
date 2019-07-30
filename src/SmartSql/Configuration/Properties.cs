@@ -11,6 +11,7 @@ namespace SmartSql.Configuration
     {
         private readonly IDictionary<string, string> _properties;
         private readonly Regex _propertyTokens;
+
         public Properties()
         {
             _properties = new Dictionary<string, string>();
@@ -22,20 +23,31 @@ namespace SmartSql.Configuration
         {
             foreach (var property in properties)
             {
-                _properties.Add(property.Key, property.Value.ToString());
+                AddProperty(property.Key, property.Value.ToString());
             }
         }
+
         public void Import(IEnumerable<KeyValuePair<string, string>> properties)
         {
             foreach (var property in properties)
             {
-                _properties.Add(property.Key, property.Value);
+                AddProperty(property.Key, property.Value);
             }
+        }
+
+        public void AddProperty(string key, string value)
+        {
+            var propertyVal = GetPropertyValue(value);
+            _properties.Add(key, propertyVal);
         }
 
         public string GetPropertyValue(string propExp)
         {
-            if (!_propertyTokens.IsMatch(propExp)) { return propExp; }
+            if (!_propertyTokens.IsMatch(propExp))
+            {
+                return propExp;
+            }
+
             return _propertyTokens.Replace(propExp, match =>
             {
                 string propName = match.Groups[1].Value;
@@ -43,6 +55,7 @@ namespace SmartSql.Configuration
                 {
                     throw new SmartSqlException($"can not find Property.Name:{propName}.");
                 }
+
                 return propVal;
             });
         }

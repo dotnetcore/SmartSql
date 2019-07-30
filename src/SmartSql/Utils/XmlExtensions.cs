@@ -27,6 +27,10 @@ namespace System.Xml
         {
             if (xmlAttributeCollection.TryGetValueAsString(attrName, out string attrValStr))
             {
+                if (properties != null)
+                {
+                    attrValStr = properties.GetPropertyValue(attrValStr);
+                }
                 Boolean.TryParse(attrValStr, out attrVal);
                 return true;
             }
@@ -37,6 +41,10 @@ namespace System.Xml
         {
             if (xmlAttributeCollection.TryGetValueAsString(attrName, out string attrValStr))
             {
+                if (properties != null)
+                {
+                    attrValStr = properties.GetPropertyValue(attrValStr);
+                }
                 Int32.TryParse(attrValStr, out attrVal);
                 return true;
             }
