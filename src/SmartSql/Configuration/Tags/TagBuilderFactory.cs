@@ -41,6 +41,7 @@ namespace SmartSql.Configuration.Tags
             _tagBuilderMap.Add(nameof(Where), new WhereBuilder());
             _tagBuilderMap.Add(nameof(IdGenerator), new IdGeneratorBuilder());
             _tagBuilderMap.Add(nameof(OrderBy), new OrderByBuilder());
+            _tagBuilderMap.Add(nameof(Now), new NowBuilder());
         }
 
         public ITagBuilder Get(string nodeName)

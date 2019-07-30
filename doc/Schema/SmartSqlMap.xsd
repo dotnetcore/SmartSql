@@ -31,6 +31,12 @@
       <xs:enumeration value="TableDirect"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:simpleType name="DateTimeKind">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Utc"/>
+      <xs:enumeration value="Local"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:simpleType name="DataSourceChoice">
     <xs:restriction base="xs:NMTOKEN">
       <xs:enumeration value="Unknow"/>
@@ -215,6 +221,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="CompareValue" type="xs:string" use="required" />
     </xs:complexType>
@@ -246,6 +253,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
     </xs:complexType>
   </xs:element>
@@ -287,6 +295,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -320,6 +329,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -354,6 +364,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -388,6 +399,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -422,6 +434,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -456,6 +469,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -490,6 +504,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -523,6 +538,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -557,6 +573,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -590,6 +607,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -623,6 +641,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -656,6 +675,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -688,6 +708,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -722,6 +743,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -754,6 +776,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Property" type="xs:string" use="required" />
@@ -786,6 +809,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Test" type="xs:string" use="required" />
@@ -832,6 +856,7 @@
         <xs:element ref="Set" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="Min" type="xs:int" use="optional" />
@@ -864,6 +889,7 @@
         <xs:element ref="Where" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Min" type="xs:int" use="optional" />
     </xs:complexType>
@@ -892,6 +918,7 @@
         <xs:element ref="Placeholder" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Min" type="xs:int" use="optional" />
     </xs:complexType>
@@ -905,6 +932,13 @@
       <xs:attribute name="Separator" type="xs:string" use="required" />
       <xs:attribute name="Close" type="xs:string" use="required" />
       <xs:attribute name="Key" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Now">
+    <xs:complexType mixed="true">
+      <xs:attribute name="Prepend" type="xs:string" use="optional" />
+      <xs:attribute name="Property" type="xs:string" use="required" />
+      <xs:attribute name="Kind" type="DateTimeKind" use="optional" />
     </xs:complexType>
   </xs:element>
   <xs:element name="Env">
@@ -935,6 +969,7 @@
         <xs:element ref="Set" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Prepend" type="xs:string" use="optional" />
       <xs:attribute name="DbProvider" type="xs:string" use="required" />
@@ -975,6 +1010,7 @@
         <xs:element ref="Set" />
         <xs:element ref="For" />
         <xs:element ref="Env" />
+        <xs:element ref="Now" />
       </xs:choice>
       <xs:attribute name="Id" type="xs:string" use="required" />
       <xs:attribute name="Cache" type="xs:string" use="optional" />
