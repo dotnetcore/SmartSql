@@ -9,13 +9,10 @@ namespace SmartSql.TypeHandler.Crypto
 
         public static ICrypto Create(IDictionary<string, object> parameters)
         {
-            if (!parameters.TryGetValue(ALGORITHM, out var alg))
-            {
-                throw new ArgumentNullException(ALGORITHM);
-            }
+            parameters.EnsureValue(ALGORITHM, out String alg);
 
             ICrypto crypto;
-            switch (alg.ToString().ToUpper())
+            switch (alg.ToUpper())
             {
                 case "RSA":
                 case "RSA2":

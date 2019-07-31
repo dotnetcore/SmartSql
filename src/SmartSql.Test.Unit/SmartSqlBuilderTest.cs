@@ -29,47 +29,47 @@ namespace SmartSql.Test.Unit
 
             }
         }
+
         [Fact]
         public void Build_By_Config()
         {
             DbProviderManager.Instance.TryGet(DbProvider.SQLSERVER, out var dbProvider);
             var dbSessionFactory = new SmartSqlBuilder()
-               .UseNativeConfig(new Configuration.SmartSqlConfig
-               {
-                   Database = new Database
-                   {
-                       DbProvider = dbProvider,
-                       Write = new WriteDataSource
-                       {
-                           Name = "Write",
-                           ConnectionString = ConnectionString,
-                           DbProvider = dbProvider
-                       },
-                       Reads = new Dictionary<String, ReadDataSource>()
-                   }
-               })
-               .UseAlias("Build_By_Config")
-               .Build();
+                .UseNativeConfig(new Configuration.SmartSqlConfig
+                {
+                    Database = new Database
+                    {
+                        DbProvider = dbProvider,
+                        Write = new WriteDataSource
+                        {
+                            Name = "Write",
+                            ConnectionString = ConnectionString,
+                            DbProvider = dbProvider
+                        },
+                        Reads = new Dictionary<String, ReadDataSource>()
+                    }
+                })
+                .UseAlias("Build_By_Config")
+                .Build();
         }
+
         [Fact]
         public void Build_By_Xml()
         {
             var dbSessionFactory = new SmartSqlBuilder()
-               .UseXmlConfig()
-               .UseAlias("Build_By_Xml")
-               .Build();
+                .UseXmlConfig()
+                .UseAlias("Build_By_Xml")
+                .Build();
         }
+
         [Fact]
         public void Build_As_Mapper()
         {
             var sqlMapper = new SmartSqlBuilder()
-               .UseXmlConfig()
-               .UseAlias("Build_As_Mapper")
-               .Build()
-               .GetSqlMapper();
+                .UseXmlConfig()
+                .UseAlias("Build_As_Mapper")
+                .Build()
+                .GetSqlMapper();
         }
-
     }
-
-
 }
