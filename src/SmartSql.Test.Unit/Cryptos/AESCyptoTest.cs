@@ -6,6 +6,7 @@ namespace SmartSql.Test.Unit.Cryptos
 {
     public class AESCyptoTest
     {
+        [Fact]
         public void Test()
         {
             using (var aesCrypto = new AESCrypto())
@@ -19,6 +20,12 @@ namespace SmartSql.Test.Unit.Cryptos
 
                 var cipherText = aesCrypto.Encrypt(plainText);
                 var decryptText = aesCrypto.Decrypt(cipherText);
+                Assert.Equal(plainText, decryptText);
+                cipherText = aesCrypto.Encrypt(plainText);
+                decryptText = aesCrypto.Decrypt(cipherText);
+                Assert.Equal(plainText, decryptText);
+                cipherText = aesCrypto.Encrypt(plainText);
+                decryptText = aesCrypto.Decrypt(cipherText);
                 Assert.Equal(plainText, decryptText);
             }
         }

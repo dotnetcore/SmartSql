@@ -15,7 +15,6 @@ namespace SmartSql.TypeHandler.Crypto
             switch (alg.ToUpper())
             {
                 case "RSA":
-                case "RSA2":
                 {
                     crypto = new RSACrypto();
                     break;

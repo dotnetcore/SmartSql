@@ -15,15 +15,17 @@ namespace SmartSql.TypeHandler.Crypto
         private const string PRIVATE_KEY = "PrivateKey";
         private RSA _privateKeyProvider;
         private RSA _publicKeyProvider;
-        private Encoding _encoding = Encoding.UTF8;
-        private HashAlgorithmName _hashAlgorithmName;
+        private readonly Encoding _encoding = Encoding.UTF8;
 
         public void Initialize(IDictionary<string, object> parameters)
         {
             parameters.EnsureValue(CryptoFactory.ALGORITHM, out string algStr);
             parameters.EnsureValue(PUBLIC_KEY, out string publicKey);
             parameters.EnsureValue(PRIVATE_KEY, out string privateKey);
-            _hashAlgorithmName = algStr == "RSA" ? HashAlgorithmName.SHA1 : HashAlgorithmName.SHA256;
+            _privateKeyProvider = RSA.Create();
+            //_privateKeyProvider.ImportParameters();
+            _publicKeyProvider = RSA.Create();
+            //_publicKeyProvider.ImportParameters();
         }
 
         public void Dispose()
