@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace SmartSql.TypeHandler.Crypto
 {
@@ -10,25 +13,37 @@ namespace SmartSql.TypeHandler.Crypto
     {
         private const string PUBLIC_KEY = "PublicKey";
         private const string PRIVATE_KEY = "PrivateKey";
+        private RSA _privateKeyProvider;
+        private RSA _publicKeyProvider;
+        private Encoding _encoding = Encoding.UTF8;
+        private HashAlgorithmName _hashAlgorithmName;
 
         public void Initialize(IDictionary<string, object> parameters)
         {
+            parameters.EnsureValue(CryptoFactory.ALGORITHM, out string algStr);
             parameters.EnsureValue(PUBLIC_KEY, out string publicKey);
             parameters.EnsureValue(PRIVATE_KEY, out string privateKey);
+            _hashAlgorithmName = algStr == "RSA" ? HashAlgorithmName.SHA1 : HashAlgorithmName.SHA256;
         }
 
         public void Dispose()
         {
-            throw new System.NotImplementedException();
+            _privateKeyProvider.Dispose();
+            _publicKeyProvider.Dispose();
         }
+
         public string Decrypt(string cipherText)
         {
-            throw new System.NotImplementedException();
+            var cipherBytes = Convert.FromBase64String(cipherText);
+            var plainBytes = _privateKeyProvider.Decrypt(cipherBytes, RSAEncryptionPadding.Pkcs1);
+            return _encoding.GetString(plainBytes);
         }
 
         public string Encrypt(string plainText)
         {
-            throw new System.NotImplementedException();
+            var plainBytes = _encoding.GetBytes(plainText);
+            var cipherBytes = _publicKeyProvider.Encrypt(plainBytes, RSAEncryptionPadding.Pkcs1);
+            return Convert.ToBase64String(cipherBytes);
         }
     }
 }

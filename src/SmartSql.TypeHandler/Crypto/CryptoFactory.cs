@@ -5,7 +5,7 @@ namespace SmartSql.TypeHandler.Crypto
 {
     public class CryptoFactory
     {
-        private const string ALGORITHM = "Algorithm";
+        public const string ALGORITHM = "Algorithm";
 
         public static ICrypto Create(IDictionary<string, object> parameters)
         {
