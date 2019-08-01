@@ -41,16 +41,18 @@ namespace SmartSql.Sample.AspNetCore
                 {
                     o.AssemblyString = "SmartSql.Sample.AspNetCore";
                     o.Filter = (type) => type.Namespace == "SmartSql.Sample.AspNetCore.DyRepositories";
+                })
+                .AddInvokeSync(options => { })
+                .AddRabbitMQPublisher(options =>
+                {
+                    options.HostName = "localhost";
+                    options.UserName = "guest";
+                    options.Password = "guest";
+                    options.Exchange = "smartsql";
+                    options.RoutingKey = "smartsql.sync";
+
                 });
-//                .AddInvokeSync(options => { })
-//                .AddRabbitMQPublisher(options =>
-//                {
-//                    options.HostName = "localhost";
-//                    options.UserName = "maidao";
-//                    options.Password = "maidao";
-//                    options.RoutingKey = "smartsql-sync-1";
-//
-//                }).AddRabbitMQSubscriber(options =>
+//                .AddRabbitMQSubscriber(options =>
 //                {
 //                    options.HostName = "localhost";
 //                    options.UserName = "maidao";

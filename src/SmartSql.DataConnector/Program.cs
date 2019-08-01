@@ -18,7 +18,7 @@ namespace SmartSql.DataConnector
                     services.AddOptions();
                     services.Configure<AppOptions>(hostingContext.Configuration.GetSection("App"));
                     services.AddHostedService<AppService>();
-                }).ConfigureAppConfiguration(builder => { builder.AddJsonFile("appsettings.json"); })
+                }).ConfigureAppConfiguration(builder => { builder.AddJsonFile("appsettings.json").AddEnvironmentVariables();; })
                 .UseSerilog((hostingContext, loggerConfiguration) =>
                 {
                    var filePath= hostingContext.Configuration.GetValue<string>("Serilog:File:Path");
@@ -32,6 +32,7 @@ namespace SmartSql.DataConnector
                             shared: true,
                             flushToDiskInterval: TimeSpan.FromSeconds(1));
                 })
+                
                 .Build().RunAsync();
         }
     }

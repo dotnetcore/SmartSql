@@ -2,12 +2,12 @@ Name: OrderSyncTask
 Subscriber:
   Type: RabbitMQ
   Parameters:
-    HostName:
-    UserName:
-    Password:
-    Exchange:
-    RoutingKey:
-    QueueName:
+    HostName: localhost
+    UserName: guest
+    Password: guest
+    Exchange: smartsql
+    RoutingKey: smartsql.sync
+    QueueName: smartsql.sync.order
 
 DataSource:
   Type: RDB
@@ -17,7 +17,7 @@ DataSource:
 Jobs:
   Order:
     Source:
-      Scope: Order
+      Scope: User
       SqlIds: ['Insert']
       PrimaryKey:
         Name: Id
@@ -25,21 +25,8 @@ Jobs:
     Dest:
       # 初始化表结构脚本
       Schema: ''
-      TableName: 'order_order'
+      TableName: 'T_User'
       # 列名映射
       ColumnMapping:
         Id: {Name: id,IsPrimaryKey: true,IsAutoIncrement: true}
         CreateTime: {Name: create_time}
-          
-  OrderItem:
-    Source:
-      Scope: OrderItem
-      SqlIds: ['Insert']
-      PrimaryKey:
-        Name: Id
-        IsAutoIncrement: true
-    Dest:
-      Schema: ''
-      TableName: 'order_order_item'
-      ColumnMapping:
-        

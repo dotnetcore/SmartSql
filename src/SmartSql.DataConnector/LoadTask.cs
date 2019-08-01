@@ -52,15 +52,28 @@ namespace SmartSql.DataConnector
                     continue;
                 }
 
+                if (!syncRequest.StatementType.HasValue)
+                {
+                    continue;
+                }
+
+
                 var dest = job.Value.Dest;
                 var sql = syncRequest.RealSql;
                 var sourceParameterPrefix = syncRequest.ParameterPrefix;
+                var statementType = syncRequest.StatementType.Value;
                 var destParameterPrefix = Task.DataSource.Instance.SmartSqlConfig.Database.DbProvider.ParameterPrefix;
-                if (syncRequest.StatementType == StatementType.Insert
+
+                if (statementType.HasFlag(StatementType.Insert)
                     && source.PrimaryKey?.IsAutoIncrement == true)
                 {
                     sql = _insertWithId.Replace(sql, source.PrimaryKey.Name, dest.PrimaryKey.Name, destParameterPrefix);
                     syncRequest.Parameters.Add(dest.PrimaryKey.Name, syncRequest.Result);
+                    if (statementType.HasFlag(StatementType.Select))
+                    {
+                        sql = sql.Split(';')[0];
+                        statementType = StatementType.Insert;
+                    }
                 }
 
                 if (sourceParameterPrefix != destParameterPrefix)
@@ -68,7 +81,7 @@ namespace SmartSql.DataConnector
                     sql = sql.Replace(sourceParameterPrefix, destParameterPrefix);
                 }
 
-                sql = _tableNameAnalyzer.Replace(syncRequest.StatementType.Value, sql,
+                sql = _tableNameAnalyzer.Replace(statementType, sql,
                     (tableName, op) => op + dest.TableName);
 
                 var affected = Task.DataSource.Instance.SqlMapper.Execute(new RequestContext
