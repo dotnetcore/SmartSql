@@ -314,7 +314,7 @@ namespace SmartSql.DbSession
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
                     _logger.LogDebug(
-                        $"Statement.Id:{(requestContext.IsStatementSql ? requestContext.FullSqlId : requestContext.RealSql)} Invoke Taken:{stopwatch?.ElapsedMilliseconds}.");
+                        $"Statement.Id:{requestContext.FullSqlId} Invoke Taken:{stopwatch?.ElapsedMilliseconds}.");
                 }
             }
         }
@@ -370,7 +370,7 @@ namespace SmartSql.DbSession
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
                     _logger.LogDebug(
-                        $"Statement.Id:{(requestContext.IsStatementSql ? requestContext.FullSqlId : requestContext.RealSql)} Invoke Taken:{stopwatch?.ElapsedMilliseconds}.");
+                        $"Statement.Id:{requestContext.FullSqlId} Invoke Taken:{stopwatch?.ElapsedMilliseconds}.");
                 }
             }
         }

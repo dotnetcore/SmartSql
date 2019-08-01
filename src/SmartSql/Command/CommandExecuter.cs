@@ -66,7 +66,7 @@ namespace SmartSql.Command
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
                     _logger.LogDebug(
-                        $"Operation:{operation} Statement.Id:{(executionContext.Request.IsStatementSql ? executionContext.Request.FullSqlId : executionContext.Request.RealSql)} Execute Taken:{stopwatch?.ElapsedMilliseconds}.");
+                        $"Operation:{operation} Statement.Id:{executionContext.Request.FullSqlId} Execute Taken:{stopwatch?.ElapsedMilliseconds}.");
                 }
             }
         }
@@ -158,7 +158,7 @@ namespace SmartSql.Command
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
                     _logger.LogDebug(
-                        $"Operation:{operation} Statement.Id:{(executionContext.Request.IsStatementSql ? executionContext.Request.FullSqlId : executionContext.Request.RealSql)} Execute Taken:{stopwatch?.ElapsedMilliseconds}.");
+                        $"Operation:{operation} Statement.Id:{executionContext.Request.FullSqlId} Execute Taken:{stopwatch?.ElapsedMilliseconds}.");
                 }
             }
         }

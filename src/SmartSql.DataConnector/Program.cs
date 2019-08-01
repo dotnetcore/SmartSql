@@ -25,7 +25,6 @@ namespace SmartSql.DataConnector
                         .ReadFrom.Configuration(hostingContext.Configuration)
                         .Enrich.FromLogContext();
                 })
-                
                 .Build().RunAsync();
         }
     }
