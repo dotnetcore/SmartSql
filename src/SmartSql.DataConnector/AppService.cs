@@ -13,21 +13,25 @@ namespace SmartSql.DataConnector
         private readonly ILoggerFactory _loggerFactory;
         private readonly AppOptions _appOptions;
         private readonly IList<LoadTask> _loadTasks = new List<LoadTask>();
+        private readonly ILogger<AppService> _logger;
 
         public AppService(ILoggerFactory loggerFactory, IOptionsSnapshot<AppOptions> appOptions)
         {
             _loggerFactory = loggerFactory;
+            _logger = _loggerFactory.CreateLogger<AppService>();
             _appOptions = appOptions.Value;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            foreach (var taskConf in _appOptions.Tasks)
+            foreach (var task in _appOptions.Tasks)
             {
-                var taskConfig = new TaskBuilder(taskConf.Path, _loggerFactory).Build();
+                _logger.LogInformation($"Task.Path:[{task.Path}] Loading.");
+                var taskConfig = new TaskBuilder(task.Path, _loggerFactory).Build();
                 var loadTask = new LoadTask(taskConfig, _loggerFactory.CreateLogger<LoadTask>());
                 _loadTasks.Add(loadTask);
                 loadTask.Start();
+                _logger.LogInformation($"Task.Path:[{task.Path}] Start.");
             }
 
             return Task.CompletedTask;
@@ -44,6 +48,7 @@ namespace SmartSql.DataConnector
             foreach (var loadTask in _loadTasks)
             {
                 loadTask.Stop();
+                _logger.LogInformation($"LoadTask :[{loadTask.Task.Name}] Stop.");
             }
         }
 

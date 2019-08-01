@@ -12,19 +12,21 @@ namespace SmartSql.DataConnector.Configuration
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly IDeserializer _deserializer;
-
+        private readonly ILogger<TaskBuilder> _logger;
         public string ConfigPath { get; }
         public Task Task { get; private set; }
 
         public TaskBuilder(string configPath, ILoggerFactory loggerFactory)
         {
             _loggerFactory = loggerFactory;
+            _logger = _loggerFactory.CreateLogger<TaskBuilder>();
             ConfigPath = configPath;
             _deserializer = new DeserializerBuilder().Build();
         }
 
         public Task Build()
         {
+            _logger.LogInformation($"Build Path:[{ConfigPath}].");
             using (StreamReader configStream = new StreamReader(ConfigPath))
             {
                 var configStr = configStream.ReadToEnd();
@@ -45,6 +47,7 @@ namespace SmartSql.DataConnector.Configuration
                     Task.DataSource.Parameters.EnsureValue("ConnectionString", out string connectionString);
                     Task.DataSource.Instance = new SmartSqlBuilder()
                         .RegisterToContainer(false)
+                        .UseLoggerFactory(_loggerFactory)
                         .UseDataSource(dbProvider, connectionString).Build();
                     break;
                 }

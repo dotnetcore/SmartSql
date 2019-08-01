@@ -1,8 +1,14 @@
 Name: OrderSyncTask
 Subscriber:
-  Type: Kafka
-    Parameters:
-      
+  Type: RabbitMQ
+  Parameters:
+    HostName:
+    UserName:
+    Password:
+    Exchange:
+    RoutingKey:
+    QueueName:
+
 DataSource:
   Type: RDB
   Parameters:
@@ -22,7 +28,9 @@ Jobs:
       TableName: 'order_order'
       # 列名映射
       ColumnMapping:
-  
+        Id: {Name: id,IsPrimaryKey: true,IsAutoIncrement: true}
+        CreateTime: {Name: create_time}
+          
   OrderItem:
     Source:
       Scope: OrderItem

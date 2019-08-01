@@ -15,6 +15,16 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.2.0" />
+      <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
+      <PackageReference Include="MySql.Data" Version="8.0.17" />
+      <PackageReference Include="Npgsql" Version="4.0.8" />
+      <PackageReference Include="Oracle.ManagedDataAccess" Version="19.3.1" />
+      <PackageReference Include="Serilog.Extensions.Hosting" Version="3.0.0-dev-00019" />
+      <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.1-dev-00209" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="3.1.2-dev-00802" />
+      <PackageReference Include="Serilog.Sinks.File" Version="4.1.0-dev-00847" />
+      <PackageReference Include="System.Data.SqlClient" Version="4.6.1" />
+      <PackageReference Include="System.Data.SQLite" Version="1.0.111" />
       <PackageReference Include="YamlDotNet" Version="6.1.2" />
     </ItemGroup>
 
