@@ -42,6 +42,7 @@ namespace SmartSql.Configuration.Tags
             _tagBuilderMap.Add(nameof(IdGenerator), new IdGeneratorBuilder());
             _tagBuilderMap.Add(nameof(OrderBy), new OrderByBuilder());
             _tagBuilderMap.Add(nameof(Now), new NowBuilder());
+            _tagBuilderMap.Add(nameof(UUID), new UUIDBuilder());
         }
 
         public ITagBuilder Get(string nodeName)

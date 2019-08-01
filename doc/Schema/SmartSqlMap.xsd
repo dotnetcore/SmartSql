@@ -922,6 +922,12 @@
             <xs:attribute name="Kind" type="DateTimeKind" use="optional"/>
         </xs:complexType>
     </xs:element>
+    <xs:element name="UUID">
+        <xs:complexType mixed="true">
+            <xs:attribute name="Property" type="xs:string" use="required"/>
+            <xs:attribute name="Format" type="xs:string" use="optional"/>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="Env">
         <xs:complexType mixed="true">
             <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -966,6 +972,7 @@
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="IdGenerator" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="Now"/>
+                <xs:element ref="UUID"/>
                 <xs:element ref="IsEmpty"/>
                 <xs:element ref="IsEqual"/>
                 <xs:element ref="IsGreaterEqual"/>

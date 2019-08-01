@@ -30,8 +30,8 @@ namespace SmartSql.TypeHandler.Crypto
 
         public void Dispose()
         {
-            _privateKeyProvider.Dispose();
-            _publicKeyProvider.Dispose();
+            _privateKeyProvider?.Dispose();
+            _publicKeyProvider?.Dispose();
         }
 
         public string Decrypt(string cipherText)
