@@ -60,7 +60,8 @@ namespace SmartSql.InvokeSync.RabbitMQ
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(new EventId(ex.HResult), ex, ex.Message);
+                    _logger.LogError(new EventId(ex.HResult), ex,
+                        $"Received Invoke -> Id:{syncMsg.Id} failed, {nameof(SubscriberOptions.QueueName)}:[{QueueName}]. {Environment.NewLine} -> SyncRequest: [{message}]");
                 }
             };
             _consumerChannel.BasicQos(0, 1, false);

@@ -1,0 +1,37 @@
+Name: OrderSyncTask
+Subscriber:
+  Type: Kafka
+    Parameters:
+      
+DataSource:
+  Type: RDB
+  Parameters:
+    DbProvider: SqlServer
+    ConnectionString: Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True
+Jobs:
+  Order:
+    Source:
+      Scope: Order
+      SqlIds: ['Insert']
+      PrimaryKey:
+        Name: Id
+        IsAutoIncrement: true
+    Dest:
+      # 初始化表结构脚本
+      Schema: ''
+      TableName: 'order_order'
+      # 列名映射
+      ColumnMapping:
+  
+  OrderItem:
+    Source:
+      Scope: OrderItem
+      SqlIds: ['Insert']
+      PrimaryKey:
+        Name: Id
+        IsAutoIncrement: true
+    Dest:
+      Schema: ''
+      TableName: 'order_order_item'
+      ColumnMapping:
+        

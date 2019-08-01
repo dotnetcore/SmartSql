@@ -44,20 +44,20 @@ namespace SmartSql.InvokeSync.Kafka
             while (!_tokenSource.IsCancellationRequested)
             {
                 var result = _consumer.Consume();
-                var syncRequest = JsonConvert.DeserializeObject<SyncRequest>(result.Value);
+                var syncMsg = JsonConvert.DeserializeObject<SyncRequest>(result.Value);
                 try
                 {
-                    Received?.Invoke(this, syncRequest);
+                    Received?.Invoke(this, syncMsg);
                     if (_logger.IsEnabled(LogLevel.Debug))
                     {
                         _logger.LogDebug(
-                            $"Received Invoke -> Id:[{syncRequest.Id}],Scope:[{syncRequest.Scope}],[{syncRequest.SqlId}] succeeded.");
+                            $"Received Invoke -> Id:[{syncMsg.Id}],Scope:[{syncMsg.Scope}],[{syncMsg.SqlId}] succeeded.");
                     }
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(new EventId(ex.HResult), ex,
-                        $"Publish SyncRequest -> Id:{syncRequest.Id} failed, {nameof(KafkaOptions.Topic)}:[{_kafkaOptions.Topic}], {nameof(result.Offset)}:{result.Offset}.");
+                        $"Received Invoke -> Id:{syncMsg.Id} failed, {nameof(KafkaOptions.Topic)}:[{_kafkaOptions.Topic}], {nameof(result.Offset)}:{result.Offset}. {Environment.NewLine} -> SyncRequest: [{result.Value}]");
                 }
             }
         }
