@@ -11,7 +11,7 @@ namespace SmartSql.DataConnector
     {
         static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello SmartSql.DataConnector!");
+            Console.WriteLine("------******  Hello SmartSql.DataConnector!  ******------");
             await new HostBuilder()
                 .ConfigureServices((hostingContext, services) =>
                 {
@@ -21,16 +21,9 @@ namespace SmartSql.DataConnector
                 }).ConfigureAppConfiguration(builder => { builder.AddJsonFile("appsettings.json").AddEnvironmentVariables();; })
                 .UseSerilog((hostingContext, loggerConfiguration) =>
                 {
-                   var filePath= hostingContext.Configuration.GetValue<string>("Serilog:File:Path");
                     loggerConfiguration
                         .ReadFrom.Configuration(hostingContext.Configuration)
-                        .Enrich.FromLogContext()
-                        .WriteTo.Console()
-                        .WriteTo.File(filePath,
-                            fileSizeLimitBytes: 1_000_000,
-                            rollOnFileSizeLimit: true,
-                            shared: true,
-                            flushToDiskInterval: TimeSpan.FromSeconds(1));
+                        .Enrich.FromLogContext();
                 })
                 
                 .Build().RunAsync();

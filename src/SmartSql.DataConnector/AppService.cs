@@ -24,6 +24,7 @@ namespace SmartSql.DataConnector
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("ExecuteAsync.");
             foreach (var task in _appOptions.Tasks)
             {
                 _logger.LogInformation($"Task.Path:[{task.Path}] Loading.");
@@ -39,8 +40,10 @@ namespace SmartSql.DataConnector
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            await base.StopAsync(cancellationToken);
+            _logger.LogInformation("StopAsync.");
             StopAll();
+            await base.StopAsync(cancellationToken);
+            
         }
 
         private void StopAll()
@@ -54,8 +57,8 @@ namespace SmartSql.DataConnector
 
         public override void Dispose()
         {
+            _logger.LogInformation("Dispose.");
             base.Dispose();
-            StopAll();
         }
     }
 }
