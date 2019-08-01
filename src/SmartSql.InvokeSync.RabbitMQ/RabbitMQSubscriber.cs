@@ -75,6 +75,7 @@ namespace SmartSql.InvokeSync.RabbitMQ
 
         public void Stop()
         {
+            _connection?.Dispose();
             _consumerChannel?.Dispose();
         }
     }

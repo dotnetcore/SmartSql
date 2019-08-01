@@ -37,62 +37,97 @@ namespace SmartSql.DataConnector
 
         private void OnReceived(object sender, SyncRequest syncRequest)
         {
+            if (!syncRequest.StatementType.HasValue)
+            {
+                if (_logger.IsEnabled(LogLevel.Debug))
+                {
+                    _logger.LogDebug(
+                        $"SyncRequest.Id:[{syncRequest.Id}] StatementType has non-value.");
+                }
+
+                return;
+            }
+
+            var destParameterPrefix =
+                Task.DataSource.Instance.SmartSqlConfig.Database.DbProvider.ParameterPrefix;
+
             foreach (var job in Task.Jobs)
             {
-                var source = job.Value.Source;
-                if (!String.Equals(source.Scope, syncRequest.Scope, StringComparison.OrdinalIgnoreCase))
+                try
                 {
-                    continue;
-                }
-
-                if (source.SqlIds != null
-                    && source.SqlIds.Length > 0
-                    && !source.SqlIds.Contains(syncRequest.SqlId, StringComparer.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                if (!syncRequest.StatementType.HasValue)
-                {
-                    continue;
-                }
-
-
-                var dest = job.Value.Dest;
-                var sql = syncRequest.RealSql;
-                var sourceParameterPrefix = syncRequest.ParameterPrefix;
-                var statementType = syncRequest.StatementType.Value;
-                var destParameterPrefix = Task.DataSource.Instance.SmartSqlConfig.Database.DbProvider.ParameterPrefix;
-
-                if (statementType.HasFlag(StatementType.Insert)
-                    && source.PrimaryKey?.IsAutoIncrement == true)
-                {
-                    sql = _insertWithId.Replace(sql, source.PrimaryKey.Name, dest.PrimaryKey.Name, destParameterPrefix);
-                    syncRequest.Parameters.Add(dest.PrimaryKey.Name, syncRequest.Result);
-                    if (statementType.HasFlag(StatementType.Select))
+                    var source = job.Value.Source;
+                    if (!String.Equals(source.Scope, syncRequest.Scope, StringComparison.OrdinalIgnoreCase))
                     {
-                        sql = sql.Split(';')[0];
-                        statementType = StatementType.Insert;
+                        if (_logger.IsEnabled(LogLevel.Debug))
+                        {
+                            _logger.LogDebug(
+                                $"Job:[{job.Key}],Scope:[{source.Scope}] not equals SyncRequest.Scope:[{syncRequest.Scope}].");
+                        }
+
+                        continue;
+                    }
+
+                    if (source.SqlIds != null
+                        && source.SqlIds.Length > 0
+                        && !source.SqlIds.Contains(syncRequest.SqlId, StringComparer.OrdinalIgnoreCase))
+                    {
+                        if (_logger.IsEnabled(LogLevel.Debug))
+                        {
+                            _logger.LogDebug(
+                                $"Job:[{job.Key}],SqlIds non-contains SyncRequest.SqlId:[{syncRequest.SqlId}].");
+                        }
+
+                        continue;
+                    }
+
+                    var dest = job.Value.Dest;
+                    var sql = syncRequest.RealSql;
+                    var sourceParameterPrefix = syncRequest.ParameterPrefix;
+                    var statementType = syncRequest.StatementType.Value;
+
+                    if (statementType.HasFlag(StatementType.Insert)
+                        && source.PrimaryKey?.IsAutoIncrement == true)
+                    {
+                        sql = _insertWithId.Replace(sql, source.PrimaryKey.Name, dest.PrimaryKey.Name,
+                            destParameterPrefix);
+                        syncRequest.Parameters.Add(dest.PrimaryKey.Name, syncRequest.Result);
+                        if (statementType.HasFlag(StatementType.Select))
+                        {
+                            sql = sql.Split(';')[0];
+                            statementType = StatementType.Insert;
+                        }
+                    }
+
+                    if (sourceParameterPrefix != destParameterPrefix)
+                    {
+                        sql = sql.Replace(sourceParameterPrefix, destParameterPrefix);
+                    }
+
+                    sql = _tableNameAnalyzer.Replace(statementType, sql, (tableName, op) => op + dest.TableName);
+
+                    var affected = Task.DataSource.Instance.SqlMapper.Execute(new RequestContext
+                    {
+                        RealSql = sql,
+                        Request = syncRequest.Parameters
+                    });
+                    if (affected < 1)
+                    {
+                        _logger.LogError(
+                            $"Job:[{job.Key}],Execute failed! Affected:[{affected}]. SyncRequest: {Environment.NewLine}[{JsonConvert.SerializeObject(syncRequest)}].");
+                    }
+                    else
+                    {
+                        if (_logger.IsEnabled(LogLevel.Debug))
+                        {
+                            _logger.LogDebug($"Job:[{job.Key}],Execute succeed! SyncRequest.Id:[{syncRequest.Id}].");
+                        }
                     }
                 }
-
-                if (sourceParameterPrefix != destParameterPrefix)
-                {
-                    sql = sql.Replace(sourceParameterPrefix, destParameterPrefix);
-                }
-
-                sql = _tableNameAnalyzer.Replace(statementType, sql,
-                    (tableName, op) => op + dest.TableName);
-
-                var affected = Task.DataSource.Instance.SqlMapper.Execute(new RequestContext
-                {
-                    RealSql = sql,
-                    Request = syncRequest.Parameters
-                });
-                if (affected < 1)
+                catch (Exception e)
                 {
                     _logger.LogError(
-                        $"Job:[{job.Key}],Execute failed! Affected:[{affected}]. SyncRequest: {Environment.NewLine}[{JsonConvert.SerializeObject(syncRequest)}].");
+                        $"Job:[{job.Key}],Execute failed! SyncRequest: {Environment.NewLine}[{JsonConvert.SerializeObject(syncRequest)}].",
+                        e);
                 }
             }
         }
