@@ -46,9 +46,10 @@ namespace SmartSql.DataConnector.Configuration
                     Task.DataSource.Parameters.EnsureValue("DbProvider", out string dbProvider);
                     Task.DataSource.Parameters.EnsureValue("ConnectionString", out string connectionString);
                     Task.DataSource.Instance = new SmartSqlBuilder()
-                        .RegisterToContainer(false)
-                        .UseLoggerFactory(_loggerFactory)
-                        .UseDataSource(dbProvider, connectionString).Build();
+                                               .UseAlias(Task.Name)
+                                               .RegisterToContainer(false)
+                                               .UseLoggerFactory(_loggerFactory)
+                                               .UseDataSource(dbProvider, connectionString).Build();
                     break;
                 }
 
@@ -107,21 +108,22 @@ namespace SmartSql.DataConnector.Configuration
                     }
 
                     if (taskParameters.Value(nameof(SubscriberOptions.RequestedHeartbeat),
-                        out ushort requestedHeartbeat))
+                                             out ushort requestedHeartbeat))
                     {
                         rabbitMqOptions.RequestedHeartbeat = requestedHeartbeat;
                     }
 
                     if (taskParameters.Value(nameof(SubscriberOptions.AutomaticRecoveryEnabled),
-                        out bool automaticRecoveryEnabled))
+                                             out bool automaticRecoveryEnabled))
                     {
                         rabbitMqOptions.AutomaticRecoveryEnabled = automaticRecoveryEnabled;
                     }
 
                     Task.Subscriber.Instance = new RabbitMQSubscriber(_loggerFactory.CreateLogger<RabbitMQSubscriber>()
-                        , rabbitMqOptions
-                        , new PersistentConnection(rabbitMqOptions, _loggerFactory.CreateLogger<PersistentConnection>()
-                        ));
+                                                                      , rabbitMqOptions
+                                                                      , new PersistentConnection(rabbitMqOptions,
+                                                                                                 _loggerFactory.CreateLogger<PersistentConnection>()
+                                                                                                ));
                     break;
                 }
 
