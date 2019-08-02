@@ -29,13 +29,13 @@ namespace SmartSql.SqlParsers
 
         public int LA(int i)
         {
-            var c = (char) _internalStream.LA(i);
+            var c =  _internalStream.LA(i);
             if (c <= 0)
             {
                 return c;
             }
 
-            return _upper ? ToUpperInvariant(c) : ToLowerInvariant(c);
+            return _upper ? ToUpperInvariant((char)c) : ToLowerInvariant((char)c);
         }
 
         public int Mark() => _internalStream.Mark();
