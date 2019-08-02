@@ -16,8 +16,7 @@ namespace SmartSql.InvokeSync.Utils
 
         public TableNameAnalyzer()
         {
-            var regOptions = RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled |
-                             RegexOptions.IgnoreCase;
+            var regOptions = RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.IgnoreCase;
             _insertTokens = new Regex(@"(INSERT[\s]+INTO[\s]+)([\p{L}\p{N}_]+)", regOptions);
             _updateTokens = new Regex(@"(UPDATE[\s]+)([\p{L}\p{N}_]+)", regOptions);
             _deleteTokens = new Regex(@"(DELETE[\s]+)(FROM[\s]+){0,1}([\p{L}\p{N}_]+)", regOptions);

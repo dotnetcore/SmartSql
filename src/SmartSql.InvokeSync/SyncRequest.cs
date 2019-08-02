@@ -11,6 +11,7 @@ namespace SmartSql.InvokeSync
     {
         public Guid Id { get; set; }
         public Guid DbSessionId { get; set; }
+        public String DbProvider { get; set; }
         public DataSourceChoice DataSourceChoice { get; set; } = DataSourceChoice.Unknow;
         public CommandType CommandType { get; set; } = CommandType.Text;
         public StatementType? StatementType { get; set; }

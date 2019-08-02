@@ -96,6 +96,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.Cache.Sync", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.DataConnector", "src\SmartSql.DataConnector\SmartSql.DataConnector.csproj", "{B6C8A252-B5D8-479B-8518-21AB79B65670}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ANTLR", "ANTLR", "{00363B1A-30C6-45D1-8F87-738195406EBD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TSql", "TSql", "{08F93C3B-4B4E-487B-B3A4-31F6F150B985}"
+ProjectSection(SolutionItems) = preProject
+	doc\ANTLR\TSql\TSqlLexer.g4 = doc\ANTLR\TSql\TSqlLexer.g4
+	doc\ANTLR\TSql\TSqlParser.g4 = doc\ANTLR\TSql\TSqlParser.g4
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PlSql", "PlSql", "{2AAA1971-0518-4F8D-B775-D786EED6E933}"
+ProjectSection(SolutionItems) = preProject
+	doc\ANTLR\PlSql\PlSqlLexer.g4 = doc\ANTLR\PlSql\PlSqlLexer.g4
+	doc\ANTLR\PlSql\PlSqlParser.g4 = doc\ANTLR\PlSql\PlSqlParser.g4
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -235,6 +249,9 @@ Global
 		{9FC40FC1-8FEC-4048-A78B-AA392F87DCA2} = {903A0C86-20AC-4E4A-A33F-25706FA0E20A}
 		{1F4EA4D3-D710-480E-9561-69DE388EAFE2} = {9E0B56FD-1AEC-414A-9630-555FA06B287F}
 		{B6C8A252-B5D8-479B-8518-21AB79B65670} = {903A0C86-20AC-4E4A-A33F-25706FA0E20A}
+		{00363B1A-30C6-45D1-8F87-738195406EBD} = {E32377D3-40D5-4158-904C-2BA6DEE1FA45}
+		{08F93C3B-4B4E-487B-B3A4-31F6F150B985} = {00363B1A-30C6-45D1-8F87-738195406EBD}
+		{2AAA1971-0518-4F8D-B775-D786EED6E933} = {00363B1A-30C6-45D1-8F87-738195406EBD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6942F9AB-D574-4C16-8CF7-0D10B637237B}

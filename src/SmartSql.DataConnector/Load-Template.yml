@@ -1,4 +1,4 @@
-Name: OrderSyncTask
+Name: UserSyncTask
 Subscriber:
   Type: RabbitMQ
   Parameters:
@@ -7,7 +7,7 @@ Subscriber:
     Password: guest
     Exchange: smartsql
     RoutingKey: smartsql.sync
-    QueueName: smartsql.sync.order
+    QueueName: smartsql.sync.user
 
 DataSource:
   Type: RDB

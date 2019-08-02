@@ -8,12 +8,13 @@ namespace SmartSql.InvokeSync
         public static SyncRequest AsSyncRequest(this ExecutionContext executionContext)
         {
             var reqContext = executionContext.Request;
-            
+
             return new SyncRequest
             {
                 Id = Guid.NewGuid(),
                 DbSessionId = executionContext.DbSession.Id,
                 CommandType = reqContext.CommandType,
+                DbProvider = executionContext.SmartSqlConfig.Database.DbProvider.Name,
                 ParameterPrefix = executionContext.SmartSqlConfig.Database.DbProvider.ParameterPrefix,
                 StatementType = reqContext.Statement?.StatementType,
                 Scope = reqContext.Scope,
