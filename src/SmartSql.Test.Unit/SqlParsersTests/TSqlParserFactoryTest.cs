@@ -14,7 +14,7 @@ namespace SmartSql.Test.Unit.SqlParsersTests
         [Fact]
         public void Insert()
         {
-            var insertStatementListener = new InsertStatementListener();
+            var insertStatementListener = new DMLStatementListener("@");
             var insertSql = @"Insert Into T_User
             (
             UserName,
@@ -26,34 +26,49 @@ namespace SmartSql.Test.Unit.SqlParsersTests
             @Status
             )";
             TSqlParserFactory.Parse(insertSql, insertStatementListener);
-            Assert.Equal("T_User",insertStatementListener.TableName);
+            Assert.Equal("T_User", insertStatementListener.Insert.Table);
         }
 
 
-        public class InsertStatementListener : TSqlParserBaseListener
+        public class DMLStatementListener : TSqlParserBaseListener
         {
-            public String TableName { get; set; }
-            public IList<String> Columns { get; set; }
-            public IList<String> Values { get; set; }
+            private readonly string _parameterPrefix;
+
+            public DMLStatementListener(string parameterPrefix)
+            {
+                _parameterPrefix = parameterPrefix;
+            }
+
+            public Insert Insert { get; private set; }
 
             public override void EnterInsert_statement(TSqlParser.Insert_statementContext context)
             {
-                TableName = context.ddl_object().full_table_name().id().First().simple_id().GetText();
-                Columns = context.column_name_list().GetText().Split(",");
+                Insert = new Insert
+                {
+                    ParameterPrefix = _parameterPrefix,
+                    Table = context.ddl_object().full_table_name().id().First().simple_id().GetText(),
+                    Columns = new List<string>(),
+                    Parameters = new List<string>()
+                };
+
+                foreach (var idContext in context.column_name_list().id())
+                {
+                    Insert.Columns.Add(idContext.GetText());
+                }
             }
 
             public override void EnterInsert_statement_value(TSqlParser.Insert_statement_valueContext context)
             {
-                Values = new List<string>();
                 foreach (var expr in context.table_value_constructor().expression_list().First().expression())
                 {
-                    Values.Add(expr.primitive_expression().GetText());
-                }
-            }
+                    var paramName = expr.primitive_expression().GetText();
+                    if (paramName.StartsWith(_parameterPrefix))
+                    {
+                        paramName = paramName.Substring(_parameterPrefix.Length);
+                    }
 
-            public override void EnterInsert_with_table_hints(TSqlParser.Insert_with_table_hintsContext context)
-            {
-                base.EnterInsert_with_table_hints(context);
+                    Insert.Parameters.Add(paramName);
+                }
             }
         }
     }

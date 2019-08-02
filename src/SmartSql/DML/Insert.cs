@@ -12,36 +12,24 @@ namespace SmartSql.DML
         public string Table { get; set; }
         public string ParameterPrefix { get; set; }
 
-        /// <summary>
-        /// Column : ParameterMapping
-        /// </summary>
-        public Dictionary<String, String> ColumnParameterMapping { get; set; }
 
-        #region Static
+        public IList<String> Columns { get; set; }
+        public IList<String> Parameters { get; set; }
+
         
-        public static Insert Parse(string sql)
-        {
-            
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
         public void Add(string column, string parameter)
         {
-            ColumnParameterMapping.Add(column, parameter);
+            Columns.Add(column);
+            Parameters.Add(parameter);
         }
 
-        public bool Remove(string column)
-        {
-            return ColumnParameterMapping.Remove(column);
-        }
+
 
         public override string ToString()
         {
-            var columns = String.Join(",", ColumnParameterMapping.Keys.ToArray());
+            var columns = String.Join(",", Columns);
             var parameters = String.Join(",",
-                ColumnParameterMapping.Values.Select(p => $"{ParameterPrefix}{p}").ToArray());
+                Parameters.Select(p => $"{ParameterPrefix}{p}").ToArray());
             return $"{Operation} {Table} ({columns}) Values ({parameters});";
         }
     }
