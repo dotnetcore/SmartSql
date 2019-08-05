@@ -125,9 +125,9 @@ namespace SmartSql.DataConnector
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(
-                        $"Job:[{job.Key}],Execute failed! SyncRequest: {Environment.NewLine}[{JsonConvert.SerializeObject(syncRequest)}].",
-                        e);
+                    _logger.LogError(e,
+                        $"Job:[{job.Key}],Execute failed! SyncRequest: {Environment.NewLine}[{JsonConvert.SerializeObject(syncRequest)}]."
+                    );
                 }
             }
         }
