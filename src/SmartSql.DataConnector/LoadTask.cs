@@ -98,7 +98,8 @@ namespace SmartSql.DataConnector
                         }
                     }
 
-                    if (sourceParameterPrefix != destParameterPrefix)
+                    if (!String.IsNullOrEmpty(sourceParameterPrefix)
+                        && sourceParameterPrefix != destParameterPrefix)
                     {
                         sql = sql.Replace(sourceParameterPrefix, destParameterPrefix);
                     }
