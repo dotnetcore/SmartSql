@@ -1,8 +1,9 @@
-using System.Data;
+
+using SmartSql.Configuration;
 
 namespace SmartSql.DML
 {
-    public class Delete : IDML
+    public class Delete : IStatement
     {
         public StatementType StatementType => StatementType.Delete;
         public string Operation => "DELETE";

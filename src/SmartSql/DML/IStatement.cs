@@ -1,13 +1,12 @@
 using System;
-using System.Data;
+using SmartSql.Configuration;
 
 namespace SmartSql.DML
 {
-    public interface IDML
+    public interface IStatement
     {
         StatementType StatementType { get; }
         String Operation { get;  }
         String Table { get; set; }
-
     }
 }
