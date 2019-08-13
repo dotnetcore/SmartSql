@@ -13,9 +13,18 @@ using SmartSql.Diagnostics;
 
 namespace SmartSql.Command
 {
+    public class DbCommandCreatedEventArgs : EventArgs
+    {
+        public DbCommand DbCommand { get; set; }
+    }
+
+    public delegate void DbCommandCreatedEventHandler(object sender, DbCommandCreatedEventArgs eventArgs);
+
     public class CommandExecuter : ICommandExecuter
     {
         private readonly ILogger<CommandExecuter> _logger;
+
+        public event DbCommandCreatedEventHandler DbCommandCreated;
 
         public CommandExecuter(ILogger<CommandExecuter> logger)
         {
@@ -23,6 +32,7 @@ namespace SmartSql.Command
         }
 
         private static readonly DiagnosticListener _diagnosticListener = SmartSqlDiagnosticListenerExtensions.Instance;
+
         private DbCommand CreateCmd(ExecutionContext executionContext)
         {
             var dbSession = executionContext.DbSession;
@@ -30,16 +40,25 @@ namespace SmartSql.Command
             dbCmd.CommandType = executionContext.Request.CommandType;
             dbCmd.Transaction = dbSession.Transaction;
             dbCmd.CommandText = executionContext.Request.RealSql;
+
             if (executionContext.Request.CommandTimeout.HasValue)
             {
                 dbCmd.CommandTimeout = executionContext.Request.CommandTimeout.Value;
             }
+
             foreach (var dbParam in executionContext.Request.Parameters.DbParameters.Values)
             {
                 dbCmd.Parameters.Add(dbParam);
             }
+
+            DbCommandCreated?.Invoke(this, new DbCommandCreatedEventArgs
+            {
+                DbCommand = dbCmd
+            });
+
             return dbCmd;
         }
+
         private TResult ExecuteWrap<TResult>(Func<TResult> executeImpl, ExecutionContext executionContext
             , [CallerMemberName] string operation = "")
         {
@@ -51,6 +70,7 @@ namespace SmartSql.Command
                 {
                     stopwatch = Stopwatch.StartNew();
                 }
+
                 operationId = _diagnosticListener.WriteCommandExecuterExecuteBefore(executionContext, operation);
                 var result = executeImpl();
                 _diagnosticListener.WriteCommandExecuterExecuteAfter(operationId, executionContext, operation);
@@ -83,7 +103,6 @@ namespace SmartSql.Command
                 dataAdapter.Fill(dataTable);
                 return dataTable;
             }, executionContext);
-
         }
 
         public DataSet GetDateSet(ExecutionContext executionContext)
@@ -98,8 +117,8 @@ namespace SmartSql.Command
                 dataAdapter.Fill(dataSet);
                 return dataSet;
             }, executionContext);
-
         }
+
         public int ExecuteNonQuery(ExecutionContext executionContext)
         {
             return ExecuteWrap(() =>
@@ -108,8 +127,8 @@ namespace SmartSql.Command
                 DbCommand dbCmd = CreateCmd(executionContext);
                 return dbCmd.ExecuteNonQuery();
             }, executionContext);
-
         }
+
         public DataReaderWrapper ExecuteReader(ExecutionContext executionContext)
         {
             return ExecuteWrap(() =>
@@ -119,7 +138,6 @@ namespace SmartSql.Command
                 var dbReader = dbCmd.ExecuteReader();
                 return new DataReaderWrapper(dbReader);
             }, executionContext);
-
         }
 
         public object ExecuteScalar(ExecutionContext executionContext)
@@ -130,9 +148,10 @@ namespace SmartSql.Command
                 DbCommand dbCmd = CreateCmd(executionContext);
                 return dbCmd.ExecuteScalar();
             }, executionContext);
-
         }
-        private async Task<TResult> ExecuteWrapAsync<TResult>(Func<Task<TResult>> executeImplAsync, ExecutionContext executionContext
+
+        private async Task<TResult> ExecuteWrapAsync<TResult>(Func<Task<TResult>> executeImplAsync,
+            ExecutionContext executionContext
             , [CallerMemberName] string operation = "")
         {
             Stopwatch stopwatch = null;
@@ -143,6 +162,7 @@ namespace SmartSql.Command
                 {
                     stopwatch = Stopwatch.StartNew();
                 }
+
                 operationId = _diagnosticListener.WriteCommandExecuterExecuteBefore(executionContext, operation);
                 var result = await executeImplAsync();
                 _diagnosticListener.WriteCommandExecuterExecuteAfter(operationId, executionContext, operation);
@@ -162,17 +182,19 @@ namespace SmartSql.Command
                 }
             }
         }
+
         public async Task<object> ExecuteScalarAsync(ExecutionContext executionContext)
         {
             return await ExecuteWrapAsync(async () =>
-          {
-              await executionContext.DbSession.OpenAsync();
-              DbCommand dbCmd = CreateCmd(executionContext);
-              return await dbCmd.ExecuteScalarAsync();
-          }, executionContext);
+            {
+                await executionContext.DbSession.OpenAsync();
+                DbCommand dbCmd = CreateCmd(executionContext);
+                return await dbCmd.ExecuteScalarAsync();
+            }, executionContext);
         }
 
-        public async Task<object> ExecuteScalarAsync(ExecutionContext executionContext, CancellationToken cancellationToken)
+        public async Task<object> ExecuteScalarAsync(ExecutionContext executionContext,
+            CancellationToken cancellationToken)
         {
             return await ExecuteWrapAsync(async () =>
             {
@@ -209,6 +231,7 @@ namespace SmartSql.Command
                 return dataSet;
             }, executionContext);
         }
+
         public async Task<DataReaderWrapper> ExecuteReaderAsync(ExecutionContext executionContext)
         {
             return await ExecuteWrapAsync(async () =>
@@ -220,7 +243,8 @@ namespace SmartSql.Command
             }, executionContext);
         }
 
-        public async Task<DataReaderWrapper> ExecuteReaderAsync(ExecutionContext executionContext, CancellationToken cancellationToken)
+        public async Task<DataReaderWrapper> ExecuteReaderAsync(ExecutionContext executionContext,
+            CancellationToken cancellationToken)
         {
             return await ExecuteWrapAsync(async () =>
             {
@@ -230,6 +254,7 @@ namespace SmartSql.Command
                 return new DataReaderWrapper(dbReader);
             }, executionContext);
         }
+
         public async Task<int> ExecuteNonQueryAsync(ExecutionContext executionContext)
         {
             return await ExecuteWrapAsync(async () =>
@@ -240,7 +265,8 @@ namespace SmartSql.Command
             }, executionContext);
         }
 
-        public async Task<int> ExecuteNonQueryAsync(ExecutionContext executionContext, CancellationToken cancellationToken)
+        public async Task<int> ExecuteNonQueryAsync(ExecutionContext executionContext,
+            CancellationToken cancellationToken)
         {
             return await ExecuteWrapAsync(async () =>
             {

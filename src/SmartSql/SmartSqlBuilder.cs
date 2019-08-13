@@ -12,6 +12,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using SmartSql.Command;
 using SmartSql.Deserializer;
 using SmartSql.Filters;
 using SmartSql.Reflection.TypeConstants;
@@ -39,11 +40,11 @@ namespace SmartSql
         public ISqlMapper SqlMapper { get; private set; }
         public ICacheManager CacheManager { get; private set; }
         public IDataSourceFilter DataSourceFilter { get; private set; }
+        public ICommandExecuter CommandExecuter { get; private set; }
         public bool? IsCacheEnabled { get; private set; }
         public bool? IgnoreDbNull { get; private set; }
         public bool Built { get; private set; }
         public bool Registered { get; private set; } = true;
-
         public IList<IDataReaderDeserializer> DataReaderDeserializers { get; } = new List<IDataReaderDeserializer>();
         public IList<TypeHandler> TypeHandlers { get; } = new List<TypeHandler>();
         public FilterCollection Filters { get; } = new FilterCollection();
@@ -155,6 +156,8 @@ namespace SmartSql
             SmartSqlConfig.Alias = Alias;
             SmartSqlConfig.LoggerFactory = LoggerFactory;
             SmartSqlConfig.DataSourceFilter = DataSourceFilter ?? new DataSourceFilter(SmartSqlConfig.LoggerFactory);
+            SmartSqlConfig.CommandExecuter =
+                CommandExecuter ?? new CommandExecuter(LoggerFactory.CreateLogger<CommandExecuter>());
             if (IsCacheEnabled.HasValue)
             {
                 SmartSqlConfig.Settings.IsCacheEnabled = IsCacheEnabled.Value;
@@ -258,6 +261,12 @@ namespace SmartSql
         }
 
         #region Instance
+
+        public SmartSqlBuilder UseCommandExecuter(ICommandExecuter commandExecuter)
+        {
+            CommandExecuter = commandExecuter;
+            return this;
+        }
 
         public SmartSqlBuilder ListenInvokeSucceeded(Action<ExecutionContext> invokeSucceeded)
         {
@@ -374,10 +383,12 @@ namespace SmartSql
 
             return this;
         }
+
         public SmartSqlBuilder UsePropertiesFromEnv(
             EnvironmentVariableTarget target = EnvironmentVariableTarget.Process)
         {
             var envVars = Environment.GetEnvironmentVariables(target);
+            
             return UseProperties(envVars);
         }
 

@@ -68,6 +68,7 @@
     <ProjectReference Include="..\SmartSql.DyRepository\SmartSql.DyRepository.csproj" />
     <ProjectReference Include="..\SmartSql.InvokeSync\SmartSql.InvokeSync.csproj" />
     <ProjectReference Include="..\SmartSql.Options\SmartSql.Options.csproj" />
+    <ProjectReference Include="..\SmartSql.Oracle\SmartSql.Oracle.csproj" />
     <ProjectReference Include="..\SmartSql.ScriptTag\SmartSql.ScriptTag.csproj" />
     <ProjectReference Include="..\SmartSql.Test\SmartSql.Test.csproj" />
     <ProjectReference Include="..\SmartSql.TypeHandler.PostgreSql\SmartSql.TypeHandler.PostgreSql.csproj" />

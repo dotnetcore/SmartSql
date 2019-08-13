@@ -12,6 +12,7 @@ using SmartSql.DbSession;
 using SmartSql.Cache;
 using SmartSql.IdGenerator;
 using Microsoft.Extensions.Logging.Abstractions;
+using SmartSql.Command;
 using SmartSql.Filters;
 
 namespace SmartSql.Configuration
@@ -36,6 +37,7 @@ namespace SmartSql.Configuration
         public IDbSessionStore SessionStore { get; set; }
         public IDbSessionFactory DbSessionFactory { get; set; }
         public ICacheManager CacheManager { get; set; }
+        public ICommandExecuter CommandExecuter { get; set; }
         public InvokeSucceedListener InvokeSucceedListener { get; set; }
         public IDictionary<String, IIdGenerator> IdGenerators { get; set; }
         public FilterCollection Filters { get; set; }

@@ -145,8 +145,7 @@ namespace SmartSql.Middlewares
 
         public override void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
         {
-            _commandExecuter =
-                new CommandExecuter(smartSqlBuilder.SmartSqlConfig.LoggerFactory.CreateLogger<CommandExecuter>());
+            _commandExecuter = smartSqlBuilder.SmartSqlConfig.CommandExecuter;
         }
     }
 }

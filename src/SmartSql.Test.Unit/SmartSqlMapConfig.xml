@@ -3,6 +3,7 @@
   <Settings IgnoreParameterCase="false" ParameterPrefix="$"  IsCacheEnabled="true" EnablePropertyChangedTrack="true" IgnoreDbNull="true"/>
   <Properties>
     <Property Name="Redis" Value="localhost"/>
+    <Property Name="DbProvider" Value="SqlServer"/>
     <Property Name="ConnectionString" Value="Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True"/>
     <Property Name="JsonTypeHandler`" Value="SmartSql.TypeHandler.JsonTypeHandler`1,SmartSql.TypeHandler"/>
     <Property Name="JsonTypeHandler" Value="SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"/>
@@ -10,7 +11,7 @@
     <Property Name="RedisCacheProvider" Value="SmartSql.Cache.Redis.RedisCacheProvider,SmartSql.Cache.Redis"/>
   </Properties>
   <Database>
-    <DbProvider Name="SqlServer"/>
+    <DbProvider Name="${DbProvider}"/>
     <Write Name="WriteDB" ConnectionString="${ConnectionString}"/>
     <Read Name="ReadDb-1" ConnectionString="${ConnectionString}" Weight="100"/>
     <Read Name="ReadDb-2" ConnectionString="${ConnectionString}" Weight="100"/>
