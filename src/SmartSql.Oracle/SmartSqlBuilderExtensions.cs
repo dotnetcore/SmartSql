@@ -11,11 +11,13 @@ namespace SmartSql
         {
             return UseOracleCommandExecuter(smartSqlBuilder, smartSqlBuilder.LoggerFactory);
         }
+
         public static SmartSqlBuilder UseOracleCommandExecuter(this SmartSqlBuilder smartSqlBuilder,
             ILoggerFactory loggerFactory)
         {
             var cmdExe = new CommandExecuter(loggerFactory.CreateLogger<CommandExecuter>());
             cmdExe.DbCommandCreated += OnDbCommandCreated;
+            smartSqlBuilder.UseCommandExecuter(cmdExe);
             return smartSqlBuilder;
         }
 

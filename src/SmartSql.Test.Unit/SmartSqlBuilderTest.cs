@@ -15,6 +15,7 @@ namespace SmartSql.Test.Unit
         public void Build_By_DataSource()
         {
             var dbSessionFactory = new SmartSqlBuilder()
+                .UseOracleCommandExecuter()
                 .UseDataSource(DbProvider.SQLSERVER, ConnectionString)
                 .UseAlias("Build_By_DataSource")
                 .AddTypeHandler(new Configuration.TypeHandler

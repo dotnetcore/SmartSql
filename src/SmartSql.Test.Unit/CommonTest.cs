@@ -1,4 +1,5 @@
 using System;
+using SmartSql.DataSource;
 using Xunit;
 
 namespace SmartSql.Test.Unit
