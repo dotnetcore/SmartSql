@@ -27,7 +27,7 @@ namespace SmartSql.Deserializer
             return true;
         }
 
-        public TResult ToSinge<TResult>(ExecutionContext executionContext)
+        public TResult ToSingle<TResult>(ExecutionContext executionContext)
         {
             var dataReader = executionContext.DataReaderWrapper;
             if (!dataReader.HasRows) return default;
@@ -52,7 +52,7 @@ namespace SmartSql.Deserializer
             return list;
         }
 
-        public async Task<TResult> ToSingeAsync<TResult>(ExecutionContext executionContext)
+        public async Task<TResult> ToSingleAsync<TResult>(ExecutionContext executionContext)
         {
             var dataReader = executionContext.DataReaderWrapper;
             if (dataReader.HasRows)

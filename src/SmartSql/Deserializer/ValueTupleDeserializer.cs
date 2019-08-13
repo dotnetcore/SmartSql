@@ -21,7 +21,7 @@ namespace SmartSql.Deserializer
             return CommonType.IsValueTuple(resultType);
         }
 
-        public TResult ToSinge<TResult>(ExecutionContext executionContext)
+        public TResult ToSingle<TResult>(ExecutionContext executionContext)
         {
             var valueTupleType = typeof(TResult);
             var resultGenericTypeArguments = valueTupleType.GenericTypeArguments;
@@ -38,7 +38,7 @@ namespace SmartSql.Deserializer
             }
             return (TResult)ValueTupleConvert.Convert(valueTupleType, resultItems);
         }
-        public async Task<TResult> ToSingeAsync<TResult>(ExecutionContext executionContext)
+        public async Task<TResult> ToSingleAsync<TResult>(ExecutionContext executionContext)
         {
             var valueTupleType = typeof(TResult);
             var resultGenericTypeArguments = valueTupleType.GenericTypeArguments;

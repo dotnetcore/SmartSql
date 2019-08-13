@@ -35,7 +35,7 @@ namespace SmartSql.Test.Unit.Deserializer
             {
                 return resultType == typeof(CustomResultType);
             }
-            public TResult ToSinge<TResult>(ExecutionContext executionContext)
+            public TResult ToSingle<TResult>(ExecutionContext executionContext)
             {
                 var dataReader = executionContext.DataReaderWrapper;
                 if (!dataReader.HasRows) return default(TResult);
@@ -49,7 +49,7 @@ namespace SmartSql.Test.Unit.Deserializer
             {
                 throw new NotImplementedException();
             }
-            public Task<TResult> ToSingeAsync<TResult>(ExecutionContext executionContext)
+            public Task<TResult> ToSingleAsync<TResult>(ExecutionContext executionContext)
             {
 
                 throw new NotImplementedException();

@@ -24,7 +24,7 @@ namespace SmartSql.Middlewares
                 }
                 else
                 {
-                    resultContext.SetData(deser.ToSinge<TResult>(executionContext));
+                    resultContext.SetData(deser.ToSingle<TResult>(executionContext));
                 }
             }
             finally
@@ -51,7 +51,7 @@ namespace SmartSql.Middlewares
                 }
                 else
                 {
-                    resultContext.SetData(await deser.ToSingeAsync<TResult>(executionContext));
+                    resultContext.SetData(await deser.ToSingleAsync<TResult>(executionContext));
                 }
             }
             finally

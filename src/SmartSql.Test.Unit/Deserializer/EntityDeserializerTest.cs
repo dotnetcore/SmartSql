@@ -17,7 +17,7 @@ namespace SmartSql.Test.Unit.Deserializer
             SqlMapper = smartSqlFixture.SqlMapper;
         }
         [Fact]
-        public void QuerySinge()
+        public void QuerySingle()
         {
             long id = Insert();
             var entity = SqlMapper.QuerySingle<AllPrimitive>(new RequestContext
@@ -56,7 +56,7 @@ namespace SmartSql.Test.Unit.Deserializer
         }
 
         [Fact]
-        public async Task QuerySingeAsync()
+        public async Task QuerySingleAsync()
         {
             long id = Insert();
             var entity = await SqlMapper.QuerySingleAsync<AllPrimitive>(new RequestContext
