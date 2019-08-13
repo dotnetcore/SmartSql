@@ -25,7 +25,7 @@ namespace SmartSql.Deserializer
             return isMultiple && !CommonType.IsValueTuple(resultType);
         }
 
-        public TResult ToSinge<TResult>(ExecutionContext executionContext)
+        public TResult ToSingle<TResult>(ExecutionContext executionContext)
         {
             TResult result = default;
             var resultType = executionContext.Result.ResultType;
@@ -34,7 +34,7 @@ namespace SmartSql.Deserializer
             if (multipleResultMap.Root != null)
             {
                 var deser = _deserializerFactory.Get(executionContext, executionContext.Result.ResultType);
-                result = deser.ToSinge<TResult>(executionContext);
+                result = deser.ToSingle<TResult>(executionContext);
                 if (result == null)
                 {
                     return default(TResult);
@@ -62,7 +62,7 @@ namespace SmartSql.Deserializer
             return result;
         }
 
-        public async Task<TResult> ToSingeAsync<TResult>(ExecutionContext executionContext)
+        public async Task<TResult> ToSingleAsync<TResult>(ExecutionContext executionContext)
         {
             TResult result = default;
             var resultType = executionContext.Result.ResultType;
@@ -71,7 +71,7 @@ namespace SmartSql.Deserializer
             if (multipleResultMap.Root != null)
             {
                 var deser = _deserializerFactory.Get(executionContext);
-                result = deser.ToSinge<TResult>(executionContext);
+                result = deser.ToSingle<TResult>(executionContext);
                 if (result == null)
                 {
                     return default(TResult);

@@ -11,11 +11,11 @@ namespace SmartSql.Reflection.TypeConstants
         public static readonly Type Type = typeof(IDataReaderDeserializer);
         public static class Method
         {
-            public static readonly MethodInfo ToSinge = Type.GetMethod(nameof(IDataReaderDeserializer.ToSinge));
+            public static readonly MethodInfo ToSingle = Type.GetMethod(nameof(IDataReaderDeserializer.ToSingle));
             public static readonly MethodInfo ToList = Type.GetMethod(nameof(IDataReaderDeserializer.ToList));
-            public static MethodInfo MakeGenericToSinge(Type resultType)
+            public static MethodInfo MakeGenericToSingle(Type resultType)
             {
-                return ToSinge.MakeGenericMethod(resultType);
+                return ToSingle.MakeGenericMethod(resultType);
             }
             public static MethodInfo MakeGenericToList(Type resultType)
             {
