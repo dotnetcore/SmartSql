@@ -49,22 +49,20 @@ namespace SmartSql.Cache
 
         protected void FlushOnExecuted(string fullSqlId)
         {
-            if (Logger.IsEnabled(LogLevel.Debug))
-            {
-                Logger.LogDebug($"FlushOnExecuted -> FullSqlId:[{fullSqlId}] Start");
-            }
-
             if (StatementMappedFlushCache.TryGetValue(fullSqlId, out var caches))
             {
+                if (Logger.IsEnabled(LogLevel.Debug))
+                {
+                    Logger.LogDebug($"FlushOnExecuted -> FullSqlId:[{fullSqlId}] Start");
+                }
                 foreach (var cache in caches)
                 {
                     FlushCache(cache);
                 }
-            }
-
-            if (Logger.IsEnabled(LogLevel.Debug))
-            {
-                Logger.LogDebug($"FlushOnExecuted  -> FullSqlId:[{fullSqlId}] End");
+                if (Logger.IsEnabled(LogLevel.Debug))
+                {
+                    Logger.LogDebug($"FlushOnExecuted  -> FullSqlId:[{fullSqlId}] End");
+                }
             }
         }
 
