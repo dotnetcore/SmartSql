@@ -94,10 +94,9 @@ namespace SmartSql.DataConnector
                         if (statementType.HasFlag(StatementType.Select))
                         {
                             sql = sql.Split(';')[0];
-                            statementType = StatementType.Insert;
                         }
                     }
-
+                    
                     if (!String.IsNullOrEmpty(sourceParameterPrefix)
                         && sourceParameterPrefix != destParameterPrefix)
                     {

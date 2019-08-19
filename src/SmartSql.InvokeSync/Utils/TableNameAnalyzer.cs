@@ -27,7 +27,7 @@ namespace SmartSql.InvokeSync.Utils
         {
             switch (statementType)
             {
-                case StatementType.Insert:
+                case StatementType type when type.HasFlag(StatementType.Insert):
                 {
                     return _insertTokens.Replace(sql, match =>
                     {
@@ -37,7 +37,7 @@ namespace SmartSql.InvokeSync.Utils
                     });
                 }
 
-                case StatementType.Update:
+                case StatementType type when type.HasFlag(StatementType.Update):
                 {
                     return _updateTokens.Replace(sql, match =>
                     {
@@ -47,7 +47,7 @@ namespace SmartSql.InvokeSync.Utils
                     });
                 }
 
-                case StatementType.Delete:
+                case StatementType type when type.HasFlag(StatementType.Delete):
                 {
                     return _deleteTokens.Replace(sql, match =>
                     {
@@ -57,7 +57,7 @@ namespace SmartSql.InvokeSync.Utils
                     });
                 }
 
-                default: throw new ArgumentException();
+                default: throw new ArgumentException($"can not Replace for StatementType:[{statementType}].");
             }
         }
 
