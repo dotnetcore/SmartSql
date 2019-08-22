@@ -32,5 +32,20 @@ namespace SmartSql.Configuration.Tags
             }
             return true;
         }
+        public override void BuildSql(AbstractRequestContext context)
+        {
+            var ignorePrepend = context.IgnorePrepend;
+
+            if (!IsCondition(context)) return;
+            context.SqlBuilder.Append(" ");
+            if (!context.IgnorePrepend)
+            {
+                context.SqlBuilder.Append(Prepend);
+            }
+            
+            context.SqlBuilder.Append(" ");
+            //IncludeTag 特殊处理让IncludeTag的子节点享受和IncludeTag 相同的 IgnorePrepend 待遇
+            this.BuildChildSql(context);
+        }
     }
 }
