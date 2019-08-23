@@ -34,7 +34,10 @@ namespace SmartSql.Configuration.Tags
         }
         public override void BuildSql(AbstractRequestContext context)
         {
-            if (!IsCondition(context)) return;
+            if (!IsCondition(context))
+            {
+                return;
+            }
             context.SqlBuilder.Append(" ");
             if (!context.IgnorePrepend)
             {
