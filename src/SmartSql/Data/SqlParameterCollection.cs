@@ -191,19 +191,45 @@ namespace SmartSql.Data
                 return false;
             }
 
+            object paramVal = null;
             if (!propertyTokenizer.MoveNext())
             {
-                return false;
-            }
+                if (propertyTokenizer.Mode != AccessMode.IndexerGet)
+                {
+                    return false;
+                }
 
-            if (!_getAccessorFactory.TryCreate(root.ParameterType, propertyTokenizer.Current, out var getMethodImpl))
+                if (root.ParameterType.IsArray)
+                {
+                    int.TryParse(propertyTokenizer.Index, out var idx);
+                    paramVal = ((Array) root.Value).GetValue(idx);
+                }
+
+                if (CommonType.Dictionary.IsAssignableFrom(root.ParameterType))
+                {
+                    var rootDic = ((IDictionary) root.Value);
+                    if (!rootDic.Contains(propertyTokenizer.Index))
+                    {
+                        return false;
+                    }
+                    paramVal = rootDic[propertyTokenizer.Index];
+                }
+            }
+            else
             {
-                return false;
+                if (!_getAccessorFactory.TryCreate(root.ParameterType, propertyTokenizer.Current,
+                    out var getMethodImpl))
+                {
+                    return false;
+                }
+
+                paramVal = getMethodImpl(root.Value);
             }
 
-            var paramVal = getMethodImpl(root.Value);
+
             var parameterName = key.Replace(".", "_").Replace("[", "_Idx_").Replace("]", "");
-            value = new SqlParameter(parameterName, paramVal, paramVal == null ? CommonType.Object : paramVal.GetType());
+            value = new SqlParameter(parameterName, paramVal,
+                paramVal == null ? CommonType.Object : paramVal.GetType());
             Add(key, value);
             return true;
         }
@@ -227,6 +253,7 @@ namespace SmartSql.Data
         #endregion
 
         #region Contains
+
         /// <summary>
         /// 不再进行嵌套类检查
         /// </summary>

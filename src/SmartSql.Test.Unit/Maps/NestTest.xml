@@ -55,6 +55,25 @@
         SELECT @Order.Items[0].Name
       </IsEqual>
     </Statement>
+
+    <Statement Id="FilterNestDicMul">
+      Select '
+      <Dynamic>
+        <IsProperty Property="Fields[Id]" Prepend=",">
+          <Placeholder Property="Fields[Id]"/>
+        </IsProperty>
+        <IsProperty Property="Fields[Name]" Prepend=",">
+          <Placeholder Property="Fields[Name]"/>
+        </IsProperty>
+        <IsProperty Property="Fields[CreateTime]" Prepend=",">
+          <Placeholder Property="Fields[CreateTime]"/>
+        </IsProperty>
+        <IsProperty Property="Fields[Deleted]" Prepend=",">
+          <Placeholder Property="Fields[Deleted]"/>
+        </IsProperty>
+      </Dynamic>
+      '
+    </Statement>
     
   </Statements>
 </SmartSqlMap>

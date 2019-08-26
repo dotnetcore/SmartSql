@@ -248,8 +248,29 @@ namespace SmartSql.Test.Unit.DbSessions
                     }
                 }
             });
-            
+
             Assert.Equal("SmartSql", result);
+        }
+
+        [Fact]
+        public void FilterNestDicMul()
+        {
+            var result = SqlMapper.ExecuteScalar<String>(new RequestContext
+            {
+                Scope = nameof(NestTest),
+                SqlId = "FilterNestDicMul",
+                Request = new
+                {
+                    Fields = new Dictionary<String, String>
+                    {
+                        {"Id", "Id"},
+                        {"Name", "Name"},
+                        {"CreateTime", "CreateTime"},
+                    }
+                }
+            });
+
+            Assert.Equal("Id , Name , CreateTime", result.Trim());
         }
 
         public class OrderItem

@@ -11,7 +11,6 @@ namespace SmartSql.Reflection
         private const char INDEX_OPEN = '[';
         private const char INDEX_CLOSE = ']';
 
-        public bool IsFirst { get; private set; } = true;
         public String FullName { get; }
         public String Name { get; }
         public String Children { get; }
@@ -42,24 +41,21 @@ namespace SmartSql.Reflection
                 Index = Name.Substring(openIdx + 1, closeIdx - openIdx - 1);
                 Name = Name.Substring(0, openIdx);
             }
+
+            Current = this;
         }
 
         public bool MoveNext()
         {
-            if (IsFirst)
+            if (String.IsNullOrEmpty(Current.Children))
             {
-                IsFirst = false;
-                Current = this;
-                return true;
+                Current = null;
+                return false;
             }
 
-            if (!String.IsNullOrEmpty(Current.Children))
-            {
-                Current = new PropertyTokenizer(Current.Children);
-                return true;
-            }
+            Current = new PropertyTokenizer(Current.Children);
+            return true;
 
-            return false;
         }
 
         public void Reset()

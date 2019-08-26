@@ -40,9 +40,9 @@ namespace SmartSql.Reflection.PropertyAccessor
             var ilGen = dynamicMethod.GetILGenerator();
             ilGen.LoadArg(0);
             var propertyType = targetType;
-            while (propertyTokenizer.MoveNext())
+            do
             {
-                var current = propertyTokenizer.Current;
+                 var current = propertyTokenizer.Current;
                 switch (current.Mode)
                 {
                     case AccessMode.Get:
@@ -116,7 +116,7 @@ namespace SmartSql.Reflection.PropertyAccessor
                         break;
                     }
                 }
-            }
+            } while (propertyTokenizer.MoveNext());
 
             ilGen.Return();
             getMethodImpl = (Func<object, object>) dynamicMethod.CreateDelegate(typeof(Func<object, object>));

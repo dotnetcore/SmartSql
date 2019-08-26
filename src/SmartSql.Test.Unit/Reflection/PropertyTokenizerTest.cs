@@ -20,8 +20,6 @@ namespace SmartSql.Test.Unit.Reflection
         public void Access()
         {
             var propertyTokenizer = new PropertyTokenizer("User");
-            
-            propertyTokenizer.MoveNext();
             var current = propertyTokenizer.Current;
             Assert.Equal("User", current.Name);
             Assert.Null(current.Index);
@@ -34,8 +32,7 @@ namespace SmartSql.Test.Unit.Reflection
         public void AccessNest1()
         {
             var propertyTokenizer = new PropertyTokenizer("User.Name");
-
-            propertyTokenizer.MoveNext();
+            
             var current = propertyTokenizer.Current;
             Assert.Equal("User", current.Name);
             Assert.Null(current.Index);
@@ -54,8 +51,7 @@ namespace SmartSql.Test.Unit.Reflection
         public void AccessNest2()
         {
             var propertyTokenizer = new PropertyTokenizer("User.Info.Id");
-
-            propertyTokenizer.MoveNext();
+            
             var current = propertyTokenizer.Current;
             Assert.Equal("User", current.Name);
             Assert.Null(current.Index);
@@ -81,7 +77,6 @@ namespace SmartSql.Test.Unit.Reflection
         {
             var propertyTokenizer = new PropertyTokenizer("Items[0]");
 
-            propertyTokenizer.MoveNext();
             var current = propertyTokenizer.Current;
             Assert.Equal("Items", current.Name);
             Assert.Equal("0", current.Index);
@@ -95,7 +90,6 @@ namespace SmartSql.Test.Unit.Reflection
         {
             var propertyTokenizer = new PropertyTokenizer("Order.Items[0]");
 
-            propertyTokenizer.MoveNext();
             var current = propertyTokenizer.Current;
             Assert.Equal("Order", current.Name);
             Assert.Null(current.Index);
@@ -114,7 +108,6 @@ namespace SmartSql.Test.Unit.Reflection
         public void IndexAccessString()
         {
             var propertyTokenizer = new PropertyTokenizer("Items[Name]");
-            propertyTokenizer.MoveNext();
             var current = propertyTokenizer.Current;
             Assert.Equal("Items", current.Name);
             Assert.Equal("Name",current.Index);
