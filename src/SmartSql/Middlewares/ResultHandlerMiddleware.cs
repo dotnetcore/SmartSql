@@ -42,7 +42,8 @@ namespace SmartSql.Middlewares
         public override async Task InvokeAsync<TResult>(ExecutionContext executionContext)
         {
             var resultContext = executionContext.Result;
-            var deser = _deserializerFactory.Get(executionContext, typeof(TResult));
+            var deser = _deserializerFactory.Get(executionContext, typeof(TResult),
+                executionContext.Request.MultipleResultMap != null);
             try
             {
                 if (resultContext.IsList)

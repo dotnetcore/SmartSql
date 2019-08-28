@@ -61,9 +61,9 @@ namespace SmartSql.Sample.AspNetCore.Controllers
         }
 
         [HttpGet]
-        public GetByPageResponse<User> GetByPage(int pageIndex = 1)
+        public async Task<GetByPageResponse<User>> GetByPage(int pageIndex = 1)
         {
-            return _userRepository.GetByPage<GetByPageResponse<User>>(new
+            return await _userRepository.GetByPage<GetByPageResponse<User>>(new
             {
                 PageSize = 10,
                 PageIndex = pageIndex

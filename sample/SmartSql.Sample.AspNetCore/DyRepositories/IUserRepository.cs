@@ -17,7 +17,7 @@ namespace SmartSql.Sample.AspNetCore.DyRepositories
         User GetById([Param("Id")]long id);
         IEnumerable<User> Query([Param("Taken")]int taken);
         [Statement(Id = "QueryByPage")]
-        TPageResult GetByPage<TPageResult>(object request);
+        Task<TPageResult> GetByPage<TPageResult>(object request);
         Task<IEnumerable<User>> QueryAsync([Param("Taken")]int taken);
         int Update(User entity);
     }
