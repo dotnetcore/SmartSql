@@ -9,7 +9,6 @@ namespace SmartSql.Cache.Redis
 {
     public class RedisCacheProvider : ICacheProvider
     {
-        private int _databaseId = 0;
         private string _prefix;
         private TimeSpan? _expiryInterval;
         private ConnectionMultiplexer _redis;
@@ -24,13 +23,22 @@ namespace SmartSql.Cache.Redis
             {
                 properties.Value("Cache.Id", out _prefix);
             }
-            properties.Value("DatabaseId", out _databaseId);
+
             if (properties.Value("FlushInterval", out FlushInterval flushInterval))
             {
                 _expiryInterval = flushInterval.Interval;
             }
             _redis = ConnectionMultiplexer.Connect(connStr);
-            _database = _redis.GetDatabase(_databaseId);
+
+            int _databaseId;
+            if (properties.Value("DatabaseId", out _databaseId))
+            {
+                _database = _redis.GetDatabase(_databaseId);
+            }
+            else
+            {
+                _database = _redis.GetDatabase();
+            }
         }
 
         private string GetCacheKey(CacheKey cacheKey)
@@ -48,7 +56,7 @@ namespace SmartSql.Cache.Redis
         {
             var serverEndPoint = _redis.GetEndPoints()[0];
             var server = _redis.GetServer(serverEndPoint);
-            var keys = server.Keys(_databaseId, pattern: $"{_prefix}:*").ToArray();
+            var keys = server.Keys(_database.Database, pattern: $"{_prefix}:*").ToArray();
             if (keys.Length > 0)
             {
                 _database.KeyDelete(keys.ToArray());
