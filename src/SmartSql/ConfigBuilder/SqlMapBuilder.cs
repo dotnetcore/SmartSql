@@ -52,7 +52,16 @@ namespace SmartSql.ConfigBuilder
                 throw new SmartSqlException("SqlMap.Code can not be null.");
             }
 
+            var sqlMap = SqlMap;
+            if (SmartSqlConfig.SqlMaps.ContainsKey(scope))
+            {
+                SmartSqlConfig.SqlMaps.TryGetValue(scope, out sqlMap);
+                SmartSqlConfig.SqlMaps.Remove(scope);
+            }
+            SqlMap = sqlMap;
+
             SqlMap.Scope = scope;
+
             BuildCaches();
             BuildParameterMaps();
             BuildResultMaps();
