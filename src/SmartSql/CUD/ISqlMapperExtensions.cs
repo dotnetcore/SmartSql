@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using SmartSql.DbSession;
 
 namespace SmartSql
@@ -86,5 +87,31 @@ namespace SmartSql
         {
             return ExecuteImpl(sqlMapper, session => session.DyUpdate<TEntity>(entity, enablePropertyChangedTrack));
         }
+        
+        
+        
+        public static IList<dynamic> QueryDynamic(this ISqlMapper sqlMapper,  AbstractRequestContext requestContext)
+        {
+            return ExecuteImpl(sqlMapper, session => session.QueryDynamic(requestContext));
+        }
+
+        public static IList<IDictionary<String, object>> QueryDictionary(this ISqlMapper sqlMapper, 
+            AbstractRequestContext requestContext)
+        {
+            return ExecuteImpl(sqlMapper, session => session.QueryDictionary(requestContext));
+        }
+
+        public static dynamic QuerySingleDynamic(this ISqlMapper sqlMapper,  AbstractRequestContext requestContext)
+        {
+            return ExecuteImpl(sqlMapper, session => session.QuerySingleDynamic(requestContext));
+        }
+
+        public static IDictionary<String, object> QuerySingleDictionary(this ISqlMapper sqlMapper, 
+            AbstractRequestContext requestContext)
+        {
+            return ExecuteImpl(sqlMapper, session => session.QuerySingleDictionary(requestContext));
+        }
+
+
     }
 }

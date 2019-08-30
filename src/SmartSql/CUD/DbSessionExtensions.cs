@@ -14,7 +14,7 @@ using SmartSql.TypeHandlers;
 
 namespace SmartSql
 {
-    public static class DbSessionExtensions
+    public static partial class DbSessionExtensions
     {
         private static void AppendColumnName(StringBuilder sqlBuilder, DbProvider dbProvider, string paramName)
         {

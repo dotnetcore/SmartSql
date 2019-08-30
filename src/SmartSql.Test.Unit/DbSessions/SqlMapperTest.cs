@@ -28,7 +28,47 @@ namespace SmartSql.Test.Unit.DbSessions
 
             Assert.NotNull(list);
         }
+        [Fact]
+        public  void QuerySingleDynamic()
+        {
+            var list =  SqlMapper.QuerySingleDynamic(new RequestContext
+            {
+                RealSql = "SELECT Top (1) T.* From T_AllPrimitive T With(NoLock)"
+            });
 
+            Assert.NotNull(list);
+        }
+        [Fact]
+        public  void QueryDynamic()
+        {
+            var list =  SqlMapper.QueryDynamic(new RequestContext
+            {
+                RealSql = "SELECT Top (5) T.* From T_AllPrimitive T With(NoLock)"
+            });
+
+            Assert.NotNull(list);
+        }
+        [Fact]
+        public  void QueryDictionary()
+        {
+            var list =  SqlMapper.QueryDictionary(new RequestContext
+            {
+                RealSql = "SELECT Top (5) T.* From T_AllPrimitive T With(NoLock)"
+            });
+
+            Assert.NotNull(list);
+        }
+        [Fact]
+        public  void QuerySingleDictionary()
+        {
+            var list =  SqlMapper.QuerySingleDictionary(new RequestContext
+            {
+                RealSql = "SELECT Top (1) T.* From T_AllPrimitive T With(NoLock)"
+            });
+
+            Assert.NotNull(list);
+        }
+        
         [Fact]
         public void Query()
         {
