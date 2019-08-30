@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SmartSqlMap Scope="AutoConverter" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">    
+    <UseConverter Name="" />
+    <Statements>        
+        <Statement Id="GetUser">
+            Select * From T_User T
+            <Dynamic Prepend="Where">
+                <IsNotEmpty Prepend="And" Property="UserName">
+                    T.UserName=@UserName
+                </IsNotEmpty>
+            </Dynamic>
+        </Statement>
+    </Statements>
+</SmartSqlMap>

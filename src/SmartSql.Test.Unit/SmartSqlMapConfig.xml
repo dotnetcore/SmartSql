@@ -10,6 +10,22 @@
     <Property Name="ScriptBuilder" Value="SmartSql.ScriptTag.ScriptBuilder,SmartSql.ScriptTag"/>
     <Property Name="RedisCacheProvider" Value="SmartSql.Cache.Redis.RedisCacheProvider,SmartSql.Cache.Redis"/>
   </Properties>
+  <AutoConverters>
+    <AutoConverter Name="A" Default="True">
+      <Tokenizer Name="Default">
+        <Properties>
+          <Property Name="IgnorePrefix" Values="Col_" />
+          <Property Name="Delimiter" Values="_" />
+          <Property Name="UppercaseSplit" Values="True" />
+        </Properties>
+      </Tokenizer>
+      <Converter Name="Camel">
+        <Properties>
+          <Property Name="" Values="" />
+        </Properties>
+      </Converter>
+    </AutoConverter>
+  </AutoConverters>
   <Database>
     <DbProvider Name="${DbProvider}"/>
     <Write Name="WriteDB" ConnectionString="${ConnectionString}"/>

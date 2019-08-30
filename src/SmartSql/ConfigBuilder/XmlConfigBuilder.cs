@@ -364,6 +364,16 @@ namespace SmartSql.ConfigBuilder
         }
         #endregion
 
+        #region 6. AutoConverter
+
+        protected override void BuildAutoConverters()
+        {
+            
+        }
+
+        #endregion
+        
+        
         private IDictionary<String, object> ParseProperties(XmlNode parentNode)
         {
             var parametersNode = parentNode.SelectSingleNode($"{CONFIG_PREFIX}:Properties", XmlNsManager);
