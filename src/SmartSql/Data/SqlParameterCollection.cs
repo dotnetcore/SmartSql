@@ -40,11 +40,9 @@ namespace SmartSql.Data
             DbParameters = new Dictionary<String, DbParameter>(paramComparer);
         }
 
-        public static SqlParameterCollection Create<TRequest>(RequestContext<TRequest> requestContext)
+        public static SqlParameterCollection Create<TRequest>(TRequest sourceRequest,bool ignoreParameterCase)
             where TRequest : class
         {
-            var sourceRequest = requestContext.Request;
-            bool ignoreParameterCase = requestContext.ExecutionContext.SmartSqlConfig.Settings.IgnoreParameterCase;
             if (TryCreate<object>(sourceRequest, ignoreParameterCase, out var sqlParameters))
             {
                 return sqlParameters;

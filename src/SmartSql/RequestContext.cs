@@ -81,6 +81,7 @@ namespace SmartSql
                         {
                             return sqlParameter.Value.ToString();
                         }
+
                         return nameWithPrefix;
                     });
 
@@ -111,7 +112,9 @@ namespace SmartSql
 
         public override void SetupParameters()
         {
-            Parameters = SqlParameterCollection.Create<TRequest>(this);
+            Parameters =
+                SqlParameterCollection.Create<TRequest>(Request,
+                    ExecutionContext.SmartSqlConfig.Settings.IgnoreParameterCase);
         }
 
         public override void SetRequest(object requestObj)

@@ -239,7 +239,7 @@ namespace SmartSql
                 enablePropertyChangedTrack = entityProxy != null;
             }
 
-            var dyParams = RequestConvert.Instance.ToSqlParameters(entity, false);
+            var dyParams = SqlParameterCollection.Create(entity, false);
             var tableName = EntityMetaDataCache<TEntity>.TableName;
             var pkCol = EntityMetaDataCache<TEntity>.PrimaryKey;
             var sqlBuilder = new StringBuilder();

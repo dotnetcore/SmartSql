@@ -79,6 +79,18 @@ namespace SmartSql.Test.Unit.CUD
         }
 
         [Fact]
+        public void DyUpdate_Dic()
+        {
+            AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
+            var recordsAffected = SqlMapper.DyUpdate<AllPrimitive>(new Dictionary<String, object>
+            {
+                {"Id", id},
+                {"Boolean", true}
+            });
+            Assert.NotEqual(0, recordsAffected);
+        }
+        
+        [Fact]
         public void DeleteById()
         {
             AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
