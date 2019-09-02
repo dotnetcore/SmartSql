@@ -110,6 +110,7 @@ namespace SmartSql.Deserializer
 
             var dataReader = executionContext.DataReaderWrapper;
             var resultMap = executionContext.Request.GetCurrentResultMap();
+            
 
             var constructorMap = resultMap?.Constructor;
             var columns = Enumerable.Range(0, dataReader.FieldCount)

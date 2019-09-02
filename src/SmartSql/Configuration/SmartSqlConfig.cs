@@ -12,6 +12,7 @@ using SmartSql.DbSession;
 using SmartSql.Cache;
 using SmartSql.IdGenerator;
 using Microsoft.Extensions.Logging.Abstractions;
+using SmartSql.AutoConverter;
 using SmartSql.Command;
 using SmartSql.Filters;
 
@@ -40,6 +41,10 @@ namespace SmartSql.Configuration
         public ICommandExecuter CommandExecuter { get; set; }
         public InvokeSucceedListener InvokeSucceedListener { get; set; }
         public IDictionary<String, IIdGenerator> IdGenerators { get; set; }
+        public IDictionary<String, IAutoConverter> AutoConverters { get; set; }
+        
+        public IAutoConverter DefaultAutoConverter { get; set; }
+        
         public FilterCollection Filters { get; set; }
 
         public SqlMap GetSqlMap(string scope)

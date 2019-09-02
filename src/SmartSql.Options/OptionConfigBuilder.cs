@@ -129,6 +129,12 @@ namespace SmartSql.Options
             return SmartSqlConfig.Properties.GetPropertyValue(expStr);
         }
 
+        // todo: not impl
+        protected override void BuildAutoConverters()
+        {
+            return;
+        }
+
         public override void Dispose()
         {
 

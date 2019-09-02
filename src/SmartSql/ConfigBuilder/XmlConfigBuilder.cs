@@ -8,6 +8,7 @@ using SmartSql.Exceptions;
 using SmartSql.Reflection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using SmartSql.AutoConverter;
 using SmartSql.IdGenerator;
 
 namespace SmartSql.ConfigBuilder
@@ -24,6 +25,11 @@ namespace SmartSql.ConfigBuilder
         protected XmlNamespaceManager XmlNsManager { get; private set; }
         protected XmlNode XmlConfigRoot { get; private set; }
         private readonly IIdGeneratorBuilder _idGeneratorBuilder = new IdGeneratorBuilder();
+
+        private readonly IWordsConverterBuilder _wordsConverterBuilder = new WordsConverterBuilder();
+        private readonly ITokenizerBuilder _tokenizerBuilder = new TokenizerBuilder();
+        private readonly IAutoConverterBuilder _autoConverterBuilder = new AutoConverterBuilder();
+        
         public XmlConfigBuilder(ResourceType resourceType, string resourcePath, ILoggerFactory loggerFactory = null)
         {
             _resourceType = resourceType;
@@ -367,6 +373,45 @@ namespace SmartSql.ConfigBuilder
         #region 6. AutoConverter
 
         protected override void BuildAutoConverters()
+        {
+            var authConverterXPath = $"{CONFIG_PREFIX}:AutoConverters/{CONFIG_PREFIX}:AutoConverter";
+            var autoConverterNodes = XmlConfigRoot.SelectNodes(authConverterXPath, XmlNsManager);
+            if (autoConverterNodes != null)
+            {
+                SmartSqlConfig.AutoConverters.Clear();
+
+                foreach (XmlNode autoConverterNode in autoConverterNodes)
+                {
+                    BuildAutoConverter(autoConverterNode);
+                }
+            }
+        }
+
+        private void BuildAutoConverter(XmlNode autoConverterNode)
+        {
+            if (!autoConverterNode.Attributes.TryGetValueAsString("Name", out String converterName, SmartSqlConfig.Properties))
+            {
+                throw new SmartSqlException("AutoConverter.Name can not be null.");
+            }
+
+            if (!autoConverterNode.Attributes.TryGetValueAsBoolean("Default", out bool isDefault, SmartSqlConfig.Properties))
+            {
+                isDefault = false;
+            }
+
+            var tokenizerXPath = $"{CONFIG_PREFIX}:Tokenizer";
+            var tokenizerNode = autoConverterNode.SelectSingleNode(tokenizerXPath, XmlNsManager);
+            if (tokenizerNode == null)
+            {
+                throw new SmartSqlException("AutoConverter.Tokenizer can not be null");
+            }
+
+            
+
+
+        }
+
+        private ITokenizer BuildTokenizer(XmlNode tokenizerNode)
         {
             
         }
