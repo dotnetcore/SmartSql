@@ -1,10 +1,12 @@
+using System;
+
 namespace SmartSql.AutoConverter
 {
-    public class AutoConverterBuilder:IAutoConverterBuilder
+    public class AutoConverterBuilder : IAutoConverterBuilder
     {
-        public IAutoConverter Build(IWordsConverter wordsConverter, ITokenizer tokenizer)
+        public IAutoConverter Build(String name, IWordsConverter wordsConverter, ITokenizer tokenizer)
         {
-            throw new System.NotImplementedException();
+            return new AutoConverter(name, tokenizer, wordsConverter);
         }
     }
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SmartSqlMap Scope="AssignAutoConverter" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+    <UseAutoConverter Name="DelimiterConverter"/>
+    <Statements>
+        <Statement Id="Query">
+            Select * From T_AutoConverter_2
+        </Statement>
+    </Statements>
+</SmartSqlMap>

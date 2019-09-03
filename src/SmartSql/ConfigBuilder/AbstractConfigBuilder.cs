@@ -33,6 +33,7 @@ namespace SmartSql.ConfigBuilder
             BuildDatabase();
             BuildTypeHandlers();
             BuildTagBuilders();
+            BuildAutoConverters();
             BuildSqlMaps();
             EnsureDependency();
             OnAfterBuild();

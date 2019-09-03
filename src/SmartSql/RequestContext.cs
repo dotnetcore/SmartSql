@@ -3,6 +3,7 @@ using SmartSql.DataSource;
 using System;
 using System.Data;
 using System.Text;
+using SmartSql.AutoConverter;
 using SmartSql.Cache;
 using SmartSql.Data;
 using SmartSql.Reflection.EntityProxy;
@@ -25,6 +26,10 @@ namespace SmartSql
         internal bool IgnorePrepend { get; set; } = false;
         public String RealSql { get; set; }
 
+        public String AutoConverterName { get; set; }
+        
+        internal IAutoConverter AutoConverter { get; set; }
+        
         /// <summary>
         /// SmartSqlMap.Scope
         /// </summary>

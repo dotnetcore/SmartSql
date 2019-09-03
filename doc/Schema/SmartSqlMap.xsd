@@ -1019,7 +1019,13 @@
             </xs:choice>
         </xs:complexType>
     </xs:element>
-
+    
+    <xs:element name="UseAutoConverter">
+        <xs:complexType>
+            <xs:attribute name="Name" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    
     <xs:element name="SmartSqlMap">
         <xs:complexType mixed="true">
             <xs:all>
@@ -1027,6 +1033,7 @@
                 <xs:element ref="ParameterMaps" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="ResultMaps" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="MultipleResultMaps" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="UseAutoConverter" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="Statements" minOccurs="0" maxOccurs="1"/>
             </xs:all>
             <xs:attribute name="Scope" type="xs:string" use="required"/>

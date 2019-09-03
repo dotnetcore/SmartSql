@@ -135,6 +135,55 @@
       </xs:choice>
     </xs:complexType>
   </xs:element>
+  <xs:element name="AutoConverters">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="AutoConverter" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AutoConverter">
+    <xs:complexType>
+       <xs:sequence minOccurs="0" >
+         <xs:element ref="Tokenizer"/>
+         <xs:element ref="Converter"/> 
+       </xs:sequence>
+      <xs:attribute name="Name" type="xs:string" use="required"/>
+      <xs:attribute name="Default" type="xs:boolean" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Tokenizer">
+    <xs:complexType>
+      <xs:sequence minOccurs="0">
+        <xs:element ref="Properties"/>
+      </xs:sequence>
+      <xs:attribute name="Name" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="Default"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Converter">
+    <xs:complexType>
+      <xs:sequence minOccurs="0">
+        <xs:element ref="Properties"/>
+      </xs:sequence>
+      <xs:attribute name="Name" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="Camel"/>
+            <xs:enumeration value="Delimiter"/>
+            <xs:enumeration value="Pascal"/>
+            <xs:enumeration value="PascalSingular"/>
+            <xs:enumeration value="StrikeThrough"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="SmartSqlMapConfig">
     <xs:complexType>
       <xs:all>
@@ -144,7 +193,8 @@
         <xs:element ref="TypeHandlers" minOccurs="0" maxOccurs="1"/>
         <xs:element ref="TagBuilders" minOccurs="0" maxOccurs="1"/>
         <xs:element ref="IdGenerators" minOccurs="0" maxOccurs="1"/>
-        <xs:element ref="SmartSqlMaps" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="AutoConverters" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="SmartSqlMaps" minOccurs="0" maxOccurs="1"/>        
       </xs:all>
     </xs:complexType>
   </xs:element>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SmartSqlMap Scope="DefaultAutoConverter" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+    <Statements>        
+        <Statement Id="Query">
+            Select * From T_AutoConverter_1          
+        </Statement>
+    </Statements>
+</SmartSqlMap>

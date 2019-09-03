@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Xml;
+using SmartSql.AutoConverter;
 using SmartSql.Cache;
 using SmartSql.Cache.Default;
 using SmartSql.Configuration;
@@ -58,6 +59,7 @@ namespace SmartSql.ConfigBuilder
             BuildResultMaps();
             BuildMultipleResultMaps();
             BuildStatements();
+            BuildAutoConverter();
             SmartSqlConfig.SqlMaps.Add(SqlMap.Scope, SqlMap);
             return SqlMap;
         }
@@ -608,6 +610,33 @@ namespace SmartSql.ConfigBuilder
             }
 
             return tag;
+        }
+
+        #endregion
+
+        #region Use AutoConverter
+
+        private void BuildAutoConverter()
+        {
+            var useAutoConverterNode = XmlSqlMapRoot.SelectSingleNode($"{SQLMAP_PREFIX}:UseAutoConverter", XmlNsManager);
+            if (useAutoConverterNode == null)
+            {
+                SqlMap.AutoConverter = SmartSqlConfig.DefaultAutoConverter;
+                return;
+            }
+
+            if (!useAutoConverterNode.Attributes.TryGetValueAsString("Name", out String autoConverterName, SmartSqlConfig.Properties))
+            {
+                throw new SmartSqlException(
+                                            $"Scope:{SqlMap.Scope} UseAutoConverter.Name can not be null");
+            }
+
+            if (!SmartSqlConfig.AutoConverters.TryGetValue(autoConverterName, out var autoConverter))
+            {
+                throw new SmartSqlException($"Scope:{SqlMap.Scope} can not find AutoConverter:[{autoConverterName}]");
+            }
+
+            SqlMap.AutoConverter = autoConverter;
         }
 
         #endregion

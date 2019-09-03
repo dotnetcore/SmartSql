@@ -102,6 +102,7 @@ namespace SmartSql.Configuration
             {
                 {nameof(SnowflakeId.Default), SnowflakeId.Default}
             };
+            AutoConverters = new Dictionary<string, IAutoConverter>();
             DbSessionFactory = new DbSessionFactory(this);
             SessionStore = new DbSessionStore(DbSessionFactory);
             StatementAnalyzer = new StatementAnalyzer();

@@ -1,6 +1,7 @@
 ﻿using SmartSql.Exceptions;
 using System;
 using System.Collections.Generic;
+using SmartSql.AutoConverter;
 
 namespace SmartSql.Configuration
 {
@@ -15,6 +16,8 @@ namespace SmartSql.Configuration
         public IDictionary<String, ResultMap> ResultMaps { get; set; }
         public IDictionary<String, MultipleResultMap> MultipleResultMaps { get; set; }
 
+        public IAutoConverter AutoConverter { get; set; }
+        
         public Statement GetStatement(string fullSqlId)
         {
             if (!Statements.TryGetValue(fullSqlId, out var statement))

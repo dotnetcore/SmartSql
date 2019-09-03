@@ -11,17 +11,33 @@
     <Property Name="RedisCacheProvider" Value="SmartSql.Cache.Redis.RedisCacheProvider,SmartSql.Cache.Redis"/>
   </Properties>
   <AutoConverters>
-    <AutoConverter Name="A" Default="True">
+    <AutoConverter Name="Default" Default="true">
+      <Tokenizer Name="Default"/>
+      <Converter Name="Pascal"/>      
+    </AutoConverter>
+    <AutoConverter Name="PascalConverter">
       <Tokenizer Name="Default">
         <Properties>
-          <Property Name="IgnorePrefix" Values="Col_" />
-          <Property Name="Delimiter" Values="_" />
-          <Property Name="UppercaseSplit" Values="True" />
+          <Property Name="IgnorePrefix" Value="" />
+          <Property Name="Delimiter" Value="_" />
+          <Property Name="UppercaseSplit" Value="false" />
         </Properties>
       </Tokenizer>
-      <Converter Name="Camel">
+      <Converter Name="Pascal"/>
+    </AutoConverter>
+    <AutoConverter Name="DelimiterConverter">
+      <Tokenizer Name="Default">
         <Properties>
-          <Property Name="" Values="" />
+          <Property Name="IgnorePrefix" Value="col_" />
+          <Property Name="Delimiter" Value="_" />
+          <Property Name="UppercaseSplit" Value="true" />
+        </Properties>
+      </Tokenizer>
+      <Converter Name="Delimiter">
+        <Properties>
+          <Property Name="Prefix" Value="Col_" />
+          <Property Name="Delimiter" Value="_"/>
+          <Property Name="Mode" Value="FirstUpper"/>
         </Properties>
       </Converter>
     </AutoConverter>

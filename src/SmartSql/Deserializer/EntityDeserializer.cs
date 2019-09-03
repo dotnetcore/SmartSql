@@ -111,11 +111,17 @@ namespace SmartSql.Deserializer
             var dataReader = executionContext.DataReaderWrapper;
             var resultMap = executionContext.Request.GetCurrentResultMap();
             
-
             var constructorMap = resultMap?.Constructor;
             var columns = Enumerable.Range(0, dataReader.FieldCount)
-                .Select(i => new {Index = i, Name = dataReader.GetName(i), FieldType = dataReader.GetFieldType(i)})
-                .ToDictionary((col) => col.Name);
+                                    .Select(i => new
+                                    {
+                                        Index = i,
+                                        Name = executionContext.Request.AutoConverter == null
+                                                   ? dataReader.GetName(i)
+                                                   : executionContext.Request.AutoConverter.Convert(dataReader.GetName(i)),
+                                        FieldType = dataReader.GetFieldType(i)
+                                    })
+                                    .ToDictionary(col => col.Name);
 
             var deserFunc = new DynamicMethod("Deserialize" + Guid.NewGuid().ToString("N"), resultType,
                 new[] {DataType.DataReaderWrapper, RequestContextType.AbstractType}, resultType, true);

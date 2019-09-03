@@ -97,6 +97,20 @@ namespace SmartSql.Middlewares
             {
                 SetCache(requestContext, sqlMap);
             }
+            
+            if (!String.IsNullOrEmpty(requestContext.AutoConverterName))
+            {
+                if (!_smartSqlConfig.AutoConverters.TryGetValue(requestContext.AutoConverterName, out var autoConverter))
+                {
+                    throw new SmartSqlException($"The auto converter with name {requestContext.AutoConverterName} was not found");
+                }
+
+                requestContext.AutoConverter = autoConverter;
+            }
+            else
+            {
+                requestContext.AutoConverter = sqlMap.AutoConverter;
+            }
 
             requestContext.ParameterMapId = requestContext.Statement.ParameterMapId;
             requestContext.ParameterMap = requestContext.Statement.ParameterMap;
@@ -129,6 +143,20 @@ namespace SmartSql.Middlewares
             {
                 var fullMultipleResultMapId = $"{requestContext.Scope}.{requestContext.MultipleResultMapId}";
                 requestContext.MultipleResultMap = sqlMap.GetMultipleResultMap(fullMultipleResultMapId);
+            }
+
+            if (!String.IsNullOrEmpty(requestContext.AutoConverterName))
+            {
+                if (!_smartSqlConfig.AutoConverters.TryGetValue(requestContext.AutoConverterName, out var autoConverter))
+                {
+                    throw new SmartSqlException($"The auto converter with name {requestContext.AutoConverterName} was not found");
+                }
+
+                requestContext.AutoConverter = autoConverter;
+            }
+            else
+            {
+                requestContext.AutoConverter = sqlMap.AutoConverter;
             }
         }
 
