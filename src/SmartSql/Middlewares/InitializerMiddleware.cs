@@ -158,13 +158,13 @@ namespace SmartSql.Middlewares
 
                 requestContext.AutoConverter = autoConverter;
             }
-            else if (requestContext.Statement.AutoConverter != null)
+            else if (requestContext.Statement?.AutoConverter != null)
             {
                 requestContext.AutoConverter = requestContext.Statement.AutoConverter;
             }
             else
             {
-                requestContext.AutoConverter = sqlMap.AutoConverter;
+                requestContext.AutoConverter = sqlMap?.AutoConverter;
             }
         }
 
