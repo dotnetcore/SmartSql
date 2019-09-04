@@ -509,6 +509,20 @@ namespace SmartSql.ConfigBuilder
                         $"Statement.Id:{statement.FullSqlId} can not find ReadDb:{statement.ReadDb}!");
                 }
             }
+            
+            #region AutoConverter
+
+            if (statementNode.Attributes.TryGetValueAsString("AutoConverter", out String autoConverterName, SmartSqlConfig.Properties))
+            {
+                if (!SmartSqlConfig.AutoConverters.TryGetValue(autoConverterName,out var autoConverter))
+                {
+                    throw new SmartSqlException($"Statement.Id:{statement.FullSqlId} can not find AutoConverter:{autoConverterName}!");
+                }
+
+                statement.AutoConverter = autoConverter;
+            }
+
+            #endregion
 
             #region Init CacheId & ResultMapId & ParameterMapId & MultipleResultMapId
 
@@ -625,6 +639,15 @@ namespace SmartSql.ConfigBuilder
                 return;
             }
 
+            if (useAutoConverterNode.Attributes.TryGetValueAsBoolean("Disabled", out bool disabled, SmartSqlConfig.Properties))
+            {
+                if (disabled)
+                {
+                    SqlMap.AutoConverter = null;
+                    return;
+                }
+            }
+            
             if (!useAutoConverterNode.Attributes.TryGetValueAsString("Name", out String autoConverterName, SmartSqlConfig.Properties))
             {
                 throw new SmartSqlException(

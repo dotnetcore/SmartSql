@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SmartSqlMap Scope="DisabledAutoConverter" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+    <UseAutoConverter Disabled="true"/>
+    <Statements>
+        <Statement Id="GetEntity">
+            Select * From T_User T
+            <Where Min="1">
+                <IsNotEmpty Property="Id" Prepend="And">
+                    T.Id = @Id
+                </IsNotEmpty>
+            </Where>
+        </Statement>
+    </Statements>
+</SmartSqlMap>

@@ -1010,6 +1010,7 @@
             <xs:attribute name="ReadDb" type="xs:string" use="optional"/>
             <xs:attribute name="CommandTimeout" type="xs:int" use="optional"/>
             <xs:attribute name="EnablePropertyChangedTrack" type="xs:boolean" use="optional"/>
+            <xs:attribute name="AutoConverter" type="xs:string" use="optional"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="Statements">
@@ -1022,7 +1023,8 @@
     
     <xs:element name="UseAutoConverter">
         <xs:complexType>
-            <xs:attribute name="Name" use="required"/>
+            <xs:attribute name="Name" type="xs:string" use="optional"/>
+            <xs:attribute name="Disabled" type="xs:boolean" use="optional"/>
         </xs:complexType>
     </xs:element>
     

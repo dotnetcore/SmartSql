@@ -34,6 +34,30 @@
         "Name": "Json",
         "Type": "SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"
       }
+    ],
+    "AutoConverterBuilders": [
+      {
+        "Name": "Default",
+        "IsDefault": true,
+        "TokenizerName": "Default",
+        "WordsConverterName": "Pascal"
+      },
+      {
+        "Name": "DelimiterConverter",
+        "IsDefault": false,
+        "TokenizerName": "Default",
+        "TokenizerProperties": {
+          "IgnorePrefix": "col_",
+          "Delimiter": "_",
+          "UppercaseSplit": true                  
+        },
+        "WordsConverterName": "Delimiter",
+        "WordsConverterProperties": {
+          "Prefix": "Col_",
+          "Delimiter": "_",
+          "Mode": "FirstUpper"
+        }
+      }
     ]
   }
 }

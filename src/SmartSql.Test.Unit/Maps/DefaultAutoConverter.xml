@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SmartSqlMap Scope="DefaultAutoConverter" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+<SmartSqlMap Scope="DefaultAutoConverter" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">    
     <Statements>        
         <Statement Id="Query">
-            Select * From T_AutoConverter_1          
+            Select * From T_User          
+        </Statement>
+        <Statement Id="AssignAutoFromRequestConverterQuery">
+            Select * From T_AutoConverter_2
         </Statement>
     </Statements>
 </SmartSqlMap>

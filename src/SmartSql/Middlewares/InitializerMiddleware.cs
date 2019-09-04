@@ -107,6 +107,10 @@ namespace SmartSql.Middlewares
 
                 requestContext.AutoConverter = autoConverter;
             }
+            else if (requestContext.Statement.AutoConverter != null)
+            {
+                requestContext.AutoConverter = requestContext.Statement.AutoConverter;
+            }
             else
             {
                 requestContext.AutoConverter = sqlMap.AutoConverter;
@@ -153,6 +157,10 @@ namespace SmartSql.Middlewares
                 }
 
                 requestContext.AutoConverter = autoConverter;
+            }
+            else if (requestContext.Statement.AutoConverter != null)
+            {
+                requestContext.AutoConverter = requestContext.Statement.AutoConverter;
             }
             else
             {

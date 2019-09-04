@@ -116,7 +116,8 @@ namespace SmartSql.Deserializer
                                     .Select(i => new
                                     {
                                         Index = i,
-                                        Name = executionContext.Request.AutoConverter == null
+                                        Name = dataReader.GetName(i),
+                                        ConvertedName = executionContext.Request.AutoConverter == null
                                                    ? dataReader.GetName(i)
                                                    : executionContext.Request.AutoConverter.Convert(dataReader.GetName(i)),
                                         FieldType = dataReader.GetFieldType(i)
@@ -181,6 +182,10 @@ namespace SmartSql.Deserializer
                     }
 
                     propertyInfo = resultType.GetProperty(propertyName);
+                }
+                else
+                {
+                    colName = col.Value.ConvertedName;
                 }
 
                 if (EntityMetaDataCache<TResult>.TryGetColumnByColumnName(colName, out var columnAttribute))
