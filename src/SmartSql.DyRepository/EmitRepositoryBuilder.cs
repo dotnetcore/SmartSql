@@ -523,13 +523,30 @@ namespace SmartSql.DyRepository
 
         private void EmitSetTransaction(ILGenerator ilGen, MethodInfo methodInfo)
         {
+            var isolationLevel = GetMemberIsolationLevel(methodInfo)?? GetMemberIsolationLevel(methodInfo.DeclaringType);            
+
+            if (isolationLevel.HasValue)
+            {
+                ilGen.LoadLocalVar(0);
+                ilGen.LoadInt32(isolationLevel.GetHashCode());
+                ilGen.New(NullableType<IsolationLevel>.Ctor);
+                ilGen.Callvirt(RequestContextType.Method.SetTransaction);
+            }
+        }
+
+        /// <summary>
+        /// 获取指定成员事务隔离等级
+        /// </summary>
+        /// <param name="memberInfo">成员</param>
+        private IsolationLevel? GetMemberIsolationLevel(MemberInfo memberInfo)
+        {
             IsolationLevel? isolationLevel = null;
-            foreach (var attributeData in methodInfo.GetCustomAttributesData())
+            foreach (var attributeData in memberInfo.GetCustomAttributesData())
             {
                 var attrType = attributeData.AttributeType;
                 if (attrType == typeof(UseTransactionAttribute))
                 {
-                    var transactionAttribute = methodInfo.GetCustomAttribute<UseTransactionAttribute>();
+                    var transactionAttribute = memberInfo.GetCustomAttribute<UseTransactionAttribute>();
                     isolationLevel = transactionAttribute.Level;
                     break;
                 }
@@ -539,12 +556,12 @@ namespace SmartSql.DyRepository
                 if (attrType.FullName == "SmartSql.AOP.TransactionAttribute")
                 {
                     _logger.LogWarning(
-                        $"RepositoryBuilder.BuildMethod:{methodInfo.Name} Used:[{attrType.FullName}] ,Suggested use:[{typeof(UseTransactionAttribute).FullName}] For DyRepository interface.");
-                    var transactionAttribute = methodInfo.GetCustomAttribute(attrType);
+                        $"RepositoryBuilder.BuildMethod:{memberInfo.Name} Used:[{attrType.FullName}] ,Suggested use:[{typeof(UseTransactionAttribute).FullName}] For DyRepository interface.");
+                    var transactionAttribute = memberInfo.GetCustomAttribute(attrType);
                     var transactionLevel = attrType.GetProperty("Level")?.GetValue(transactionAttribute);
                     if (transactionLevel != null)
                     {
-                        isolationLevel = (IsolationLevel) transactionLevel;
+                        isolationLevel = (IsolationLevel)transactionLevel;
                     }
 
                     break;
@@ -553,13 +570,7 @@ namespace SmartSql.DyRepository
                 #endregion
             }
 
-            if (isolationLevel.HasValue)
-            {
-                ilGen.LoadLocalVar(0);
-                ilGen.LoadInt32(isolationLevel.GetHashCode());
-                ilGen.New(NullableType<IsolationLevel>.Ctor);
-                ilGen.Callvirt(RequestContextType.Method.SetTransaction);
-            }
+            return isolationLevel;
         }
 
         private static void EmitSetCache(ILGenerator ilGen, MethodInfo methodInfo)
