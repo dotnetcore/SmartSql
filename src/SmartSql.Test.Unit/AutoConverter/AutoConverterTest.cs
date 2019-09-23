@@ -57,6 +57,34 @@ namespace SmartSql.Test.Unit.AutoConverter
         }
 
         [Fact]
+        public void UseNoneAutoConverterTest()
+        {
+            var userId = SqlMapper.QuerySingle<long>(new RequestContext
+            {
+                Scope = "User",
+                SqlId = "Insert",
+                Request = new User
+                {
+                    UserName = "Noah",
+                    Status = UserStatus.Ok
+                }
+            });
+            
+            var userEntity = SqlMapper.QuerySingle<User>(new RequestContext
+            {
+                Scope = "DefaultAutoConverter",
+                SqlId = "GetEntity",
+                Request = new
+                {
+                    Id = userId
+                }
+            });
+            
+            Assert.NotNull(userEntity);
+            Assert.Equal(userId, userEntity.Id);
+        }
+
+        [Fact]
         public void AssignAutoFromRequestConverterTest()
         {
             var list = SqlMapper.Query<AutoConverter_2>(new RequestContext

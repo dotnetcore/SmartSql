@@ -8,22 +8,25 @@ namespace SmartSql.AutoConverter
         public IWordsConverter Build(string name, IDictionary<string, object> properties)
         {
             IWordsConverter wordsConverter;
-            switch (name)
+            switch (name.ToUpper())
             {
-                case "Camel":
+                case "CAMEL":
                     wordsConverter = new CamelCaseConverter();
                     break;
-                case "Delimiter":
+                case "DELIMITER":
                     wordsConverter = new DelimiterConverter();
                     break;
-                case "Pascal":
+                case "PASCAL":
                     wordsConverter = new PascalCaseConverter();
                     break;
-                case "PascalSingular":
+                case "PASCALSINGULAR":
                     wordsConverter = new PascalCaseSingularConverter();
                     break;
-                case "StrikeThrough":
+                case "STRIKETHROUGH":
                     wordsConverter = new StrikeThroughConverter();
+                    break;
+                case "NONE":
+                    wordsConverter = new NoneConverter();
                     break;
                 default:
                     throw new SmartSqlException($"WordsConverter.Name -> {name} can not found");

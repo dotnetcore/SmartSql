@@ -7,14 +7,16 @@ namespace SmartSql.AutoConverter
     {
         public ITokenizer Build(string name, IDictionary<string, object> properties)
         {
-            switch (name)
+            switch (name.ToUpper())
             {
-                case "Default":
+                case "DEFAULT":
                     ITokenizer tokenizer = new DefaultTokenizer();
                     tokenizer.Initialize(properties);
                     return tokenizer;
-               default:
-                   throw new SmartSqlException($"Tokenizer.Name -> {name} can not found");
+                case "NONE":
+                    return new NoneTokenizer();
+                default:
+                    throw new SmartSqlException($"Tokenizer.Name -> {name} can not found");
             }
         }
     }

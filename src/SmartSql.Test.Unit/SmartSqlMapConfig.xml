@@ -2,7 +2,7 @@
 <SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
   <Settings IgnoreParameterCase="false" ParameterPrefix="$"  IsCacheEnabled="true" EnablePropertyChangedTrack="true" IgnoreDbNull="true"/>
   <Properties>
-    <Property Name="Redis" Value="localhost"/>
+    <Property Name="Redis" Value="47.101.147.207,password=Qazxc@123456"/>
     <Property Name="DbProvider" Value="SqlServer"/>
     <Property Name="ConnectionString" Value="Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True"/>
     <Property Name="JsonTypeHandler`" Value="SmartSql.TypeHandler.JsonTypeHandler`1,SmartSql.TypeHandler"/>
@@ -11,6 +11,10 @@
     <Property Name="RedisCacheProvider" Value="SmartSql.Cache.Redis.RedisCacheProvider,SmartSql.Cache.Redis"/>
   </Properties>
   <AutoConverters>
+    <AutoConverter Name="NoneConverter">
+      <Tokenizer Name="None"/>
+      <Converter Name="None"/>
+    </AutoConverter>
     <AutoConverter Name="Default" Default="true">
       <Tokenizer Name="Default"/>
       <Converter Name="Pascal"/>      
