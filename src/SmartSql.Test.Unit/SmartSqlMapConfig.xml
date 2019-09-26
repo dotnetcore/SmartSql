@@ -10,6 +10,42 @@
     <Property Name="ScriptBuilder" Value="SmartSql.ScriptTag.ScriptBuilder,SmartSql.ScriptTag"/>
     <Property Name="RedisCacheProvider" Value="SmartSql.Cache.Redis.RedisCacheProvider,SmartSql.Cache.Redis"/>
   </Properties>
+  <AutoConverters>
+    <AutoConverter Name="NoneConverter">
+      <Tokenizer Name="None"/>
+      <Converter Name="None"/>
+    </AutoConverter>
+    <AutoConverter Name="Default" Default="true">
+      <Tokenizer Name="Default"/>
+      <Converter Name="Pascal"/>      
+    </AutoConverter>
+    <AutoConverter Name="PascalConverter">
+      <Tokenizer Name="Default">
+        <Properties>
+          <Property Name="IgnorePrefix" Value="" />
+          <Property Name="Delimiter" Value="_" />
+          <Property Name="UppercaseSplit" Value="false" />
+        </Properties>
+      </Tokenizer>
+      <Converter Name="Pascal"/>
+    </AutoConverter>
+    <AutoConverter Name="DelimiterConverter">
+      <Tokenizer Name="Default">
+        <Properties>
+          <Property Name="IgnorePrefix" Value="col_" />
+          <Property Name="Delimiter" Value="_" />
+          <Property Name="UppercaseSplit" Value="true" />
+        </Properties>
+      </Tokenizer>
+      <Converter Name="Delimiter">
+        <Properties>
+          <Property Name="Prefix" Value="Col_" />
+          <Property Name="Delimiter" Value="_"/>
+          <Property Name="Mode" Value="FirstUpper"/>
+        </Properties>
+      </Converter>
+    </AutoConverter>
+  </AutoConverters>
   <Database>
     <DbProvider Name="${DbProvider}"/>
     <Write Name="WriteDB" ConnectionString="${ConnectionString}"/>

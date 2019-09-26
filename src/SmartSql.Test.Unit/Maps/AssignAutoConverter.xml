@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SmartSqlMap Scope="AssignAutoConverter" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+    <UseAutoConverter Name="DelimiterConverter"/>
+    <ResultMaps>
+        <ResultMap Id="AutoConverter_2_Map">
+            <Result Property="Col_Id" Column="id"/>
+            <Result Property="Col_Name" Column="col_name"/>
+            <Result Property="Col_Create_Time" Column="col_createTime"/>
+            <Result Property="Col_Use_Default_Case" Column="col_useDefaultCase"/>            
+        </ResultMap>
+    </ResultMaps>
+    <Statements>
+        <Statement Id="Query">
+            Select * From T_AutoConverter_2
+        </Statement>
+
+        <Statement Id="AssignAutoConverterQuery" AutoConverter="PascalConverter" >
+            Select * From T_AutoConverter_1
+        </Statement>
+
+        <Statement Id="AssignResultMapAndAutoConverterQuery" AutoConverter="PascalConverter" ResultMap="AutoConverter_2_Map">
+            Select * From T_AutoConverter_2
+        </Statement>
+    </Statements>
+</SmartSqlMap>

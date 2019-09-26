@@ -14,5 +14,7 @@ namespace SmartSql.Options
         public List<TagBuilder> TagBuilders { get; set; } = new List<TagBuilder>();
         public List<IdGenerator> IdGenerators { get; set; }
         public List<SqlMapSource> SmartSqlMaps { get; set; } = new List<SqlMapSource>();
+
+        public List<AutoConverterBuilder> AutoConverterBuilders { get; set; }
     }
 }

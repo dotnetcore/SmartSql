@@ -8,6 +8,7 @@ using SmartSql.Exceptions;
 using SmartSql.Reflection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using SmartSql.AutoConverter;
 using SmartSql.IdGenerator;
 
 namespace SmartSql.ConfigBuilder
@@ -24,6 +25,10 @@ namespace SmartSql.ConfigBuilder
         protected XmlNamespaceManager XmlNsManager { get; private set; }
         protected XmlNode XmlConfigRoot { get; private set; }
         private readonly IIdGeneratorBuilder _idGeneratorBuilder = new IdGeneratorBuilder();
+
+        private readonly IWordsConverterBuilder _wordsConverterBuilder = new WordsConverterBuilder();
+        private readonly ITokenizerBuilder _tokenizerBuilder = new TokenizerBuilder();
+        
         public XmlConfigBuilder(ResourceType resourceType, string resourcePath, ILoggerFactory loggerFactory = null)
         {
             _resourceType = resourceType;
@@ -363,7 +368,85 @@ namespace SmartSql.ConfigBuilder
             }
         }
         #endregion
+        #region 6. AutoConverter
 
+        protected override void BuildAutoConverters()
+        {
+            var authConverterXPath = $"{CONFIG_PREFIX}:AutoConverters/{CONFIG_PREFIX}:AutoConverter";
+            var autoConverterNodes = XmlConfigRoot.SelectNodes(authConverterXPath, XmlNsManager);
+            if (autoConverterNodes != null)
+            {
+                SmartSqlConfig.AutoConverters.Clear();
+
+                foreach (XmlNode autoConverterNode in autoConverterNodes)
+                {
+                    BuildAutoConverter(autoConverterNode);
+                }
+            }
+        }
+
+        private void BuildAutoConverter(XmlNode autoConverterNode)
+        {
+            if (!autoConverterNode.Attributes.TryGetValueAsString("Name", out String converterName, SmartSqlConfig.Properties))
+            {
+                throw new SmartSqlException("AutoConverter.Name can not be null.");
+            }
+
+            if (!autoConverterNode.Attributes.TryGetValueAsBoolean("Default", out bool isDefault, SmartSqlConfig.Properties))
+            {
+                isDefault = false;
+            }
+
+            var tokenizerXPath = $"{CONFIG_PREFIX}:Tokenizer";
+            var tokenizerNode = autoConverterNode.SelectSingleNode(tokenizerXPath, XmlNsManager);
+            if (tokenizerNode == null)
+            {
+                throw new SmartSqlException("AutoConverter.Tokenizer can not be null");
+            }
+
+            var tokenizer = BuildTokenizer(tokenizerNode);
+
+            var wordsConverterXPath = $"{CONFIG_PREFIX}:Converter";
+            var wordsConverterNode = autoConverterNode.SelectSingleNode(wordsConverterXPath, XmlNsManager);
+            if (wordsConverterNode == null)
+            {
+                throw new SmartSqlException("AutoConverter.Converter can not be null");
+            }
+
+            var wordsConverter = BuildWordsConverter(wordsConverterNode);
+
+            var autoConverter = new AutoConverter.AutoConverter(converterName, tokenizer, wordsConverter);
+                
+            SmartSqlConfig.AutoConverters.Add(autoConverter.Name, autoConverter);
+            if (isDefault)
+            {
+                SmartSqlConfig.DefaultAutoConverter = autoConverter;
+            }
+        }
+
+        private ITokenizer BuildTokenizer(XmlNode tokenizerNode)
+        {
+            if (!tokenizerNode.Attributes.TryGetValueAsString("Name", out String tokenizerName, SmartSqlConfig.Properties))
+            {
+                throw new SmartSqlException("Tokenizer.Name can not be null.");
+            }
+            var properties = ParseProperties(tokenizerNode);
+            return _tokenizerBuilder.Build(tokenizerName, properties);
+        }
+        
+        private IWordsConverter BuildWordsConverter(XmlNode wordsConverterNode)
+        {
+            if (!wordsConverterNode.Attributes.TryGetValueAsString("Name", out String wordsConverterName, SmartSqlConfig.Properties))
+            {
+                throw new SmartSqlException("WordsConverter.Name can not be null.");
+            }
+            var properties = ParseProperties(wordsConverterNode);
+            return _wordsConverterBuilder.Build(wordsConverterName, properties);
+        }
+        
+        #endregion
+        
+        
         private IDictionary<String, object> ParseProperties(XmlNode parentNode)
         {
             var parametersNode = parentNode.SelectSingleNode($"{CONFIG_PREFIX}:Properties", XmlNsManager);

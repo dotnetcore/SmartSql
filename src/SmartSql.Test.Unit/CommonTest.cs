@@ -1,4 +1,5 @@
 using System;
+using System.Data.SqlClient;
 using SmartSql.DataSource;
 using Xunit;
 

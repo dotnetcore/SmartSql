@@ -1010,6 +1010,7 @@
             <xs:attribute name="ReadDb" type="xs:string" use="optional"/>
             <xs:attribute name="CommandTimeout" type="xs:int" use="optional"/>
             <xs:attribute name="EnablePropertyChangedTrack" type="xs:boolean" use="optional"/>
+            <xs:attribute name="AutoConverter" type="xs:string" use="optional"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="Statements">
@@ -1019,7 +1020,14 @@
             </xs:choice>
         </xs:complexType>
     </xs:element>
-
+    
+    <xs:element name="UseAutoConverter">
+        <xs:complexType>
+            <xs:attribute name="Name" type="xs:string" use="optional"/>
+            <xs:attribute name="Disabled" type="xs:boolean" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+    
     <xs:element name="SmartSqlMap">
         <xs:complexType mixed="true">
             <xs:all>
@@ -1027,6 +1035,7 @@
                 <xs:element ref="ParameterMaps" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="ResultMaps" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="MultipleResultMaps" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="UseAutoConverter" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="Statements" minOccurs="0" maxOccurs="1"/>
             </xs:all>
             <xs:attribute name="Scope" type="xs:string" use="required"/>

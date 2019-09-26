@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SmartSqlMap Scope="DefaultAutoConverter" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">    
+    <Statements>
+        <Statement Id="InsertTableOne">
+            Insert Into T_AutoConverter_1
+            (name
+            ,create_time
+            ,use_default_case)
+            Values
+            (@Name
+            ,@CreateTime
+            ,@UseDefaultCase)
+        </Statement>
+        <Statement Id="InsertTableTwo">
+            Insert Into T_AutoConverter_2
+            (col_name
+            ,col_createTime
+            ,col_useDefaultCase)
+            Values
+            (@Name
+            ,@CreateTime
+            ,@UseDefaultCase)
+        </Statement>
+        <Statement Id="Query">
+            Select * From T_User          
+        </Statement>
+        <Statement Id="AssignAutoFromRequestConverterQuery">
+            Select * From T_AutoConverter_2
+        </Statement>
+        <Statement Id="GetEntity" AutoConverter="NoneConverter">
+            Select * From T_User T
+            <Where Min="1">
+                <IsNotEmpty Property="Id" Prepend="And">
+                    T.Id = @Id
+                </IsNotEmpty>
+            </Where>
+        </Statement>
+    </Statements>
+</SmartSqlMap>

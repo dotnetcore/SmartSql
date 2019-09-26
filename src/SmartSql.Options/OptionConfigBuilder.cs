@@ -7,12 +7,16 @@ using SmartSql.Exceptions;
 using SmartSql.Reflection;
 using System;
 using System.Linq;
+using SmartSql.AutoConverter;
 
 namespace SmartSql.Options
 {
     public class OptionConfigBuilder : AbstractConfigBuilder
     {
         private readonly SmartSqlConfigOptions _configOptions;
+        
+        private readonly IWordsConverterBuilder _wordsConverterBuilder = new WordsConverterBuilder();
+        private readonly ITokenizerBuilder _tokenizerBuilder = new TokenizerBuilder();
         public OptionConfigBuilder(SmartSqlConfigOptions configOptions, ILoggerFactory loggerFactory = null)
         {
             loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
@@ -127,6 +131,44 @@ namespace SmartSql.Options
         private string GetExpString(string expStr)
         {
             return SmartSqlConfig.Properties.GetPropertyValue(expStr);
+        }
+
+        // todo: not impl
+        protected override void BuildAutoConverters()
+        {
+            if (_configOptions.AutoConverterBuilders == null || !_configOptions.AutoConverterBuilders.Any())
+            {
+                return;
+            }
+
+            foreach (var autoConverterBuilder in _configOptions.AutoConverterBuilders)
+            {
+                if (String.IsNullOrEmpty(autoConverterBuilder.Name))
+                {
+                    throw new SmartSqlException("AutoConverterBuilder.Name can not be null");
+                }
+                
+                if (String.IsNullOrEmpty(autoConverterBuilder.TokenizerName))
+                {
+                    throw new SmartSqlException("AutoConverterBuilder.TokenizerName can not be null");   
+                }
+                
+                if (String.IsNullOrEmpty(autoConverterBuilder.WordsConverterName))
+                {
+                    throw new SmartSqlException("AutoConverterBuilder.WordsConverterName can not be null");
+                }
+                
+                var tokenizer = _tokenizerBuilder.Build(autoConverterBuilder.TokenizerName, autoConverterBuilder.TokenizerProperties);
+                var wordsConverter = _wordsConverterBuilder.Build(autoConverterBuilder.WordsConverterName, autoConverterBuilder.WordsConverterProperties);
+
+                var autoConverter = new AutoConverter.AutoConverter(autoConverterBuilder.Name, tokenizer, wordsConverter);
+
+                SmartSqlConfig.AutoConverters.Add(autoConverter.Name, autoConverter);
+                if (autoConverterBuilder.IsDefault)
+                {
+                    SmartSqlConfig.DefaultAutoConverter = autoConverter;
+                }
+            }
         }
 
         public override void Dispose()

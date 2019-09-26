@@ -3,6 +3,7 @@ using SmartSql.DataSource;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using SmartSql.AutoConverter;
 
 namespace SmartSql.Configuration
 {
@@ -20,6 +21,8 @@ namespace SmartSql.Configuration
         public String FullSqlId => $"{SqlMap.Scope}.{Id}";
         public IList<ITag> SqlTags { get; set; }
 
+        public IAutoConverter AutoConverter { get; set; }
+        
         #region Map
 
         public String CacheId { get; set; }

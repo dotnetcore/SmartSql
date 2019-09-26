@@ -33,6 +33,7 @@ namespace SmartSql.ConfigBuilder
             BuildDatabase();
             BuildTypeHandlers();
             BuildTagBuilders();
+            BuildAutoConverters();
             BuildSqlMaps();
             EnsureDependency();
             OnAfterBuild();
@@ -46,6 +47,7 @@ namespace SmartSql.ConfigBuilder
         protected abstract void BuildIdGenerators();
         protected abstract void BuildProperties();
         protected abstract void BuildSettings();
+        protected abstract void BuildAutoConverters();
         public abstract void Dispose();
 
         protected void ImportProperties(IEnumerable<KeyValuePair<string, string>> importProperties)
