@@ -42,9 +42,9 @@ namespace SmartSql.Configuration
         public InvokeSucceedListener InvokeSucceedListener { get; set; }
         public IDictionary<String, IIdGenerator> IdGenerators { get; set; }
         public IDictionary<String, IAutoConverter> AutoConverters { get; set; }
-        
+
         public IAutoConverter DefaultAutoConverter { get; set; }
-        
+
         public FilterCollection Filters { get; set; }
 
         public SqlMap GetSqlMap(string scope)
@@ -108,6 +108,7 @@ namespace SmartSql.Configuration
             StatementAnalyzer = new StatementAnalyzer();
             InvokeSucceedListener = new InvokeSucceedListener();
             DbSessionFactory.Opened += (sender, args) => { InvokeSucceedListener.BindDbSessionEvent(args.DbSession); };
+            DefaultAutoConverter = NoneAutoConverter.INSTANCE;
         }
     }
 

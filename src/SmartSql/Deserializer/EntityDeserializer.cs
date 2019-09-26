@@ -118,9 +118,7 @@ namespace SmartSql.Deserializer
                 {
                     Index = i,
                     ColumnName = dataReader.GetName(i),
-                    PropertyName = executionContext.Request.AutoConverter == null
-                        ? dataReader.GetName(i)
-                        : executionContext.Request.AutoConverter.Convert(dataReader.GetName(i)),
+                    PropertyName = executionContext.Request.AutoConverter.Convert(dataReader.GetName(i)),
                     FieldType = dataReader.GetFieldType(i)
                 })
                 .ToDictionary(col => col.ColumnName);
@@ -235,7 +233,8 @@ namespace SmartSql.Deserializer
                 }
             }
 
-            if (EntityMetaDataCache<TResult>.TryGetColumnByColumnName(columnDescriptor.ColumnName, out var columnAttribute))
+            if (EntityMetaDataCache<TResult>.TryGetColumnByColumnName(columnDescriptor.ColumnName,
+                out var columnAttribute))
             {
                 propertyHolder = new PropertyHolder
                 {

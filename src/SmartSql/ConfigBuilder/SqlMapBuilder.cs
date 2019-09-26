@@ -59,6 +59,7 @@ namespace SmartSql.ConfigBuilder
                 SmartSqlConfig.SqlMaps.TryGetValue(scope, out sqlMap);
                 SmartSqlConfig.SqlMaps.Remove(scope);
             }
+
             SqlMap = sqlMap;
 
             SqlMap.Scope = scope;
@@ -518,14 +519,16 @@ namespace SmartSql.ConfigBuilder
                         $"Statement.Id:{statement.FullSqlId} can not find ReadDb:{statement.ReadDb}!");
                 }
             }
-            
+
             #region AutoConverter
 
-            if (statementNode.Attributes.TryGetValueAsString("AutoConverter", out String autoConverterName, SmartSqlConfig.Properties))
+            if (statementNode.Attributes.TryGetValueAsString("AutoConverter", out String autoConverterName,
+                SmartSqlConfig.Properties))
             {
-                if (!SmartSqlConfig.AutoConverters.TryGetValue(autoConverterName,out var autoConverter))
+                if (!SmartSqlConfig.AutoConverters.TryGetValue(autoConverterName, out var autoConverter))
                 {
-                    throw new SmartSqlException($"Statement.Id:{statement.FullSqlId} can not find AutoConverter:{autoConverterName}!");
+                    throw new SmartSqlException(
+                        $"Statement.Id:{statement.FullSqlId} can not find AutoConverter:{autoConverterName}!");
                 }
 
                 statement.AutoConverter = autoConverter;
@@ -641,26 +644,29 @@ namespace SmartSql.ConfigBuilder
 
         private void BuildAutoConverter()
         {
-            var useAutoConverterNode = XmlSqlMapRoot.SelectSingleNode($"{SQLMAP_PREFIX}:UseAutoConverter", XmlNsManager);
+            var useAutoConverterNode =
+                XmlSqlMapRoot.SelectSingleNode($"{SQLMAP_PREFIX}:UseAutoConverter", XmlNsManager);
             if (useAutoConverterNode == null)
             {
                 SqlMap.AutoConverter = SmartSqlConfig.DefaultAutoConverter;
                 return;
             }
 
-            if (useAutoConverterNode.Attributes.TryGetValueAsBoolean("Disabled", out bool disabled, SmartSqlConfig.Properties))
+            if (useAutoConverterNode.Attributes.TryGetValueAsBoolean("Disabled", out bool disabled,
+                SmartSqlConfig.Properties))
             {
                 if (disabled)
                 {
-                    SqlMap.AutoConverter = null;
+                    SqlMap.AutoConverter = NoneAutoConverter.INSTANCE;
                     return;
                 }
             }
-            
-            if (!useAutoConverterNode.Attributes.TryGetValueAsString("Name", out String autoConverterName, SmartSqlConfig.Properties))
+
+            if (!useAutoConverterNode.Attributes.TryGetValueAsString("Name", out String autoConverterName,
+                SmartSqlConfig.Properties))
             {
                 throw new SmartSqlException(
-                                            $"Scope:{SqlMap.Scope} UseAutoConverter.Name can not be null");
+                    $"Scope:{SqlMap.Scope} UseAutoConverter.Name can not be null");
             }
 
             if (!SmartSqlConfig.AutoConverters.TryGetValue(autoConverterName, out var autoConverter))

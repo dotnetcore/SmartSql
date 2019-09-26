@@ -3,6 +3,7 @@ using SmartSql.Data;
 using SmartSql.DataSource;
 using System;
 using System.Threading.Tasks;
+using SmartSql.AutoConverter;
 using SmartSql.Exceptions;
 
 namespace SmartSql.Middlewares
@@ -51,6 +52,10 @@ namespace SmartSql.Middlewares
             {
                 InitByMap(requestContext, sqlMap);
             }
+            if (requestContext.AutoConverter == null)
+            {
+                requestContext.AutoConverter = NoneAutoConverter.INSTANCE;
+            }
         }
 
         private void InitByStatement(AbstractRequestContext requestContext, SqlMap sqlMap)
@@ -97,12 +102,14 @@ namespace SmartSql.Middlewares
             {
                 SetCache(requestContext, sqlMap);
             }
-            
+
             if (!String.IsNullOrEmpty(requestContext.AutoConverterName))
             {
-                if (!_smartSqlConfig.AutoConverters.TryGetValue(requestContext.AutoConverterName, out var autoConverter))
+                if (!_smartSqlConfig.AutoConverters.TryGetValue(requestContext.AutoConverterName, out var autoConverter)
+                )
                 {
-                    throw new SmartSqlException($"The auto converter with name {requestContext.AutoConverterName} was not found");
+                    throw new SmartSqlException(
+                        $"The auto converter with name {requestContext.AutoConverterName} was not found");
                 }
 
                 requestContext.AutoConverter = autoConverter;
@@ -151,9 +158,11 @@ namespace SmartSql.Middlewares
 
             if (!String.IsNullOrEmpty(requestContext.AutoConverterName))
             {
-                if (!_smartSqlConfig.AutoConverters.TryGetValue(requestContext.AutoConverterName, out var autoConverter))
+                if (!_smartSqlConfig.AutoConverters.TryGetValue(requestContext.AutoConverterName, out var autoConverter)
+                )
                 {
-                    throw new SmartSqlException($"The auto converter with name {requestContext.AutoConverterName} was not found");
+                    throw new SmartSqlException(
+                        $"The auto converter with name {requestContext.AutoConverterName} was not found");
                 }
 
                 requestContext.AutoConverter = autoConverter;
