@@ -376,8 +376,6 @@ namespace SmartSql.ConfigBuilder
             var autoConverterNodes = XmlConfigRoot.SelectNodes(authConverterXPath, XmlNsManager);
             if (autoConverterNodes != null)
             {
-                SmartSqlConfig.AutoConverters.Clear();
-
                 foreach (XmlNode autoConverterNode in autoConverterNodes)
                 {
                     BuildAutoConverter(autoConverterNode);

@@ -138,5 +138,7 @@ namespace SmartSql.Middlewares
         {
             InitFilters(smartSqlBuilder);
         }
+
+        public abstract int Order { get; }
     }
 }

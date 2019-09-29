@@ -71,5 +71,7 @@ namespace SmartSql.Middlewares
         {
             _deserializerFactory = smartSqlBuilder.SmartSqlConfig.DeserializerFactory;
         }
+
+        public override int Order => 600;
     }
 }

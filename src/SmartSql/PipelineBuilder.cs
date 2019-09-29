@@ -23,17 +23,19 @@ namespace SmartSql
 
         public IMiddleware Build()
         {
-            for (var i = 0; i < Pipeline.Count; i++)
+            var list = Pipeline.OrderBy(middleware => middleware.Order).ToList();
+            for (var i = 0; i < list.Count; i++)
             {
                 var current = Pipeline[i];
                 if (i == Pipeline.Count - 1)
                 {
                     break;
                 }
+
                 current.Next = Pipeline[i + 1];
             }
+
             return Pipeline.FirstOrDefault();
         }
-
     }
 }

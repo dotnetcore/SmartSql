@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SmartSql
 {
-    public interface IMiddleware
+    public interface IMiddleware : IOrdered
     {
         IMiddleware Next { get; set; }
         void Invoke<TResult>(ExecutionContext executionContext);

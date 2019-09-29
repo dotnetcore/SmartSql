@@ -28,5 +28,7 @@ namespace SmartSql.Middlewares
         {
             _dataSourceFilter = smartSqlBuilder.SmartSqlConfig.DataSourceFilter;
         }
+
+        public override int Order => 400;
     }
 }

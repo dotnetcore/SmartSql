@@ -34,10 +34,10 @@ namespace SmartSql
                 dbProvider.ParameterNameSuffix, dbProvider.ParameterPrefix, column.Property.Name);
         }
 
-        private static String WrapColumnEqParameter(DbProvider dbProvider, string paramName)
+        private static String WrapColumnEqParameter(DbProvider dbProvider, ColumnAttribute col)
         {
             return
-                $"{dbProvider.ParameterNamePrefix}{paramName}{dbProvider.ParameterNameSuffix}={dbProvider.ParameterPrefix}{paramName}";
+                $"{dbProvider.ParameterNamePrefix}{col.Name}{dbProvider.ParameterNameSuffix}={dbProvider.ParameterPrefix}{col.Property.Name}";
         }
 
         public static TEntity GetById<TEntity, TPrimaryKey>(this IDbSession dbSession, TPrimaryKey id)
@@ -50,12 +50,12 @@ namespace SmartSql
         {
             var tableName = EntityMetaDataCache<TEntity>.TableName;
             var pkCol = EntityMetaDataCache<TEntity>.PrimaryKey;
-            var idParam = new SqlParameter(pkCol.Name, id, pkCol.Property.PropertyType)
+            var idParam = new SqlParameter(pkCol.Property.Name, id, pkCol.Property.PropertyType)
             {
                 TypeHandler = TypeHandlerCache<TPrimaryKey, TPrimaryKey>.Handler
             };
             var dbProvider = dbSession.SmartSqlConfig.Database.DbProvider;
-            var sql = $"Select * From {tableName} Where {WrapColumnEqParameter(dbProvider, idParam.Name)};";
+            var sql = $"Select * From {tableName} Where {WrapColumnEqParameter(dbProvider, pkCol)};";
             return dbSession.QuerySingle<TEntity>(new RequestContext
             {
                 EnablePropertyChangedTrack = enablePropertyChangedTrack,
@@ -151,12 +151,12 @@ namespace SmartSql
         {
             var tableName = EntityMetaDataCache<TEntity>.TableName;
             var pkCol = EntityMetaDataCache<TEntity>.PrimaryKey;
-            var idParam = new SqlParameter(pkCol.Name, id, pkCol.Property.PropertyType)
+            var idParam = new SqlParameter(pkCol.Property.Name, id, pkCol.Property.PropertyType)
             {
                 TypeHandler = TypeHandlerCache<TPrimaryKey, TPrimaryKey>.Handler
             };
             var sql =
-                $"Delete From {tableName} Where {WrapColumnEqParameter(dbSession.SmartSqlConfig.Database.DbProvider, idParam.Name)};";
+                $"Delete From {tableName} Where {WrapColumnEqParameter(dbSession.SmartSqlConfig.Database.DbProvider, pkCol)};";
             return dbSession.Execute(new RequestContext
             {
                 RealSql = sql,

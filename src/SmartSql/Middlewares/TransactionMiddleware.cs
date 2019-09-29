@@ -39,5 +39,7 @@ namespace SmartSql.Middlewares
         {
             
         }
+
+        public override int Order => 300;
     }
 }

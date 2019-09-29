@@ -55,6 +55,8 @@ namespace SmartSql
 
         public IList<Type> EntityTypes { get; } = new List<Type>();
 
+        public IList<IMiddleware> Middlewares { get; set; } = new List<IMiddleware>();
+
         public SmartSqlBuilder Build()
         {
             if (Built) return this;
@@ -230,6 +232,7 @@ namespace SmartSql
                 return;
             }
 
+            var pipelineBuilder = new PipelineBuilder();
             if (UsedCache)
             {
                 if (CacheManager == null)
@@ -238,8 +241,7 @@ namespace SmartSql
                 }
 
                 SmartSqlConfig.CacheManager = CacheManager;
-                SmartSqlConfig.Pipeline = new PipelineBuilder()
-                    .Add(new InitializerMiddleware())
+                pipelineBuilder.Add(new InitializerMiddleware())
                     .Add(new PrepareStatementMiddleware())
                     .Add(new CachingMiddleware())
                     .Add(new TransactionMiddleware())
@@ -250,14 +252,20 @@ namespace SmartSql
             else
             {
                 SmartSqlConfig.CacheManager = new NoneCacheManager();
-                SmartSqlConfig.Pipeline = new PipelineBuilder()
-                    .Add(new InitializerMiddleware())
+                pipelineBuilder.Add(new InitializerMiddleware())
                     .Add(new PrepareStatementMiddleware())
                     .Add(new TransactionMiddleware())
                     .Add(new DataSourceFilterMiddleware())
                     .Add(new CommandExecuterMiddleware())
                     .Add(new ResultHandlerMiddleware()).Build();
             }
+
+            foreach (var middleware in Middlewares)
+            {
+                pipelineBuilder.Add(middleware);
+            }
+
+            SmartSqlConfig.Pipeline = pipelineBuilder.Build();
         }
 
         #region Instance
@@ -362,6 +370,12 @@ namespace SmartSql
             return this;
         }
 
+        public SmartSqlBuilder AddMiddleware(IMiddleware middleware)
+        {
+            Middlewares.Add(middleware);
+            return this;
+        }
+
         #region UseProperties
 
         public SmartSqlBuilder UseProperties(IEnumerable<KeyValuePair<string, string>> importProperties)
@@ -388,7 +402,7 @@ namespace SmartSql
             EnvironmentVariableTarget target = EnvironmentVariableTarget.Process)
         {
             var envVars = Environment.GetEnvironmentVariables(target);
-            
+
             return UseProperties(envVars);
         }
 

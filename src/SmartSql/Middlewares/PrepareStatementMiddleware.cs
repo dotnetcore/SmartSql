@@ -137,5 +137,7 @@ namespace SmartSql.Middlewares
             _dbProviderFactory = smartSqlBuilder.SmartSqlConfig.Database.DbProvider.Factory;
             _typeHandlerFactory = smartSqlBuilder.SmartSqlConfig.TypeHandlerFactory;
         }
+
+        public override int Order => 100;
     }
 }

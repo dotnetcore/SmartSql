@@ -52,6 +52,7 @@ namespace SmartSql.Middlewares
             {
                 InitByMap(requestContext, sqlMap);
             }
+
             if (requestContext.AutoConverter == null)
             {
                 requestContext.AutoConverter = NoneAutoConverter.INSTANCE;
@@ -210,5 +211,7 @@ namespace SmartSql.Middlewares
         {
             _smartSqlConfig = smartSqlBuilder.SmartSqlConfig;
         }
+
+        public override int Order => 0;
     }
 }

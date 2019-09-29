@@ -53,5 +53,8 @@ namespace SmartSql.Middlewares
         {
             _cacheManager = smartSqlBuilder.SmartSqlConfig.CacheManager;
         }
+
+        
+            public override int Order => 200;
     }
 }

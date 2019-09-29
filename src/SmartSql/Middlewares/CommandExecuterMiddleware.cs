@@ -147,5 +147,7 @@ namespace SmartSql.Middlewares
         {
             _commandExecuter = smartSqlBuilder.SmartSqlConfig.CommandExecuter;
         }
+
+        public override int Order => 500;
     }
 }
