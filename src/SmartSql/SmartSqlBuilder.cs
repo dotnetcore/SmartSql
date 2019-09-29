@@ -154,7 +154,14 @@ namespace SmartSql
 
         private void BeforeBuildInitService()
         {
-            SmartSqlConfig = ConfigBuilder.Build(ImportProperties);
+            var rootConfigBuilder = new RootConfigBuilder(ImportProperties);
+
+            if (ConfigBuilder.Parent == null)
+            {
+                ConfigBuilder.SetParent(rootConfigBuilder);
+            }
+
+            SmartSqlConfig = ConfigBuilder.Build();
             SmartSqlConfig.Alias = Alias;
             SmartSqlConfig.LoggerFactory = LoggerFactory;
             SmartSqlConfig.DataSourceFilter = DataSourceFilter ?? new DataSourceFilter(SmartSqlConfig.LoggerFactory);

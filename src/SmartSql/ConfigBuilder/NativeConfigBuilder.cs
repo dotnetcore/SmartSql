@@ -7,27 +7,28 @@ namespace SmartSql.ConfigBuilder
 {
     public class NativeConfigBuilder : IConfigBuilder
     {
-        private readonly SmartSqlConfig _smartSqlConfig;
-
         public NativeConfigBuilder(SmartSqlConfig smartSqlConfig)
         {
-            _smartSqlConfig = smartSqlConfig;
-        }
-
-        public SmartSqlConfig Build(IEnumerable<KeyValuePair<string, string>> importProperties)
-        {
-            ImportProperties(importProperties);
-            return _smartSqlConfig;
-        }
-
-        private void ImportProperties(IEnumerable<KeyValuePair<string, string>> importProperties)
-        {
-            if (importProperties != null) { _smartSqlConfig.Properties.Import(importProperties); }
+            SmartSqlConfig = smartSqlConfig;
         }
 
         public void Dispose()
         {
+            
+        }
 
+        public bool Initialized { get; } = true;
+        public SmartSqlConfig SmartSqlConfig { get; }
+        public IConfigBuilder Parent { get; }
+
+        public SmartSqlConfig Build()
+        {
+            return SmartSqlConfig;
+        }
+
+        public void SetParent(IConfigBuilder configBuilder)
+        {
+           
         }
     }
 }
