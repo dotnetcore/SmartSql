@@ -12,7 +12,7 @@ namespace SmartSql.Test.Unit.ConfigBuilder
         public void Load()
         {
             var configLoader = new XmlConfigBuilder(ResourceType.File, "SmartSqlMapConfig.xml");
-            var config = configLoader.Build(null);
+            var config = configLoader.Build();
         }
     }
 }
