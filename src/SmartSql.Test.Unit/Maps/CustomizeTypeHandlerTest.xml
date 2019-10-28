@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMap Scope="CustomizeTypeHandlerTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+    <ParameterMaps>
+        <ParameterMap Id="AnsiStringTypeHandlerParamMap">
+            <Parameter Property="AnsiString" TypeHandler="AnsiStringTypeHandler"/>
+        </ParameterMap>
+        <ParameterMap Id="AnsiStringFixedLengthTypeHandlerParamMap">
+            <Parameter Property="AnsiStringFixedLength" TypeHandler="AnsiStringFixedLengthTypeHandler"/>
+        </ParameterMap>
+    </ParameterMaps>
+    <Statements>
+        <Statement Id="QueryByAnsiString" ParameterMap="AnsiStringTypeHandlerParamMap">
+            Select @AnsiString;
+        </Statement>
+        <Statement Id="QueryByAnsiStringFixedLength" ParameterMap="AnsiStringFixedLengthTypeHandlerParamMap">
+            Select @AnsiStringFixedLength;
+        </Statement>
+    </Statements>
+</SmartSqlMap>

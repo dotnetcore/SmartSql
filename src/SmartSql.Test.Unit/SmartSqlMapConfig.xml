@@ -64,6 +64,11 @@
         <Property Name="DbType" Value="AnsiString"/>
       </Properties>
     </TypeHandler>
+    <TypeHandler Name="AnsiStringFixedLengthTypeHandler" Type="SmartSql.TypeHandlers.StringTypeHandler,SmartSql">
+      <Properties>
+        <Property Name="DbType" Value="AnsiStringFixedLength"/>
+      </Properties>
+    </TypeHandler>
     <TypeHandler Name="Json" Type="${JsonTypeHandler}"></TypeHandler>
   </TypeHandlers>
   <TagBuilders>
