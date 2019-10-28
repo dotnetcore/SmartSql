@@ -18,7 +18,9 @@ namespace SmartSql.Test.Unit.DbSessions
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
+
         #region Insert_From_RealSql
+
         private const string INSERT_SQL = @"INSERT INTO T_AllPrimitive
               (Boolean
               ,[Char]
@@ -76,6 +78,7 @@ namespace SmartSql.Test.Unit.DbSessions
               ,@NullableNumericalEnum
               ,@NullableString);
         Select SCOPE_IDENTITY();";
+
         [Fact]
         public void Insert_From_RealSql()
         {
@@ -89,6 +92,7 @@ namespace SmartSql.Test.Unit.DbSessions
                 }
             });
         }
+
         #endregion
 
         [Fact]
@@ -105,6 +109,7 @@ namespace SmartSql.Test.Unit.DbSessions
                 }
             });
         }
+
         [Fact]
         public void InsertByRequestTransaction()
         {
@@ -120,6 +125,7 @@ namespace SmartSql.Test.Unit.DbSessions
                 }
             });
         }
+
         [Fact]
         public void InsertByStatementTransaction()
         {
@@ -134,19 +140,38 @@ namespace SmartSql.Test.Unit.DbSessions
                 }
             });
         }
+
         [Fact]
         public void InsertByIdGen()
         {
+            var entity = new AllPrimitive
+            {
+                DateTime = DateTime.Now,
+                String = "SmartSql",
+            };
             var id = SqlMapper.ExecuteScalar<long>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "InsertByIdGen",
-                Request = new AllPrimitive
-                {
-                    DateTime = DateTime.Now,
-                    String = "SmartSql",
-                }
+                Request = entity
             });
+        }
+
+        [Fact]
+        public void InsertByIdGenAssignId()
+        {
+            var entity = new AllPrimitive
+            {
+                DateTime = DateTime.Now,
+                String = "SmartSql",
+            };
+            var affected = SqlMapper.Execute(new RequestContext
+            {
+                Scope = nameof(AllPrimitive),
+                SqlId = "InsertByIdGenAssignId",
+                Request = entity
+            });
+            Assert.True(entity.Int64 > 0);
         }
 
         [Fact]
@@ -207,6 +232,7 @@ namespace SmartSql.Test.Unit.DbSessions
                 }
             });
         }
+
         //[Fact]
         public void Delete()
         {
@@ -221,6 +247,7 @@ namespace SmartSql.Test.Unit.DbSessions
                 }
             });
         }
+
         [Fact]
         public void DeleteCheckIncludeRequired()
         {
@@ -238,6 +265,7 @@ namespace SmartSql.Test.Unit.DbSessions
                 Assert.True(true);
             }
         }
+
         [Fact]
         public void DeleteCheckIsNotEmptyRequired()
         {
@@ -255,8 +283,6 @@ namespace SmartSql.Test.Unit.DbSessions
                 Assert.True(true);
             }
         }
-
-
 
 
         //Create PROCEDURE[dbo].[SP_QueryUser]
@@ -287,6 +313,5 @@ namespace SmartSql.Test.Unit.DbSessions
             var list = SqlMapper.Query<User>(context);
             dbParameterCollection.TryGetParameterValue("Total", out int total);
         }
-
     }
 }

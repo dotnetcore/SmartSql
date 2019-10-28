@@ -965,6 +965,7 @@
         <xs:complexType>
             <xs:attribute name="Id" type="xs:string" use="required"/>
             <xs:attribute name="Name" type="xs:string" use="optional"/>
+            <xs:attribute name="Assign" type="xs:boolean" use="optional"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="Statement">

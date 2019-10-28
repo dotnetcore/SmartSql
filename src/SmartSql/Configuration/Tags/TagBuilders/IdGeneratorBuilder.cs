@@ -21,11 +21,18 @@ namespace SmartSql.Configuration.Tags.TagBuilders
                     throw new SmartSqlException($"Can not find IdGenerator.Name:{idGenName},XmlNode:{xmlNode}.");
                 }
             }
+
+            if (!xmlNode.Attributes.TryGetValueAsBoolean(nameof(IdGenerator.Assign), out var assign))
+            {
+                assign = true;
+            }
+
             return new IdGenerator
             {
                 Statement = statement,
                 Id = GetXmlAttributeValue(xmlNode, nameof(IdGenerator.Id)),
-                IdGen = idGen
+                IdGen = idGen,
+                Assign = assign
             };
         }
     }

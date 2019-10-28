@@ -270,7 +270,7 @@
       ;Select Scope_Identity();
     </Statement>
     <Statement Id="InsertByIdGen">
-      <IdGenerator Id="Int64"/>
+      <IdGenerator Id="Int64" Assign="false"/>
       INSERT INTO T_AllPrimitive
       (
       Boolean,
@@ -332,6 +332,69 @@
       @NullableString
       )
       ;Select @Int64;
+    </Statement>
+    <Statement Id="InsertByIdGenAssignId">
+      <IdGenerator Id="Int64"/>
+      INSERT INTO T_AllPrimitive
+      (
+      Boolean,
+      Char,
+      Byte,
+      Int16,
+      Int32,
+      Int64,
+      Single,
+      Decimal,
+      DateTime,
+      String,
+      Guid,
+      TimeSpan,
+      NumericalEnum,
+      NullableBoolean,
+      NullableChar,
+      NullableByte,
+      NullableInt16,
+      NullableInt32,
+      NullableInt64,
+      NullableSingle,
+      NullableDouble,
+      NullableDecimal,
+      NullableDateTime,
+      NullableGuid,
+      NullableTimeSpan,
+      NullableNumericalEnum,
+      NullableString
+      )
+      VALUES
+      (
+      @Boolean,
+      @Char,
+      @Byte,
+      @Int16,
+      @Int32,
+      @Int64,
+      @Single,
+      @Decimal,
+      @DateTime,
+      @String,
+      @Guid,
+      @TimeSpan,
+      @NumericalEnum,
+      @NullableBoolean,
+      @NullableChar,
+      @NullableByte,
+      @NullableInt16,
+      @NullableInt32,
+      @NullableInt64,
+      @NullableSingle,
+      @NullableDouble,
+      @NullableDecimal,
+      @NullableDateTime,
+      @NullableGuid,
+      @NullableTimeSpan,
+      @NullableNumericalEnum,
+      @NullableString
+      );
     </Statement>
     <!--删除-->
     <Statement Id="Delete">

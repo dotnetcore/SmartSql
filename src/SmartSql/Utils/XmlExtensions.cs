@@ -8,7 +8,8 @@ namespace System.Xml
 {
     public static class XmlExtensions
     {
-        public static bool TryGetValueAsString(this XmlAttributeCollection xmlAttributeCollection, string attrName, out string attrVal, Properties properties = null)
+        public static bool TryGetValueAsString(this XmlAttributeCollection xmlAttributeCollection, string attrName,
+            out string attrVal, Properties properties = null)
         {
             var attr = xmlAttributeCollection[attrName];
             if (attr == null)
@@ -16,14 +17,18 @@ namespace System.Xml
                 attrVal = default;
                 return false;
             }
+
             attrVal = attr.Value;
             if (properties != null)
             {
                 attrVal = properties.GetPropertyValue(attr.Value);
             }
+
             return true;
         }
-        public static bool TryGetValueAsBoolean(this XmlAttributeCollection xmlAttributeCollection, string attrName, out bool attrVal, Properties properties = null)
+
+        public static bool TryGetValueAsBoolean(this XmlAttributeCollection xmlAttributeCollection, string attrName,
+            out bool attrVal, Properties properties = null)
         {
             if (xmlAttributeCollection.TryGetValueAsString(attrName, out string attrValStr))
             {
@@ -31,13 +36,16 @@ namespace System.Xml
                 {
                     attrValStr = properties.GetPropertyValue(attrValStr);
                 }
-                Boolean.TryParse(attrValStr, out attrVal);
-                return true;
+
+                return Boolean.TryParse(attrValStr, out attrVal);
             }
+
             attrVal = default;
             return false;
         }
-        public static bool TryGetValueAsInt32(this XmlAttributeCollection xmlAttributeCollection, string attrName, out int attrVal, Properties properties = null)
+
+        public static bool TryGetValueAsInt32(this XmlAttributeCollection xmlAttributeCollection, string attrName,
+            out int attrVal, Properties properties = null)
         {
             if (xmlAttributeCollection.TryGetValueAsString(attrName, out string attrValStr))
             {
@@ -45,9 +53,10 @@ namespace System.Xml
                 {
                     attrValStr = properties.GetPropertyValue(attrValStr);
                 }
-                Int32.TryParse(attrValStr, out attrVal);
-                return true;
+
+                return Int32.TryParse(attrValStr, out attrVal);
             }
+
             attrVal = default;
             return false;
         }
