@@ -12,6 +12,7 @@ namespace SmartSql.TypeHandlers
         public Type FieldType { get; }
         public TProperty Default { get; }
         public bool IsNullable { get; }
+        public DbType? DbType { get; private set; }
 
         protected AbstractTypeHandler()
         {
@@ -28,6 +29,12 @@ namespace SmartSql.TypeHandlers
             if (parameters == null)
             {
                 return;
+            }
+
+            if (!parameters.TryGetValue(nameof(DbType), out var dbTypeStr)) return;
+            if (Enum.TryParse(dbTypeStr.ToString(), true, out DbType dbType))
+            {
+                DbType = dbType;
             }
         }
 
@@ -55,6 +62,11 @@ namespace SmartSql.TypeHandlers
 
         public virtual void SetParameter(IDataParameter dataParameter, object parameterValue)
         {
+            if (DbType.HasValue)
+            {
+                dataParameter.DbType = DbType.Value;
+            }
+
             dataParameter.Value = GetSetParameterValue(parameterValue);
         }
     }

@@ -59,6 +59,11 @@
         <Property Name="NamingStrategy" Value="Camel"/>
       </Properties>
     </TypeHandler>
+    <TypeHandler Name="AnsiStringTypeHandler" Type="SmartSql.TypeHandlers.StringTypeHandler,SmartSql">
+      <Properties>
+        <Property Name="DbType" Value="AnsiString"/>
+      </Properties>
+    </TypeHandler>
     <TypeHandler Name="Json" Type="${JsonTypeHandler}"></TypeHandler>
   </TypeHandlers>
   <TagBuilders>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using StackExchange.Redis;
 using Xunit;
 
@@ -18,6 +19,7 @@ namespace SmartSql.Test.Unit.DbSessions
         [Fact]
         public void QueryNestObject1()
         {
+            
             var result = SqlMapper.ExecuteScalar<int>(new RequestContext
             {
                 RealSql = "SELECT @User.Id",
