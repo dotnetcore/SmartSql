@@ -136,7 +136,7 @@ namespace SmartSql
 
                 isFirst = false;
                 AppendColumnName(columnBuilder, dbProvider, column.Name);
-                AppendParameterName(paramBuilder, dbProvider, column.Name);
+                AppendParameterName(paramBuilder, dbProvider, paramKV.Key);
             }
 
             var sqlBuilder = new StringBuilder();
