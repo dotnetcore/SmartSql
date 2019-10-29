@@ -7,7 +7,10 @@ namespace SmartSql.Utils
 {
     public static class CacheUtil<TType, TKey, TCacheItem>
     {
-        private static readonly ConcurrentDictionary<TKey, TCacheItem> _cacheItems = new ConcurrentDictionary<TKey, TCacheItem>();
+        public static Type CacheType = typeof(TType);
+
+        private static readonly ConcurrentDictionary<TKey, TCacheItem> _cacheItems =
+            new ConcurrentDictionary<TKey, TCacheItem>();
 
         public static TCacheItem GetOrAdd(TKey key, Func<TKey, TCacheItem> factory)
         {

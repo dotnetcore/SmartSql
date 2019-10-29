@@ -87,8 +87,7 @@ namespace SmartSql.Deserializer
         private Func<DataReaderWrapper, AbstractRequestContext, TResult> GetDeserialize<TResult>(
             ExecutionContext executionContext)
         {
-            var key = GenerateKey(executionContext);
-            return CacheUtil<TypeWrapper<EntityDeserializer, TResult>, String, Delegate>.GetOrAdd(key,
+            return CacheUtil<TypeWrapper<EntityDeserializer, TResult>, DeserializeIdentity, Delegate>.GetOrAdd(DeserializeIdentity.Of(executionContext),
                     _ => CreateDeserialize<TResult>(executionContext))
                 as Func<DataReaderWrapper, AbstractRequestContext, TResult>;
         }
@@ -317,15 +316,53 @@ namespace SmartSql.Deserializer
             ilGen.LoadType(propertyType);
         }
 
-        public String GenerateKey(ExecutionContext executionContext)
-        {
-            return
-                $"Index:{executionContext.DataReaderWrapper.ResultIndex}_{(executionContext.Request.IsStatementSql ? executionContext.Request.FullSqlId : executionContext.Request.RealSql)}";
-        }
-
         public void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
         {
             _logger = smartSqlBuilder.SmartSqlConfig.LoggerFactory.CreateLogger<EntityDeserializer>();
+        }
+
+
+        public struct DeserializeIdentity : IEquatable<DeserializeIdentity>
+        {
+            public String Alias { get; }
+            public int ResultIndex { get; }
+            public String RealSql { get; }
+            private readonly int _hashCode;
+
+            public static DeserializeIdentity Of(ExecutionContext executionContext)
+            {
+                return new DeserializeIdentity(executionContext.SmartSqlConfig.Alias,
+                    executionContext.DataReaderWrapper.ResultIndex,
+                    executionContext.Request.RealSql);
+            }
+            
+            public DeserializeIdentity(String @alias, int resultIndex, String realSql)
+            {
+                Alias = alias;
+                ResultIndex = resultIndex;
+                RealSql = realSql;
+                unchecked
+                {
+                    _hashCode = 17;
+                    _hashCode = Alias?.GetHashCode() ?? 0;
+                    _hashCode = (_hashCode * 23) ^ ResultIndex;
+                    _hashCode = (_hashCode * 23) ^ (RealSql?.GetHashCode() ?? 0);
+                }
+            }
+
+            public bool Equals(DeserializeIdentity other)
+            {
+                return Alias == other.Alias
+                       && ResultIndex == other.ResultIndex
+                       && RealSql == other.RealSql;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is DeserializeIdentity other && Equals(other);
+            }
+
+            public override int GetHashCode() => _hashCode;
         }
 
 
