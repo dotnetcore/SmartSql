@@ -15,5 +15,8 @@
      <Placeholder Property="Placeholder"></Placeholder>
      )
     </Statement>
+      <Statement Id="Nest_Test">
+          Select '<Placeholder Property="Nest.Sql"/>';
+      </Statement>
   </Statements>
 </SmartSqlMap>

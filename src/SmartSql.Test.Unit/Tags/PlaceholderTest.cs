@@ -7,7 +7,7 @@ using Xunit;
 namespace SmartSql.Test.Unit.Tags
 {
     [Collection("GlobalSmartSql")]
-    public class PlaceholderTest 
+    public class PlaceholderTest
     {
         protected ISqlMapper SqlMapper { get; }
 
@@ -15,6 +15,7 @@ namespace SmartSql.Test.Unit.Tags
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
+
         [Fact]
         public void Placeholder_Test()
         {
@@ -22,10 +23,22 @@ namespace SmartSql.Test.Unit.Tags
             {
                 Scope = nameof(PlaceholderTest),
                 SqlId = "Query",
-                Request = new { Placeholder= "Select TUE.UserId From T_UserExtendedInfo as TUE" }
+                Request = new {Placeholder = "Select TUE.UserId From T_UserExtendedInfo as TUE"}
             });
             Assert.True(true);
         }
 
+        [Fact]
+        public void Nest_Test()
+        {
+            var reqParams = new {Nest = new {Sql = "Nest.Sql"}};
+            var result = SqlMapper.QuerySingle<String>(new RequestContext
+            {
+                Scope = nameof(PlaceholderTest),
+                SqlId = nameof(Nest_Test),
+                Request = reqParams
+            });
+            Assert.Equal(reqParams.Nest.Sql, result);
+        }
     }
 }
