@@ -133,10 +133,12 @@ namespace SmartSql.DyRepository
 
             bool isOnlyOneClassParam = onlyOneParam && !IsSimpleParam(firstParamType);
             EmitNewRequestContext(ilGen, isOnlyOneClassParam, firstParamType);
+            EmitStatementAttr(ilGen, methodInfo);
             EmitSetTransaction(ilGen, methodInfo);
             EmitSetScope(ilGen, sqlMap.Scope);
             EmitSetSqlId(ilGen, statement);
             EmitSetCache(ilGen, methodInfo);
+
             if (isOnlyOneClassParam)
             {
                 ilGen.LoadLocalVar(0);
@@ -559,6 +561,40 @@ namespace SmartSql.DyRepository
                 ilGen.LoadInt32(isolationLevel.GetHashCode());
                 ilGen.New(NullableType<IsolationLevel>.Ctor);
                 ilGen.Callvirt(RequestContextType.Method.SetTransaction);
+            }
+        }
+
+        private static void EmitStatementAttr(ILGenerator ilGen, MethodInfo methodInfo)
+        {
+            var statementAttribute = methodInfo.GetCustomAttribute<StatementAttribute>();
+            if (statementAttribute == null || !String.IsNullOrEmpty(statementAttribute.Sql)) return;
+
+            if (statementAttribute.SourceChoice != DataSourceChoice.Unknow)
+            {
+                ilGen.LoadLocalVar(0);
+                ilGen.LoadInt32(statementAttribute.SourceChoice.GetHashCode());
+                ilGen.Callvirt(RequestContextType.Method.SetDataSourceChoice);
+            }
+
+            if (statementAttribute.CommandTimeout > 0)
+            {
+                ilGen.LoadLocalVar(0);
+                ilGen.LoadInt32(statementAttribute.CommandTimeout);
+                ilGen.Callvirt(RequestContextType.Method.SetCommandTimeout);
+            }
+
+            if (!String.IsNullOrEmpty(statementAttribute.ReadDb))
+            {
+                ilGen.LoadLocalVar(0);
+                ilGen.LoadString(statementAttribute.ReadDb);
+                ilGen.Callvirt(RequestContextType.Method.SetReadDb);
+            }
+
+            if (statementAttribute.EnablePropertyChangedTrack)
+            {
+                ilGen.LoadLocalVar(0);
+                ilGen.LoadInt32(1);
+                ilGen.Callvirt(RequestContextType.Method.SetEnablePropertyChangedTrack);
             }
         }
 

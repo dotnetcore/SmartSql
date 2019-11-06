@@ -32,6 +32,10 @@ namespace SmartSql.Reflection.TypeConstants
             public static readonly MethodInfo SetRealSql = AbstractType.GetMethod("set_RealSql");
             public static readonly MethodInfo SetCacheKeyTemplate = AbstractType.GetMethod("set_CacheKeyTemplate");
             public static readonly MethodInfo SetCacheId = AbstractType.GetMethod("set_CacheId");
+            public static readonly MethodInfo SetReadDb = AbstractType.GetMethod("set_ReadDb");
+            public static readonly MethodInfo SetCommandTimeout = AbstractType.GetMethod("set_CommandTimeout");
+            public static readonly MethodInfo SetEnablePropertyChangedTrack = AbstractType.GetMethod("set_EnablePropertyChangedTrack");
+            
         }
     }
 }
