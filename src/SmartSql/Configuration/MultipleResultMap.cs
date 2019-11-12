@@ -10,7 +10,7 @@ namespace SmartSql.Configuration
         public Result Root { get; set; }
         public List<Result> Results { get; set; }
 
-        public Result GetResult(int resultIndex)
+        private Result GetResult(int resultIndex)
         {
             return Results[resultIndex];
         }

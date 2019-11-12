@@ -62,9 +62,7 @@ namespace SmartSql
 
         public ResultMap GetCurrentResultMap()
         {
-            return MultipleResultMap != null
-                ? MultipleResultMap.Results[ExecutionContext.DataReaderWrapper.ResultIndex]?.Map
-                : ResultMap;
+            return MultipleResultMap?.GetResultMap(ExecutionContext.DataReaderWrapper.ResultIndex);
         }
 
         public String CacheKeyTemplate { get; set; }
