@@ -14,6 +14,7 @@ namespace SmartSql.Deserializer
     {
         private readonly IDeserializerFactory _deserializerFactory;
         private readonly ISetAccessorFactory _setAccessorFactory;
+
         public MultipleResultDeserializer(IDeserializerFactory deserializerFactory)
         {
             _deserializerFactory = deserializerFactory;
@@ -39,26 +40,39 @@ namespace SmartSql.Deserializer
                 {
                     return default(TResult);
                 }
+
                 dataReader.NextResult();
+                
             }
             else
             {
-                result = (TResult)executionContext.SmartSqlConfig.ObjectFactoryBuilder.GetObjectFactory(resultType, Type.EmptyTypes)(null);
+                result = (TResult) executionContext.SmartSqlConfig.ObjectFactoryBuilder.GetObjectFactory(resultType,
+                    Type.EmptyTypes)(null);
             }
+
             foreach (var resultMap in multipleResultMap.Results)
             {
+                if (resultMap == multipleResultMap.Root)
+                {
+                    continue;
+                }
+
                 #region Set Muti Property
+
                 var propertyInfo = resultType.GetProperty(resultMap.Property);
                 var setProperty = _setAccessorFactory.Create(propertyInfo);
                 var deser = _deserializerFactory.Get(executionContext, propertyInfo.PropertyType);
                 var resultMapResult = TypeDeserializer.Deserialize(propertyInfo.PropertyType, deser, executionContext);
                 setProperty(result, resultMapResult);
+
                 #endregion
+
                 if (!dataReader.NextResult())
                 {
                     break;
                 }
             }
+
             return result;
         }
 
@@ -76,27 +90,34 @@ namespace SmartSql.Deserializer
                 {
                     return default(TResult);
                 }
+
                 dataReader.NextResult();
             }
             else
             {
-                result = (TResult)executionContext.SmartSqlConfig.ObjectFactoryBuilder.GetObjectFactory(resultType, Type.EmptyTypes)(null);
+                result = (TResult) executionContext.SmartSqlConfig.ObjectFactoryBuilder.GetObjectFactory(resultType,
+                    Type.EmptyTypes)(null);
             }
+
             foreach (var resultMap in multipleResultMap.Results)
             {
                 #region Set Muti Property
+
                 var propertyInfo = resultType.GetProperty(resultMap.Property);
                 var setProperty = _setAccessorFactory.Create(propertyInfo);
                 var deser = _deserializerFactory.Get(executionContext, propertyInfo.PropertyType);
 
                 var resultMapResult = TypeDeserializer.Deserialize(propertyInfo.PropertyType, deser, executionContext);
                 setProperty(result, resultMapResult);
+
                 #endregion
+
                 if (!await dataReader.NextResultAsync())
                 {
                     break;
                 }
             }
+
             return result;
         }
 

@@ -28,11 +28,23 @@
             <Result Property="List"/>
             <Result Property="Total"/>
         </MultipleResultMap>
+        <MultipleResultMap Id="MultiRoot">
+            <Root/>
+            <Result Property="List"/>
+        </MultipleResultMap>
     </MultipleResultMaps>
     <Statements>
+        <Statement Id="GetMultiRoot" MultipleResultMap="MultiRoot">
+            Select Count(*) As Total From T_AllPrimitive T;
+            
+            Select T.* From T_AllPrimitive T With(NoLock)
+            <Include RefId="QueryParams"/>
+            Order By T.Id Desc
+            Offset ((@PageIndex-1)*@PageSize) Rows Fetch Next @PageSize Rows Only;
+        </Statement>
+        
         <Statement Id="QueryParams">
             <Where>
-
                 <IsNotEmpty Prepend="And" Property="Id">
                     T.Id = @Id
                 </IsNotEmpty>

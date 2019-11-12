@@ -435,7 +435,9 @@ namespace SmartSql.ConfigBuilder
 
                 if (childNode.Name == "Root")
                 {
+                    result.Property = Result.ROOT_PROPERTY;
                     multipleResultMap.Root = result;
+                    multipleResultMap.Results.Add(result);
                 }
                 else
                 {
