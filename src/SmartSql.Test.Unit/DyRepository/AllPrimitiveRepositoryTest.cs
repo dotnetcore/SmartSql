@@ -23,5 +23,14 @@ namespace SmartSql.Test.Unit.DyRepository
 
             Assert.NotNull(result);
         }
+        
+        [Fact]
+        public void QueryDictionary()
+        {
+            var result = _repository.QueryDictionary(10);
+
+            Assert.NotNull(result);
+        }
+        
     }
 }
