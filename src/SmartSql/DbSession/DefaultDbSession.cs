@@ -204,7 +204,11 @@ namespace SmartSql.DbSession
                 }
                 if (Transaction == null)
                 {
-                    throw new SmartSqlException("Before RollbackTransaction,Please BeginTransaction first!");
+                    if (_logger.IsEnabled(LogLevel.Warning))
+                    {
+                        _logger.LogWarning("Before RollbackTransaction,Please BeginTransaction first!");
+                    }
+                    return;
                 }
                 Transaction.Rollback();
                 ReleaseTransaction();

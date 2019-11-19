@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SmartSql.Configuration;
 using SmartSql.DbSession;
 using SmartSql.Exceptions;
@@ -11,11 +12,13 @@ namespace SmartSql
 {
     public class SqlMapper : ISqlMapper
     {
+        private readonly ILogger _logger;
         public SmartSqlConfig SmartSqlConfig { get; }
         public IDbSessionStore SessionStore { get; }
 
         public SqlMapper(SmartSqlConfig smartSqlConfig)
         {
+            _logger = smartSqlConfig.LoggerFactory.CreateLogger<SqlMapper>();
             SmartSqlConfig = smartSqlConfig;
             SessionStore = smartSqlConfig.SessionStore;
         }
@@ -64,10 +67,14 @@ namespace SmartSql
         public void RollbackTransaction()
         {
             var session = SessionStore.LocalSession;
+
             if (session == null)
             {
-                throw new SmartSqlException(
-                    "SmartSqlMapper could not invoke RollBackTransaction(). No Transaction was started. Call BeginTransaction() first.");
+                if (_logger.IsEnabled(LogLevel.Warning))
+                {
+                    _logger.LogWarning("Before RollbackTransaction,Please BeginTransaction first!");
+                }
+                return;
             }
 
             try
