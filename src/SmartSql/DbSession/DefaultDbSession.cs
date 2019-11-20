@@ -208,6 +208,7 @@ namespace SmartSql.DbSession
                     {
                         _logger.LogWarning("Before RollbackTransaction,Please BeginTransaction first!");
                     }
+                    _diagnosticListener.WriteDbSessionRollbackAfter(operationId, this);
                     return;
                 }
                 Transaction.Rollback();
@@ -298,6 +299,8 @@ namespace SmartSql.DbSession
                             executionContext.Result = new ListResultContext<TResult>();
                             break;
                         }
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
                 requestContext.ExecutionContext = executionContext;
@@ -356,6 +359,8 @@ namespace SmartSql.DbSession
                             executionContext.Result = new ListResultContext<TResult>();
                             break;
                         }
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
                 requestContext.ExecutionContext = executionContext;
                 await Pipeline.InvokeAsync<TResult>(executionContext);
