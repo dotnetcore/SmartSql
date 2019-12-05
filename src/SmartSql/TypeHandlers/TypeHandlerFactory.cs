@@ -316,21 +316,25 @@ namespace SmartSql.TypeHandlers
             return true;
         }
 
+        
         public void Register(ITypeHandler typeHandler)
         {
-            if (!_typeHandlerMap.TryGetValue(typeHandler.PropertyType, out var fieldTypeHandlerMap))
+            lock (this)
             {
-                fieldTypeHandlerMap = new Dictionary<Type, ITypeHandler>();
-                _typeHandlerMap.Add(typeHandler.PropertyType, fieldTypeHandlerMap);
+                if (!_typeHandlerMap.TryGetValue(typeHandler.PropertyType, out var fieldTypeHandlerMap))
+                {
+                    fieldTypeHandlerMap = new Dictionary<Type, ITypeHandler>();
+                    _typeHandlerMap.Add(typeHandler.PropertyType, fieldTypeHandlerMap);
+                }
+
+                if (fieldTypeHandlerMap.ContainsKey(typeHandler.FieldType))
+                    fieldTypeHandlerMap[typeHandler.FieldType] = typeHandler;
+                else
+                    fieldTypeHandlerMap.Add(typeHandler.FieldType, typeHandler);
+
+                TypeHandlerCacheType.SetHandler(typeHandler);
+                PropertyTypeHandlerCacheType.SetHandler(typeHandler);
             }
-
-            if (fieldTypeHandlerMap.ContainsKey(typeHandler.FieldType))
-                fieldTypeHandlerMap[typeHandler.FieldType] = typeHandler;
-            else
-                fieldTypeHandlerMap.Add(typeHandler.FieldType, typeHandler);
-
-            TypeHandlerCacheType.SetHandler(typeHandler);
-            PropertyTypeHandlerCacheType.SetHandler(typeHandler);
         }
 
         public void Register(string handlerName, ITypeHandler typeHandler)
