@@ -47,7 +47,7 @@ namespace SmartSql.Data
         }
 
         public Type ParameterType { get; set; }
-        public Action<SqlParameter> OnSetSourceParameter { get; set; }
+        internal Action<SqlParameter> OnSetSourceParameter { get; set; }
 
         internal DbParameter SourceParameter
         {
