@@ -1,9 +1,7 @@
 ﻿using SmartSql.TypeHandlers;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Text;
 
 namespace SmartSql.Data
 {
@@ -51,7 +49,7 @@ namespace SmartSql.Data
         public Type ParameterType { get; set; }
         public Action<SqlParameter> OnSetSourceParameter { get; set; }
 
-        public DbParameter SourceParameter
+        internal DbParameter SourceParameter
         {
             get => _sourceParameter;
             set

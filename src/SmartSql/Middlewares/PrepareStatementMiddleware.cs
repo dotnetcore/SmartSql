@@ -47,10 +47,11 @@ namespace SmartSql.Middlewares
                 foreach (var sqlParameter in reqConetxt.Parameters.Values)
                 {
                     var sourceParam = _dbProviderFactory.CreateParameter();
+                    InitSourceDbParameter(sourceParam, sqlParameter);
                     sourceParam.ParameterName = sqlParameter.Name;
                     sourceParam.Value = sqlParameter.Value;
+                    sqlParameter.TypeHandler?.SetParameter(sourceParam, sqlParameter.Value);
                     sqlParameter.SourceParameter = sourceParam;
-                    InitSourceDbParameter(sourceParam, sqlParameter);
                 }
             }
             else
@@ -62,14 +63,15 @@ namespace SmartSql.Middlewares
                         return nameWithPrefix;
                     }
 
-                    ITypeHandler typeHandler = (reqConetxt.ParameterMap?.GetParameter(paramName)?.Handler ?? sqlParameter.TypeHandler) ??
-                                               _typeHandlerFactory.GetTypeHandler(sqlParameter.ParameterType);
+                    ITypeHandler typeHandler =
+                        (reqConetxt.ParameterMap?.GetParameter(paramName)?.Handler ?? sqlParameter.TypeHandler) ??
+                        _typeHandlerFactory.GetTypeHandler(sqlParameter.ParameterType);
 
                     var sourceParam = _dbProviderFactory.CreateParameter();
+                    InitSourceDbParameter(sourceParam, sqlParameter);
                     sourceParam.ParameterName = sqlParameter.Name;
                     typeHandler.SetParameter(sourceParam, sqlParameter.Value);
                     sqlParameter.SourceParameter = sourceParam;
-                    InitSourceDbParameter(sourceParam, sqlParameter);
                     if (sqlParameter.Name != paramName)
                     {
                         return

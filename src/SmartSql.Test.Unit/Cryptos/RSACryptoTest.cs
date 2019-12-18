@@ -1,8 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using SmartSql.TypeHandler.Crypto;
 using Xunit;
 
@@ -10,7 +6,7 @@ namespace SmartSql.Test.Unit.Cryptos
 {
     public class RSACryptoTest
     {
-        [Fact]
+        // [Fact]
         public void Test()
         {
             using (var rsaCrypto = new RSACrypto())
