@@ -58,7 +58,7 @@ namespace SmartSql
 
         #endregion
 
-        public ISqlParameterCollection Parameters { get; set; }
+        public ISqlParameterCollection Parameters { get; protected set; }
 
         public ResultMap GetCurrentResultMap()
         {
@@ -118,9 +118,14 @@ namespace SmartSql
 
         public override void SetupParameters()
         {
+            bool ignoreParameterCase = false;
+            if (ExecutionContext != null)
+            {
+                ignoreParameterCase = ExecutionContext.SmartSqlConfig.Settings.IgnoreParameterCase;
+            }
+
             Parameters =
-                SqlParameterCollection.Create<TRequest>(Request,
-                    ExecutionContext.SmartSqlConfig.Settings.IgnoreParameterCase);
+                SqlParameterCollection.Create<TRequest>(Request, ignoreParameterCase);
         }
 
         public override void SetRequest(object requestObj)

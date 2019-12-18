@@ -327,7 +327,7 @@ namespace SmartSql.Test.Unit.DbSessions
             });
             RequestContext context = new RequestContext
             {
-                CommandType = System.Data.CommandType.StoredProcedure,
+                CommandType = CommandType.StoredProcedure,
                 RealSql = "SP_QueryUser",
                 Request = dbParameterCollection
             };
