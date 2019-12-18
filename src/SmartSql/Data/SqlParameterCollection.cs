@@ -40,7 +40,7 @@ namespace SmartSql.Data
             DbParameters = new Dictionary<String, DbParameter>(paramComparer);
         }
 
-        public static SqlParameterCollection Create<TRequest>(TRequest sourceRequest,bool ignoreParameterCase)
+        public static ISqlParameterCollection Create<TRequest>(TRequest sourceRequest,bool ignoreParameterCase)
             where TRequest : class
         {
             if (TryCreate<object>(sourceRequest, ignoreParameterCase, out var sqlParameters))
@@ -60,7 +60,7 @@ namespace SmartSql.Data
 
 
         private static bool TryCreate<TRequest>(TRequest sourceRequest, bool ignoreParameterCase,
-            out SqlParameterCollection sqlParameters)
+            out ISqlParameterCollection sqlParameters)
             where TRequest : class
         {
             switch (sourceRequest)
@@ -71,7 +71,7 @@ namespace SmartSql.Data
                     return true;
                 }
 
-                case SqlParameterCollection sourceRequestParams:
+                case ISqlParameterCollection sourceRequestParams:
                 {
                     sqlParameters = sourceRequestParams;
                     return true;

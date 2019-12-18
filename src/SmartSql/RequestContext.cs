@@ -58,7 +58,7 @@ namespace SmartSql
 
         #endregion
 
-        public SqlParameterCollection Parameters { get; set; }
+        public ISqlParameterCollection Parameters { get; set; }
 
         public ResultMap GetCurrentResultMap()
         {

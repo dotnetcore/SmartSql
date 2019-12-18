@@ -13,19 +13,19 @@ namespace SmartSql.Reflection
     {
         public static RequestConvert Instance = new RequestConvert();
 
-        public SqlParameterCollection ToSqlParameters(object sourceObj, bool ignoreNameCase)
+        public ISqlParameterCollection ToSqlParameters(object sourceObj, bool ignoreNameCase)
         {
             return GetToSqlParametersFunc(sourceObj.GetType(), ignoreNameCase)(sourceObj);
         }
 
-        public Func<object, SqlParameterCollection> GetToSqlParametersFunc(Type sourceType, bool ignoreCase)
+        public Func<object, ISqlParameterCollection> GetToSqlParametersFunc(Type sourceType, bool ignoreCase)
         {
             if (ignoreCase)
             {
-                return CacheUtil<TypeWrapper<RequestContext, IgnoreCaseType>, Type, Func<object, SqlParameterCollection>>
+                return CacheUtil<TypeWrapper<RequestContext, IgnoreCaseType>, Type, Func<object, ISqlParameterCollection>>
                      .GetOrAdd(sourceType, _ => RequestConvertCacheType.GetConvert(_, ignoreCase));
             }
-            return CacheUtil<RequestContext, Type, Func<object, SqlParameterCollection>>
+            return CacheUtil<RequestContext, Type, Func<object, ISqlParameterCollection>>
                 .GetOrAdd(sourceType, _ => RequestConvertCacheType.GetConvert(_, ignoreCase)); ;
         }
     }

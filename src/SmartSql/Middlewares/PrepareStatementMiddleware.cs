@@ -46,6 +46,12 @@ namespace SmartSql.Middlewares
             {
                 foreach (var sqlParameter in reqConetxt.Parameters.Values)
                 {
+                    if (sqlParameter.SourceParameter != null)
+                    {
+                        sqlParameter.OnSetSourceParameter.Invoke(sqlParameter);
+                        continue;
+                    }
+
                     var sourceParam = _dbProviderFactory.CreateParameter();
                     InitSourceDbParameter(sourceParam, sqlParameter);
                     sourceParam.ParameterName = sqlParameter.Name;

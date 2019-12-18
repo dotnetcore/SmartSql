@@ -313,5 +313,26 @@ namespace SmartSql.Test.Unit.DbSessions
             var list = SqlMapper.Query<User>(context);
             dbParameterCollection.TryGetParameterValue("Total", out int total);
         }
+
+        [Fact]
+        public void SP_SourceParameter()
+        {
+            SqlParameterCollection dbParameterCollection = new SqlParameterCollection();
+            dbParameterCollection.Add(new SqlParameter("Total", null)
+            {
+                SourceParameter = new System.Data.SqlClient.SqlParameter("Total", DbType.Int32)
+                {
+                    Direction = ParameterDirection.Output
+                }
+            });
+            RequestContext context = new RequestContext
+            {
+                CommandType = System.Data.CommandType.StoredProcedure,
+                RealSql = "SP_QueryUser",
+                Request = dbParameterCollection
+            };
+            var list = SqlMapper.Query<User>(context);
+            dbParameterCollection.TryGetParameterValue("Total", out int total);
+        }
     }
 }
