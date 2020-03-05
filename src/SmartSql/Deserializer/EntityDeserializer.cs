@@ -87,7 +87,8 @@ namespace SmartSql.Deserializer
         private Func<DataReaderWrapper, AbstractRequestContext, TResult> GetDeserialize<TResult>(
             ExecutionContext executionContext)
         {
-            return CacheUtil<TypeWrapper<EntityDeserializer, TResult>, DeserializeIdentity, Delegate>.GetOrAdd(DeserializeIdentity.Of(executionContext),
+            return CacheUtil<TypeWrapper<EntityDeserializer, TResult>, DeserializeIdentity, Delegate>.GetOrAdd(
+                    DeserializeIdentity.Of(executionContext),
                     _ => CreateDeserialize<TResult>(executionContext))
                 as Func<DataReaderWrapper, AbstractRequestContext, TResult>;
         }
@@ -125,7 +126,10 @@ namespace SmartSql.Deserializer
             var deserFunc = new DynamicMethod("Deserialize" + Guid.NewGuid().ToString("N"), resultType,
                 new[] {DataType.DataReaderWrapper, RequestContextType.AbstractType}, resultType, true);
             var ilGen = deserFunc.GetILGenerator();
-            ilGen.DeclareLocal(resultType);
+            ilGen.DeclareLocal(resultType); // return value
+            ilGen.DeclareLocal(CommonType.Int32); // current column index
+            ilGen.DeclareLocal(CommonType.String); // current column name
+            ilGen.DeclareLocal(CommonType.String); // current Property.Name
 
             #region New
 
@@ -143,7 +147,8 @@ namespace SmartSql.Deserializer
                 foreach (var arg in constructorMap.Args)
                 {
                     var col = columns[arg.Column];
-                    LoadPropertyValue(ilGen, executionContext, col.Index, arg.CSharpType, col.FieldType, null);
+                    StoreLocalColumnIndex(ilGen, col.Index);
+                    LoadPropertyValue(ilGen, executionContext, arg.CSharpType, col.FieldType, null);
                 }
             }
 
@@ -157,13 +162,13 @@ namespace SmartSql.Deserializer
 
             #endregion
 
-            var ignoreDbNull = executionContext.SmartSqlConfig.Settings.IgnoreDbNull;
             ilGen.StoreLocalVar(0);
+
+            var ignoreDbNull = executionContext.SmartSqlConfig.Settings.IgnoreDbNull;
+
+            ilGen.BeginExceptionBlock();
             foreach (var col in columns)
             {
-                var columnDescriptor = col.Value;
-                var colIndex = columnDescriptor.Index;
-
                 #region Ensure Property & TypeHanlder
 
                 if (!ResolveProperty<TResult>(resultMap, resultType, col.Value, out var propertyHolder)
@@ -179,19 +184,24 @@ namespace SmartSql.Deserializer
 
                 #endregion
 
+                var columnDescriptor = col.Value;
+                var colIndex = columnDescriptor.Index;
+                StoreLocalColumnIndex(ilGen, colIndex);
+                StoreLocalColumnName(ilGen, col.Value.ColumnName);
+                StoreLocalPropertyName(ilGen, propertyHolder.Property.Name);
                 var isDbNullLabel = ilGen.DefineLabel();
 
                 var propertyType = propertyHolder.PropertyType;
                 if (ignoreDbNull)
                 {
                     ilGen.LoadArg(0);
-                    ilGen.LoadInt32(colIndex);
+                    LoadLocalColumnIndex(ilGen);
                     ilGen.Call(DataType.Method.IsDBNull);
                     ilGen.IfTrueS(isDbNullLabel);
                 }
 
                 ilGen.LoadLocalVar(0);
-                LoadPropertyValue(ilGen, executionContext, colIndex, propertyType, columnDescriptor.FieldType,
+                LoadPropertyValue(ilGen, executionContext, propertyType, columnDescriptor.FieldType,
                     propertyHolder.TypeHandler);
                 ilGen.Call(propertyHolder.SetMethod);
                 if (ignoreDbNull)
@@ -200,6 +210,15 @@ namespace SmartSql.Deserializer
                 }
             }
 
+            ilGen.BeginCatchBlock(typeof(Exception));
+
+            ilGen.LoadLocalVar(0);
+            LoadLocalColumnIndex(ilGen);
+            LoadLocalColumnName(ilGen);
+            LoadLocalPropertyName(ilGen);
+            ilGen.LoadArg(0);
+            ilGen.EmitCall(OpCodes.Call, THROW_DESERIALIZE_EXCEPTION, null);
+            ilGen.EndExceptionBlock();
             if (typeof(IEntityPropertyChangedTrackProxy).IsAssignableFrom(resultType))
             {
                 ilGen.LoadLocalVar(0);
@@ -212,6 +231,51 @@ namespace SmartSql.Deserializer
             ilGen.LoadLocalVar(0);
             ilGen.Return();
             return deserFunc.CreateDelegate(typeof(Func<DataReaderWrapper, AbstractRequestContext, TResult>));
+        }
+
+
+        private static void StoreLocalColumnIndex(ILGenerator ilGen, int colIndex)
+        {
+            ilGen.LoadInt32(colIndex);
+            ilGen.StoreLocalVar(1);
+        }
+
+        private static void LoadLocalColumnIndex(ILGenerator ilGen)
+        {
+            ilGen.LoadLocalVar(1);
+        }
+
+        private static void StoreLocalColumnName(ILGenerator ilGen, String colName)
+        {
+            ilGen.LoadString(colName);
+            ilGen.StoreLocalVar(2);
+        }
+
+        private static void LoadLocalColumnName(ILGenerator ilGen)
+        {
+            ilGen.LoadLocalVar(2);
+        }
+
+        private static void StoreLocalPropertyName(ILGenerator ilGen, String propertyName)
+        {
+            ilGen.LoadString(propertyName);
+            ilGen.StoreLocalVar(3);
+        }
+
+        private static void LoadLocalPropertyName(ILGenerator ilGen)
+        {
+            ilGen.LoadLocalVar(3);
+        }
+
+        private static MethodInfo THROW_DESERIALIZE_EXCEPTION =
+            typeof(EntityDeserializer).GetMethod(nameof(ThrowDeserializeException));
+
+        public static void ThrowDeserializeException(Exception ex, Object result, int columnIndex, String columnName,
+            String propertyName, IDataReader dataReader)
+        {
+            var errorMsg =
+                $"Deserialize Error,Entity:[{result?.GetType().FullName}] PropertyName:[{propertyName}] -> ColumnIndex:[{columnIndex}],ColumnName:[{columnName}] ,Invalid DataReader ColumnName:[{dataReader.GetName(columnIndex)}]!";
+            throw new SmartSqlException(errorMsg, ex);
         }
 
         private static bool ResolveProperty<TResult>(ResultMap resultMap, Type resultType,
@@ -257,7 +321,7 @@ namespace SmartSql.Deserializer
             return false;
         }
 
-        private void LoadPropertyValue(ILGenerator ilGen, ExecutionContext executionContext, int colIndex,
+        private void LoadPropertyValue(ILGenerator ilGen, ExecutionContext executionContext,
             Type propertyType, Type fieldType, String typeHandler)
         {
             var typeHandlerFactory = executionContext.SmartSqlConfig.TypeHandlerFactory;
@@ -276,7 +340,7 @@ namespace SmartSql.Deserializer
             MethodInfo getValMethod = null;
             if (String.IsNullOrEmpty(typeHandler))
             {
-                LoadTypeHandlerInvokeArgs(ilGen, colIndex, propertyType);
+                LoadTypeHandlerInvokeArgs(ilGen, propertyType);
                 var mappedFieldType = fieldType;
                 if (isEnum)
                 {
@@ -302,17 +366,17 @@ namespace SmartSql.Deserializer
                 var typeHandlerField =
                     NamedTypeHandlerCache.GetTypeHandlerField(executionContext.SmartSqlConfig.Alias, typeHandler);
                 ilGen.FieldGet(typeHandlerField);
-                LoadTypeHandlerInvokeArgs(ilGen, colIndex, propertyType);
+                LoadTypeHandlerInvokeArgs(ilGen, propertyType);
                 getValMethod = executionContext.SmartSqlConfig.TypeHandlerFactory.GetTypeHandler(typeHandler).GetType()
                     .GetMethod("GetValue");
                 ilGen.Callvirt(getValMethod);
             }
         }
 
-        private void LoadTypeHandlerInvokeArgs(ILGenerator ilGen, int colIndex, Type propertyType)
+        private void LoadTypeHandlerInvokeArgs(ILGenerator ilGen, Type propertyType)
         {
             ilGen.LoadArg(0);
-            ilGen.LoadInt32(colIndex);
+            LoadLocalColumnIndex(ilGen);
             ilGen.LoadType(propertyType);
         }
 
@@ -335,7 +399,7 @@ namespace SmartSql.Deserializer
                     executionContext.DataReaderWrapper.ResultIndex,
                     executionContext.Request.RealSql);
             }
-            
+
             public DeserializeIdentity(String @alias, int resultIndex, String realSql)
             {
                 Alias = alias;
