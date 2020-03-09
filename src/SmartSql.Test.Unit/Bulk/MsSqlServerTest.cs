@@ -1,6 +1,6 @@
 ﻿using System;
 using Xunit;
-using SmartSql.Bulk.SqlServer;
+using SmartSql.Bulk.MsSqlServer;
 using SmartSql.Bulk;
 using System.Threading.Tasks;
 using SmartSql.DataSource;
@@ -9,16 +9,16 @@ using SmartSql.Test.Entities;
 
 namespace SmartSql.Test.Unit.Bulk
 {
-    public class SqlServerFixture
+    public class MsSqlServerFixture
     {
         public IDbSessionFactory DbSessionFactory { get; }
 
-        public SqlServerFixture()
+        public MsSqlServerFixture()
         {
             DbSessionFactory = new SmartSqlBuilder()
-                .UseDataSource(DbProvider.SQLSERVER,
+                .UseDataSource(DbProvider.MS_SQLSERVER,
                     "Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True")
-                .UseAlias("SqlServer-Bulk")
+                .UseAlias("MsSqlServer-Bulk")
                 .AddTypeHandler(new Configuration.TypeHandler()
                 {
                     Name = "Json",
@@ -28,11 +28,11 @@ namespace SmartSql.Test.Unit.Bulk
         }
     }
 
-    public class SqlServerTest : IClassFixture<SqlServerFixture>
+    public class MsSqlServerTest : IClassFixture<MsSqlServerFixture>
     {
         private IDbSessionFactory _dbSessionFactory;
 
-        public SqlServerTest(SqlServerFixture serverFixture)
+        public MsSqlServerTest(MsSqlServerFixture serverFixture)
         {
             _dbSessionFactory = serverFixture.DbSessionFactory;
         }

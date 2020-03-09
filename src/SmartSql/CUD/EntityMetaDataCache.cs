@@ -145,9 +145,14 @@ namespace SmartSql.CUD
                     continue;
                 }
 
-                var typeHandlerFactory = SmartSqlContainer.Instance.GetSmartSql(colValue.Alias).SmartSqlConfig
-                    .TypeHandlerFactory;
-                colValue.Handler = typeHandlerFactory.GetTypeHandler(colValue.TypeHandler);
+                var smartSqlBuilder = SmartSqlContainer.Instance.GetSmartSql(colValue.Alias);
+                if (smartSqlBuilder == null)
+                {
+                    throw new SmartSqlException($"can not find SmartSql instance by Alias:[{colValue.Alias}].");
+                }
+
+                colValue.Handler =
+                    smartSqlBuilder.SmartSqlConfig.TypeHandlerFactory.GetTypeHandler(colValue.TypeHandler);
             }
         }
     }

@@ -8,6 +8,7 @@ namespace SmartSql.DataSource
     public class DbProvider
     {
         public const String SQLSERVER = "SqlServer";
+        public const String MS_SQLSERVER = "MsSqlServer";
         public const String MYSQL = "MySql";
         public const String MYSQL_CONNECTOR = "MySqlConnector";
         

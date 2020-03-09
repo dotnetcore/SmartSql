@@ -98,6 +98,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.DataConnector", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.Oracle", "src\SmartSql.Oracle\SmartSql.Oracle.csproj", "{F27F1F16-F219-43FF-BEBE-6BDF9FC89A9E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.Bulk.MsSqlServer", "src\SmartSql.Bulk.MsSqlServer\SmartSql.Bulk.MsSqlServer.csproj", "{8CC66FDB-3775-4D17-B555-D8462AD693D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -204,6 +206,10 @@ Global
 		{F27F1F16-F219-43FF-BEBE-6BDF9FC89A9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F27F1F16-F219-43FF-BEBE-6BDF9FC89A9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F27F1F16-F219-43FF-BEBE-6BDF9FC89A9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CC66FDB-3775-4D17-B555-D8462AD693D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CC66FDB-3775-4D17-B555-D8462AD693D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CC66FDB-3775-4D17-B555-D8462AD693D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CC66FDB-3775-4D17-B555-D8462AD693D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -242,6 +248,7 @@ Global
 		{1F4EA4D3-D710-480E-9561-69DE388EAFE2} = {9E0B56FD-1AEC-414A-9630-555FA06B287F}
 		{B6C8A252-B5D8-479B-8518-21AB79B65670} = {903A0C86-20AC-4E4A-A33F-25706FA0E20A}
 		{F27F1F16-F219-43FF-BEBE-6BDF9FC89A9E} = {FB71A21B-B0FD-4F40-985D-4BB7756D33BF}
+		{8CC66FDB-3775-4D17-B555-D8462AD693D9} = {10CE96D5-C0F2-48F4-AF24-4B07C1B36FA8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6942F9AB-D574-4C16-8CF7-0D10B637237B}

@@ -320,7 +320,7 @@ namespace SmartSql.Test.Unit.DbSessions
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();
             dbParameterCollection.Add(new SqlParameter("Total", null)
             {
-                SourceParameter = new System.Data.SqlClient.SqlParameter("Total", DbType.Int32)
+                SourceParameter = new Microsoft.Data.SqlClient.SqlParameter("Total", DbType.Int32)
                 {
                     Direction = ParameterDirection.Output
                 }

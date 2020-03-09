@@ -1,9 +1,17 @@
 ﻿using SmartSql.DbSession;
 using System;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
+#if MicrosoftSqlClient
+using Microsoft.Data.SqlClient;
+#else
+using System.Data.SqlClient;
+#endif
 
+#if MicrosoftSqlClient
+namespace SmartSql.Bulk.MsSqlServer
+#else
 namespace SmartSql.Bulk.SqlServer
+#endif
 {
     public class BulkInsert : AbstractBulkInsert
     {
