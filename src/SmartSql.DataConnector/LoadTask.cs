@@ -117,9 +117,9 @@ namespace SmartSql.DataConnector
                     }
                     else
                     {
-                        if (_logger.IsEnabled(LogLevel.Debug))
+                        if (_logger.IsEnabled(LogLevel.Information))
                         {
-                            _logger.LogDebug($"Job:[{job.Key}],Execute succeed! SyncRequest.Id:[{syncRequest.Id}].");
+                            _logger.LogInformation($"Job:[{job.Key}],Execute succeed! SyncRequest.Id:[{syncRequest.Id}].");
                         }
                     }
                 }

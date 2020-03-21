@@ -235,27 +235,50 @@ namespace SmartSql.TypeHandlers
 
             handler = new UInt16TypeHandler();
             Register(handler);
+            handler = new UInt16ByteTypeHandler();
+            Register(handler);
+            handler = new UInt16AnyTypeHandler();
+            Register(handler);
             handler = new NullableUInt16TypeHandler();
             Register(handler);
-
+            handler = new NullableUInt16AnyTypeHandler();
+            Register(handler);
             #endregion
 
             #region UInt32
 
             handler = new UInt32TypeHandler();
             Register(handler);
+            handler = new UInt32ByteTypeHandler();
+            Register(handler);
+            handler = new UInt32UInt16TypeHandler();
+            Register(handler);
+            handler = new UInt32AnyTypeHandler();
+            Register(handler);
             handler = new NullableUInt32TypeHandler();
             Register(handler);
-
+            handler = new NullableUInt32AnyTypeHandler();
+            Register(handler);
+            
             #endregion
 
             #region UInt64
 
             handler = new UInt64TypeHandler();
             Register(handler);
+            handler = new UInt64ByteTypeHandler();
+            Register(handler);
+            handler = new UInt64UInt16TypeHandler();
+            Register(handler);
+            handler = new UInt64UInt32TypeHandler();
+            Register(handler);
+            handler = new UInt64AnyTypeHandler();
+            Register(handler);
             handler = new NullableUInt64TypeHandler();
             Register(handler);
-
+            handler = new NullableUInt64AnyTypeHandler();
+            Register(handler);
+            
             #endregion
 
             #region SByte

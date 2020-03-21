@@ -47,6 +47,7 @@
     </AutoConverter>
   </AutoConverters>
   <Database>
+    <!-- MsSqlServer: Microsoft.Data.SqlClient , SqlServer: System.Data.SqlClinet -->
     <DbProvider Name="${DbProvider}"/>
     <Write Name="WriteDB" ConnectionString="${ConnectionString}"/>
     <Read Name="ReadDb-1" ConnectionString="${ConnectionString}" Weight="100"/>
