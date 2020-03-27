@@ -18,7 +18,6 @@ namespace SmartSql.Bulk.MySql
     {
         public BulkInsert(IDbSession dbSession) : base(dbSession)
         {
-
         }
 
         public override void Insert()
@@ -30,10 +29,12 @@ namespace SmartSql.Bulk.MySql
         }
 
         public String SecureFilePriv { get; set; }
+        public String DateTimeFormat { get; set; }
         private string _fieldTerminator = ",";
         private char _fieldQuotationCharacter = '"';
         private char _escapeCharacter = '"';
         private string _lineTerminator = "\r\n";
+
         public override async Task InsertAsync()
         {
             await DbSession.OpenAsync();
@@ -79,13 +80,29 @@ namespace SmartSql.Bulk.MySql
                     {
                         dataBuilder.AppendFormat("\"{0}\"", row[dataColumn].ToString().Replace("\"", "\"\""));
                     }
+                    else if (dataColumn.DataType == CommonType.DateTime || dataColumn.DataType == typeof(DateTime?))
+                    {
+                        var originCell = row[dataColumn];
+                        if (originCell is DBNull)
+                        {
+                            dataBuilder.Append(DBNull.Value);
+                        }
+                        else
+                        {
+                            var dateCell = (DateTime) originCell;
+                            var dateCellTime = dateCell.ToString(DateTimeFormat);
+                            dataBuilder.Append(dateCellTime);
+                        }
+                    }
                     else
                     {
                         var colValStr = dataColumn.AutoIncrement ? "" : row[dataColumn]?.ToString();
                         dataBuilder.Append(colValStr);
                     }
+
                     colIndex++;
                 }
+
                 dataBuilder.Append(_lineTerminator);
             }
 
