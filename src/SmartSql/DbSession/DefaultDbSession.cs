@@ -215,7 +215,6 @@ namespace SmartSql.DbSession
                 }
 
                 Transaction.Commit();
-                ReleaseTransaction();
                 Committed?.Invoke(this, DbSessionEventArgs.None);
 
                 #endregion
@@ -226,6 +225,10 @@ namespace SmartSql.DbSession
             {
                 _diagnosticListener.WriteDbSessionCommitError(operationId, this, ex);
                 throw;
+            }
+            finally
+            {
+                ReleaseTransaction();
             }
         }
 
@@ -255,7 +258,6 @@ namespace SmartSql.DbSession
                 }
 
                 Transaction.Rollback();
-                ReleaseTransaction();
                 Rollbacked?.Invoke(this, DbSessionEventArgs.None);
 
                 #endregion
@@ -266,6 +268,10 @@ namespace SmartSql.DbSession
             {
                 _diagnosticListener.WriteDbSessionRollbackError(operationId, this, ex);
                 throw;
+            }
+            finally
+            {
+                ReleaseTransaction();
             }
         }
 
