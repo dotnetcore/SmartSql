@@ -12,9 +12,9 @@ namespace SmartSql
         #region IDbSession.TransactionWrap
         public static void TransactionWrap(this IDbSession dbSession, Action handler)
         {
+            dbSession.BeginTransaction();
             try
             {
-                dbSession.BeginTransaction();
                 handler();
                 dbSession.CommitTransaction();
             }
@@ -27,9 +27,9 @@ namespace SmartSql
 
         public static void TransactionWrap(this IDbSession dbSession, IsolationLevel isolationLevel, Action handler)
         {
+            dbSession.BeginTransaction(isolationLevel);
             try
             {
-                dbSession.BeginTransaction(isolationLevel);
                 handler();
                 dbSession.CommitTransaction();
             }
@@ -42,9 +42,9 @@ namespace SmartSql
 
         public static async Task TransactionWrapAsync(this IDbSession dbSession, Func<Task> handler)
         {
+            dbSession.BeginTransaction();
             try
             {
-                dbSession.BeginTransaction();
                 await handler();
                 dbSession.CommitTransaction();
             }
@@ -57,9 +57,9 @@ namespace SmartSql
 
         public static async Task TransactionWrapAsync(this IDbSession dbSession, IsolationLevel isolationLevel, Func<Task> handler)
         {
+            dbSession.BeginTransaction(isolationLevel);
             try
             {
-                dbSession.BeginTransaction(isolationLevel);
                 await handler();
                 dbSession.CommitTransaction();
             }
@@ -73,9 +73,9 @@ namespace SmartSql
         #region ITransaction.TransactionWrap
         public static void TransactionWrap(this ITransaction transaction, Action handler)
         {
+            transaction.BeginTransaction();
             try
             {
-                transaction.BeginTransaction();
                 handler();
                 transaction.CommitTransaction();
             }
@@ -88,9 +88,9 @@ namespace SmartSql
 
         public static void TransactionWrap(this ITransaction transaction, IsolationLevel isolationLevel, Action handler)
         {
+            transaction.BeginTransaction(isolationLevel);
             try
             {
-                transaction.BeginTransaction(isolationLevel);
                 handler();
                 transaction.CommitTransaction();
             }
@@ -103,9 +103,9 @@ namespace SmartSql
 
         public static async Task TransactionWrapAsync(this ITransaction transaction, Func<Task> handler)
         {
+            transaction.BeginTransaction();
             try
             {
-                transaction.BeginTransaction();
                 await handler();
                 transaction.CommitTransaction();
             }
@@ -118,9 +118,9 @@ namespace SmartSql
 
         public static async Task TransactionWrapAsync(this ITransaction transaction, IsolationLevel isolationLevel, Func<Task> handler)
         {
+            transaction.BeginTransaction(isolationLevel);
             try
             {
-                transaction.BeginTransaction(isolationLevel);
                 await handler();
                 transaction.CommitTransaction();
             }

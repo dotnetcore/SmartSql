@@ -31,12 +31,14 @@ namespace SmartSql.DbSession
         public DbTransaction Transaction { get; private set; }
         public IMiddleware Pipeline => SmartSqlConfig.Pipeline;
         private static readonly DiagnosticListener _diagnosticListener = SmartSqlDiagnosticListenerExtensions.Instance;
+
         public DefaultDbSession(SmartSqlConfig smartSqlConfig)
         {
             Id = Guid.NewGuid();
             _logger = smartSqlConfig.LoggerFactory.CreateLogger<DefaultDbSession>();
             SmartSqlConfig = smartSqlConfig;
         }
+
         private void EnsureDataSource()
         {
             if (DataSource == null)
@@ -44,23 +46,28 @@ namespace SmartSql.DbSession
                 DataSource = SmartSqlConfig.Database.Write;
             }
         }
+
         private void EnsureDbConnection()
         {
             EnsureDataSource();
             if (Connection != null) return;
             Connection = DataSource.CreateConnection();
         }
+
         public void SetDataSource(AbstractDataSource dataSource)
         {
             DataSource = dataSource;
         }
+
         public void Open()
         {
             var operationId = Guid.Empty;
             try
             {
                 operationId = _diagnosticListener.WriteDbSessionOpenBefore(this);
+
                 #region Impl
+
                 EnsureDbConnection();
                 if (Connection.State == ConnectionState.Closed)
                 {
@@ -68,29 +75,37 @@ namespace SmartSql.DbSession
                     {
                         _logger.LogDebug($"OpenConnection to {DataSource.Name} .");
                     }
+
                     Connection.Open();
                 }
+
                 Opened?.Invoke(this, DbSessionEventArgs.None);
+
                 #endregion
+
                 _diagnosticListener.WriteDbSessionOpenAfter(operationId, this);
             }
             catch (Exception ex)
             {
                 _diagnosticListener.WriteDbSessionOpenError(operationId, this, ex);
-                throw new SmartSqlException($"OpenConnection Unable to open connection to { DataSource.Name }.", ex);
+                throw new SmartSqlException($"OpenConnection Unable to open connection to {DataSource.Name}.", ex);
             }
         }
+
         public async Task OpenAsync()
         {
             await OpenAsync(CancellationToken.None);
         }
+
         public async Task OpenAsync(CancellationToken cancellationToken)
         {
             var operationId = Guid.Empty;
             try
             {
                 operationId = _diagnosticListener.WriteDbSessionOpenBefore(this);
+
                 #region Impl
+
                 EnsureDbConnection();
                 if (Connection.State == ConnectionState.Closed)
                 {
@@ -98,33 +113,43 @@ namespace SmartSql.DbSession
                     {
                         _logger.LogDebug($"OpenConnection to {DataSource.Name} .");
                     }
+
                     await Connection.OpenAsync(cancellationToken);
                 }
+
                 Opened?.Invoke(this, DbSessionEventArgs.None);
+
                 #endregion
+
                 _diagnosticListener.WriteDbSessionOpenAfter(operationId, this);
             }
             catch (Exception ex)
             {
                 _diagnosticListener.WriteDbSessionOpenError(operationId, this, ex);
-                throw new SmartSqlException($"OpenConnection Unable to open connection to { DataSource.Name }.", ex);
+                throw new SmartSqlException($"OpenConnection Unable to open connection to {DataSource.Name}.", ex);
             }
         }
+
         public DbTransaction BeginTransaction()
         {
             var operationId = Guid.Empty;
             try
             {
                 operationId = _diagnosticListener.WriteDbSessionBeginTransactionBefore(this);
+
                 #region Impl
+
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
                     _logger.LogDebug("BeginTransaction.");
                 }
+
                 Open();
                 Transaction = Connection.BeginTransaction();
                 TransactionBegan?.Invoke(this, DbSessionEventArgs.None);
+
                 #endregion
+
                 _diagnosticListener.WriteDbSessionBeginTransactionAfter(operationId, this);
                 return Transaction;
             }
@@ -134,21 +159,27 @@ namespace SmartSql.DbSession
                 throw;
             }
         }
+
         public DbTransaction BeginTransaction(IsolationLevel isolationLevel)
         {
             var operationId = Guid.Empty;
             try
             {
                 operationId = _diagnosticListener.WriteDbSessionBeginTransactionBefore(this);
+
                 #region Impl
+
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
                     _logger.LogDebug("BeginTransaction.");
                 }
+
                 Open();
                 Transaction = Connection.BeginTransaction(isolationLevel);
                 TransactionBegan?.Invoke(this, DbSessionEventArgs.None);
+
                 #endregion
+
                 _diagnosticListener.WriteDbSessionBeginTransactionAfter(operationId, this);
                 return Transaction;
             }
@@ -165,23 +196,30 @@ namespace SmartSql.DbSession
             try
             {
                 operationId = _diagnosticListener.WriteDbSessionCommitBefore(this);
+
                 #region Impl
+
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
                     _logger.LogDebug("CommitTransaction.");
                 }
+
                 if (Transaction == null)
                 {
                     if (_logger.IsEnabled(LogLevel.Error))
                     {
                         _logger.LogError("Before CommitTransaction,Please BeginTransaction first!");
                     }
+
                     throw new SmartSqlException("Before CommitTransaction,Please BeginTransaction first!");
                 }
+
                 Transaction.Commit();
                 ReleaseTransaction();
                 Committed?.Invoke(this, DbSessionEventArgs.None);
+
                 #endregion
+
                 _diagnosticListener.WriteDbSessionCommitAfter(operationId, this);
             }
             catch (Exception ex)
@@ -197,24 +235,31 @@ namespace SmartSql.DbSession
             try
             {
                 operationId = _diagnosticListener.WriteDbSessionRollbackBefore(this);
+
                 #region Impl
+
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
                     _logger.LogDebug("RollbackTransaction .");
                 }
+
                 if (Transaction == null)
                 {
                     if (_logger.IsEnabled(LogLevel.Warning))
                     {
                         _logger.LogWarning("Before RollbackTransaction,Please BeginTransaction first!");
                     }
+
                     _diagnosticListener.WriteDbSessionRollbackAfter(operationId, this);
                     return;
                 }
+
                 Transaction.Rollback();
                 ReleaseTransaction();
                 Rollbacked?.Invoke(this, DbSessionEventArgs.None);
+
                 #endregion
+
                 _diagnosticListener.WriteDbSessionRollbackAfter(operationId, this);
             }
             catch (Exception ex)
@@ -236,7 +281,9 @@ namespace SmartSql.DbSession
             try
             {
                 operationId = _diagnosticListener.WriteDbSessionDisposeBefore(this);
+
                 #region Impl
+
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
                     _logger.LogDebug($"Dispose. ");
@@ -253,8 +300,11 @@ namespace SmartSql.DbSession
                     Connection.Dispose();
                     Connection = null;
                 }
+
                 Disposed?.Invoke(this, DbSessionEventArgs.None);
+
                 #endregion
+
                 _diagnosticListener.WriteDbSessionDisposeAfter(operationId, this);
             }
             catch (Exception ex)
@@ -263,6 +313,7 @@ namespace SmartSql.DbSession
                 throw;
             }
         }
+
         public ExecutionContext Invoke<TResult>(AbstractRequestContext requestContext)
         {
             Stopwatch stopwatch = null;
@@ -279,6 +330,7 @@ namespace SmartSql.DbSession
                 {
                     stopwatch = Stopwatch.StartNew();
                 }
+
                 operationId = _diagnosticListener.WriteDbSessionInvokeBefore(executionContext);
 
                 #region Impl
@@ -290,22 +342,23 @@ namespace SmartSql.DbSession
                     case ExecutionType.QuerySingle:
                     case ExecutionType.GetDataSet:
                     case ExecutionType.GetDataTable:
-                        {
-                            executionContext.Result = new SingleResultContext<TResult>();
-                            break;
-                        }
+                    {
+                        executionContext.Result = new SingleResultContext<TResult>();
+                        break;
+                    }
                     case ExecutionType.Query:
-                        {
-                            executionContext.Result = new ListResultContext<TResult>();
-                            break;
-                        }
+                    {
+                        executionContext.Result = new ListResultContext<TResult>();
+                        break;
+                    }
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
 
                 requestContext.ExecutionContext = executionContext;
                 Pipeline.Invoke<TResult>(executionContext);
-                Invoked?.Invoke(this,new DbSessionInvokedEventArgs{ ExecutionContext = executionContext});
+                Invoked?.Invoke(this, new DbSessionInvokedEventArgs {ExecutionContext = executionContext});
+
                 #endregion
 
                 _diagnosticListener.WriteDbSessionInvokeAfter(operationId, executionContext);
@@ -325,6 +378,7 @@ namespace SmartSql.DbSession
                 }
             }
         }
+
         public async Task<ExecutionContext> InvokeAsync<TResult>(AbstractRequestContext requestContext)
         {
             Stopwatch stopwatch = null;
@@ -341,8 +395,11 @@ namespace SmartSql.DbSession
                 {
                     stopwatch = Stopwatch.StartNew();
                 }
+
                 operationId = _diagnosticListener.WriteDbSessionInvokeBefore(executionContext);
+
                 #region Impl
+
                 switch (executionContext.Type)
                 {
                     case ExecutionType.Execute:
@@ -350,22 +407,25 @@ namespace SmartSql.DbSession
                     case ExecutionType.QuerySingle:
                     case ExecutionType.GetDataSet:
                     case ExecutionType.GetDataTable:
-                        {
-                            executionContext.Result = new SingleResultContext<TResult>();
-                            break;
-                        }
+                    {
+                        executionContext.Result = new SingleResultContext<TResult>();
+                        break;
+                    }
                     case ExecutionType.Query:
-                        {
-                            executionContext.Result = new ListResultContext<TResult>();
-                            break;
-                        }
+                    {
+                        executionContext.Result = new ListResultContext<TResult>();
+                        break;
+                    }
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
+
                 requestContext.ExecutionContext = executionContext;
                 await Pipeline.InvokeAsync<TResult>(executionContext);
-                Invoked?.Invoke(this,new DbSessionInvokedEventArgs{ ExecutionContext = executionContext});
+                Invoked?.Invoke(this, new DbSessionInvokedEventArgs {ExecutionContext = executionContext});
+
                 #endregion
+
                 _diagnosticListener.WriteDbSessionInvokeAfter(operationId, executionContext);
                 return executionContext;
             }
@@ -383,24 +443,26 @@ namespace SmartSql.DbSession
                 }
             }
         }
+
         public int Execute(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.Execute;
             var executionContext = Invoke<int>(requestContext);
-            return ((SingleResultContext<int>)executionContext.Result).Data;
+            return ((SingleResultContext<int>) executionContext.Result).Data;
         }
 
         public TResult ExecuteScalar<TResult>(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.ExecuteScalar;
             var executionContext = Invoke<TResult>(requestContext);
-            return ((SingleResultContext<TResult>)executionContext.Result).Data;
+            return ((SingleResultContext<TResult>) executionContext.Result).Data;
         }
+
         public TResult QuerySingle<TResult>(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.QuerySingle;
             var executionContext = Invoke<TResult>(requestContext);
-            return ((SingleResultContext<TResult>)executionContext.Result).Data;
+            return ((SingleResultContext<TResult>) executionContext.Result).Data;
         }
 
         public DataSet GetDataSet(AbstractRequestContext requestContext)
@@ -416,6 +478,7 @@ namespace SmartSql.DbSession
             var executionContext = Invoke<DataTable>(requestContext);
             return executionContext.Result.GetData() as DataTable;
         }
+
         public IList<TResult> Query<TResult>(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.Query;
@@ -427,14 +490,14 @@ namespace SmartSql.DbSession
         {
             requestContext.ExecutionType = ExecutionType.Execute;
             var executionContext = await InvokeAsync<int>(requestContext);
-            return ((SingleResultContext<int>)executionContext.Result).Data;
+            return ((SingleResultContext<int>) executionContext.Result).Data;
         }
 
         public async Task<TResult> ExecuteScalarAsync<TResult>(AbstractRequestContext requestContext)
         {
             requestContext.ExecutionType = ExecutionType.ExecuteScalar;
             var executionContext = await InvokeAsync<TResult>(requestContext);
-            return ((SingleResultContext<TResult>)executionContext.Result).Data;
+            return ((SingleResultContext<TResult>) executionContext.Result).Data;
         }
 
         public async Task<IList<TResult>> QueryAsync<TResult>(AbstractRequestContext requestContext)
@@ -448,7 +511,7 @@ namespace SmartSql.DbSession
         {
             requestContext.ExecutionType = ExecutionType.QuerySingle;
             var executionContext = await InvokeAsync<TResult>(requestContext);
-            return ((SingleResultContext<TResult>)executionContext.Result).Data;
+            return ((SingleResultContext<TResult>) executionContext.Result).Data;
         }
 
         public async Task<DataSet> GetDataSetAsync(AbstractRequestContext requestContext)
