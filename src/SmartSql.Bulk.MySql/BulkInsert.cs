@@ -16,6 +16,7 @@ namespace SmartSql.Bulk.MySql
 {
     public class BulkInsert : AbstractBulkInsert
     {
+        const string NULL_VALUE = "NULL";
         public BulkInsert(IDbSession dbSession) : base(dbSession)
         {
         }
@@ -85,18 +86,22 @@ namespace SmartSql.Bulk.MySql
                         var originCell = row[dataColumn];
                         if (originCell is DBNull)
                         {
-                            dataBuilder.Append(DBNull.Value);
+                            dataBuilder.Append(NULL_VALUE);
                         }
                         else
                         {
-                            var dateCell = (DateTime) originCell;
+                            var dateCell = (DateTime)originCell;
                             var dateCellTime = dateCell.ToString(DateTimeFormat);
                             dataBuilder.Append(dateCellTime);
                         }
                     }
+                    else if (row[dataColumn] is DBNull || dataColumn.AutoIncrement)
+                    {
+                        dataBuilder.Append(NULL_VALUE);
+                    }
                     else
                     {
-                        var colValStr = dataColumn.AutoIncrement ? "" : row[dataColumn]?.ToString();
+                        var colValStr = row[dataColumn]?.ToString() ?? NULL_VALUE;
                         dataBuilder.Append(colValStr);
                     }
 
