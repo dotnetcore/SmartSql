@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SkyApm.Diagnostics.SmartSql;
+using SkyApm.Utilities.DependencyInjection;
 using SmartSql.Cache.Sync;
 using SmartSql.ConfigBuilder;
 using SmartSql.DIExtension;
@@ -29,6 +31,7 @@ namespace SmartSql.Sample.AspNetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            // services.AddSkyApmExtensions().AddSmartSql();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services
                 .AddSmartSql((sp, builder) =>

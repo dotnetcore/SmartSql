@@ -18,6 +18,7 @@
         <MultipleResultMap Id="QueryByPageResult">
             <Result Property="List"/>
             <Result Property="Total"/>
+            <Result Property="UserName"/>
         </MultipleResultMap>
     </MultipleResultMaps>
     <Statements>
@@ -96,6 +97,7 @@
             Limit @PageSize Offset 0;
             Select Count(1) From T_User T
             <Include RefId="QueryParams"/>;
+            Select 'SmartSql';
         </Statement>
 
         <!--获取记录数-->

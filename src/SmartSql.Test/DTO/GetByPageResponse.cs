@@ -8,5 +8,6 @@ namespace SmartSql.Test.DTO
     {
         public IEnumerable<TItem> List { get; set; }
         public int Total { get; set; }
+        public String UserName { get; set; }
     }
 }
