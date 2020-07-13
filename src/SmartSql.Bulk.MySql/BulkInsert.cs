@@ -1,5 +1,4 @@
-﻿using MySql.Data.MySqlClient;
-using SmartSql.DbSession;
+﻿using SmartSql.DbSession;
 using SmartSql.Reflection.TypeConstants;
 using System;
 using System.Data;
@@ -9,8 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 #if MySqlConnector
+using MySqlConnector;
 namespace SmartSql.Bulk.MySqlConnector
 #else
+using MySql.Data.MySqlClient;
 namespace SmartSql.Bulk.MySql
 #endif
 {
