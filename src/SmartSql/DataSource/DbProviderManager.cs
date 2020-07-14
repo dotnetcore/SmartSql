@@ -1,8 +1,6 @@
-﻿using SmartSql.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Reflection;
 using SmartSql.Reflection;
 
 namespace SmartSql.DataSource
@@ -39,7 +37,7 @@ namespace SmartSql.DataSource
         {
             Name = DbProvider.MYSQL_CONNECTOR,
             ParameterPrefix = "?",
-            Type = "MySql.Data.MySqlClient.MySqlClientFactory,MySqlConnector",
+            Type = "MySqlConnector.MySqlConnectorFactory,MySqlConnector",
             SelectAutoIncrement = ";Select Last_Insert_Id();"
         };
 
