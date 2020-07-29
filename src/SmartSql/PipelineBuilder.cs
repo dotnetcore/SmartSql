@@ -26,16 +26,16 @@ namespace SmartSql
             var list = Pipeline.OrderBy(middleware => middleware.Order).ToList();
             for (var i = 0; i < list.Count; i++)
             {
-                var current = Pipeline[i];
-                if (i == Pipeline.Count - 1)
+                var current = list[i];
+                if (i == list.Count - 1)
                 {
                     break;
                 }
 
-                current.Next = Pipeline[i + 1];
+                current.Next = list[i + 1];
             }
 
-            return Pipeline.FirstOrDefault();
+            return list.FirstOrDefault();
         }
     }
 }
