@@ -20,7 +20,7 @@ namespace SmartSql.Test.Unit.ConfigBuilder
         {
             try
             {
-                var configLoader = new XmlConfigBuilder(ResourceType.File, "SmartSqlMapConfig.xml");
+                var configLoader = new XmlConfigBuilder(ResourceType.File, "SmartSqlMapConfig2.xml");
                 var config = configLoader.Build();
             }
             catch (SmartSqlException ex)
