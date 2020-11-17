@@ -21,7 +21,7 @@ namespace SmartSql
         public int? CommandTimeout { get; set; }
         public bool? EnablePropertyChangedTrack { get; set; }
         public Statement Statement { get; internal set; }
-        public StringBuilder SqlBuilder { get; internal set; }
+        public StringBuilder SqlBuilder { get; internal set; } = new StringBuilder();
         public bool IsStatementSql { get; internal set; } = true;
         internal bool IgnorePrepend { get; set; } = false;
         public String RealSql { get; set; }

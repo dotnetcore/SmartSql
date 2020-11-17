@@ -1,7 +1,4 @@
-﻿using SmartSql.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace SmartSql.Configuration.Tags
 {
@@ -9,13 +6,9 @@ namespace SmartSql.Configuration.Tags
     {
         public String RefId { get; set; }
         public Statement Ref { get; set; }
+
         public override bool IsCondition(AbstractRequestContext context)
         {
-            if (!Required)
-            {
-                return true;
-            }
-
             bool passed = false;
 
             foreach (var childTag in ChildTags)
@@ -26,11 +19,13 @@ namespace SmartSql.Configuration.Tags
                     break;
                 }
             }
-            if (!passed)
+
+            if (Required && !passed)
             {
                 throw new TagRequiredFailException(this);
             }
-            return true;
+
+            return passed;
         }
     }
 }

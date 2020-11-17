@@ -17,7 +17,13 @@
     <Statement Id="Query">
       Select * From T_User T
       <Where>
-        <Include Prepend="And" RefId="QueryParams" Required="1"/>
+        <Include Prepend="And" RefId="QueryParams" Required="true"/>
+      </Where>
+    </Statement>
+    <Statement Id="Query_Not_Required">
+      Select * From T_User T
+      <Where>
+        <Include Prepend="And" RefId="QueryParams" Required="false"/>
       </Where>
     </Statement>
   </Statements>

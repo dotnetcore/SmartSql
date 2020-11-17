@@ -124,7 +124,6 @@ namespace SmartSql.Middlewares
                 return;
             }
 
-            requestContext.SqlBuilder = new StringBuilder();
             requestContext.Statement.BuildSql(requestContext);
             requestContext.RealSql = requestContext.SqlBuilder.ToString().Trim();
         }
