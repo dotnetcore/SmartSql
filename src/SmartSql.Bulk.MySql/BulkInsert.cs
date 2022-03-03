@@ -12,12 +12,14 @@ using MySqlConnector;
 namespace SmartSql.Bulk.MySqlConnector
 #else
 using MySql.Data.MySqlClient;
+
 namespace SmartSql.Bulk.MySql
 #endif
 {
     public class BulkInsert : AbstractBulkInsert
     {
         const string NULL_VALUE = "NULL";
+
         public BulkInsert(IDbSession dbSession) : base(dbSession)
         {
         }
@@ -31,7 +33,7 @@ namespace SmartSql.Bulk.MySql
         }
 
         public String SecureFilePriv { get; set; }
-        public String DateTimeFormat { get; set; }
+        public String DateTimeFormat { get; set; } = "yyyy-MM-dd HH:mm:ss";
         private string _fieldTerminator = ",";
         private char _fieldQuotationCharacter = '"';
         private char _escapeCharacter = '"';
