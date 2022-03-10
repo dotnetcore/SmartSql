@@ -55,7 +55,7 @@ namespace SmartSql
                 TypeHandler = TypeHandlerCache<TPrimaryKey, TPrimaryKey>.Handler
             };
             var dbProvider = dbSession.SmartSqlConfig.Database.DbProvider;
-            var sql = $"Select * From {tableName} Where {WrapColumnEqParameter(dbProvider, pkCol)};";
+            var sql = $"Select * From {tableName} Where {WrapColumnEqParameter(dbProvider, pkCol)}";
             return dbSession.QuerySingle<TEntity>(new RequestContext
             {
                 EnablePropertyChangedTrack = enablePropertyChangedTrack,
@@ -156,7 +156,7 @@ namespace SmartSql
                 TypeHandler = TypeHandlerCache<TPrimaryKey, TPrimaryKey>.Handler
             };
             var sql =
-                $"Delete From {tableName} Where {WrapColumnEqParameter(dbSession.SmartSqlConfig.Database.DbProvider, pkCol)};";
+                $"Delete From {tableName} Where {WrapColumnEqParameter(dbSession.SmartSqlConfig.Database.DbProvider, pkCol)}";
             return dbSession.Execute(new RequestContext
             {
                 RealSql = sql,
@@ -200,7 +200,7 @@ namespace SmartSql
         public static int DeleteAll<TEntity>(this IDbSession dbSession)
         {
             var tableName = EntityMetaDataCache<TEntity>.TableName;
-            var sql = $"Delete From {tableName};";
+            var sql = $"Delete From {tableName}";
             return dbSession.Execute(new RequestContext
             {
                 RealSql = sql
