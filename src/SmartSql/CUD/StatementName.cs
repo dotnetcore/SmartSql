@@ -6,9 +6,9 @@ namespace SmartSql.CUD
     {
         public const string Insert = "Insert";
         public const string Update = "Update";
-        public const string DeleteAll = "DeleteById";
-        public const string DeleteById = "DeleteMany";
-        public const string DeleteMany = "DeleteAll";
+        public const string DeleteAll = "DeleteAll";
+        public const string DeleteById = "DeleteById";
+        public const string DeleteMany = "DeleteMany";
 
         public static readonly string[] DefaultFlushOnExecutes = new string[] { Insert, Update, DeleteAll, DeleteById, DeleteMany };
 
