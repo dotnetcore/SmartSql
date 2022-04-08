@@ -1,22 +1,17 @@
 ﻿
 namespace SmartSql.CUD
 {
-    enum StatementName
-    {
-        Insert,
-        Update,
-        DeleteById,
-        DeleteMany,
-        DeleteAll
-    }
 
     public sealed class CUDStatementName
     {
-        public static string Insert => StatementName.Insert.ToString();
-        public static string Update => StatementName.Update.ToString();
-        public static string DeleteAll => StatementName.DeleteAll.ToString();
-        public static string DeleteById => StatementName.DeleteById.ToString();
-        public static string DeleteMany => StatementName.DeleteMany.ToString();
+        public const string Insert = "Insert";
+        public const string Update = "Update";
+        public const string DeleteAll = "DeleteById";
+        public const string DeleteById = "DeleteMany";
+        public const string DeleteMany = "DeleteAll";
+
+        public static readonly string[] DefaultFlushOnExecutes = new string[] { Insert, Update, DeleteAll, DeleteById, DeleteMany };
+
     }
     
 }
