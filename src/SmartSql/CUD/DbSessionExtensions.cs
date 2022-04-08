@@ -11,11 +11,15 @@ using SmartSql.CUD;
 using SmartSql.Reflection.Convert;
 using SmartSql.Reflection.EntityProxy;
 using SmartSql.TypeHandlers;
+using SmartSql.Utils;
+using SmartSql.Configuration.Tags;
 
 namespace SmartSql
 {
     public static partial class DbSessionExtensions
     {
+        private static object _locker = new object();
+
         private static void AppendColumnName(StringBuilder sqlBuilder, DbProvider dbProvider, string paramName)
         {
             sqlBuilder.AppendFormat("{0}{1}{2}", dbProvider.ParameterNamePrefix, paramName,
@@ -75,8 +79,15 @@ namespace SmartSql
         {
             var dyParams = ToSqlParameters<TEntity>(entity, dbSession.SmartSqlConfig.Settings.IgnoreParameterCase);
             StringBuilder sqlBuilder = BuildInsertSql<TEntity>(dbSession.SmartSqlConfig.Database.DbProvider, dyParams);
+            var fullSql = sqlBuilder.ToString();
+            if (!dbSession.CheckCUDStatement<TEntity>("Insert", fullSql, out var statement))
+            {
+                dbSession.AddStatement(statement);
+            }
             return dbSession.Execute(new RequestContext
             {
+                Statement = statement,
+                IsStatementSql = true,
                 RealSql = sqlBuilder.ToString(),
                 Request = dyParams
             });
@@ -99,14 +110,56 @@ namespace SmartSql
                 sqlBuilder.Append(dbProvider.SelectAutoIncrement);
             }
 
+            var fullSql = sqlBuilder.ToString();
+            if (!dbSession.CheckCUDStatement<TEntity>("Insert", fullSql, out var statement))
+            {
+                dbSession.AddStatement(statement);
+            }
+
             var id = dbSession.ExecuteScalar<TPrimaryKey>(new RequestContext
             {
-                RealSql = sqlBuilder.ToString(),
+                Statement = statement,
+                IsStatementSql = true,
+                RealSql = fullSql,
                 Request = dyParams
             });
 
             _setAccessorFactory.Create(pkCol.Property)(entity, id);
             return id;
+        }
+
+        private static void AddStatement(this IDbSession session, Configuration.Statement statement)
+        {
+            lock (_locker)
+            {
+                statement.SqlMap.Statements.Add(statement.FullSqlId, statement);
+                session.SmartSqlConfig.CacheManager.Reset();
+            }
+        }
+
+        private static bool CheckCUDStatement<TEntity>(this IDbSession session, string statementId, string fullSql, out Configuration.Statement statement)
+        {
+            var clsFullName = EntityMetaDataCache<TEntity>.TableName;
+            var clsName = EntityMetaDataCache<TEntity>.EntityType.Name;
+            var sqlFullId = $"{clsFullName}.{statementId}";
+            var sqlMap = session.SmartSqlConfig.GetSqlMap(clsName);
+            var result = sqlMap.Statements.TryGetValue(sqlFullId, out statement);
+            if (!result)
+            {
+                var analyzer = new StatementAnalyzer();
+                statement = new Configuration.Statement()
+                {
+                    SqlMap = sqlMap,
+                    Id = statementId,
+                    CommandType = System.Data.CommandType.Text,
+                    StatementType = analyzer.Analyse(fullSql),
+                    SqlTags = new List<ITag>
+                    {
+                        new SqlText(fullSql, sqlMap.SmartSqlConfig.Database.DbProvider.ParameterPrefix)
+                    },
+                };
+            }
+            return result;
         }
 
         private static StringBuilder BuildInsertSql<TEntity>(DbProvider dbProvider, SqlParameterCollection dyParams)
