@@ -80,15 +80,14 @@ namespace SmartSql
             var dyParams = ToSqlParameters<TEntity>(entity, dbSession.SmartSqlConfig.Settings.IgnoreParameterCase);
             StringBuilder sqlBuilder = BuildInsertSql<TEntity>(dbSession.SmartSqlConfig.Database.DbProvider, dyParams);
             var fullSql = sqlBuilder.ToString();
-            if (!dbSession.CheckCUDStatement<TEntity>("Insert", fullSql, out var statement))
+            if (!dbSession.CheckCUDStatement<TEntity>(CUDStatementName.Insert, fullSql, out var statement))
             {
                 dbSession.AddStatement(statement);
             }
             return dbSession.Execute(new RequestContext
             {
-                Statement = statement,
-                IsStatementSql = true,
-                RealSql = sqlBuilder.ToString(),
+                Scope = statement.SqlMap.Scope,
+                SqlId = statement.Id,
                 Request = dyParams
             });
         }
@@ -111,16 +110,15 @@ namespace SmartSql
             }
 
             var fullSql = sqlBuilder.ToString();
-            if (!dbSession.CheckCUDStatement<TEntity>("Insert", fullSql, out var statement))
+            if (!dbSession.CheckCUDStatement<TEntity>(CUDStatementName.Insert, fullSql, out var statement))
             {
                 dbSession.AddStatement(statement);
             }
 
             var id = dbSession.ExecuteScalar<TPrimaryKey>(new RequestContext
             {
-                Statement = statement,
-                IsStatementSql = true,
-                RealSql = fullSql,
+                Scope = statement.SqlMap.Scope,
+                SqlId = statement.Id,
                 Request = dyParams
             });
 
@@ -210,9 +208,16 @@ namespace SmartSql
             };
             var sql =
                 $"Delete From {tableName} Where {WrapColumnEqParameter(dbSession.SmartSqlConfig.Database.DbProvider, pkCol)}";
+
+            if (!dbSession.CheckCUDStatement<TEntity>(CUDStatementName.DeleteById, sql, out var statement))
+            {
+                dbSession.AddStatement(statement);
+            }
+
             return dbSession.Execute(new RequestContext
             {
-                RealSql = sql,
+                Scope = statement.SqlMap.Scope,
+                SqlId = statement.Id,
                 Request = new SqlParameterCollection {idParam}
             });
         }
@@ -243,9 +248,16 @@ namespace SmartSql
             }
 
             sqlBuilder.Append(")");
+            var fullSql = sqlBuilder.ToString();
+            if (!dbSession.CheckCUDStatement<TEntity>(CUDStatementName.DeleteMany, fullSql, out var statement))
+            {
+                dbSession.AddStatement(statement);
+            }
+
             return dbSession.Execute(new RequestContext
             {
-                RealSql = sqlBuilder.ToString(),
+                Scope = statement.SqlMap.Scope,
+                SqlId = statement.Id,
                 Request = sqlParameters
             });
         }
@@ -254,9 +266,14 @@ namespace SmartSql
         {
             var tableName = EntityMetaDataCache<TEntity>.TableName;
             var sql = $"Delete From {tableName}";
+            if (!dbSession.CheckCUDStatement<TEntity>(CUDStatementName.DeleteAll, sql, out var statement))
+            {
+                dbSession.AddStatement(statement);
+            }
             return dbSession.Execute(new RequestContext
             {
-                RealSql = sql
+                Scope = statement.SqlMap.Scope,
+                SqlId = statement.Id,
             });
         }
 
@@ -326,9 +343,16 @@ namespace SmartSql
 
             sqlBuilder.Append(" Where ");
             AppendColumnEqParameter(sqlBuilder, dbSession.SmartSqlConfig.Database.DbProvider, pkCol);
+            var fullSql = sqlBuilder.ToString();
+            if (!dbSession.CheckCUDStatement<TEntity>(CUDStatementName.Update, fullSql, out var statement))
+            {
+                dbSession.AddStatement(statement);
+            }
+
             return dbSession.Execute(new RequestContext
             {
-                RealSql = sqlBuilder.ToString(),
+                Scope = statement.SqlMap.Scope,
+                SqlId = statement.Id,
                 Request = dyParams
             });
         }
