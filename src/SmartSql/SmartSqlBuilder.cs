@@ -229,8 +229,8 @@ namespace SmartSql
             }
         }
 
-        private bool UsedCache => SmartSqlConfig.Settings.IsCacheEnabled
-                                  && SmartSqlConfig.SqlMaps.Values.Any(sqlMap => sqlMap.Caches.Count > 0);
+        private bool UsedCache => SmartSqlConfig.Settings.IsCacheEnabled;
+                                  //&& SmartSqlConfig.SqlMaps.Values.Any(sqlMap => sqlMap.Caches.Count > 0);
 
         private void BuildPipeline()
         {
