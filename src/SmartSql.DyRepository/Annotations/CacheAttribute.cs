@@ -1,3 +1,4 @@
+using SmartSql.CUD;
 using System;
 
 namespace SmartSql.DyRepository.Annotations
@@ -11,8 +12,8 @@ namespace SmartSql.DyRepository.Annotations
             Type = type;
         }
 
-        public String Id { get; }
-        public String Type { get; }
+        public String Id { get; internal set; }
+        public String Type { get; internal set; }
         public String[] FlushOnExecutes { get; set; }
 
         /// <summary>
@@ -21,5 +22,15 @@ namespace SmartSql.DyRepository.Annotations
         public int FlushInterval { get; set; }
 
         public int CacheSize { get; set; } = 100;
+    }
+
+    [AttributeUsage(AttributeTargets.Interface, AllowMultiple = true)]
+    public class CUDCacheAttribute : CacheAttribute
+    {
+        public CUDCacheAttribute(string id, string type):base(id,type)
+        {
+            FlushOnExecutes = CUDStatementName.DefaultFlushOnExecutes;
+        }
+
     }
 }
