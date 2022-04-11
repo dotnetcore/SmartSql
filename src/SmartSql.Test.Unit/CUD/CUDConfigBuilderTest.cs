@@ -20,7 +20,17 @@ namespace SmartSql.Test.Unit.CUD
             var configBuilder = new CUDConfigBuilder(entityTypeList);
             var smartSqlConfig = configBuilder.Build();
             Assert.NotNull(smartSqlConfig);
-            //TODO check CUD Statement
+            var maps = smartSqlConfig.SqlMaps;
+            foreach (var map in maps)
+            {
+                var scope = map.Key;
+                var v = map.Value;
+                foreach (var statement in v.Statements)
+                {
+                    Console.WriteLine($"class {scope}.{statement.Value.Id} found");
+                }
+                Assert.Equal(5, v.Statements.Count);
+            }
         }
 
         [Fact]
@@ -31,13 +41,25 @@ namespace SmartSql.Test.Unit.CUD
             var entityTypeList = TypeScan.Scan(new TypeScanOptions
             {
                 AssemblyString = "SmartSql.Test",
-                Filter = type => type.Namespace == "SmartSql.Test.Entities"
+                Filter = type => type.FullName == "SmartSql.Test.Entities.WebMenu"
             });
             var configBuilder = new CUDConfigBuilder(xmlConfigBuilder, entityTypeList);
             var smartSqlConfig = configBuilder.Build();
             Assert.NotNull(smartSqlConfig);
             //TODO check CUD Statement
-
+            var maps = smartSqlConfig.SqlMaps;
+            foreach (var map in maps)
+            {
+                if (map.Key != "WebMenu")
+                    continue;
+                var scope = map.Key;
+                var v = map.Value;
+                foreach (var statement in v.Statements)
+                {
+                    Console.WriteLine($"class {scope}.{statement.Value.Id} found");
+                }
+                Assert.Equal(5, v.Statements.Count);
+            }
         }
     }
 }
