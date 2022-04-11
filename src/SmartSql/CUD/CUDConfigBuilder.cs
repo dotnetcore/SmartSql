@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using SmartSql.ConfigBuilder;
 using SmartSql.Configuration;
 using SmartSql.Reflection.TypeConstants;
@@ -12,16 +14,20 @@ namespace SmartSql.CUD
         public SmartSqlConfig SmartSqlConfig { get; private set; }
         public IConfigBuilder Parent { get; }
         private readonly IEnumerable<Type> _entityTypeList;
+        private ILoggerFactory _loggerFactory;
+        private ILogger _logger;
 
         public CUDConfigBuilder(IEnumerable<Type> entityTypeList)
             : this(new NativeConfigBuilder(new SmartSqlConfig()), entityTypeList)
         {
         }
 
-        public CUDConfigBuilder(IConfigBuilder parent, IEnumerable<Type> entityTypeList)
+        public CUDConfigBuilder(IConfigBuilder parent, IEnumerable<Type> entityTypeList, ILoggerFactory loggerFactory = null)
         {
             Parent = parent;
             _entityTypeList = entityTypeList;
+            _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
+            _logger = _loggerFactory.CreateLogger<XmlConfigBuilder>();
         }
 
         public SmartSqlConfig Build()
@@ -32,6 +38,8 @@ namespace SmartSql.CUD
             }
 
             SmartSqlConfig = Parent.Build();
+
+            var sqlGen = new CUDSqlGenerator();
 
             foreach (var entityType in _entityTypeList)
             {
@@ -51,7 +59,16 @@ namespace SmartSql.CUD
                     };
                     SmartSqlConfig.SqlMaps.Add(scope, sqlMap);
                 }
-                //TODO Generate CUD Statement based on Type
+                sqlGen.Init(sqlMap, entityType);
+                foreach (var statement in sqlGen.StatementList)
+                {
+                    if (sqlMap.Statements.ContainsKey(statement.Key))
+                    {
+                        _logger.LogDebug("{0} Exists, CUD module Skip this Statement. Continue", statement.Key);
+                        continue;
+                    }
+                    sqlMap.Statements.Add(statement.Key, statement.Value);
+                }
             }
 
             Initialized = true;
