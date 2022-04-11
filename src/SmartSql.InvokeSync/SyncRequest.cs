@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using SmartSql.DataSource;
 using StatementType = SmartSql.Configuration.StatementType;
 

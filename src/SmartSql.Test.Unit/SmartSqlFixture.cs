@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,7 +24,6 @@ namespace SmartSql.Test.Unit
                 new LoggerFilterOptions {MinLevel = LogLevel.Debug});
             var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "SmartSql.log");
             LoggerFactory.AddFile(logPath, LogLevel.Trace);
-
             SmartSqlBuilder = new SmartSqlBuilder()
                 .UseXmlConfig()
                 .UseLoggerFactory(LoggerFactory)
@@ -37,7 +37,6 @@ namespace SmartSql.Test.Unit
                 .Build();
             DbSessionFactory = SmartSqlBuilder.DbSessionFactory;
             SqlMapper = SmartSqlBuilder.SqlMapper;
-
 
             RepositoryBuilder = new EmitRepositoryBuilder(null, null,
                 LoggerFactory.CreateLogger<EmitRepositoryBuilder>());

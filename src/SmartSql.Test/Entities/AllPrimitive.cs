@@ -26,10 +26,7 @@ namespace SmartSql.Test.Entities
         public virtual Boolean Boolean { get; set; }
 
         public virtual Char Char { get; set; }
-
-        //public SByte SByte { get; set; }
-        public virtual Byte Byte { get; set; }
-
+        
         public virtual Int16 Int16 { get; set; }
 
         //public UInt16 UInt16 { get; set; }

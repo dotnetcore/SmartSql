@@ -8,7 +8,7 @@ namespace SmartSql.Test.Unit
 {
     public abstract class AbstractTest
     {
-        protected String DbType => "SqlServer";
+        protected String DbType => "MySql";
         protected String ConnectionString => "Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True";
     }
 }

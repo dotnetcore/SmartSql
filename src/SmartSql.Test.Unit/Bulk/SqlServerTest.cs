@@ -37,7 +37,7 @@ namespace SmartSql.Test.Unit.Bulk
             _dbSessionFactory = serverFixture.DbSessionFactory;
         }
 
-        [Fact]
+        [Fact(Skip = "none env")]
         public void Insert()
         {
             using (var dbSession = _dbSessionFactory.Open())
@@ -53,8 +53,7 @@ namespace SmartSql.Test.Unit.Bulk
             }
         }
 
-
-        [Fact]
+        [Fact(Skip = "none env")]
         public void InsertByList()
         {
             using (var dbSession = _dbSessionFactory.Open())
@@ -69,7 +68,7 @@ namespace SmartSql.Test.Unit.Bulk
             }
         }
 
-        [Fact]
+        [Fact(Skip = "none env")]
         public async Task InsertAsync()
         {
             using (var dbSession = _dbSessionFactory.Open())
@@ -85,7 +84,7 @@ namespace SmartSql.Test.Unit.Bulk
             }
         }
 
-        [Fact]
+        [Fact(Skip = "none env")]
         public async Task InsertByListAsync()
         {
             using (var dbSession = _dbSessionFactory.Open())

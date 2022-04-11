@@ -25,7 +25,6 @@ namespace SmartSql
         public bool IsStatementSql { get; internal set; } = true;
         internal bool IgnorePrepend { get; set; } = false;
         public String RealSql { get; set; }
-
         public String AutoConverterName { get; set; }
 
         internal IAutoConverter AutoConverter { get; set; }

@@ -11,7 +11,7 @@
     },
     "Database": {
       "DbProvider": {
-        "Name": "SqlServer"
+        "Name": "MySql"
       },
       "Write": {
         "Name": "WriteDB",

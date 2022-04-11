@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using SmartSql.Bulk;
 using SmartSql.Bulk.PostgreSql;
 using SmartSql.DataSource;
@@ -11,7 +9,7 @@ namespace SmartSql.Test.Unit.Bulk
 {
     public class PostgreSqlTest
     {
-        [Fact]
+        [Fact(Skip = "none env")]
         public void Insert()
         {
             var dbSessionFactory = new SmartSqlBuilder()

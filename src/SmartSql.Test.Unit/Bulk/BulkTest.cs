@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
 using SmartSql.Bulk;
 using SmartSql.Test.Entities;
 using Xunit;
@@ -20,7 +16,7 @@ namespace SmartSql.Test.Unit.Bulk
             _output = output;
         }
 
-        [Fact]
+        [Fact(Skip = "none env")]
         public void ToDataTable()
         {
             var list = new List<AllPrimitive>();

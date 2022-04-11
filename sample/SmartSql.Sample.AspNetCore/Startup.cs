@@ -37,6 +37,8 @@ namespace SmartSql.Sample.AspNetCore
                 .AddSmartSql((sp, builder) =>
                 {
                     builder.UseProperties(Configuration);
+                    
+                    
 //                    var subscriber = sp.GetRequiredService<ISubscriber>();
 //                    builder.UseCacheManager(new SyncCacheManager(subscriber));
                 })
