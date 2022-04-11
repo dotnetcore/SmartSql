@@ -11,8 +11,8 @@ using SmartSql.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using SmartSql.Command;
+using SmartSql.CUD;
 using SmartSql.Deserializer;
 using SmartSql.Filters;
 using SmartSql.Reflection.TypeConstants;
@@ -54,7 +54,7 @@ namespace SmartSql
             new List<KeyValuePair<string, string>>();
 
         public IList<Type> EntityTypes { get; } = new List<Type>();
-
+        public bool IsUseCUDConfigBuilder { get; private set; } = false;
         public IList<IMiddleware> Middlewares { get; set; } = new List<IMiddleware>();
 
         public SmartSqlBuilder Build()
@@ -159,6 +159,11 @@ namespace SmartSql
             if (ConfigBuilder.Parent == null)
             {
                 ConfigBuilder.SetParent(rootConfigBuilder);
+            }
+
+            if (IsUseCUDConfigBuilder)
+            {
+                ConfigBuilder = new CUDConfigBuilder(ConfigBuilder, EntityTypes);
             }
 
             SmartSqlConfig = ConfigBuilder.Build();
@@ -311,6 +316,12 @@ namespace SmartSql
                 EntityTypes.Add(entityType);
             }
 
+            return this;
+        }
+
+        public SmartSqlBuilder UseCUDConfigBuilder(bool isUseCUDConfigBuilder = true)
+        {
+            IsUseCUDConfigBuilder = isUseCUDConfigBuilder;
             return this;
         }
 
