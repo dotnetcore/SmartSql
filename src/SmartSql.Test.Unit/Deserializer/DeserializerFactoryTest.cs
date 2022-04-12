@@ -9,19 +9,20 @@ namespace SmartSql.Test.Unit.Deserializer
 {
     public class DeserializerFactoryTest
     {
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Add()
+        [Fact]
+        public void CustomDeserialize()
         {
             var builder = new SmartSqlBuilder()
-                .UseDataSource("SqlServer", "Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True")
+                .UseDataSource("MySql", "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB")
                 .UseAlias("DeserializerFactoryTest")
-                .AddDeserializer(new CustomDeserializer()).Build();
+                .AddDeserializer(new CustomDeserializer())
+                .Build();
             var result = builder.SqlMapper.QuerySingle<CustomResultType>(new RequestContext
             {
-                RealSql = "Select NewId()"
+                RealSql = "Select uuid()"
             });
             Assert.NotNull(result);
+            Assert.NotEqual(Guid.Empty, result.Id);
         }
 
 
@@ -36,6 +37,7 @@ namespace SmartSql.Test.Unit.Deserializer
             {
                 return resultType == typeof(CustomResultType);
             }
+
             public TResult ToSingle<TResult>(ExecutionContext executionContext)
             {
                 var dataReader = executionContext.DataReaderWrapper;
@@ -50,9 +52,9 @@ namespace SmartSql.Test.Unit.Deserializer
             {
                 throw new NotImplementedException();
             }
+
             public Task<TResult> ToSingleAsync<TResult>(ExecutionContext executionContext)
             {
-
                 throw new NotImplementedException();
             }
 
