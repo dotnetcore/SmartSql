@@ -39,10 +39,10 @@
         <Statement Id="Set">
             <Set>
                 <IsProperty Prepend="," Property="Property1">
-                    Property1=@Property1
+                    Property1=?Property1
                 </IsProperty>
                 <IsProperty Prepend="," Property="Property2">
-                    Property2=@Property2
+                    Property2=?Property2
                 </IsProperty>
             </Set>
         </Statement>
@@ -119,6 +119,43 @@
             <IsNotEmpty Property="UserName" Required="true">
                 Property IsNotEmpty
             </IsNotEmpty>
+        </Statement>
+
+        <Statement Id="ForWhenDirectValue">
+            <For Property="Items" Open="(" Separator="," Close=")" Key="Item">
+                ?Item
+            </For>
+        </Statement>
+        <Statement Id="ForWhenNotDirectValue">
+            <For Property="Items" Open="(" Separator="," Close=")" Key="Item">
+                ?Id
+            </For>
+        </Statement>
+        <Statement Id="ForWhenNotDirectValueWithKey">
+            <For Property="Items" Open="(" Separator="," Close=")" Key="Item">
+                ?Item.Id
+            </For>
+        </Statement>
+        <Statement Id="ForWhenNotDirectNestValueWithKey">
+            <For Property="Items" Open="(" Separator="," Close=")" Key="Item">
+                ?Item.Info.Id
+            </For>
+        </Statement>
+        
+        <Statement Id="IncludeParams">
+            <IsNotEmpty Property="Property">
+                Property=?Property
+            </IsNotEmpty>
+        </Statement>
+        <Statement Id="Include">
+            <Where>
+                <Include Prepend="And" RefId="IncludeParams"/>
+            </Where>
+        </Statement>
+        <Statement Id="IncludeRequired">
+            <Where>
+                <Include Prepend="And" RefId="IncludeParams" Required="true"/>
+            </Where>
         </Statement>
     </Statements>
 </SmartSqlMap>
