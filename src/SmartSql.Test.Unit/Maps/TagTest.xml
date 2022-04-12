@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<SmartSqlMap Scope="TagTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+    <Statements>
+        <Statement Id="Dynamic">
+            Select * From T_Table T
+            <Dynamic Prepend="Where">
+                <IsNotEmpty Prepend="And" Property="Property">
+                    T.Property=?Property
+                </IsNotEmpty>
+            </Dynamic>
+        </Statement>
+        <Statement Id="Env">
+            Select * From T_Table T
+            <Where>
+                <Env DbProvider="SqlServer" Prepend="And">
+                    <IsNotEmpty Property="Property">
+                        T.SqlServer=?Property
+                    </IsNotEmpty>
+                </Env>
+                <Env DbProvider="MySql">
+                    <IsNotEmpty Property="Property">
+                        T.Mysql=?Property
+                    </IsNotEmpty>
+                </Env>
+            </Where>
+        </Statement>
+    </Statements>
+</SmartSqlMap>

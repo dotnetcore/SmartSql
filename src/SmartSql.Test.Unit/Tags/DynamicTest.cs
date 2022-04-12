@@ -13,42 +13,40 @@ namespace SmartSql.Test.Unit.Tags
             SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Dynamic_Test()
+        [Fact]
+        public void BuildSql()
         {
             var requestCtx = new RequestContext
             {
-                Scope = nameof(DynamicTest),
-                SqlId = "GetUser",
-                Request = new {UserName = "SmartSql"}
+                Scope = "TagTest",
+                SqlId = "Dynamic",
+                Request = new { Property = "Property" }
             };
             requestCtx.SetupParameters();
 
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Select * From T_User T
+            Assert.Equal(@"Select * From T_Table T
        Where   
-          T.UserName=@UserName", requestCtx.SqlBuilder.ToString().Trim());
+          T.Property=?Property", requestCtx.SqlBuilder.ToString().Trim());
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Dynamic_Empty_Test()
+        [Fact]
+        public void DynamicWhenPropertyIsEmpty()
         {
             var requestCtx = new RequestContext
             {
-                Scope = nameof(DynamicTest),
-                SqlId = "GetUser",
-                Request = new {UserName = ""}
+                Scope = "TagTest",
+                SqlId = "Dynamic",
+                Request = new { Property = "" }
             };
             requestCtx.SetupParameters();
 
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Select * From T_User T", requestCtx.SqlBuilder.ToString().Trim());
+            Assert.Equal(@"Select * From T_Table T", requestCtx.SqlBuilder.ToString().Trim());
         }
     }
 }

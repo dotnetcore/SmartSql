@@ -97,7 +97,7 @@
     <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Maps\DynamicTest.xml">
+    <None Update="Maps\TagTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Maps\IncludeTest.xml">

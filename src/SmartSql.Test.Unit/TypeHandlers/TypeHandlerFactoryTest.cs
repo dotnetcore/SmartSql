@@ -18,7 +18,6 @@ namespace SmartSql.Test.Unit.TypeHandlers
             Assert.Equal(typeof(EnumTypeHandler<NumericalEnum>), typeHandler.GetType());
         }
 
-
         [Fact]
         public void ConcurrentGetEnumTypeHandler()
         {
