@@ -92,5 +92,17 @@
                 Property IsGreaterThan 10
             </IsGreaterThan>
         </Statement>
+
+        <Statement Id="IsLessThan">
+            <IsLessThan Property="Property" CompareValue="10">
+                Property IsLessThan 10
+            </IsLessThan>
+        </Statement>
+        <Statement Id="IsLessThanRequired">
+            <IsLessThan Property="Property" CompareValue="10" Required="true">
+                Property IsLessThan 10
+            </IsLessThan>
+        </Statement>
+        
     </Statements>
 </SmartSqlMap>
