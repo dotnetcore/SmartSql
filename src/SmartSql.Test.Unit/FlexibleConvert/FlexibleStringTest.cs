@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartSql.Test.Entities;
+﻿using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Unit.FlexibleConvert

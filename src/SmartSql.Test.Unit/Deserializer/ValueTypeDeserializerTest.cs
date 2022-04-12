@@ -7,7 +7,7 @@ using Xunit;
 namespace SmartSql.Test.Unit.Deserializer
 {
     [Collection("GlobalSmartSql")]
-    public class ValueTypeDeserializerTest 
+    public class ValueTypeDeserializerTest
     {
         protected ISqlMapper SqlMapper { get; }
 
@@ -15,196 +15,206 @@ namespace SmartSql.Test.Unit.Deserializer
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
+
         private const int ONE = 1;
         private const string SELECT_ONE = "Select 1;";
+
         #region Int
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Int_To_Int()
+        [Fact]
+        public void IntToInt()
         {
             var result = SqlMapper.ExecuteScalar<int>(new RequestContext { RealSql = SELECT_ONE });
             Assert.Equal(ONE, result);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Int_To_NullInt()
+
+        [Fact]
+        public void IntToNullInt()
         {
             var result = SqlMapper.ExecuteScalar<int?>(new RequestContext { RealSql = SELECT_ONE });
             Assert.Equal(ONE, result);
         }
+
         #endregion
+
         #region Enum
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Int_To_Enum()
+
+        [Fact]
+        public void IntToEnum()
         {
             var result = SqlMapper.ExecuteScalar<NumericalEnum>(new RequestContext { RealSql = SELECT_ONE });
             Assert.Equal(NumericalEnum.One, result);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Int_To_NullEnum()
+
+        [Fact]
+        public void IntToNullEnum()
         {
             var result = SqlMapper.ExecuteScalar<NumericalEnum?>(new RequestContext { RealSql = SELECT_ONE });
             Assert.Equal(NumericalEnum.One, result);
         }
+
         #endregion
+
         #region DateTime
+
         private const string DATE_TIME = "2019-08-08 08:08";
-        private readonly static string SELECT_DATE_TIME = $"Select Convert(datetime,'{DATE_TIME}')";
+        private readonly static string SELECT_DATE_TIME = $"Select Convert('{DATE_TIME}',datetime)";
         private readonly static DateTime TEST_DATE_TIME = DateTime.Parse(DATE_TIME);
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void DateTime_To_DateTime()
+        [Fact]
+        public void DateTimeToDateTime()
         {
             var result = SqlMapper.ExecuteScalar<DateTime>(new RequestContext { RealSql = SELECT_DATE_TIME });
             Assert.Equal(TEST_DATE_TIME, result);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void DateTime_To_NullDateTime()
+
+        [Fact]
+        public void DateTimeToNullDateTime()
         {
             var result = SqlMapper.ExecuteScalar<DateTime?>(new RequestContext { RealSql = SELECT_DATE_TIME });
             Assert.Equal(TEST_DATE_TIME, result);
         }
+
         #endregion
+
         #region Timespan
+        private readonly static TimeSpan TEST_TIMESPAN = TimeSpan.Parse("08:08:08");
+        private readonly static string SELECT_TIMESPAN = $"Select CONVERT('{TEST_TIMESPAN:g}',time)";
 
-        private readonly static string SELECT_TIMESPAN = $"Select {TEST_DATE_TIME.Ticks}";
-        private readonly static TimeSpan TEST_TIMESPAN = new TimeSpan(TEST_DATE_TIME.Ticks);
+        [Fact]
+        public void TimeSpanToTimeSpan()
+        {
+            var result = SqlMapper.ExecuteScalar<TimeSpan>(new RequestContext { RealSql = SELECT_TIMESPAN });
+            Assert.Equal(TEST_TIMESPAN, result);
+        }
 
-        //[Fact]
-        //public void TimeSpan_To_TimeSpan()
-        //{
-        //    var result = SqlMapper.ExecuteScalar<TimeSpan>(new RequestContext { RealSql = SELECT_TIMESPAN });
-        //    Assert.Equal(TEST_TIMESPAN, result);
-        //}
-        //[Fact]
-        //public void TimeSpan_To_NullTimeSpan()
-        //{
-        //    var result = SqlMapper.ExecuteScalar<TimeSpan?>(new RequestContext { RealSql = SELECT_TIMESPAN });
-        //    Assert.Equal(TEST_TIMESPAN, result);
-        //}
+        [Fact]
+        public void TimeSpanToNullTimeSpan()
+        {
+            var result = SqlMapper.ExecuteScalar<TimeSpan?>(new RequestContext { RealSql = SELECT_TIMESPAN });
+            Assert.Equal(TEST_TIMESPAN, result);
+        }
+
         #endregion
+
         #region Guid
+
         private const string GUID = "96061D08-C029-4A36-AB40-FDBFA546EC82";
-        private readonly static string SELECT_GUID = $"Select Convert(uniqueidentifier,'{GUID}')";
+        private readonly static string SELECT_GUID = $"Select '{GUID}'";
         private readonly static Guid TEST_GUID = new Guid(GUID);
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Guid_To_Guid()
+        [Fact]
+        public void GuidToGuid()
         {
             var result = SqlMapper.ExecuteScalar<Guid>(new RequestContext { RealSql = SELECT_GUID });
             Assert.Equal(TEST_GUID, result);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Guid_To_NullGuid()
+
+        [Fact]
+        public void GuidToNullGuid()
         {
             var result = SqlMapper.ExecuteScalar<Guid?>(new RequestContext { RealSql = SELECT_GUID });
             Assert.Equal(TEST_GUID, result);
         }
+
         #endregion
+
         #region String
+
         private const string STRING = "SmartSql";
         private readonly static string SELECT_STRING = $"Select '{STRING}';";
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void String_To_String()
+        [Fact]
+        public void StringToString()
         {
             var result = SqlMapper.ExecuteScalar<string>(new RequestContext { RealSql = SELECT_STRING });
             Assert.Equal(STRING, result);
         }
+
         #endregion
+
         #region Null
+
         private readonly static int DEFAULT_INT = default(int);
         private readonly static String SELECT_NULL = "Select Null;";
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Null_To_Int()
+        [Fact]
+        public void NullToInt()
         {
             var result = SqlMapper.ExecuteScalar<int>(new RequestContext { RealSql = SELECT_NULL });
             Assert.Equal(DEFAULT_INT, result);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Null_To_NullInt()
+
+        [Fact]
+        public void NullToNullInt()
         {
             var result = SqlMapper.ExecuteScalar<int?>(new RequestContext { RealSql = SELECT_NULL });
             Assert.Null(result);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Null_To_Guid()
+        [Fact]
+        public void NullToGuid()
         {
             var result = SqlMapper.ExecuteScalar<Guid>(new RequestContext { RealSql = SELECT_NULL });
             Assert.Equal(default(Guid), result);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Null_To_NullGuid()
+
+        [Fact]
+        public void NullToNullGuid()
         {
             var result = SqlMapper.ExecuteScalar<Guid?>(new RequestContext { RealSql = SELECT_NULL });
             Assert.Null(result);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Null_To_DateTime()
+        [Fact]
+        public void NullToDateTime()
         {
             var result = SqlMapper.ExecuteScalar<DateTime>(new RequestContext { RealSql = SELECT_NULL });
             Assert.Equal(default(DateTime), result);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Null_To_NullDateTime()
+
+        [Fact]
+        public void NullToNullDateTime()
         {
             var result = SqlMapper.ExecuteScalar<DateTime?>(new RequestContext { RealSql = SELECT_NULL });
             Assert.Null(result);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Null_To_TimeSpan()
+        [Fact]
+        public void NullToTimeSpan()
         {
             var result = SqlMapper.ExecuteScalar<TimeSpan>(new RequestContext { RealSql = SELECT_NULL });
             Assert.Equal(default(TimeSpan), result);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Null_To_NullTimeSpan()
+
+        [Fact]
+        public void NullToNullTimeSpan()
         {
             var result = SqlMapper.ExecuteScalar<TimeSpan?>(new RequestContext { RealSql = SELECT_NULL });
             Assert.Null(result);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Null_To_Enum()
+        [Fact]
+        public void NullToEnum()
         {
             var result = SqlMapper.ExecuteScalar<NumericalEnum>(new RequestContext { RealSql = SELECT_NULL });
             Assert.Equal(default(NumericalEnum), result);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Null_To_NullEnum()
+
+        [Fact]
+        public void NullToNullEnum()
         {
             var result = SqlMapper.ExecuteScalar<NumericalEnum?>(new RequestContext { RealSql = SELECT_NULL });
             Assert.Null(result);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Null_To_String()
+
+        [Fact]
+        public void NullToString()
         {
             var result = SqlMapper.ExecuteScalar<String>(new RequestContext { RealSql = SELECT_NULL });
             Assert.Null(result);
         }
+
         #endregion
     }
 }

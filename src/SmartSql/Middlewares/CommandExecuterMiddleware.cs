@@ -4,6 +4,8 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SmartSql.Configuration.Tags;
+using SmartSql.Reflection.TypeConstants;
 
 namespace SmartSql.Middlewares
 {
@@ -85,6 +87,13 @@ namespace SmartSql.Middlewares
                 }
                 else
                 {
+                    if (CommonType.Guid == convertType && CommonType.String == dbResult.GetType())
+                    {
+                        singleResult.SetData(Guid.Parse(dbResult.ToString()));
+                        return;
+                    }
+
+
                     singleResult.SetData(Convert.ChangeType(dbResult, convertType));
                 }
             }
