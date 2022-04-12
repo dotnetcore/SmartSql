@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet: [ '2.2.x', '3.1.x', '6.0.x' ]
+        dotnet: [ '6.0.x' ]
     services:
       redis:
         image: redis
