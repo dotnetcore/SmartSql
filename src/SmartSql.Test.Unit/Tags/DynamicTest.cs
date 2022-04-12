@@ -28,8 +28,8 @@ namespace SmartSql.Test.Unit.Tags
             statement.BuildSql(requestCtx);
 
             Assert.Equal(@"Select * From T_Table T
-       Where   
-          T.Property=?Property", requestCtx.SqlBuilder.ToString().Trim());
+             Where   
+                    T.Property=?Property", requestCtx.SqlBuilder.ToString().Trim());
         }
 
         [Fact]
