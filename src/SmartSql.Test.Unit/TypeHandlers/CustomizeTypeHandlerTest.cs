@@ -14,24 +14,23 @@ namespace SmartSql.Test.Unit.TypeHandlers
             SqlMapper = smartSqlFixture.SqlMapper;
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void QueryByAnsiString()
         {
             var reqParams = new
             {
                 AnsiString = "AnsiString"
             };
-            var result = SqlMapper.QuerySingle<String>(new RequestContext
+            var actual = SqlMapper.QuerySingle<String>(new RequestContext
             {
                 Scope = nameof(CustomizeTypeHandlerTest),
                 SqlId = nameof(QueryByAnsiString),
                 Request = reqParams
             });
-            Assert.Equal(reqParams.AnsiString, result);
+            Assert.Equal(reqParams.AnsiString, actual);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
+
+        [Fact]
         public void QueryByAnsiStringFixedLength()
         {
             var reqParams = new
@@ -39,14 +38,14 @@ namespace SmartSql.Test.Unit.TypeHandlers
                 AnsiStringFixedLength = "AnsiStringFixedLength"
             };
             
-            var result = SqlMapper.QuerySingle<String>(new RequestContext
+            var actual = SqlMapper.QuerySingle<String>(new RequestContext
             {
                 Scope = nameof(CustomizeTypeHandlerTest),
                 SqlId = nameof(QueryByAnsiStringFixedLength),
                 Request = reqParams
             });
             
-            Assert.Equal(reqParams.AnsiStringFixedLength, result);
+            Assert.Equal(reqParams.AnsiStringFixedLength, actual);
         }
     }
 }
