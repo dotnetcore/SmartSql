@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
@@ -9,38 +10,45 @@ namespace SmartSql.Test.Unit.Tags
     [Collection("GlobalSmartSql")]
     public class PlaceholderTest
     {
-        protected ISqlMapper SqlMapper { get; }
+        SmartSqlConfig SmartSqlConfig { get; }
 
         public PlaceholderTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = smartSqlFixture.SqlMapper;
+            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Placeholder_Test()
+        [Fact]
+        public void Placeholder()
         {
-            var UserList = SqlMapper.Query<User>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(PlaceholderTest),
-                SqlId = "Query",
-                Request = new {Placeholder = "Select TUE.UserId From T_UserExtendedInfo as TUE"}
-            });
-            Assert.True(true);
+                Scope = "TagTest",
+                SqlId = nameof(Placeholder),
+                Request = new { Placeholder = "Placeholder" }
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal("Placeholder", requestCtx.SqlBuilder.ToString().Trim());
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Nest_Test()
+        [Fact]
+        public void NestPlaceholder()
         {
-            var reqParams = new {Nest = new {Sql = "Nest.Sql"}};
-            var result = SqlMapper.QuerySingle<String>(new RequestContext
+            var reqParams = new { Nest = new { Placeholder = "Placeholder" } };
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(PlaceholderTest),
-                SqlId = nameof(Nest_Test),
+                Scope = "TagTest",
+                SqlId = nameof(NestPlaceholder),
                 Request = reqParams
-            });
-            Assert.Equal(reqParams.Nest.Sql, result);
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+            Assert.Equal("Placeholder", requestCtx.SqlBuilder.ToString().Trim());
         }
     }
 }

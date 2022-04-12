@@ -31,7 +31,7 @@ namespace SmartSql.Test.Unit.Tags
 
             Assert.True(requestCtx.Parameters.ContainsKey("NowTime"));
             
-            Assert.Equal(@"Select ?NowTime;", requestCtx.SqlBuilder.ToString().Trim());
+            Assert.Equal("?NowTime", requestCtx.SqlBuilder.ToString().Trim());
         }
     }
 }

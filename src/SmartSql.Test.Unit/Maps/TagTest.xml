@@ -3,7 +3,6 @@
 <SmartSqlMap Scope="TagTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
     <Statements>
         <Statement Id="Dynamic">
-            Select * From T_Table T
             <Dynamic Prepend="Where">
                 <IsNotEmpty Prepend="And" Property="Property">
                     T.Property=?Property
@@ -11,34 +10,28 @@
             </Dynamic>
         </Statement>
         <Statement Id="Env">
-            Select * From T_Table T
-            <Where>
-                <Env DbProvider="SqlServer" Prepend="And">
-                    <IsNotEmpty Property="Property">
-                        T.SqlServer=?Property
-                    </IsNotEmpty>
-                </Env>
-                <Env DbProvider="MySql">
-                    <IsNotEmpty Property="Property">
-                        T.Mysql=?Property
-                    </IsNotEmpty>
-                </Env>
-            </Where>
+            <Env DbProvider="SqlServer" Prepend="And">
+                SqlServer
+            </Env>
+            <Env DbProvider="MySql">
+                <IsNotEmpty Property="Property">
+                    Mysql
+                </IsNotEmpty>
+            </Env>
         </Statement>
         <Statement Id="Now">
             <Now Property="NowTime"/>
-            Select ?NowTime;
+            ?NowTime
         </Statement>
         <Statement Id="UUID">
             <UUID Property="UUID"/>
-            Select ?UUID;
+            ?UUID
         </Statement>
         <Statement Id="UUIDToN">
             <UUID Property="UUID" Format="N"/>
-            Select ?UUID;
+            ?UUID
         </Statement>
         <Statement Id="Set">
-            Update T_Table
             <Set>
                 <IsProperty Prepend="," Property="Property1">
                     Property1=@Property1
@@ -47,7 +40,12 @@
                     Property2=@Property2
                 </IsProperty>
             </Set>
-            Where Id=@Id
+        </Statement>
+        <Statement Id="Placeholder">
+            <Placeholder Property="Placeholder"/>
+        </Statement>
+        <Statement Id="NestPlaceholder">
+            <Placeholder Property="Nest.Placeholder"/>
         </Statement>
     </Statements>
 </SmartSqlMap>

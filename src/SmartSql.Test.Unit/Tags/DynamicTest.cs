@@ -1,4 +1,5 @@
-﻿using SmartSql.Configuration;
+﻿using System;
+using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
@@ -27,8 +28,7 @@ namespace SmartSql.Test.Unit.Tags
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Select * From T_Table T
-             Where   
+            Assert.Equal(@"Where   
                     T.Property=?Property", requestCtx.SqlBuilder.ToString().Trim());
         }
 
@@ -46,7 +46,7 @@ namespace SmartSql.Test.Unit.Tags
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Select * From T_Table T", requestCtx.SqlBuilder.ToString().Trim());
+            Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
         }
     }
 }

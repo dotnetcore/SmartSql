@@ -29,7 +29,7 @@ namespace SmartSql.Test.Unit.Tags
 
             Assert.True(requestCtx.Parameters.ContainsKey("UUID"));
             Assert.True(requestCtx.Parameters["UUID"].Value.ToString().Contains("-"));
-            Assert.Equal(@"Select ?UUID;", requestCtx.SqlBuilder.ToString().Trim());
+            Assert.Equal("?UUID", requestCtx.SqlBuilder.ToString().Trim());
         }
 
         [Fact]
@@ -47,7 +47,7 @@ namespace SmartSql.Test.Unit.Tags
 
             Assert.True(requestCtx.Parameters.ContainsKey("UUID"));
             Assert.False(requestCtx.Parameters["UUID"].Value.ToString().Contains("-"));
-            Assert.Equal(@"Select ?UUID;", requestCtx.SqlBuilder.ToString().Trim());
+            Assert.Equal("?UUID", requestCtx.SqlBuilder.ToString().Trim());
         }
     }
 }

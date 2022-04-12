@@ -37,9 +37,7 @@ namespace SmartSql.Test.Unit.Tags
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Select * From T_Table T
-             Where     
-                        T.Mysql=?Property", requestCtx.SqlBuilder.ToString().Trim());
+            Assert.Equal("Mysql", requestCtx.SqlBuilder.ToString().Trim());
         }
     }
 }

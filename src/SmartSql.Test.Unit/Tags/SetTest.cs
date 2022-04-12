@@ -32,13 +32,10 @@ namespace SmartSql.Test.Unit.Tags
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Update T_Table
-             Set   
+            Assert.Equal(@"Set   
                     Property1=@Property1
                  , 
-                    Property2=@Property2
-                
-            Where Id=@Id", requestCtx.SqlBuilder.ToString().Trim());
+                    Property2=@Property2", requestCtx.SqlBuilder.ToString().Trim());
         }
 
         [Fact]
