@@ -103,6 +103,22 @@
                 Property IsLessThan 10
             </IsLessThan>
         </Statement>
-        
+
+        <Statement Id="IsNotProperty">
+            <IsNotProperty Property="Property">
+                IsNotProperty
+            </IsNotProperty>
+        </Statement>
+
+        <Statement Id="IsNotEmpty">
+            <IsNotEmpty Property="Property">
+                Property IsNotEmpty
+            </IsNotEmpty>
+        </Statement>
+        <Statement Id="IsNotEmptyRequired">
+            <IsNotEmpty Property="UserName" Required="true">
+                Property IsNotEmpty
+            </IsNotEmpty>
+        </Statement>
     </Statements>
 </SmartSqlMap>
