@@ -22,12 +22,6 @@
     <None Update="Maps\NestTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Maps\NowTest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Maps\UUIDTest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Maps\DefaultAutoConverter.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -104,9 +98,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Maps\IsLessThanTest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Maps\EnvTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Maps\IsNotEmptyTest.xml">

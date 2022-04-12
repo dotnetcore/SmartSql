@@ -27,7 +27,15 @@
         </Statement>
         <Statement Id="Now">
             <Now Property="NowTime"/>
-            Select @NowTime;
+            Select ?NowTime;
+        </Statement>
+        <Statement Id="UUID">
+            <UUID Property="UUID"/>
+            Select ?UUID;
+        </Statement>
+        <Statement Id="UUIDToN">
+            <UUID Property="UUID" Format="N"/>
+            Select ?UUID;
         </Statement>
     </Statements>
 </SmartSqlMap>

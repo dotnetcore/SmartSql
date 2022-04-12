@@ -30,6 +30,8 @@ namespace SmartSql.Test.Unit.Tags
             statement.BuildSql(requestCtx);
 
             Assert.True(requestCtx.Parameters.ContainsKey("NowTime"));
+            
+            Assert.Equal(@"Select ?NowTime;", requestCtx.SqlBuilder.ToString().Trim());
         }
     }
 }
