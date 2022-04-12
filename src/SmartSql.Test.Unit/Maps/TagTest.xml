@@ -141,7 +141,7 @@
                 ?Item.Info.Id
             </For>
         </Statement>
-        
+
         <Statement Id="IncludeParams">
             <IsNotEmpty Property="Property">
                 Property=?Property
@@ -156,6 +156,10 @@
             <Where>
                 <Include Prepend="And" RefId="IncludeParams" Required="true"/>
             </Where>
+        </Statement>
+
+        <Statement Id="OrderBy">
+            <OrderBy Property="OrderBy"/>
         </Statement>
     </Statements>
 </SmartSqlMap>

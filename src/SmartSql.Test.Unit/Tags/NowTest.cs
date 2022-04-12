@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartSql.Configuration;
+﻿using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Tags

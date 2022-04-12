@@ -10,9 +10,6 @@
   <ItemGroup>
     <None Remove="Maps\User.xml" />
     <None Remove="SmartSqlMapConfig-Embedded.xml" />
-    <None Update="Maps\OrderByTest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Maps\NestTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
