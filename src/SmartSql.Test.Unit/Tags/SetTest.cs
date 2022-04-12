@@ -33,9 +33,9 @@ namespace SmartSql.Test.Unit.Tags
             statement.BuildSql(requestCtx);
 
             Assert.Equal(@"Set   
-                    Property1=@Property1
+                    Property1=?Property1
                  , 
-                    Property2=@Property2", requestCtx.SqlBuilder.ToString().Trim());
+                    Property2=?Property2", requestCtx.SqlBuilder.ToString().Trim());
         }
 
         [Fact]
