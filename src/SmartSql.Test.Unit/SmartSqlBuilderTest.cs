@@ -1,9 +1,6 @@
 ﻿using SmartSql.DataSource;
-using SmartSql.Test.Entities;
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Text;
 using SmartSql.TypeHandler;
 using Xunit;
 
@@ -16,7 +13,7 @@ namespace SmartSql.Test.Unit
         {
             var dbSessionFactory = new SmartSqlBuilder()
                 .UseOracleCommandExecuter()
-                .UseDataSource(DbProvider.SQLSERVER, ConnectionString)
+                .UseDataSource(DbProvider.MYSQL, ConnectionString)
                 .UseAlias("Build_By_DataSource")
                 .AddTypeHandler(new Configuration.TypeHandler
                 {
@@ -34,7 +31,7 @@ namespace SmartSql.Test.Unit
         [Fact]
         public void Build_By_Config()
         {
-            DbProviderManager.Instance.TryGet(DbProvider.SQLSERVER, out var dbProvider);
+            DbProviderManager.Instance.TryGet(DbProvider.MYSQL, out var dbProvider);
             var dbSessionFactory = new SmartSqlBuilder()
                 .UseNativeConfig(new Configuration.SmartSqlConfig
                 {

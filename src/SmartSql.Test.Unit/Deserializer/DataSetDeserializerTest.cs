@@ -16,15 +16,21 @@ namespace SmartSql.Test.Unit.Deserializer
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
+
         [Fact]
         public void GetDataSet()
         {
+            SqlMapper.Insert<AllPrimitive, long>(new AllPrimitive());
+
             var result = SqlMapper.GetDataSet(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetDataSet"
             });
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Tables.Count);
         }
+
 
         [Fact]
         public async Task GetDataSetAsync()
@@ -34,6 +40,8 @@ namespace SmartSql.Test.Unit.Deserializer
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetDataSet"
             });
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Tables.Count);
         }
     }
 }

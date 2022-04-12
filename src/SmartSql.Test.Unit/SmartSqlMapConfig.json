@@ -15,12 +15,12 @@
       },
       "Write": {
         "Name": "WriteDB",
-        "ConnectionString": "Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True"
+        "ConnectionString": "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB"
       },
       "Reads": [
         {
           "Name": "ReadDb-2",
-          "ConnectionString": "Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True",
+          "ConnectionString": "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB",
           "Weight": 100
         }
       ]

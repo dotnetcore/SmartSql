@@ -1,26 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartSql.Data;
-using SmartSql.DyRepository;
+﻿using SmartSql.Data;
 using SmartSql.Test.Repositories;
 using Xunit;
-using Microsoft.Extensions.Logging;
 
 namespace SmartSql.Test.Unit.DyRepository
 {
     [Collection("GlobalSmartSql")]
-    public class UserRepository_Test
+    public class UserRepositoryTest
     {
         private IUserRepository _userRepository;
-        public UserRepository_Test(SmartSqlFixture smartSqlFixture)
+
+        public UserRepositoryTest(SmartSqlFixture smartSqlFixture)
         {
             _userRepository = smartSqlFixture.UserRepository;
         }
 
-
-        [Fact]
-        public void SP_QueryUser()
+        [SkipGitHubAction]
+        public void SP_Query()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();
             dbParameterCollection.Add(new SqlParameter("Total", null, typeof(int))
@@ -28,7 +23,7 @@ namespace SmartSql.Test.Unit.DyRepository
                 DbType = System.Data.DbType.Int32,
                 Direction = System.Data.ParameterDirection.Output
             });
-            var list = _userRepository.SP_QueryUser(dbParameterCollection);
+            var list = _userRepository.SP_Query(dbParameterCollection);
             Assert.NotNull(list);
             dbParameterCollection.TryGetParameterValue("Total", out int total);
             Assert.NotEqual(0, total);

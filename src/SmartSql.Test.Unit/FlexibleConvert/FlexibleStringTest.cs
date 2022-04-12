@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartSql.Test.Entities;
+﻿using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Unit.FlexibleConvert
@@ -15,7 +12,8 @@ namespace SmartSql.Test.Unit.FlexibleConvert
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void Test()
         {
             var entity = SqlMapper.QuerySingle<FlexibleString>(new RequestContext

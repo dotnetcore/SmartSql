@@ -29,7 +29,7 @@ namespace SmartSql.Test.Unit.Bulk
             }
 
             var watch = Stopwatch.StartNew();
-            var dataTableE1 = list.ToDataTable();
+            var dataTable = list.ToDataTable();
             _output.WriteLine($"ToDataTable taken :{watch.ElapsedMilliseconds}");
             watch.Stop();
         }

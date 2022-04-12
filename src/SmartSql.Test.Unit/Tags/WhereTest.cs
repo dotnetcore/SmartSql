@@ -1,8 +1,6 @@
 ﻿using SmartSql.Configuration.Tags;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartSql.Test.Entities;
+using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
@@ -10,52 +8,80 @@ namespace SmartSql.Test.Unit.Tags
     [Collection("GlobalSmartSql")]
     public class WhereTest 
     {
-        protected ISqlMapper SqlMapper { get; }
+        SmartSqlConfig SmartSqlConfig { get; }
 
         public WhereTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = smartSqlFixture.SqlMapper;
+            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
+        }
+        
+        [Fact]
+        public void BuildSql()
+        {
+            var requestCtx = new RequestContext
+            {
+                Scope = "TagTest",
+                SqlId = nameof(Where),
+                Request = new { Property = "Property" }
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal(@"Where   
+                    T.Property=?Property", requestCtx.SqlBuilder.ToString().Trim());
         }
         [Fact]
-        public void Where_Min()
+        public void BuildSqlWhenRequestIsEmpty()
         {
-            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(WhereTest),
-                SqlId = "Where_Min",
-                Request = new { Msg = "SmartSql" }
-            });
-            Assert.Equal("Where", msg);
+                Scope = "TagTest",
+                SqlId = nameof(Where)
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
         }
+        
+        
         [Fact]
-        public void Where_Min_Fail()
+        public void BuildSqlMin()
         {
-            try
+            var requestCtx = new RequestContext
             {
-                var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
-                {
-                    Scope = nameof(WhereTest),
-                    SqlId = "Where_Min",
-                    Request = new { }
-                });
-                Assert.True(false);
-            }
-            catch (TagMinMatchedFailException ex)
-            {
-                Assert.True(true);
-            }
+                Scope = "TagTest",
+                SqlId = "WhereMin",
+                Request = new { Property = "Property" }
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal(@"Where   
+                    T.Property=?Property", requestCtx.SqlBuilder.ToString().Trim());
         }
 
         [Fact]
-        public void GetUser_Test()
+        public void BuildSqlMinWhenRequestIsEmpty()
         {
-            var user = SqlMapper.QuerySingle<User>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(WhereTest),
-                SqlId = "GetUser",
-                Request = new { UserName = "SmartSql" }
-            });
-            Assert.True(true);
+                Scope = "TagTest",
+                SqlId = "WhereMin"
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+
+            Assert.Throws<TagMinMatchedFailException>(() => { statement.BuildSql(requestCtx); });
         }
+
+
     }
 }

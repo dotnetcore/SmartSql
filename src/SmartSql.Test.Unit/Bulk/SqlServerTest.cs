@@ -37,7 +37,7 @@ namespace SmartSql.Test.Unit.Bulk
             _dbSessionFactory = serverFixture.DbSessionFactory;
         }
 
-        [Fact(Skip = "none env")]
+        [Fact(Skip = "The database environment that the project depends on does not exist.")]
         public void Insert()
         {
             using (var dbSession = _dbSessionFactory.Open())
@@ -53,7 +53,8 @@ namespace SmartSql.Test.Unit.Bulk
             }
         }
 
-        [Fact(Skip = "none env")]
+
+        [Fact(Skip = "The database environment that the project depends on does not exist.")]
         public void InsertByList()
         {
             using (var dbSession = _dbSessionFactory.Open())
@@ -68,7 +69,7 @@ namespace SmartSql.Test.Unit.Bulk
             }
         }
 
-        [Fact(Skip = "none env")]
+        [Fact(Skip = "The database environment that the project depends on does not exist.")]
         public async Task InsertAsync()
         {
             using (var dbSession = _dbSessionFactory.Open())
@@ -84,7 +85,7 @@ namespace SmartSql.Test.Unit.Bulk
             }
         }
 
-        [Fact(Skip = "none env")]
+        [Fact(Skip = "The database environment that the project depends on does not exist.")]
         public async Task InsertByListAsync()
         {
             using (var dbSession = _dbSessionFactory.Open())
