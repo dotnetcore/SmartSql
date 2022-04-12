@@ -1,18 +1,19 @@
 using System;
 using Xunit;
 
-namespace SmartSql.Test.Unit;
-
-public class SkipGitHubActionAttribute : FactAttribute
+namespace SmartSql.Test.Unit
 {
-    public SkipGitHubActionAttribute()
+    public class SkipGitHubActionAttribute : FactAttribute
     {
-        if (IsGitHubAction())
+        public SkipGitHubActionAttribute()
         {
-            Skip = "Ignore on GitHub CI.";
+            if (IsGitHubAction())
+            {
+                Skip = "Ignore on GitHub CI.";
+            }
         }
-    }
 
-    public static bool IsGitHubAction()
-        => Environment.GetEnvironmentVariable("GITHUB_ACTION") != null;
+        public static bool IsGitHubAction()
+            => Environment.GetEnvironmentVariable("GITHUB_ACTION") != null;
+    }
 }

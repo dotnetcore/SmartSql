@@ -1,8 +1,9 @@
 using System;
 
-namespace SmartSql.Test.Unit.Cache;
-
-public class CachedEntity
+namespace SmartSql.Test.Unit.Cache
 {
-    public string Name { get; set; }
+    public class CachedEntity
+    {
+        public string Name { get; set; }
+    }
 }
