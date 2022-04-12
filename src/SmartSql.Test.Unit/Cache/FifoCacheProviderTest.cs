@@ -1,5 +1,6 @@
 ﻿using SmartSql.Test.Entities;
 using System;
+using SmartSql.Cache.Default;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Cache
@@ -30,5 +31,4 @@ namespace SmartSql.Test.Unit.Cache
             Assert.Equal(expected, actual);
         }
     }
-
 }

@@ -1,0 +1,39 @@
+name: Integration Test
+on: [ push ]
+jobs:
+  SmartSql-Unit-Test:
+    name: SmartSql Unit Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet: [ '2.1.x', '3.1.x', '5.0.x', '6.0.x' ]
+    services:
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Start Mysql
+        run: sudo /etc/init.d/mysql start
+        
+      - name: Checkout
+        uses: actions/checkout@master
+        
+      - name: Set up dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+          server-id: github
+          settings-path: ${{ github.workspace }}
+          
+      - name: Init SmartSql-Test-Db
+        run: mysql -vvv -h localhost -uroot -proot < src/SmartSql.Test.Unit/DB/init-mysql-db.sql
+        
+      - name: Unit Test
+        run: dotnet test
