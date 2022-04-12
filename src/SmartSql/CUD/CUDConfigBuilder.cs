@@ -39,11 +39,12 @@ namespace SmartSql.CUD
 
             SmartSqlConfig = Parent.Build();
 
-            
+
+
+            var sqlGen = new CUDSqlGenerator(SmartSqlConfig);
 
             foreach (var entityType in _entityTypeList)
             {
-                var sqlGen = new CUDSqlGenerator();
                 var scope = EntityMetaDataCacheType.GetTableName(entityType);
                 if (!SmartSqlConfig.SqlMaps.TryGetValue(scope, out SqlMap sqlMap))
                 {
@@ -60,7 +61,7 @@ namespace SmartSql.CUD
                     };
                     SmartSqlConfig.SqlMaps.Add(scope, sqlMap);
                 }
-                sqlGen.Init(sqlMap, entityType);
+                sqlGen.Generate(sqlMap, entityType);
                 foreach (var statement in sqlGen.StatementList)
                 {
                     if (sqlMap.Statements.ContainsKey(statement.Key))

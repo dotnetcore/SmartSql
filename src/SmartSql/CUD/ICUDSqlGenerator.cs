@@ -9,14 +9,14 @@ namespace SmartSql.CUD
 
         IReadOnlyDictionary<string, Statement> StatementList { get; }
 
-        void Init(SqlMap config, Type entityType);
+        void Generate(SqlMap config, Type entityType);
 
-        Statement BuildInsert();
-        Statement BuildUpdate();
+        Statement BuildInsert(GeneratorParams gParams);
+        Statement BuildUpdate(GeneratorParams gParams);
 
-        Statement BuildDeleteMany();
-        Statement BuildDeleteById();
-        Statement BuildDeleteAll();
+        Statement BuildDeleteMany(GeneratorParams gParams);
+        Statement BuildDeleteById(GeneratorParams gParams);
+        Statement BuildDeleteAll(GeneratorParams gParams);
 
     }
 }
