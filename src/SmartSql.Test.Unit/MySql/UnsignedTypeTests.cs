@@ -16,7 +16,7 @@ namespace SmartSql.Test.Unit.MySql
                 .Build().SqlMapper;
         }
 
-        // [Fact]
+        [Fact(Skip = "The database environment that the project depends on does not exist.")]
         public void QueryUInt()
         {
             var entity = _sqlMapper.QuerySingle<UnsignedTypeTable>(
@@ -27,7 +27,7 @@ namespace SmartSql.Test.Unit.MySql
             Assert.NotNull(entity);
         }
 
-        // [Fact]
+        [Fact(Skip = "The database environment that the project depends on does not exist.")]
         public void InsertUInt()
         {
             var affected = _sqlMapper.Execute(

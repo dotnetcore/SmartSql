@@ -23,7 +23,7 @@ namespace SmartSql.Test.Unit.DbSessions
         {
             var list = await SqlMapper.QueryAsync<dynamic>(new RequestContext
             {
-                RealSql = "SELECT Top (5) T.* From T_AllPrimitive T With(NoLock)"
+                RealSql = "SELECT T.* From T_AllPrimitive T limit 5"
             });
 
             Assert.NotNull(list);
@@ -33,7 +33,7 @@ namespace SmartSql.Test.Unit.DbSessions
         {
             var list =  SqlMapper.QuerySingleDynamic(new RequestContext
             {
-                RealSql = "SELECT Top (1) T.* From T_AllPrimitive T With(NoLock)"
+                RealSql = "SELECT T.* From T_AllPrimitive T limit 1"
             });
 
             Assert.NotNull(list);
@@ -43,7 +43,7 @@ namespace SmartSql.Test.Unit.DbSessions
         {
             var list =  SqlMapper.QueryDynamic(new RequestContext
             {
-                RealSql = "SELECT Top (5) T.* From T_AllPrimitive T With(NoLock)"
+                RealSql = "SELECT T.* From T_AllPrimitive T limit 5"
             });
 
             Assert.NotNull(list);
@@ -53,7 +53,7 @@ namespace SmartSql.Test.Unit.DbSessions
         {
             var list =  SqlMapper.QueryDictionary(new RequestContext
             {
-                RealSql = "SELECT Top (5) T.* From T_AllPrimitive T With(NoLock)"
+                RealSql = "SELECT T.* From T_AllPrimitive T limit 5"
             });
 
             Assert.NotNull(list);
@@ -63,7 +63,7 @@ namespace SmartSql.Test.Unit.DbSessions
         {
             var list =  SqlMapper.QuerySingleDictionary(new RequestContext
             {
-                RealSql = "SELECT Top (1) T.* From T_AllPrimitive T With(NoLock)"
+                RealSql = "SELECT T.* From T_AllPrimitive T limit 1"
             });
 
             Assert.NotNull(list);
@@ -74,7 +74,7 @@ namespace SmartSql.Test.Unit.DbSessions
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
-                RealSql = "SELECT Top (5) T.* From T_AllPrimitive T With(NoLock)"
+                RealSql = "SELECT T.* From T_AllPrimitive T limit 5"
             });
 
             Assert.NotNull(list);
@@ -86,7 +86,7 @@ namespace SmartSql.Test.Unit.DbSessions
             var entity = SqlMapper.QuerySingle<AllPrimitive>(new RequestContext
             {
                 EnablePropertyChangedTrack = true,
-                RealSql = "SELECT Top (1) T.* From T_AllPrimitive T With(NoLock)"
+                RealSql = "SELECT T.* From T_AllPrimitive T limit 1"
             });
             var entityProxy = entity as IEntityPropertyChangedTrackProxy;
             Assert.NotNull(entityProxy);
@@ -105,7 +105,7 @@ namespace SmartSql.Test.Unit.DbSessions
         {
             var entity = SqlMapper.QuerySingle<IgnoreDbNullEntity>(new RequestContext
             {
-                RealSql = "SELECT Top (1) T.* From T_IgnoreDbNullEntity T"
+                RealSql = "SELECT T.* From T_AllPrimitive T limit 1"
             });
             Assert.Equal(0, entity.DbNullId);
         }

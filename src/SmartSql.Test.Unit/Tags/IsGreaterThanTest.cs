@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
@@ -9,51 +10,60 @@ namespace SmartSql.Test.Unit.Tags
     [Collection("GlobalSmartSql")]
     public class IsGreaterThanTest 
     {
-        protected ISqlMapper SqlMapper { get; }
+        SmartSqlConfig SmartSqlConfig { get; }
 
         public IsGreaterThanTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = smartSqlFixture.SqlMapper;
+            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
         }
+        
         [Fact]
         public void IsGreaterThan()
         {
-            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(IsGreaterThanTest),
+                Scope = "TagTest",
                 SqlId = "IsGreaterThan",
-                Request = new { Id = 11 }
-            });
-            Assert.Equal("Id IsGreaterThan 10", msg);
+                Request = new { Property = 11 }
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal("Property IsGreaterThan 10", requestCtx.SqlBuilder.ToString().Trim());
         }
+        
         [Fact]
-        public void IsGreaterThan_Required()
+        public void IsGreaterThanOutside()
         {
-            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(IsGreaterThanTest),
-                SqlId = "IsGreaterThan_Required",
-                Request = new { Id = 11 }
-            });
-            Assert.Equal("Id IsGreaterThan 10", msg);
+                Scope = "TagTest",
+                SqlId = "IsGreaterThan",
+                Request = new { Property = 10 }
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
         }
+
+
         [Fact]
-        public void IsGreaterThan_Required_Fail()
+        public void IsGreaterThanRequiredEmptyFail()
         {
-            try
+            var requestCtx = new RequestContext
             {
-                var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
-                {
-                    Scope = nameof(IsGreaterThanTest),
-                    SqlId = "IsGreaterThan_Required",
-                    Request = new { }
-                });
-                Assert.Equal("Id IsGreaterThan 10", msg);
-            }
-            catch (TagRequiredFailException ex)
-            {
-                Assert.True(true);
-            }
+                Scope = "TagTest",
+                SqlId = "IsGreaterThanRequired"
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            Assert.Throws<TagRequiredFailException>(() => { statement.BuildSql(requestCtx); });
         }
     }
 }

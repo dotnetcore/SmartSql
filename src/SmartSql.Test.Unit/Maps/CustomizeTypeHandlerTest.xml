@@ -10,10 +10,10 @@
     </ParameterMaps>
     <Statements>
         <Statement Id="QueryByAnsiString" ParameterMap="AnsiStringTypeHandlerParamMap">
-            Select @AnsiString;
+            Select ?AnsiString;
         </Statement>
         <Statement Id="QueryByAnsiStringFixedLength" ParameterMap="AnsiStringFixedLengthTypeHandlerParamMap">
-            Select @AnsiStringFixedLength;
+            Select ?AnsiStringFixedLength;
         </Statement>
     </Statements>
 </SmartSqlMap>

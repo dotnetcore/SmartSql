@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
@@ -7,45 +8,74 @@ namespace SmartSql.Test.Unit.Tags
     [Collection("GlobalSmartSql")]
     public class OrderByTest
     {
-        protected ISqlMapper SqlMapper { get; }
+        SmartSqlConfig SmartSqlConfig { get; }
 
         public OrderByTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = smartSqlFixture.SqlMapper;
+            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
         }
 
         [Fact]
-        public void OrderBy()
+        public void BuildSql()
         {
-            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(OrderByTest),
+                Scope = "TagTest",
                 SqlId = "OrderBy",
                 Request = new
                 {
                     OrderBy = new KeyValuePair<String, String>("Id", "Desc")
                 }
-            });
-            Assert.Equal(" Order By Id Desc", msg);
+            };
+
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal("Order By Id Desc", requestCtx.SqlBuilder.ToString().Trim());
+        }
+        
+        [Fact]
+        public void BuildSqlWhenEmpty()
+        {
+            var requestCtx = new RequestContext
+            {
+                Scope = "TagTest",
+                SqlId = "OrderBy"
+            };
+
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
         }
 
         [Fact]
-        public void OrderByMulti()
+        public void BuildSqlWhenMulti()
         {
-            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(OrderByTest),
+                Scope = "TagTest",
                 SqlId = "OrderBy",
                 Request = new
                 {
                     OrderBy = new Dictionary<string, string>
                     {
-                        {"Id", "Desc"},
-                        {"Name", "Asc"},
+                        { "Id", "Desc" },
+                        { "Name", "Asc" },
                     }
                 }
-            });
-            Assert.Equal(" Order By Id Desc,Name Asc", msg);
+            };
+
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal("Order By Id Desc,Name Asc", requestCtx.SqlBuilder.ToString().Trim());
         }
     }
 }

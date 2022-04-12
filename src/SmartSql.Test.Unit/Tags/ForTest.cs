@@ -1,4 +1,5 @@
 using System;
+using SmartSql.Configuration;
 using SmartSql.Configuration.Tags;
 using SmartSql.Test.Entities;
 using Xunit;
@@ -8,68 +9,143 @@ namespace SmartSql.Test.Unit.Tags
     [Collection("GlobalSmartSql")]
     public class ForTest
     {
-        protected ISqlMapper SqlMapper { get; }
+        SmartSqlConfig SmartSqlConfig { get; }
 
         public ForTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = smartSqlFixture.SqlMapper;
+            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
         }
 
         [Fact]
-        public void For_DirectValue_Test()
+        public void BuildSqlWhenDirectValue()
         {
-            var forStr = SqlMapper.QuerySingle<String>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(ForTest),
-                SqlId = nameof(For_DirectValue_Test),
-                Request = new {Items = new[] {1, 2}, Separator = "-"}
-            });
-            Assert.Equal("1-2-", forStr);
+                Scope = "TagTest",
+                SqlId = "ForWhenDirectValue",
+                Request = new { Items = new[] { 1, 2 } }
+            };
+            var executionContext = new ExecutionContext
+            {
+                Request = requestCtx,
+                SmartSqlConfig = SmartSqlConfig
+            };
+            requestCtx.ExecutionContext = executionContext;
+
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal(@"(
+                ?Item_For__0
+             , 
+                ?Item_For__1
+            )", requestCtx.SqlBuilder.ToString().Trim());
+
+            Assert.Equal(1, requestCtx.Parameters["Item_For__0"].Value);
+            Assert.Equal(2, requestCtx.Parameters["Item_For__1"].Value);
         }
 
         [Fact]
-        public void For_NotDirectValue_Test()
+        public void BuildSqlWhenNotDirectValue()
         {
-            var forStr = SqlMapper.QuerySingle<String>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(ForTest),
-                SqlId = nameof(For_NotDirectValue_Test),
-                Request = new {Items = new[] {new {Id = 1}, new {Id = 2}}, Separator = "-"}
-            });
-            Assert.Equal("1-2-", forStr);
+                Scope = "TagTest",
+                SqlId = "ForWhenNotDirectValue",
+                Request = new { Items = new[] { new { Id = 1 }, new { Id = 2 } } }
+            };
+            var executionContext = new ExecutionContext
+            {
+                Request = requestCtx,
+                SmartSqlConfig = SmartSqlConfig
+            };
+            requestCtx.ExecutionContext = executionContext;
+
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal(@"(
+                ?Item_For__Id_0
+             , 
+                ?Item_For__Id_1
+            )", requestCtx.SqlBuilder.ToString().Trim());
+
+            Assert.Equal(1, requestCtx.Parameters["Item_For__Id_0"].Value);
+            Assert.Equal(2, requestCtx.Parameters["Item_For__Id_1"].Value);
         }
 
         [Fact]
-        public void For_NotDirectValue_WithKey_Test()
+        public void BuildSqlWhenNotDirectValueWithKey()
         {
-            var forStr = SqlMapper.QuerySingle<String>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(ForTest),
-                SqlId = nameof(For_NotDirectValue_WithKey_Test),
-                Request = new {Items = new[] {new {Id = 1}, new {Id = 2}}, Separator = "-"}
-            });
-            Assert.Equal("1-2-", forStr);
+                Scope = "TagTest",
+                SqlId = "ForWhenNotDirectValueWithKey",
+                Request = new { Items = new[] { new { Id = 1 }, new { Id = 2 } } }
+            };
+            var executionContext = new ExecutionContext
+            {
+                Request = requestCtx,
+                SmartSqlConfig = SmartSqlConfig
+            };
+            requestCtx.ExecutionContext = executionContext;
+
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal(@"(
+                ?Item_For__Id_0
+             , 
+                ?Item_For__Id_1
+            )", requestCtx.SqlBuilder.ToString().Trim());
+
+            Assert.Equal(1, requestCtx.Parameters["Item_For__Id_0"].Value);
+            Assert.Equal(2, requestCtx.Parameters["Item_For__Id_1"].Value);
         }
 
         [Fact]
-        public void For_NotDirectNestValue_WithKey_Test()
+        public void BuildSqlWhenNotDirectNestValueWithKey()
         {
-            var forStr = SqlMapper.QuerySingle<String>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(ForTest),
-                SqlId = nameof(For_NotDirectNestValue_WithKey_Test),
+                Scope = "TagTest",
+                SqlId = "ForWhenNotDirectNestValueWithKey",
                 Request = new
                 {
-                    Items
-                        = new[]
-                        {
-                            new {Info = new {Id = 1}},
-                            new {Info = new {Id = 2}}
-                        },
-                    Separator = "-"
+                    Items = new[]
+                    {
+                        new { Info = new { Id = 1 } },
+                        new { Info = new { Id = 2 } }
+                    }
                 }
-            });
-            Assert.Equal("1-2-", forStr);
+            };
+            var executionContext = new ExecutionContext
+            {
+                Request = requestCtx,
+                SmartSqlConfig = SmartSqlConfig
+            };
+            requestCtx.ExecutionContext = executionContext;
+
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal(@"(
+                ?Item_For__Info_Id_0
+             , 
+                ?Item_For__Info_Id_1
+            )", requestCtx.SqlBuilder.ToString().Trim());
+
+            Assert.Equal(1, requestCtx.Parameters["Item_For__Info_Id_0"].Value);
+            Assert.Equal(2, requestCtx.Parameters["Item_For__Info_Id_1"].Value);
+
         }
     }
 }

@@ -16,6 +16,7 @@ namespace SmartSql.Test.Unit.DyRepository
         {
             _repository = smartSqlFixture.AllPrimitiveRepository;
         }
+
         [Fact]
         public void GetByPage_ValueTuple()
         {
