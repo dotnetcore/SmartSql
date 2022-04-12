@@ -100,11 +100,8 @@ namespace SmartSql
             {
                 TypeHandler = TypeHandlerCache<TPrimaryKey, TPrimaryKey>.Handler
             };
-            //var sql =
-            //    $"Delete From {tableName} Where {WrapColumnEqParameter(dbSession.SmartSqlConfig.Database.DbProvider, pkCol)}";
             return dbSession.Execute(new RequestContext
             {
-                //RealSql = sql,
                 Scope = scope,
                 SqlId = CUDStatementName.DeleteById,
                 Request = new SqlParameterCollection {idParam}
@@ -115,8 +112,6 @@ namespace SmartSql
         {
             var scope = EntityMetaDataCache<TEntity>.TableName;
             var pkCol = EntityMetaDataCache<TEntity>.PrimaryKey;
-            //var sqlBuilder = new StringBuilder();
-            //sqlBuilder.AppendFormat("Delete From {0} Where {1} In (", tableName, pkCol.Name);
             var sqlParameters = new SqlParameterCollection();
             var index = 0;
             foreach (var id in ids)
@@ -127,19 +122,11 @@ namespace SmartSql
                     TypeHandler = TypeHandlerCache<TPrimaryKey, TPrimaryKey>.Handler
                 };
                 sqlParameters.TryAdd(sqlParameter);
-                //if (index > 0)
-                //{
-                //    sqlBuilder.Append(",");
-                //}
-
-                //AppendParameterName(sqlBuilder, dbSession.SmartSqlConfig.Database.DbProvider, idName);
                 index++;
             }
 
-            //sqlBuilder.Append(")");
             return dbSession.Execute(new RequestContext
             {
-                //RealSql = sqlBuilder.ToString(),
                 Scope = scope,
                 SqlId=CUDStatementName.DeleteMany,
                 Request = sqlParameters
@@ -149,10 +136,8 @@ namespace SmartSql
         public static int DeleteAll<TEntity>(this IDbSession dbSession)
         {
             var scope = EntityMetaDataCache<TEntity>.TableName;
-            //var sql = $"Delete From {tableName}";
             return dbSession.Execute(new RequestContext
             {
-                //RealSql = sql
                 SqlId=CUDStatementName.DeleteAll,
                 Scope = scope
             });
@@ -179,57 +164,15 @@ namespace SmartSql
 
         public static int DyUpdate<TEntity>(this IDbSession dbSession, object entity, bool? enablePropertyChangedTrack)
         {
-            //var entityProxy = entity as IEntityPropertyChangedTrackProxy;
-            //if (!enablePropertyChangedTrack.HasValue)
-            //{
-            //    enablePropertyChangedTrack = entityProxy != null;
-            //}
-
-            //if (enablePropertyChangedTrack == true)
-            //{
-            //    enablePropertyChangedTrack = entityProxy != null;
-            //}
 
             var dyParams = SqlParameterCollection.Create(entity, false);
             var scope = EntityMetaDataCache<TEntity>.TableName;
-            //var pkCol = EntityMetaDataCache<TEntity>.PrimaryKey;
-            //var sqlBuilder = new StringBuilder();
-            //sqlBuilder.AppendFormat("Update {0} Set ", tableName);
-            //var isFirst = true;
-            //foreach (var paramKV in dyParams)
-            //{
-            //    if (!EntityMetaDataCache<TEntity>.TryGetColumnByPropertyName(paramKV.Key, out var column))
-            //    {
-            //        continue;
-            //    }
 
-            //    if (column.IsPrimaryKey)
-            //    {
-            //        continue;
-            //    }
-
-            //    if (enablePropertyChangedTrack.Value && entityProxy.GetPropertyVersion(column.Property.Name) == 0)
-            //    {
-            //        continue;
-            //    }
-
-            //    if (!isFirst)
-            //    {
-            //        sqlBuilder.Append(",");
-            //    }
-
-            //    isFirst = false;
-            //    AppendColumnEqParameter(sqlBuilder, dbSession.SmartSqlConfig.Database.DbProvider, column);
-            //}
-
-            //sqlBuilder.Append(" Where ");
-            //AppendColumnEqParameter(sqlBuilder, dbSession.SmartSqlConfig.Database.DbProvider, pkCol);
 
             return dbSession.Execute(new RequestContext
             {
                 Scope = scope,
                 SqlId=CUDStatementName.Update,
-                //RealSql = sqlBuilder.ToString(),
                 Request = dyParams
             });
         }
