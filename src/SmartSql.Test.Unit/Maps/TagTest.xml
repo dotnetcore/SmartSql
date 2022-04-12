@@ -25,5 +25,9 @@
                 </Env>
             </Where>
         </Statement>
+        <Statement Id="Now">
+            <Now Property="NowTime"/>
+            Select @NowTime;
+        </Statement>
     </Statements>
 </SmartSqlMap>

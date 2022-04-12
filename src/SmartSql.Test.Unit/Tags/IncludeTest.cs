@@ -14,7 +14,6 @@ namespace SmartSql.Test.Unit.Tags
             SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
         }
 
-
         // TODO
         [Fact(Skip = "TODO")]
         public void Include_Test()

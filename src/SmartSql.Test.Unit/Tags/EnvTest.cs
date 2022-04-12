@@ -17,7 +17,7 @@ namespace SmartSql.Test.Unit.Tags
         }
 
         [Fact]
-        public void Env()
+        public void BuildSql()
         {
             var requestCtx = new RequestContext
             {

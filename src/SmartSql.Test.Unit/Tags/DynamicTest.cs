@@ -33,7 +33,7 @@ namespace SmartSql.Test.Unit.Tags
         }
 
         [Fact]
-        public void DynamicWhenPropertyIsEmpty()
+        public void BuildSqlWhenPropertyIsEmpty()
         {
             var requestCtx = new RequestContext
             {

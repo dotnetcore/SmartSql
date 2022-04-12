@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
@@ -8,47 +9,27 @@ namespace SmartSql.Test.Unit.Tags
     [Collection("GlobalSmartSql")]
     public class NowTest
     {
-        protected ISqlMapper SqlMapper { get; }
+        SmartSqlConfig SmartSqlConfig { get; }
 
         public NowTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
-
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void GetNow()
-        {
-            var msg = SqlMapper.ExecuteScalar<DateTime>(new RequestContext
-            {
-                Scope = nameof(NowTest),
-                SqlId = "GetNow"
-            });
-            Assert.True(true);
+            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
         }
         
-        public void GetExpNow()
+        [Fact]
+        public void AppendNowTime()
         {
-            var msg = SqlMapper.ExecuteScalar<DateTime>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(NowTest),
-                SqlId = "GetExpNow"
-            });
-            Assert.True(true);
-        }
-        
+                Scope = "TagTest",
+                SqlId = "Now"
+            };
+            requestCtx.SetupParameters();
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void UpdateDateTime()
-        {
-            var msg = SqlMapper.ExecuteScalar<DateTime>(new RequestContext
-            {
-                Scope = nameof(NowTest),
-                SqlId = "UpdateDateTime",
-                Request = new {Id = 86088}
-            });
-            Assert.True(true);
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.True(requestCtx.Parameters.ContainsKey("NowTime"));
         }
     }
 }
