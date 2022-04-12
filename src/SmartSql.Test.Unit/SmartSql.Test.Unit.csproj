@@ -88,9 +88,6 @@
     <None Update="Maps\TagTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Maps\IncludeTest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Maps\PlaceholderTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
