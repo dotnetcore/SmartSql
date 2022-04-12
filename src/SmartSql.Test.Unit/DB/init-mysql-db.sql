@@ -4,7 +4,8 @@ use SmartSqlTestDB;
 
 create table T_AllPrimitive
 (
-    Id                    bigint auto_increment primary key,
+    Id                    bigint auto_increment
+        primary key,
     Boolean               tinyint(1)   not null,
     `Char`                char         not null,
     Int16                 mediumint    not null,
@@ -29,5 +30,15 @@ create table T_AllPrimitive
     NullableTimeSpan      time         null,
     NullableNumericalEnum tinyint(1)   null,
     NullableString        varchar(100) null
+);
+
+create table t_column_annotation_entity
+(
+    id          bigint auto_increment
+        primary key,
+    name        varchar(100)                 not null,
+    extend_data longtext collate utf8mb4_bin not null,
+    constraint extend_data
+        check (json_valid(`extend_data`))
 );
 
