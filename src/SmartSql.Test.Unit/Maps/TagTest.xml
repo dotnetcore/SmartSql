@@ -37,5 +37,17 @@
             <UUID Property="UUID" Format="N"/>
             Select ?UUID;
         </Statement>
+        <Statement Id="Set">
+            Update T_Table
+            <Set>
+                <IsProperty Prepend="," Property="Property1">
+                    Property1=@Property1
+                </IsProperty>
+                <IsProperty Prepend="," Property="Property2">
+                    Property2=@Property2
+                </IsProperty>
+            </Set>
+            Where Id=@Id
+        </Statement>
     </Statements>
 </SmartSqlMap>
