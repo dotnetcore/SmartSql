@@ -13,6 +13,7 @@
     <None Update="Maps\NestTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+
     <None Update="Maps\DefaultAutoConverter.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -29,6 +30,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Maps\LruCache.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Maps\RedisCache.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

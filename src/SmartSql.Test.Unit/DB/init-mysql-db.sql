@@ -61,13 +61,13 @@ create table T_UserExtendedInfo
 
 
 
-Create PROCEDURE SP_Query(out Total int)
-
-BEGIN
-    Select Count(*) into Total From T_AllPrimitive T;
-    SELECT T.* From T_AllPrimitive T limit 10;
-END
-;
+# Create PROCEDURE SP_Query(out Total int)
+# 
+# BEGIN
+#     Select Count(*) into Total From T_AllPrimitive T;
+#     SELECT T.* From T_AllPrimitive T limit 10;
+# END
+# ;
 
 
 

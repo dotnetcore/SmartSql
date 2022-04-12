@@ -18,52 +18,52 @@ namespace SmartSql.Test.Unit.Cache
             SqlMapper = smartSqlFixture.SqlMapper;
         }
 
-        [Fact(Skip = "The database environment that the project depends on does not exist.")]
-        public void QueryByRedisCache()
+        [Fact]
+        public void GetByCache()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
-                Scope = nameof(AllPrimitive),
-                SqlId = "QueryByRedisCache",
-                Request = new {Taken = 8}
+                Scope = "RedisCache",
+                SqlId = "GetByCache",
+                Request = new { Taken = 8 }
             });
             var cachedList = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
-                Scope = nameof(AllPrimitive),
-                SqlId = "QueryByRedisCache",
-                Request = new {Taken = 8}
+                Scope = "RedisCache",
+                SqlId = "GetByCache",
+                Request = new { Taken = 8 }
             });
-            Assert.Equal(list.Count(), cachedList.Count());
+            Assert.Equal(list.Count, cachedList.Count);
         }
 
-        [Fact(Skip = "The database environment that the project depends on does not exist.")]
+        [Fact]
         public void QueryByRedisCacheWithKey()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
-                Scope = nameof(AllPrimitive),
-                SqlId = "QueryByRedisCache",
-                Request = new {Taken = 8},
+                Scope = "RedisCache",
+                SqlId = "GetByCache",
+                Request = new { Taken = 8 },
                 CacheKeyTemplate = "QueryByRedisCacheWithKey"
             });
             var cachedList = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
-                Scope = nameof(AllPrimitive),
-                SqlId = "QueryByRedisCache",
-                Request = new {Taken = 8},
+                Scope = "RedisCache",
+                SqlId = "GetByCache",
+                Request = new { Taken = 8 },
                 CacheKeyTemplate = "QueryByRedisCacheWithKey"
             });
             Assert.Equal(list.Count(), cachedList.Count());
         }
 
-        [Fact(Skip = "The database environment that the project depends on does not exist.")]
+        [Fact]
         public void QueryByRedisCacheWithKeyParam()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
             {
-                Scope = nameof(AllPrimitive),
-                SqlId = "QueryByRedisCache",
-                Request = new {Taken = 8, UserId = 1},
+                Scope = "RedisCache",
+                SqlId = "GetByCache",
+                Request = new { Taken = 8, UserId = 1 },
                 CacheKeyTemplate = "QueryByRedisCacheWithKeyParam:uid:$UserId:taken:$Taken"
             });
             Assert.NotNull(list);

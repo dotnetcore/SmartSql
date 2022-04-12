@@ -1,9 +1,6 @@
 ﻿using SmartSql.Test.Entities;
-using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
-using SmartSql.Configuration;
 using SmartSql.Data;
 using SmartSql.DyRepository.Annotations;
 

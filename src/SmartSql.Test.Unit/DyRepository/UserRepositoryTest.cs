@@ -5,16 +5,16 @@ using Xunit;
 namespace SmartSql.Test.Unit.DyRepository
 {
     [Collection("GlobalSmartSql")]
-    public class UserRepository_Test
+    public class UserRepositoryTest
     {
         private IUserRepository _userRepository;
 
-        public UserRepository_Test(SmartSqlFixture smartSqlFixture)
+        public UserRepositoryTest(SmartSqlFixture smartSqlFixture)
         {
             _userRepository = smartSqlFixture.UserRepository;
         }
 
-        [Fact]
+        [SkipGitHubCI]
         public void SP_Query()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();
