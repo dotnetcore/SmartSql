@@ -11,17 +11,24 @@ namespace SmartSql.Test.Unit.TypeHandlers
     public class NamedTypeHandlerCacheTest
     {
         [Fact]
-        public void Init()
+        public void Build()
         {
             var alias = "NamedTypeHandlerCacheTest";
+
+            JsonTypeHandler expectedJson = new JsonTypeHandler();
+            XmlTypeHandler expectedXml = new XmlTypeHandler();
             var namedTypeHandlers = new Dictionary<string, ITypeHandler>
             {
-                {"Json", new JsonTypeHandler()},
-                { "Xml", new XmlTypeHandler()}
+                { "Json", expectedJson },
+                { "Xml", expectedXml }
             };
+
             NamedTypeHandlerCache.Build(alias, namedTypeHandlers);
-            var jsonHandlerField = NamedTypeHandlerCache.GetTypeHandlerField(alias, "Json");
-            var jsonTypeHandler = jsonHandlerField.GetValue(null);
+            var actualJson = NamedTypeHandlerCache.GetTypeHandlerField(alias, "Json").GetValue(null);
+            Assert.Equal(expectedJson, actualJson);
+
+            var actualXml = NamedTypeHandlerCache.GetTypeHandlerField(alias, "Xml").GetValue(null);
+            Assert.Equal(expectedXml, actualXml);
         }
     }
 }

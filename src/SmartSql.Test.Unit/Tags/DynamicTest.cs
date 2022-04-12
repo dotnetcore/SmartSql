@@ -1,4 +1,5 @@
-﻿using SmartSql.Configuration;
+﻿using System;
+using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
@@ -14,39 +15,38 @@ namespace SmartSql.Test.Unit.Tags
         }
 
         [Fact]
-        public void Dynamic_Test()
+        public void BuildSql()
         {
             var requestCtx = new RequestContext
             {
-                Scope = nameof(DynamicTest),
-                SqlId = "GetUser",
-                Request = new {UserName = "SmartSql"}
+                Scope = "TagTest",
+                SqlId = "Dynamic",
+                Request = new { Property = "Property" }
             };
             requestCtx.SetupParameters();
 
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Select * From T_User T
-       Where   
-          T.UserName=@UserName", requestCtx.SqlBuilder.ToString().Trim());
+            Assert.Equal(@"Where   
+                    T.Property=?Property", requestCtx.SqlBuilder.ToString().Trim());
         }
 
         [Fact]
-        public void Dynamic_Empty_Test()
+        public void BuildSqlWhenPropertyIsEmpty()
         {
             var requestCtx = new RequestContext
             {
-                Scope = nameof(DynamicTest),
-                SqlId = "GetUser",
-                Request = new {UserName = ""}
+                Scope = "TagTest",
+                SqlId = "Dynamic",
+                Request = new { Property = "" }
             };
             requestCtx.SetupParameters();
 
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Select * From T_User T", requestCtx.SqlBuilder.ToString().Trim());
+            Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
         }
     }
 }

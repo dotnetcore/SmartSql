@@ -16,6 +16,7 @@ namespace SmartSql.Test.Unit.Deserializer
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
+
         [Fact]
         public void GetByPage_ValueTuple()
         {
@@ -23,7 +24,7 @@ namespace SmartSql.Test.Unit.Deserializer
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetByPage_ValueTuple",
-                Request = new { PageSize = 10, PageIndex = 1 }
+                Request = new { PageSize = 10, Offset = 0 }
             });
             
             Assert.NotNull(result);

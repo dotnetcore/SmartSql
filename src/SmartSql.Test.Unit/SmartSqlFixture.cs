@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SmartSql.DbSession;
 using SmartSql.DyRepository;
 using SmartSql.Middlewares.Filters;
+using SmartSql.Test.Entities;
 using SmartSql.Test.Repositories;
 using SmartSql.Utils;
 using Xunit;
@@ -20,10 +22,9 @@ namespace SmartSql.Test.Unit
         public SmartSqlFixture()
         {
             LoggerFactory = new LoggerFactory(Enumerable.Empty<ILoggerProvider>(),
-                new LoggerFilterOptions {MinLevel = LogLevel.Debug});
+                new LoggerFilterOptions { MinLevel = LogLevel.Debug });
             var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "SmartSql.log");
             LoggerFactory.AddFile(logPath, LogLevel.Trace);
-
             SmartSqlBuilder = new SmartSqlBuilder()
                 .UseXmlConfig()
                 .UseLoggerFactory(LoggerFactory)
@@ -37,7 +38,6 @@ namespace SmartSql.Test.Unit
                 .Build();
             DbSessionFactory = SmartSqlBuilder.DbSessionFactory;
             SqlMapper = SmartSqlBuilder.SqlMapper;
-
 
             RepositoryBuilder = new EmitRepositoryBuilder(null, null,
                 LoggerFactory.CreateLogger<EmitRepositoryBuilder>());
@@ -55,6 +55,15 @@ namespace SmartSql.Test.Unit
             ColumnAnnotationRepository =
                 RepositoryFactory.CreateInstance(typeof(IColumnAnnotationRepository), SqlMapper) as
                     IColumnAnnotationRepository;
+            InitTestData();
+        }
+
+        protected void InitTestData()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                SqlMapper.Insert<AllPrimitive, long>(new AllPrimitive());
+            }
         }
 
         public SmartSqlBuilder SmartSqlBuilder { get; }

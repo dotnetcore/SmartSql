@@ -1,4 +1,5 @@
 using System;
+using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
@@ -6,33 +7,47 @@ namespace SmartSql.Test.Unit.Tags
     [Collection("GlobalSmartSql")]
     public class UUIDTest
     {
-        protected ISqlMapper SqlMapper { get; }
+        SmartSqlConfig SmartSqlConfig { get; }
 
         public UUIDTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = smartSqlFixture.SqlMapper;
+            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
         }
 
         [Fact]
-        public void GetUUID()
+        public void UUID()
         {
-            var msg = SqlMapper.ExecuteScalar<Guid>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(UUIDTest),
-                SqlId = "GetUUID"
-            });
-            Assert.True(true);
+                Scope = "TagTest",
+                SqlId = "UUID"
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.True(requestCtx.Parameters.ContainsKey("UUID"));
+            Assert.True(requestCtx.Parameters["UUID"].Value.ToString().Contains("-"));
+            Assert.Equal("?UUID", requestCtx.SqlBuilder.ToString().Trim());
         }
+
         [Fact]
-        public void GetUUIDToN()
+        public void UUIDToN()
         {
-            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(UUIDTest),
-                SqlId = "GetUUIDToN"
-            });
-            Assert.True(true);
+                Scope = "TagTest",
+                SqlId = "UUIDToN"
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.True(requestCtx.Parameters.ContainsKey("UUID"));
+            Assert.False(requestCtx.Parameters["UUID"].Value.ToString().Contains("-"));
+            Assert.Equal("?UUID", requestCtx.SqlBuilder.ToString().Trim());
         }
-        
     }
 }

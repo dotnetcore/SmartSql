@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.Extensions.Logging;
-using SmartSql.Annotations;
 using SmartSql.Cache;
 using SmartSql.Configuration;
 using SmartSql.Configuration.Tags;

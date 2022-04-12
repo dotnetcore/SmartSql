@@ -28,63 +28,60 @@ namespace SmartSql.Test.Unit.DI
             var sqlMapper = serviceProvider.GetRequiredService<ISqlMapper>();
             var dbSessionFactory = serviceProvider.GetRequiredService<IDbSessionFactory>();
         }
+
         protected String ConnectionString => "Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True";
+
         [Fact]
-        public void AddSmartSql_Func()
+        public void AddSmartSqlByFunc()
         {
             IServiceCollection services = new ServiceCollection();
-            services.AddSmartSql(sp =>
-            {
-                return new SmartSqlBuilder().UseAlias("AddSmartSql_Func").UseDataSource(DbProvider.SQLSERVER, ConnectionString);
-            });
+            services.AddSmartSql(sp => new SmartSqlBuilder().UseAlias("AddSmartSqlByFunc")
+                .UseDataSource(DbProvider.SQLSERVER, ConnectionString));
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);
         }
+
         [Fact]
-        public void AddSmartSql_Action()
+        public void AddSmartSqlByAction()
         {
             IServiceCollection services = new ServiceCollection();
-            services.AddSmartSql((sp, smartsqlBuilder) =>
-            {
-                smartsqlBuilder.UseAlias("AddSmartSql_Action");
-            });
+            services.AddSmartSql((sp, smartsqlBuilder) => { smartsqlBuilder.UseAlias("AddSmartSqlByAction"); });
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);
         }
+
         [Fact]
         public void AddRepositoryFromAssembly()
         {
             IServiceCollection services = new ServiceCollection();
             services.AddSmartSql("AddRepositoryFromAssembly")
-            .AddRepositoryFromAssembly(o =>
-            {
-                o.AssemblyString = "SmartSql.Test";
-                o.Filter = (type) =>
+                .AddRepositoryFromAssembly(o =>
                 {
-                    return type.Namespace == "SmartSql.Test.Repositories";
-                };
-            });
+                    o.AssemblyString = "SmartSql.Test";
+                    o.Filter = (type) => { return type.Namespace == "SmartSql.Test.Repositories"; };
+                });
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);
-            IAllPrimitiveRepository allPrimitiveRepository = serviceProvider.GetRequiredService<IAllPrimitiveRepository>();
+            IAllPrimitiveRepository allPrimitiveRepository =
+                serviceProvider.GetRequiredService<IAllPrimitiveRepository>();
         }
+
+
         [Fact]
-        public void AddRepositoryFromAssembly_Alias()
+        public void AddRepositoryFromAssemblyUseAlias()
         {
             IServiceCollection services = new ServiceCollection();
-            services.AddSmartSql("AddRepositoryFromAssembly_Alias")
-            .AddRepositoryFromAssembly(o =>
-            {
-                o.SmartSqlAlias = "AddRepositoryFromAssembly_Alias";
-                o.AssemblyString = "SmartSql.Test";
-                o.Filter = (type) =>
+            services.AddSmartSql("AddRepositoryFromAssemblyUseAlias")
+                .AddRepositoryFromAssembly(o =>
                 {
-                    return type.Namespace == "SmartSql.Test.Repositories";
-                };
-            });
+                    o.SmartSqlAlias = "AddRepositoryFromAssemblyUseAlias";
+                    o.AssemblyString = "SmartSql.Test";
+                    o.Filter = (type) => { return type.Namespace == "SmartSql.Test.Repositories"; };
+                });
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);
-            IAllPrimitiveRepository allPrimitiveRepository = serviceProvider.GetRequiredService<IAllPrimitiveRepository>();
+            IAllPrimitiveRepository allPrimitiveRepository =
+                serviceProvider.GetRequiredService<IAllPrimitiveRepository>();
         }
     }
 }

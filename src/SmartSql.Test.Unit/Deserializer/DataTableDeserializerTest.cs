@@ -17,6 +17,7 @@ namespace SmartSql.Test.Unit.Deserializer
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
+
         [Fact]
         public void GetDataTable()
         {
@@ -24,10 +25,12 @@ namespace SmartSql.Test.Unit.Deserializer
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
-                Request = new { Taken = 100 }
+                Request = new { Taken = 10 }
             });
-
+            Assert.NotNull(result);
         }
+        
+
         [Fact]
         public async Task GetDataTableAsync()
         {
@@ -35,8 +38,9 @@ namespace SmartSql.Test.Unit.Deserializer
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
-                Request = new { Taken = 100 }
+                Request = new { Taken = 10 }
             });
+            Assert.NotNull(result);
         }
     }
 }

@@ -3,7 +3,10 @@ using SmartSql.Data;
 using SmartSql.DbSession;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
+using SmartSql.Configuration;
+using SmartSql.Configuration.Tags;
 using SmartSql.Reflection;
 using SmartSql.Reflection.PropertyAccessor;
 using SmartSql.DataSource;
@@ -11,6 +14,7 @@ using SmartSql.CUD;
 using SmartSql.Reflection.Convert;
 using SmartSql.Reflection.EntityProxy;
 using SmartSql.TypeHandlers;
+using StatementType = SmartSql.Configuration.StatementType;
 
 namespace SmartSql
 {
@@ -55,13 +59,78 @@ namespace SmartSql
                 TypeHandler = TypeHandlerCache<TPrimaryKey, TPrimaryKey>.Handler
             };
             var dbProvider = dbSession.SmartSqlConfig.Database.DbProvider;
-            var sql = $"Select * From {tableName} Where {WrapColumnEqParameter(dbProvider, pkCol)}";
+            var statement = GetOrAddStatement<TEntity>(dbSession, tableName, "GetById",
+                () => $"Select * From {tableName} Where {WrapColumnEqParameter(dbProvider, pkCol)}",
+                StatementType.Select,
+                enablePropertyChangedTrack);
             return dbSession.QuerySingle<TEntity>(new RequestContext
             {
-                EnablePropertyChangedTrack = enablePropertyChangedTrack,
-                RealSql = sql,
-                Request = new SqlParameterCollection {idParam}
+                Scope = statement.SqlMap.Scope,
+                SqlId = statement.Id,
+                Statement = statement,
+                Request = new SqlParameterCollection { idParam }
             });
+        }
+
+        private static Statement GetOrAddStatement<TEntity>(IDbSession dbSession,
+            string statementId,
+            Func<string> getRealSql,
+            StatementType statementType,
+            bool enablePropertyChangedTrack = false)
+        {
+            var tableName = EntityMetaDataCache<TEntity>.TableName;
+            return GetOrAddStatement<TEntity>(dbSession, tableName, statementId, getRealSql, statementType,
+                enablePropertyChangedTrack);
+        }
+
+        private static Statement GetOrAddStatement<TEntity>(IDbSession dbSession,
+            string scope,
+            string statementId,
+            Func<string> getRealSql,
+            StatementType statementType,
+            bool enablePropertyChangedTrack = false)
+        {
+            var fullSqlId = $"{scope}.{statementId}";
+            Statement statement;
+            if (dbSession.SmartSqlConfig.SqlMaps.TryGetValue(scope, out SqlMap sqlMap))
+            {
+                if (sqlMap.Statements.TryGetValue(fullSqlId, out statement))
+                {
+                    return statement;
+                }
+            }
+            else
+            {
+                sqlMap = new SqlMap
+                {
+                    Path = typeof(TEntity).AssemblyQualifiedName,
+                    Scope = scope,
+                    SmartSqlConfig = dbSession.SmartSqlConfig,
+                    Statements = new Dictionary<string, Statement>(),
+                    Caches = new Dictionary<string, Configuration.Cache>(),
+                    MultipleResultMaps = new Dictionary<string, MultipleResultMap>(),
+                    ParameterMaps = new Dictionary<string, ParameterMap>(),
+                    ResultMaps = new Dictionary<string, ResultMap>()
+                };
+                dbSession.SmartSqlConfig.SqlMaps.Add(scope, sqlMap);
+            }
+
+            statement = new Statement
+            {
+                SqlMap = sqlMap,
+                Id = statementId,
+                StatementType = statementType,
+                SqlTags = new List<ITag>
+                {
+                    new SqlText(getRealSql(), sqlMap.SmartSqlConfig.Database.DbProvider.ParameterPrefix)
+                },
+                CommandType = CommandType.Text,
+                EnablePropertyChangedTrack = enablePropertyChangedTrack
+            };
+
+            sqlMap.Statements.Add(statement.FullSqlId, statement);
+
+            return statement;
         }
 
         private static SqlParameterCollection ToSqlParameters<TEntity>(TEntity entity, bool ignoreCase)
@@ -74,10 +143,14 @@ namespace SmartSql
         public static int Insert<TEntity>(this IDbSession dbSession, TEntity entity)
         {
             var dyParams = ToSqlParameters<TEntity>(entity, dbSession.SmartSqlConfig.Settings.IgnoreParameterCase);
-            StringBuilder sqlBuilder = BuildInsertSql<TEntity>(dbSession.SmartSqlConfig.Database.DbProvider, dyParams);
+            var statement = GetOrAddStatement<TEntity>(dbSession, "Insert",
+                () => BuildInsertSql<TEntity>(dbSession.SmartSqlConfig.Database.DbProvider, dyParams).ToString()
+                , StatementType.Insert);
             return dbSession.Execute(new RequestContext
             {
-                RealSql = sqlBuilder.ToString(),
+                Scope = statement.SqlMap.Scope,
+                SqlId = statement.Id,
+                Statement = statement,
                 Request = dyParams
             });
         }
@@ -155,12 +228,17 @@ namespace SmartSql
             {
                 TypeHandler = TypeHandlerCache<TPrimaryKey, TPrimaryKey>.Handler
             };
-            var sql =
-                $"Delete From {tableName} Where {WrapColumnEqParameter(dbSession.SmartSqlConfig.Database.DbProvider, pkCol)}";
+
+            var statement = GetOrAddStatement<TEntity>(dbSession, "DeleteById",
+                () =>
+                    $"Delete From {tableName} Where {WrapColumnEqParameter(dbSession.SmartSqlConfig.Database.DbProvider, pkCol)}"
+                , StatementType.Delete);
             return dbSession.Execute(new RequestContext
             {
-                RealSql = sql,
-                Request = new SqlParameterCollection {idParam}
+                Scope = statement.SqlMap.Scope,
+                SqlId = statement.Id,
+                Statement = statement,
+                Request = new SqlParameterCollection { idParam }
             });
         }
 
@@ -200,10 +278,14 @@ namespace SmartSql
         public static int DeleteAll<TEntity>(this IDbSession dbSession)
         {
             var tableName = EntityMetaDataCache<TEntity>.TableName;
-            var sql = $"Delete From {tableName}";
+            var statement = GetOrAddStatement<TEntity>(dbSession, tableName, "DeleteAll",
+                () => $"Delete From {tableName}"
+                , StatementType.Delete);
             return dbSession.Execute(new RequestContext
             {
-                RealSql = sql
+                Scope = statement.SqlMap.Scope,
+                SqlId = statement.Id,
+                Statement = statement
             });
         }
 

@@ -1,5 +1,4 @@
 ﻿using SmartSql.Configuration;
-using SmartSql.Data;
 using SmartSql.DataSource;
 using System;
 using System.Threading.Tasks;

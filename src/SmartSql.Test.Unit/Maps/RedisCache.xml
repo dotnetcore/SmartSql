@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<SmartSqlMap Scope="RedisCache" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+    <Caches>
+        <Cache Id="RedisCache" Type="${RedisCacheProvider}">
+            <Property Name="ConnectionString" Value="${Redis}"/>
+            <Property Name="Prefix" Value="RedisCache"/>
+            <FlushInterval Minutes="60"/>
+        </Cache>
+    </Caches>
+    <Statements>
+        <Statement Id="GetByCache" Cache="RedisCache">
+            SELECT T.* From T_AllPrimitive T limit ?Taken;
+        </Statement>
+    </Statements>
+</SmartSqlMap>
