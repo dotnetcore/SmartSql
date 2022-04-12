@@ -31,7 +31,7 @@
       <PackageReference Include="Serilog.Sinks.Console" Version="3.1.2-dev-00802" />
       <PackageReference Include="Serilog.Sinks.File" Version="4.1.0-dev-00847" />
       <PackageReference Include="System.Data.SqlClient" Version="4.6.1" />
-      <PackageReference Include="System.Data.SQLite" Version="1.0.111" />
+      <PackageReference Include="System.Data.SQLite" Version="1.0.115.5" />
       <PackageReference Include="YamlDotNet" Version="6.1.2" />
     </ItemGroup>
 
