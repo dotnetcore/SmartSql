@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet: [ '2.1.x', '3.1.x', '5.0.x', '6.0.x' ]
+        dotnet: [ '2.2.x', '3.1.x', '6.0.x' ]
     services:
       redis:
         image: redis
@@ -21,19 +21,19 @@ jobs:
     steps:
       - name: Start Mysql
         run: sudo /etc/init.d/mysql start
-        
+
       - name: Checkout
         uses: actions/checkout@master
-        
+
       - name: Set up dotnet
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: ${{ matrix.dotnet }}
           server-id: github
           settings-path: ${{ github.workspace }}
-          
+
       - name: Init SmartSql-Test-Db
         run: mysql -vvv -h localhost -uroot -proot < src/SmartSql.Test.Unit/DB/init-mysql-db.sql
-        
+
       - name: Unit Test
         run: dotnet test
