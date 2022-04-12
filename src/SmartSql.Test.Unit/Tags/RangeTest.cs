@@ -24,14 +24,14 @@ namespace SmartSql.Test.Unit.Tags
             {
                 Scope = "TagTest",
                 SqlId = "Range",
-                Request = new { Range = 0 }
+                Request = new { Property = 0 }
             };
             requestCtx.SetupParameters();
 
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal("Range Between 0 And 10", requestCtx.SqlBuilder.ToString().Trim());
+            Assert.Equal("Property Between 0 And 10", requestCtx.SqlBuilder.ToString().Trim());
         }
         [Fact]
         public void RangeOutside()
@@ -40,7 +40,7 @@ namespace SmartSql.Test.Unit.Tags
             {
                 Scope = "TagTest",
                 SqlId = "Range",
-                Request = new { Range = 11 }
+                Request = new { Property = 11 }
             };
             requestCtx.SetupParameters();
 

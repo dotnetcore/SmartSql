@@ -72,14 +72,25 @@
         </Statement>
 
         <Statement Id="Range">
-            <Range Min="0" Max="10" Property="Range">
-                Range Between 0 And 10
+            <Range Min="0" Max="10" Property="Property">
+                Property Between 0 And 10
             </Range>
         </Statement>
         <Statement Id="RangeRequired">
-            <Range Min="0" Max="10" Property="Range" Required="true">
-                'Range Between 0 And 10'
+            <Range Min="0" Max="10" Property="Property" Required="true">
+                Property Between 0 And 10
             </Range>
+        </Statement>
+
+        <Statement Id="IsGreaterThan">
+            <IsGreaterThan Property="Property" CompareValue="10">
+                Property IsGreaterThan 10
+            </IsGreaterThan>
+        </Statement>
+        <Statement Id="IsGreaterThanRequired">
+            <IsGreaterThan Property="Property" CompareValue="10" Required="true">
+                Property IsGreaterThan 10
+            </IsGreaterThan>
         </Statement>
     </Statements>
 </SmartSqlMap>
