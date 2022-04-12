@@ -16,6 +16,11 @@ namespace SmartSql
 {
     public static partial class DbSessionExtensions
     {
+        private static readonly ISetAccessorFactory _setAccessorFactory = EmitSetAccessorFactory.Instance;
+
+
+        #region 辅助方法
+
         private static void AppendColumnName(StringBuilder sqlBuilder, DbProvider dbProvider, string paramName)
         {
             sqlBuilder.AppendFormat("{0}{1}{2}", dbProvider.ParameterNamePrefix, paramName,
@@ -39,6 +44,10 @@ namespace SmartSql
             return
                 $"{dbProvider.ParameterNamePrefix}{col.Name}{dbProvider.ParameterNameSuffix}={dbProvider.ParameterPrefix}{col.Property.Name}";
         }
+
+        #endregion
+
+        #region GetById
 
         public static TEntity GetById<TEntity, TPrimaryKey>(this IDbSession dbSession, TPrimaryKey id)
         {
@@ -64,6 +73,11 @@ namespace SmartSql
             });
         }
 
+        #endregion
+
+
+        #region Insert
+
         private static SqlParameterCollection ToSqlParameters<TEntity>(TEntity entity, bool ignoreCase)
         {
             return ignoreCase
@@ -81,8 +95,6 @@ namespace SmartSql
                 Request = dyParams
             });
         }
-
-        private static readonly ISetAccessorFactory _setAccessorFactory = EmitSetAccessorFactory.Instance;
 
         public static TPrimaryKey Insert<TEntity, TPrimaryKey>(this IDbSession dbSession, TEntity entity)
         {
@@ -144,6 +156,8 @@ namespace SmartSql
                 paramBuilder.ToString());
             return sqlBuilder;
         }
+        #endregion
+
 
         #region Delete
 

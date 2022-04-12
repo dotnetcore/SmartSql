@@ -12,6 +12,9 @@ namespace SmartSql.CUD
         void Generate(SqlMap config, Type entityType);
 
         Statement BuildInsert(GeneratorParams gParams);
+
+        Statement BuildGetEntity(GeneratorParams gParams);
+
         Statement BuildUpdate(GeneratorParams gParams);
 
         Statement BuildDeleteMany(GeneratorParams gParams);
