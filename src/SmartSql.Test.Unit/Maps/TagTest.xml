@@ -9,6 +9,7 @@
                 </IsNotEmpty>
             </Dynamic>
         </Statement>
+
         <Statement Id="Env">
             <Env DbProvider="SqlServer" Prepend="And">
                 SqlServer
@@ -19,18 +20,22 @@
                 </IsNotEmpty>
             </Env>
         </Statement>
+
         <Statement Id="Now">
             <Now Property="NowTime"/>
             ?NowTime
         </Statement>
+
         <Statement Id="UUID">
             <UUID Property="UUID"/>
             ?UUID
         </Statement>
+
         <Statement Id="UUIDToN">
             <UUID Property="UUID" Format="N"/>
             ?UUID
         </Statement>
+
         <Statement Id="Set">
             <Set>
                 <IsProperty Prepend="," Property="Property1">
@@ -41,12 +46,15 @@
                 </IsProperty>
             </Set>
         </Statement>
+
         <Statement Id="Placeholder">
             <Placeholder Property="Placeholder"/>
         </Statement>
+
         <Statement Id="NestPlaceholder">
             <Placeholder Property="Nest.Placeholder"/>
         </Statement>
+
         <Statement Id="Where">
             <Where>
                 <IsNotEmpty Prepend="And" Property="Property">
@@ -54,6 +62,7 @@
                 </IsNotEmpty>
             </Where>
         </Statement>
+
         <Statement Id="WhereMin">
             <Where Min="1">
                 <IsNotEmpty Property="Property" Prepend="And">
@@ -62,5 +71,15 @@
             </Where>
         </Statement>
 
+        <Statement Id="Range">
+            <Range Min="0" Max="10" Property="Range">
+                Range Between 0 And 10
+            </Range>
+        </Statement>
+        <Statement Id="RangeRequired">
+            <Range Min="0" Max="10" Property="Range" Required="true">
+                'Range Between 0 And 10'
+            </Range>
+        </Statement>
     </Statements>
 </SmartSqlMap>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
@@ -9,55 +10,58 @@ namespace SmartSql.Test.Unit.Tags
     [Collection("GlobalSmartSql")]
     public class RangeTest
     {
-        protected ISqlMapper SqlMapper { get; }
+        SmartSqlConfig SmartSqlConfig { get; }
 
         public RangeTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = smartSqlFixture.SqlMapper;
+            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void Range()
         {
-            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(RangeTest),
+                Scope = "TagTest",
                 SqlId = "Range",
-                Request = new { Id = 0 }
-            });
-            Assert.Equal("Id Between 0 And 10", msg);
+                Request = new { Range = 0 }
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal("Range Between 0 And 10", requestCtx.SqlBuilder.ToString().Trim());
         }
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Range_Required()
+        [Fact]
+        public void RangeOutside()
         {
-            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(RangeTest),
-                SqlId = "Range_Required",
-                Request = new { Id = 1 }
-            });
-            Assert.Equal("Id Between 0 And 10", msg);
+                Scope = "TagTest",
+                SqlId = "Range",
+                Request = new { Range = 11 }
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
         }
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void Range_Required_Fail()
+
+        [Fact]
+        public void RangeRequiredEmptyFail()
         {
-            try
+            var requestCtx = new RequestContext
             {
-                var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
-                {
-                    Scope = nameof(RangeTest),
-                    SqlId = "Range_Required",
-                    Request = new { }
-                });
-                Assert.Equal("Id Between 0 And 10", msg);
-            }
-            catch (TagRequiredFailException ex)
-            {
-                Assert.True(true);
-            }
+                Scope = "TagTest",
+                SqlId = "RangeRequired"
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            Assert.Throws<TagRequiredFailException>(() => { statement.BuildSql(requestCtx); });
         }
     }
 }
