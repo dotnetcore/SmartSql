@@ -362,7 +362,7 @@
                     Boolean = ?Boolean
                 </IsProperty>
                 <IsProperty Prepend="," Property="Char">
-                    Char = ?Char
+                    `Char` = ?Char
                 </IsProperty>
                 <IsProperty Prepend="," Property="Int16">
                     Int16 = ?Int16
@@ -380,7 +380,7 @@
                     Double = ?Double
                 </IsProperty>
                 <IsProperty Prepend="," Property="Decimal">
-                    Decimal = ?Decimal
+                    `Decimal` = ?Decimal
                 </IsProperty>
                 <IsProperty Prepend="," Property="DateTime">
                     DateTime = ?DateTime

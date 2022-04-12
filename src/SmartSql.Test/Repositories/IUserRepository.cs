@@ -13,7 +13,8 @@ namespace SmartSql.Test.Repositories
     {
         long Insert(User user);
         IEnumerable<User> Query();
-        [Statement(CommandType = CommandType.StoredProcedure,Sql = "SP_QueryUser")]
-        IEnumerable<User> SP_QueryUser(SqlParameterCollection sqlParameterCollection);
+
+        [Statement(CommandType = CommandType.StoredProcedure, Sql = "SP_Query")]
+        IEnumerable<AllPrimitive> SP_Query(SqlParameterCollection sqlParameterCollection);
     }
 }

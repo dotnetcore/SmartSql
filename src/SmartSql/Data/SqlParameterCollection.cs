@@ -1,5 +1,4 @@
-﻿using SmartSql.Exceptions;
-using SmartSql.Reflection;
+﻿using SmartSql.Reflection;
 using SmartSql.Reflection.TypeConstants;
 using System;
 using System.Collections;

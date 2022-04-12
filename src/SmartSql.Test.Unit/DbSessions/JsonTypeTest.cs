@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SmartSql.IdGenerator;
 using Xunit;
 
 namespace SmartSql.Test.Unit.DbSessions
@@ -15,8 +16,8 @@ namespace SmartSql.Test.Unit.DbSessions
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
-        // TODO
-        [Fact(Skip = "TODO")]
+
+        [Fact]
         public void Insert()
         {
             var id = InsertImpl();
@@ -40,8 +41,7 @@ namespace SmartSql.Test.Unit.DbSessions
 
         private UserExtendedInfo NewUserExtendedInfo()
         {
-            SqlMapper.SmartSqlConfig.IdGenerators.TryGetValue("DbSequence", out var idGenerator);
-            var id = idGenerator.NextId();
+            var id = SnowflakeId.Default.NextId();
             return new UserExtendedInfo
             {
                 UserId = id,
@@ -53,8 +53,7 @@ namespace SmartSql.Test.Unit.DbSessions
             };
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void GetById()
         {
             var insertUserExtendedInfo = NewUserExtendedInfo();

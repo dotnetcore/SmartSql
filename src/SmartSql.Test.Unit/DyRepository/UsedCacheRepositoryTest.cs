@@ -1,7 +1,5 @@
 using System.Threading;
-using SmartSql.DyRepository;
 using SmartSql.Test.Repositories;
-using Microsoft.Extensions.Logging;
 using SmartSql.Test.Entities;
 using Xunit;
 
@@ -26,8 +24,7 @@ namespace SmartSql.Test.Unit.DyRepository
             Assert.Equal(datetime, datetime1);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void GetUserById()
         {
             var userId = _usedCacheRepository.Insert(new User {UserName = "SmartSql", Status = UserStatus.Ok});
@@ -36,8 +33,7 @@ namespace SmartSql.Test.Unit.DyRepository
             Assert.Equal(user, user1);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void FlushOnExecute()
         {
             var userId = _usedCacheRepository.Insert(new User {UserName = "SmartSql", Status = UserStatus.Ok});
@@ -47,8 +43,7 @@ namespace SmartSql.Test.Unit.DyRepository
             Assert.NotEqual(user, user1);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void GetId()
         {
             var userId = _usedCacheRepository.Insert(new User {UserName = "SmartSql", Status = UserStatus.Ok});
@@ -57,8 +52,7 @@ namespace SmartSql.Test.Unit.DyRepository
             Assert.Equal(id, id1);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void UpdateUserName()
         {
             var userId = _usedCacheRepository.Insert(new User {UserName = "SmartSql", Status = UserStatus.Ok});

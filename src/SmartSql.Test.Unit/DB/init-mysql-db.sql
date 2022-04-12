@@ -30,7 +30,8 @@ create table T_AllPrimitive
     NullableTimeSpan      time         null,
     NullableNumericalEnum tinyint(1)   null,
     NullableString        varchar(100) null
-);
+) engine = InnoDb
+;
 
 create table t_column_annotation_entity
 (
@@ -40,5 +41,33 @@ create table t_column_annotation_entity
     extend_data longtext collate utf8mb4_bin not null,
     constraint extend_data
         check (json_valid(`extend_data`))
+) engine = InnoDb
+;
+
+create table T_User
+(
+    Id       bigint auto_increment
+        primary key,
+    UserName varchar(50) not null,
+    Status   tinyint(2)  not null
 );
+
+create table T_UserExtendedInfo
+(
+    UserId bigint auto_increment
+        primary key,
+    Data   json not null
+);
+
+
+
+Create PROCEDURE SP_Query(out Total int)
+
+BEGIN
+    Select Count(*) into Total From T_AllPrimitive T;
+    SELECT T.* From T_AllPrimitive T limit 10;
+END
+;
+
+
 

@@ -16,8 +16,7 @@ namespace SmartSql.Test.Unit.CUD
             SqlMapper = smartSqlFixture.SqlMapper;
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void Get()
         {
             AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
@@ -25,8 +24,7 @@ namespace SmartSql.Test.Unit.CUD
             Assert.NotNull(entity);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void Insert()
         {
             var insertEntity = new AllPrimitive
@@ -38,8 +36,7 @@ namespace SmartSql.Test.Unit.CUD
             Assert.NotEqual(0, recordsAffected);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void Insert_Return_Id()
         {
             AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
@@ -58,8 +55,7 @@ namespace SmartSql.Test.Unit.CUD
             return insertEntity;
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void Update()
         {
             AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
@@ -74,8 +70,7 @@ namespace SmartSql.Test.Unit.CUD
             Assert.NotEqual(0, recordsAffected);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void DyUpdate()
         {
             AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
@@ -83,8 +78,7 @@ namespace SmartSql.Test.Unit.CUD
             Assert.NotEqual(0, recordsAffected);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void DyUpdate_Dic()
         {
             AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
@@ -96,8 +90,7 @@ namespace SmartSql.Test.Unit.CUD
             Assert.NotEqual(0, recordsAffected);
         }
         
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void DeleteById()
         {
             AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
@@ -105,8 +98,7 @@ namespace SmartSql.Test.Unit.CUD
             Assert.NotEqual(0, recordsAffected);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void DeleteMany()
         {
             InsertReturnIdImpl(out long id0);
@@ -116,8 +108,7 @@ namespace SmartSql.Test.Unit.CUD
             Assert.Equal(3, recordsAffected);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void UpdateByTrack()
         {
             InsertReturnIdImpl(out long id0);

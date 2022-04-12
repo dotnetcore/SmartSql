@@ -1,10 +1,6 @@
 ﻿using SmartSql.Command;
-using SmartSql.Configuration;
 using System;
-using System.Data;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using SmartSql.Configuration.Tags;
 using SmartSql.Reflection.TypeConstants;
 
 namespace SmartSql.Middlewares

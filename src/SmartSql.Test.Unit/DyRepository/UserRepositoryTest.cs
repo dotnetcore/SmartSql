@@ -8,14 +8,14 @@ namespace SmartSql.Test.Unit.DyRepository
     public class UserRepository_Test
     {
         private IUserRepository _userRepository;
+
         public UserRepository_Test(SmartSqlFixture smartSqlFixture)
         {
             _userRepository = smartSqlFixture.UserRepository;
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
-        public void SP_QueryUser()
+        [Fact]
+        public void SP_Query()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();
             dbParameterCollection.Add(new SqlParameter("Total", null, typeof(int))
@@ -23,7 +23,7 @@ namespace SmartSql.Test.Unit.DyRepository
                 DbType = System.Data.DbType.Int32,
                 Direction = System.Data.ParameterDirection.Output
             });
-            var list = _userRepository.SP_QueryUser(dbParameterCollection);
+            var list = _userRepository.SP_Query(dbParameterCollection);
             Assert.NotNull(list);
             dbParameterCollection.TryGetParameterValue("Total", out int total);
             Assert.NotEqual(0, total);

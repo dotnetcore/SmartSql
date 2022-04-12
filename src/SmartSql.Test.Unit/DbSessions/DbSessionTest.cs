@@ -4,6 +4,7 @@ using SmartSql.Test.Entities;
 using System;
 using System.Data;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 using SmartSql.Data;
 using Xunit;
 
@@ -85,7 +86,7 @@ namespace SmartSql.Test.Unit.DbSessions
                     String = "SmartSql",
                 }
             });
-            Assert.NotEqual(0,id);
+            Assert.NotEqual(0, id);
         }
 
         #endregion
@@ -213,8 +214,7 @@ namespace SmartSql.Test.Unit.DbSessions
             Assert.NotEqual(0, id);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void Update()
         {
             var id = SqlMapper.ExecuteScalar<int>(new RequestContext
@@ -280,18 +280,7 @@ namespace SmartSql.Test.Unit.DbSessions
             }
         }
 
-
-        //Create PROCEDURE[dbo].[SP_QueryUser]
-        //@Total int = 0 Out
-        //    AS
-        //BEGIN
-        //    SET NOCOUNT ON;
-        //Set @Total = (Select Count(*) From T_User T With(NoLock));
-        //SELECT Top 10 T.* From T_User T With(NoLock)
-        //END
-
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void SP()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();
@@ -304,21 +293,20 @@ namespace SmartSql.Test.Unit.DbSessions
             RequestContext context = new RequestContext
             {
                 CommandType = System.Data.CommandType.StoredProcedure,
-                RealSql = "SP_QueryUser",
+                RealSql = "SP_Query",
                 Request = dbParameterCollection
             };
-            var list = SqlMapper.Query<User>(context);
+            var list = SqlMapper.Query<AllPrimitive>(context);
             dbParameterCollection.TryGetParameterValue("Total", out int total);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void SP_SourceParameter()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();
             dbParameterCollection.Add(new SqlParameter("Total", null)
             {
-                SourceParameter = new Microsoft.Data.SqlClient.SqlParameter("Total", DbType.Int32)
+                SourceParameter = new MySqlParameter("Total", DbType.Int32)
                 {
                     Direction = ParameterDirection.Output
                 }
@@ -326,10 +314,11 @@ namespace SmartSql.Test.Unit.DbSessions
             RequestContext context = new RequestContext
             {
                 CommandType = CommandType.StoredProcedure,
-                RealSql = "SP_QueryUser",
+                RealSql = "SP_Query",
                 Request = dbParameterCollection
             };
-            var list = SqlMapper.Query<User>(context);
+            var list = SqlMapper.Query<AllPrimitive>(context);
+            Assert.NotNull(list);
             dbParameterCollection.TryGetParameterValue("Total", out int total);
         }
     }
