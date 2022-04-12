@@ -115,9 +115,6 @@
     <None Update="Maps\UserExtendedInfo.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Maps\WhereTest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Maps\RangeTest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

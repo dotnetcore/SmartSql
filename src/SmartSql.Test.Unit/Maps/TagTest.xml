@@ -47,5 +47,20 @@
         <Statement Id="NestPlaceholder">
             <Placeholder Property="Nest.Placeholder"/>
         </Statement>
+        <Statement Id="Where">
+            <Where>
+                <IsNotEmpty Prepend="And" Property="Property">
+                    T.Property=?Property
+                </IsNotEmpty>
+            </Where>
+        </Statement>
+        <Statement Id="WhereMin">
+            <Where Min="1">
+                <IsNotEmpty Property="Property" Prepend="And">
+                    T.Property=?Property
+                </IsNotEmpty>
+            </Where>
+        </Statement>
+
     </Statements>
 </SmartSqlMap>
