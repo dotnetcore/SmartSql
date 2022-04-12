@@ -8,38 +8,26 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text;
 
 namespace SmartSql.CUD
 {
     public class CUDSqlGenerator : ICUDSqlGenerator
     {
 
-        public IReadOnlyDictionary<string, Statement> StatementList
-        {
-            get
-            {
-                if(_statementList == null || _statementList.Count == 0)
-                {
-                    throw new ArgumentNullException(nameof(_statementList), "please call Init Method before access this Property");
-                }
-                return _statementListCache ?? (_statementListCache = new ReadOnlyDictionary<string, Statement>(_statementList));
-            }
-        }
 
-        private IReadOnlyDictionary<string, Statement> _statementListCache;
         private IDictionary<string, Func<GeneratorParams, Statement>> _generatorFuncList;
         private DbProvider _provider;
         private StatementAnalyzer _analyzer;
-        private IDictionary<string, Statement> _statementList;
 
 
         public CUDSqlGenerator(SmartSqlConfig config)
         {
-            _statementList = new ConcurrentDictionary<string, Statement>();
             _generatorFuncList = new Dictionary<string, Func<GeneratorParams, Statement>>
             {
                 { CUDStatementName.GetById, BuildGetEntity},
                 { CUDStatementName.Insert, BuildInsert },
+                { CUDStatementName.InsertReturnId, BuildInsertReturnId },
                 { CUDStatementName.Update, BuildUpdate },
                 { CUDStatementName.DeleteById, BuildDeleteById },
                 { CUDStatementName.DeleteAll, BuildDeleteAll },
@@ -48,6 +36,8 @@ namespace SmartSql.CUD
             _provider = config.Database.DbProvider;
             _analyzer = new StatementAnalyzer();
         }
+
+
 
         private Statement BuildStatement(string statementId, string sql, SqlMap sqlMap)
         {
@@ -115,10 +105,26 @@ namespace SmartSql.CUD
                 if (col.Value.IsAutoIncrement)
                     continue;
                 colNames += $",{FormatColumnName(_provider, col.Value.Name)}";
-                colVals += $",{FormatParameterName(_provider, col.Value.Name)}";
+                colVals += $",{FormatParameterName(_provider, col.Value.Property.Name)}";
             }
             var sql = $"insert into {gParams.TableName} ({colNames.Substring(1)}) values ({colVals.Substring(1)})";
             return BuildStatement(CUDStatementName.Insert, sql, gParams.Map);
+        }
+
+        public Statement BuildInsertReturnId(GeneratorParams arg)
+        {
+            var statement = BuildInsert(arg);
+
+            if (_provider.Type == DbProviderManager.POSTGRESQL_DBPROVIDER.Type)
+            {
+                statement.SqlTags.Add(new SqlText($" ; Returning {arg.PkCol.Name};", _provider.ParameterPrefix));
+            }
+            else
+            {
+                statement.SqlTags.Add(new SqlText($"; {_provider.SelectAutoIncrement};", _provider.ParameterPrefix));
+            }
+
+            return statement;
         }
 
         public Statement BuildUpdate(GeneratorParams gParams)
@@ -133,7 +139,7 @@ namespace SmartSql.CUD
                 var p = new IsProperty()
                 {
                     Prepend = ",",
-                    Property = col.Name,
+                    Property = col.Property.Name,
                     ChildTags = new List<ITag>()
                     {
                         new SqlText($"{WrapColumnEqParameter(_provider,col)}", dbPrefix)
@@ -155,22 +161,19 @@ namespace SmartSql.CUD
             return BuildStatement(CUDStatementName.Update, sqlTags, gParams.Map);
         }
 
-        public void Generate(SqlMap map, Type entityType)
+        public IDictionary<string, Statement> Generate(SqlMap map, Type entityType)
         {
-            if (_statementList.Count > 0)
-            {
-                _statementList.Clear();
-                _statementListCache = null;
-            }
+            var statementList = new Dictionary<string, Statement>();
 
             var gParams = new GeneratorParams(map, entityType);
             if (_generatorFuncList != null && _generatorFuncList.Count > 0)
             {
                 foreach (var item in _generatorFuncList)
                 {
-                    _statementList.Add(item.Key, item.Value(gParams));
+                    statementList.Add($"{map.Scope}.{item.Key}", item.Value(gParams));
                 }
             }
+            return statementList;
         }
 
         private static string WrapColumnEqParameter(DbProvider dbProvider, ColumnAttribute col)

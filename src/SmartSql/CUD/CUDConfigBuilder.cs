@@ -61,8 +61,8 @@ namespace SmartSql.CUD
                     };
                     SmartSqlConfig.SqlMaps.Add(scope, sqlMap);
                 }
-                sqlGen.Generate(sqlMap, entityType);
-                foreach (var statement in sqlGen.StatementList)
+                var result = sqlGen.Generate(sqlMap, entityType);
+                foreach (var statement in result)
                 {
                     if (sqlMap.Statements.ContainsKey(statement.Key))
                     {

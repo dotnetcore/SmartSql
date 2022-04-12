@@ -7,11 +7,12 @@ namespace SmartSql.CUD
     public interface ICUDSqlGenerator
     {
 
-        IReadOnlyDictionary<string, Statement> StatementList { get; }
 
-        void Generate(SqlMap config, Type entityType);
+        IDictionary<string, Statement> Generate(SqlMap config, Type entityType);
 
         Statement BuildInsert(GeneratorParams gParams);
+
+        Statement BuildInsertReturnId(GeneratorParams gParams);
 
         Statement BuildGetEntity(GeneratorParams gParams);
 
