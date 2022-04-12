@@ -14,5 +14,5 @@ public class SkipGitHubCIAttribute : FactAttribute
     }
 
     private static bool IsGitHubCI()
-        => Environment.GetEnvironmentVariable("GITHUB_TOKEN") != null;
+        => Environment.GetEnvironmentVariable("GITHUB_ACTION") != null;
 }
