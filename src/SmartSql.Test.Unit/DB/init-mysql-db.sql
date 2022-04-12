@@ -2,9 +2,9 @@ create database SmartSqlTestDB;
 
 use SmartSqlTestDB;
 
-create table if not exists T_AllPrimitive
+create table T_AllPrimitive
 (
-    Id                    bigint       not null primary key,
+    Id                    bigint auto_increment primary key,
     Boolean               tinyint(1)   not null,
     `Char`                char         not null,
     Int16                 mediumint    not null,
@@ -14,7 +14,7 @@ create table if not exists T_AllPrimitive
     `Decimal`             decimal      not null,
     DateTime              datetime     not null,
     String                varchar(100) not null,
-    Guid                  char(32)     not null,
+    Guid                  char(36)     not null,
     TimeSpan              time         not null,
     NumericalEnum         tinyint(1)   not null,
     NullableBoolean       tinyint(1)   null,
@@ -25,10 +25,9 @@ create table if not exists T_AllPrimitive
     NullableSingle        float        null,
     NullableDecimal       decimal      null,
     NullableDateTime      datetime     null,
-    NullableGuid          char(32)     null,
+    NullableGuid          char(36)     null,
     NullableTimeSpan      time         null,
     NullableNumericalEnum tinyint(1)   null,
     NullableString        varchar(100) null
-)
-    engine = InnoDB;
+);
 

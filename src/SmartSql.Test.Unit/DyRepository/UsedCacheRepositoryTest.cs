@@ -17,11 +17,9 @@ namespace SmartSql.Test.Unit.DyRepository
             _usedCacheRepository = smartSqlFixture.UsedCacheRepository;
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void GetNow()
         {
-            
             var datetime = _usedCacheRepository.GetNow();
             Thread.Sleep(1000);
             var datetime1 = _usedCacheRepository.GetNow();

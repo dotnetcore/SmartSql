@@ -16,15 +16,15 @@ namespace SmartSql.Test.Unit.Deserializer
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
-        // TODO
-        [Fact(Skip = "TODO")]
+
+        [Fact]
         public void GetByPage_ValueTuple()
         {
             var result = SqlMapper.QuerySingle<ValueTuple<IEnumerable<AllPrimitive>, int>>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetByPage_ValueTuple",
-                Request = new { PageSize = 10, PageIndex = 1 }
+                Request = new { PageSize = 10, Offset = 0 }
             });
             
             Assert.NotNull(result);

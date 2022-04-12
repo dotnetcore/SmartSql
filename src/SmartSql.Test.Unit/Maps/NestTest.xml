@@ -9,54 +9,58 @@
 
 <SmartSqlMap Scope="NestTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
     <Statements>
+        <Statement Id="QueryNestObject1">
+            Select ?User.Id
+        </Statement>
 
         <Statement Id="QueryNestObject2">
-            ?User.Info.Id
+            Select ?User.Info.Id
         </Statement>
 
         <Statement Id="QueryNestArray">
-            ?Order.Items[0]
+            Select ?Order.Items[0]
         </Statement>
 
         <Statement Id="QueryNestDic">
-            ?Order.Items[Id]
+            Select ?Order.Items[Id]
         </Statement>
 
         <Statement Id="QueryNestArrayObject">
-            ?Order.Items[0].Name
+            Select ?Order.Items[0].Name
         </Statement>
 
         <Statement Id="FilterNestObject1">
             <IsEqual Property="User.Id" CompareValue="1">
-                ?User.Id
+                Select ?User.Id
             </IsEqual>
         </Statement>
 
         <Statement Id="FilterNestObject2">
             <IsEqual Property="User.Info.Id" CompareValue="1">
-                ?User.Info.Id
+                Select ?User.Info.Id
             </IsEqual>
         </Statement>
 
         <Statement Id="FilterNestArray">
             <IsEqual Property="Order.Items[0]" CompareValue="1">
-                ?Order.Items[0]
+                Select ?Order.Items[0]
             </IsEqual>
         </Statement>
 
         <Statement Id="FilterNestDic">
             <IsEqual Property="Order.Items[Id]" CompareValue="1">
-                ?Order.Items[Id]
+                Select ?Order.Items[Id]
             </IsEqual>
         </Statement>
 
         <Statement Id="FilterNestArrayObject">
             <IsEqual Property="Order.Items[0].Name" CompareValue="SmartSql">
-                ?Order.Items[0].Name
+                Select ?Order.Items[0].Name
             </IsEqual>
         </Statement>
 
         <Statement Id="FilterNestDicMul">
+            Select'
             <Dynamic>
                 <IsProperty Property="Fields[Id]" Prepend=",">
                     <Placeholder Property="Fields[Id]"/>
@@ -71,6 +75,7 @@
                     <Placeholder Property="Fields[Deleted]"/>
                 </IsProperty>
             </Dynamic>
+            '
         </Statement>
 
 

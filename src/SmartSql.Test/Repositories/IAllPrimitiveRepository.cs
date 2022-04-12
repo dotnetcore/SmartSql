@@ -10,12 +10,12 @@ namespace SmartSql.Test.Repositories
 {
     public interface IAllPrimitiveRepository
     {
-        [Statement(Id = "QueryByTaken", Sql = "SELECT Top (@Taken) T.* From T_AllPrimitive T With(NoLock)")]
+        [Statement(Id = "QueryByTaken", Sql = "SELECT T.* From T_AllPrimitive T limit ?Taken")]
         IList<AllPrimitive> Query([Param("Taken")] int taken);
 
         long Insert(AllPrimitive entity);
 
-        (IList<AllPrimitive>, int) GetByPage_ValueTuple(int PageSize = 10, int PageIndex = 1);
+        (IList<AllPrimitive>, int) GetByPage_ValueTuple(int PageSize = 10, int Offset = 1);
 
         [UseTransaction]
         [Statement(Id = "Insert")]
@@ -25,7 +25,7 @@ namespace SmartSql.Test.Repositories
         [Statement(Id = "Insert")]
         long InsertByAnnotationAOPTransaction(AllPrimitive entity);
 
-        [Statement(Id = "QueryDictionary", Sql = "SELECT Top (@Taken) T.* From T_AllPrimitive T With(NoLock)")]
+        [Statement(Id = "QueryDictionary", Sql = "SELECT T.* From T_AllPrimitive T limit ?Taken")]
         IList<IDictionary<String, Object>> QueryDictionary([Param("Taken")] int taken);
     }
 }

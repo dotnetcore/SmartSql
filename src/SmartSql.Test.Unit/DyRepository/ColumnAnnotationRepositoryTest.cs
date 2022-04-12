@@ -17,8 +17,7 @@ namespace SmartSql.Test.Unit.DyRepository
             _repository = smartSqlFixture.ColumnAnnotationRepository;
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void GetEntity()
         {
             var id = Insert();
@@ -27,8 +26,7 @@ namespace SmartSql.Test.Unit.DyRepository
             Assert.Equal(id, entity.Id);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public int Insert()
         {
             var id = _repository.Insert(new ColumnAnnotationEntity
@@ -43,8 +41,7 @@ namespace SmartSql.Test.Unit.DyRepository
             return id;
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public int InsertByParamAnnotations()
         {
             var id = _repository.Insert(nameof(InsertByParamAnnotations), new ColumnAnnotationEntity.ExtendData

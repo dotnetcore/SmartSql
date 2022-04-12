@@ -39,16 +39,14 @@ namespace SmartSql.Test.Unit.DyRepository
                 loggerFactory.CreateLogger<RepositoryFactory>());
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void Build()
         {
             var repositoryImplType =
                 _repositoryBuilder.Build(typeof(IAllPrimitiveRepository), SqlMapper.SmartSqlConfig);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void CreateInstance()
         {
             var repository =
@@ -63,8 +61,7 @@ namespace SmartSql.Test.Unit.DyRepository
             });
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void InsertByAnnotationTransaction()
         {
             var repository =
@@ -77,8 +74,7 @@ namespace SmartSql.Test.Unit.DyRepository
             });
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void InsertByAnnotationAOPTransaction()
         {
             var repository =

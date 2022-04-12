@@ -8,7 +8,7 @@ using Xunit;
 namespace SmartSql.Test.Unit.Deserializer
 {
     [Collection("GlobalSmartSql")]
-    public class EntityDeserializerTest 
+    public class EntityDeserializerTest
     {
         protected ISqlMapper SqlMapper { get; }
 
@@ -16,8 +16,8 @@ namespace SmartSql.Test.Unit.Deserializer
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
-        // TODO
-        [Fact(Skip = "TODO")]
+
+        [Fact]
         public void QuerySingle()
         {
             long id = Insert();
@@ -39,8 +39,7 @@ namespace SmartSql.Test.Unit.Deserializer
             });
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void Query()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -49,16 +48,10 @@ namespace SmartSql.Test.Unit.Deserializer
                 SqlId = "Query",
                 Request = new { Taken = 10000 }
             });
-            list = SqlMapper.Query<AllPrimitive>(new RequestContext
-            {
-                Scope = nameof(AllPrimitive),
-                SqlId = "Query",
-                Request = new { Taken = 10000 }
-            });
+            Assert.NotNull(list);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public async Task QuerySingleAsync()
         {
             long id = Insert();
@@ -70,8 +63,8 @@ namespace SmartSql.Test.Unit.Deserializer
             });
             Assert.Equal(id, entity.Id);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
+
+        [Fact]
         public async Task QueryAsync()
         {
             var list = await SqlMapper.QueryAsync<AllPrimitive>(new RequestContext
@@ -80,12 +73,7 @@ namespace SmartSql.Test.Unit.Deserializer
                 SqlId = "Query",
                 Request = new { Taken = 10000 }
             });
-            list = await SqlMapper.QueryAsync<AllPrimitive>(new RequestContext
-            {
-                Scope = nameof(AllPrimitive),
-                SqlId = "Query",
-                Request = new { Taken = 10000 }
-            });
+            Assert.NotNull(list);
         }
     }
 }

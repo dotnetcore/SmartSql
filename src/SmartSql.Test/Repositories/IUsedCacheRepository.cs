@@ -10,7 +10,7 @@ namespace SmartSql.Test.Repositories
     public interface IUsedCacheRepository
     {
         [ResultCache("DateCache", Key = "GetNow")]
-        [Statement(Sql = "Select GetDate();")]
+        [Statement(Sql = "Select now();")]
         DateTime GetNow();
 
         [Statement(Sql = "INSERT INTO [T_User] ([UserName],[Status]) VALUES (@UserName,@Status);;Select Scope_Identity();")]

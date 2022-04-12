@@ -24,8 +24,6 @@ namespace SmartSql.Test.Entities
 
         public virtual Char Char { get; set; }
 
-        public virtual Byte Byte { get; set; }
-
         public virtual Int16 Int16 { get; set; }
         public virtual Int32 Int32 { get; set; }
         public virtual Int64 Int64 { get; set; }
@@ -34,7 +32,7 @@ namespace SmartSql.Test.Entities
 
         public virtual Decimal Decimal { get; set; }
         public virtual DateTime DateTime { get; set; }
-        public virtual String String { get; set; }
+        public virtual String String { get; set; } = String.Empty;
 
         #region Other
 
@@ -50,8 +48,6 @@ namespace SmartSql.Test.Entities
 
         public virtual Char? NullableChar { get; set; }
 
-        public virtual Byte? NullableByte { get; set; }
-
         public virtual Int16? NullableInt16 { get; set; }
 
         public virtual Int32? NullableInt32 { get; set; }
@@ -59,7 +55,6 @@ namespace SmartSql.Test.Entities
         public virtual Int64? NullableInt64 { get; set; }
 
         public virtual Single? NullableSingle { get; set; }
-        public virtual Double? NullableDouble { get; set; }
         public virtual Decimal? NullableDecimal { get; set; }
         public virtual DateTime? NullableDateTime { get; set; }
         public virtual String NullableString { get; set; }

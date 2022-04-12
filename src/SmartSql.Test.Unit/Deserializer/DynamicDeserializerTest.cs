@@ -18,8 +18,8 @@ namespace SmartSql.Test.Unit.Deserializer
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
-        // TODO
-        [Fact(Skip = "TODO")]
+
+        [Fact]
         public void QuerySingle_Dynamic()
         {
             var result = SqlMapper.QuerySingle<dynamic>(new RequestContext
@@ -30,8 +30,8 @@ namespace SmartSql.Test.Unit.Deserializer
             });
             Assert.NotEqual(0, result.Id);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
+
+        [Fact]
         public void Query_Dynamic()
         {
             var result = SqlMapper.Query<dynamic>(new RequestContext
@@ -42,11 +42,11 @@ namespace SmartSql.Test.Unit.Deserializer
             });
             Assert.NotEqual(0, result.FirstOrDefault().Id);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
+
+        [Fact]
         public void Query_Dictionary()
         {
-            var result = SqlMapper.Query<IDictionary<String,Object>>(new RequestContext
+            var result = SqlMapper.Query<IDictionary<String, Object>>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
@@ -54,8 +54,8 @@ namespace SmartSql.Test.Unit.Deserializer
             });
             Assert.NotEqual(0, result.FirstOrDefault()["Id"]);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
+
+        [Fact]
         public void Query_Dynamic_AsHashtable()
         {
             var result = SqlMapper.Query<dynamic>(new RequestContext
@@ -68,19 +68,19 @@ namespace SmartSql.Test.Unit.Deserializer
             var hashtableList = result.Select(item =>
             {
                 var dic = item as IDictionary<string, object>;
-                  var hashTable = new Hashtable(dic.Count);
-                  foreach (var kv in dic)
-                  {
-                      hashTable.Add(kv.Key, kv.Value);
-                  }
-                  return hashTable;
-              });
+                var hashTable = new Hashtable(dic.Count);
+                foreach (var kv in dic)
+                {
+                    hashTable.Add(kv.Key, kv.Value);
+                }
+
+                return hashTable;
+            });
         }
-        // TODO
-        [Fact(Skip = "TODO")]
+
+        [Fact]
         public async Task QuerySingleAsync_Dynamic()
         {
-
             var result = await SqlMapper.QuerySingleAsync<dynamic>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
@@ -89,8 +89,8 @@ namespace SmartSql.Test.Unit.Deserializer
             });
             Assert.NotEqual(0, result.Id);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
+
+        [Fact]
         public async Task QueryAsync_Dynamic()
         {
             var result = await SqlMapper.QueryAsync<dynamic>(new RequestContext

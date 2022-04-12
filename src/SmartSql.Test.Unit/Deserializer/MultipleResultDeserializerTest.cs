@@ -18,40 +18,37 @@ namespace SmartSql.Test.Unit.Deserializer
             SqlMapper = smartSqlFixture.SqlMapper;
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void GetByPage()
         {
             var result = SqlMapper.QuerySingle<GetByPageResponse<AllPrimitive>>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetByPage",
-                Request = new { PageSize = 10, PageIndex = 1 }
+                Request = new { PageSize = 10, Offset = 0 }
             });
             Assert.NotNull(result);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public async Task GetByPageAsync()
         {
             var result = await SqlMapper.QuerySingleAsync<GetByPageResponse<AllPrimitive>>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetByPage",
-                Request = new { PageSize = 10, PageIndex = 1 }
+                Request = new { PageSize = 10, Offset = 0 }
             });
             Assert.NotNull(result);
         }
         
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void GetMultiRoot()
         {
             var result = SqlMapper.QuerySingle<PagedList>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetMultiRoot",
-                Request = new { PageSize = 10, PageIndex = 1 }
+                Request = new { PageSize = 10, Offset = 0 }
             });
             Assert.NotNull(result);
             Assert.NotNull(result.List);

@@ -17,28 +17,30 @@ namespace SmartSql.Test.Unit.Deserializer
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
-        // TODO
-        [Fact(Skip = "TODO")]
+
+        [Fact]
         public void GetDataTable()
         {
             var result = SqlMapper.GetDataTable(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
-                Request = new { Taken = 100 }
+                Request = new { Taken = 10 }
             });
-
+            Assert.NotNull(result);
         }
-        // TODO
-        [Fact(Skip = "TODO")]
+        
+
+        [Fact]
         public async Task GetDataTableAsync()
         {
             var result = await SqlMapper.GetDataTableAsync(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Query",
-                Request = new { Taken = 100 }
+                Request = new { Taken = 10 }
             });
+            Assert.NotNull(result);
         }
     }
 }

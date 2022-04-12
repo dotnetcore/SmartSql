@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartSql.Data;
-using SmartSql.DyRepository;
+﻿using SmartSql.Data;
 using SmartSql.Test.Repositories;
 using Xunit;
-using Microsoft.Extensions.Logging;
 
 namespace SmartSql.Test.Unit.DyRepository
 {

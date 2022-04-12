@@ -226,8 +226,7 @@ namespace SmartSql
                 SmartSqlConfig.DeserializerFactory.Add(deserializer);
             }
             deser = new EntityDeserializer();
-            DataReaderDeserializers.Add(deser);
-
+            SmartSqlConfig.DeserializerFactory.Add(deser);
         }
 
         private bool UsedCache => SmartSqlConfig.Settings.IsCacheEnabled;
