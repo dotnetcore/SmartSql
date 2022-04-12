@@ -16,7 +16,8 @@ namespace SmartSql.Test.Unit.DyRepository
         {
             _repository = smartSqlFixture.AllPrimitiveRepository;
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void GetByPage_ValueTuple()
         {
             var result = _repository.GetByPage_ValueTuple();
@@ -24,7 +25,8 @@ namespace SmartSql.Test.Unit.DyRepository
             Assert.NotNull(result);
         }
         
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void QueryDictionary()
         {
             var result = _repository.QueryDictionary(10);

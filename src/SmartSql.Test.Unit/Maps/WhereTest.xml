@@ -22,7 +22,7 @@
       Select * From T_User T
       <Where>
         <IsNotEmpty Prepend="And" Property="UserName">
-          T.UserName=@UserName
+          T.UserName=?UserName
         </IsNotEmpty>
       </Where>
     </Statement>

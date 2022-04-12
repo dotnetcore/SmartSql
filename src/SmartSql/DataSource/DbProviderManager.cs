@@ -61,7 +61,7 @@ namespace SmartSql.DataSource
         {
             Name = DbProvider.SQLITE,
             ParameterPrefix = "@",
-            Type = "System.Data.SQLite.SQLiteFactory,System.Data.SQLite",
+            Type = "Microsoft.Data.Sqlite.SqliteFactory,Microsoft.Data.Sqlite",
             SelectAutoIncrement = ""
         };
 

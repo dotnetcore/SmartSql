@@ -15,7 +15,8 @@ namespace SmartSql.Test.Unit.AutoConverter
             SqlMapper = smartSqlFixture.SqlMapper;
         }
         
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void DefaultAutoConverterTest()
         {  
             for (var i = 1; i <= 2; i++)
@@ -42,7 +43,8 @@ namespace SmartSql.Test.Unit.AutoConverter
             Assert.NotEqual(0, userList.First().Id);
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void DisabledAutoConverterTest()
         {
             var userId = SqlMapper.QuerySingle<long>(new RequestContext
@@ -70,7 +72,8 @@ namespace SmartSql.Test.Unit.AutoConverter
             Assert.Equal(userId, userEntity.Id);
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void UseNoneAutoConverterTest()
         {
             var userId = SqlMapper.QuerySingle<long>(new RequestContext
@@ -98,7 +101,8 @@ namespace SmartSql.Test.Unit.AutoConverter
             Assert.Equal(userId, userEntity.Id);
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void AssignAutoFromRequestConverterTest()
         {
             for (var i = 1; i <= 2; i++)
@@ -127,7 +131,8 @@ namespace SmartSql.Test.Unit.AutoConverter
             Assert.NotEqual(0, list.First().Col_Id);
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void AssignFromMapAutoConverterTest()
         {
             for (var i = 1; i <= 2; i++)
@@ -155,7 +160,8 @@ namespace SmartSql.Test.Unit.AutoConverter
             Assert.NotEqual(0, list.First().Col_Id);
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void AssignFromStatementAutoConverterTest()
         {
             for (var i = 1; i <= 2; i++)
@@ -187,7 +193,8 @@ namespace SmartSql.Test.Unit.AutoConverter
         /// <summary>
         /// 同时指定AutoConverter和ResultMap时，ResultMap优先级高于AutoConverter
         /// </summary>
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void AssignResultMapAndAutoConverterTest()
         {
             for (var i = 1; i <= 2; i++)

@@ -14,7 +14,8 @@ namespace SmartSql.Test.Unit.Tags
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void Env_Test()
         {
             var msg = SqlMapper.ExecuteScalar<String>(new RequestContext

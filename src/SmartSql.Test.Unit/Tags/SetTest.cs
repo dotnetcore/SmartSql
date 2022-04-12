@@ -15,7 +15,8 @@ namespace SmartSql.Test.Unit.Tags
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void Set_Test()
         {
             var iRows = SqlMapper.Execute(new RequestContext

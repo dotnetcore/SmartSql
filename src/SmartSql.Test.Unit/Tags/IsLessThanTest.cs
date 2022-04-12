@@ -16,7 +16,8 @@ namespace SmartSql.Test.Unit.Tags
             SqlMapper = smartSqlFixture.SqlMapper;
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void IsLessThan()
         {
             var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
@@ -27,7 +28,8 @@ namespace SmartSql.Test.Unit.Tags
             });
             Assert.Equal("Id IsLessThan 0", msg);
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void IsLessThan_Required()
         {
             var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
@@ -38,7 +40,8 @@ namespace SmartSql.Test.Unit.Tags
             });
             Assert.Equal("Id IsLessThan 0", msg);
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void IsGreaterThan_Required_Fail()
         {
             try

@@ -18,8 +18,8 @@ namespace SmartSql.Test.Unit.DyRepository
             _userRepository = smartSqlFixture.UserRepository;
         }
 
-
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void SP_QueryUser()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();

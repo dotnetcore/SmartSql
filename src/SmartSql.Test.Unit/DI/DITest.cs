@@ -13,7 +13,8 @@ namespace SmartSql.Test.Unit.DI
 {
     public class DITest
     {
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void AddSmartSql()
         {
             IServiceCollection services = new ServiceCollection();
@@ -29,7 +30,8 @@ namespace SmartSql.Test.Unit.DI
             var dbSessionFactory = serviceProvider.GetRequiredService<IDbSessionFactory>();
         }
         protected String ConnectionString => "Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True";
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void AddSmartSql_Func()
         {
             IServiceCollection services = new ServiceCollection();
@@ -40,7 +42,8 @@ namespace SmartSql.Test.Unit.DI
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void AddSmartSql_Action()
         {
             IServiceCollection services = new ServiceCollection();
@@ -51,7 +54,8 @@ namespace SmartSql.Test.Unit.DI
             var serviceProvider = services.BuildServiceProvider();
             GetSmartSqlService(serviceProvider);
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void AddRepositoryFromAssembly()
         {
             IServiceCollection services = new ServiceCollection();
@@ -68,7 +72,8 @@ namespace SmartSql.Test.Unit.DI
             GetSmartSqlService(serviceProvider);
             IAllPrimitiveRepository allPrimitiveRepository = serviceProvider.GetRequiredService<IAllPrimitiveRepository>();
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void AddRepositoryFromAssembly_Alias()
         {
             IServiceCollection services = new ServiceCollection();

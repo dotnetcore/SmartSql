@@ -15,7 +15,8 @@ namespace SmartSql.Test.Unit.Tags
             SqlMapper = smartSqlFixture.SqlMapper;
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void GetNow()
         {
             var msg = SqlMapper.ExecuteScalar<DateTime>(new RequestContext
@@ -37,7 +38,8 @@ namespace SmartSql.Test.Unit.Tags
         }
         
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void UpdateDateTime()
         {
             var msg = SqlMapper.ExecuteScalar<DateTime>(new RequestContext

@@ -18,7 +18,8 @@ namespace SmartSql.Test.Unit.DbSessions
             SqlMapper = smartSqlFixture.SqlMapper;
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public async Task QueryAsync()
         {
             var list = await SqlMapper.QueryAsync<dynamic>(new RequestContext
@@ -28,7 +29,8 @@ namespace SmartSql.Test.Unit.DbSessions
 
             Assert.NotNull(list);
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public  void QuerySingleDynamic()
         {
             var list =  SqlMapper.QuerySingleDynamic(new RequestContext
@@ -38,7 +40,8 @@ namespace SmartSql.Test.Unit.DbSessions
 
             Assert.NotNull(list);
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public  void QueryDynamic()
         {
             var list =  SqlMapper.QueryDynamic(new RequestContext
@@ -48,7 +51,8 @@ namespace SmartSql.Test.Unit.DbSessions
 
             Assert.NotNull(list);
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public  void QueryDictionary()
         {
             var list =  SqlMapper.QueryDictionary(new RequestContext
@@ -58,7 +62,8 @@ namespace SmartSql.Test.Unit.DbSessions
 
             Assert.NotNull(list);
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public  void QuerySingleDictionary()
         {
             var list =  SqlMapper.QuerySingleDictionary(new RequestContext
@@ -69,7 +74,8 @@ namespace SmartSql.Test.Unit.DbSessions
             Assert.NotNull(list);
         }
         
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void Query()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -80,7 +86,8 @@ namespace SmartSql.Test.Unit.DbSessions
             Assert.NotNull(list);
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void QueryEnableTrack()
         {
             var entity = SqlMapper.QuerySingle<AllPrimitive>(new RequestContext
@@ -100,7 +107,8 @@ namespace SmartSql.Test.Unit.DbSessions
             SqlMapper.Update(entity);
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void DbNullToDefaultEntity()
         {
             var entity = SqlMapper.QuerySingle<IgnoreDbNullEntity>(new RequestContext

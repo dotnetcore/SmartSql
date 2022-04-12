@@ -13,7 +13,8 @@ namespace SmartSql.Test.Unit.Tags
             SqlMapper = smartSqlFixture.SqlMapper;
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void GetUUID()
         {
             var msg = SqlMapper.ExecuteScalar<Guid>(new RequestContext
@@ -23,7 +24,8 @@ namespace SmartSql.Test.Unit.Tags
             });
             Assert.True(true);
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void GetUUIDToN()
         {
             var msg = SqlMapper.ExecuteScalar<String>(new RequestContext

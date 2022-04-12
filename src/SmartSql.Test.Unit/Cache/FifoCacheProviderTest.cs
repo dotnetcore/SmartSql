@@ -1,8 +1,5 @@
 ﻿using SmartSql.Test.Entities;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartSql.Cache;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Cache
@@ -18,21 +15,20 @@ namespace SmartSql.Test.Unit.Cache
         }
 
         [Fact]
-        public void QueryByFifoCache()
+        public void GetByCache()
         {
-            var list = SqlMapper.Query<AllPrimitive>(new RequestContext
+            var expected = SqlMapper.QuerySingle<CachedEntity>(new RequestContext
             {
-                Scope = nameof(AllPrimitive),
-                SqlId = "QueryByFifoCache",
-                Request = new {Taken = 8},
+                Scope = "FifoCache",
+                SqlId = "GetByCache"
             });
-            var cachedList = SqlMapper.Query<AllPrimitive>(new RequestContext
+            var actual = SqlMapper.QuerySingle<CachedEntity>(new RequestContext
             {
-                Scope = nameof(AllPrimitive),
-                SqlId = "QueryByFifoCache",
-                Request = new {Taken = 8}
+                Scope = "FifoCache",
+                SqlId = "GetByCache"
             });
-            Assert.Equal(list.GetHashCode(), cachedList.GetHashCode());
+            Assert.Equal(expected, actual);
         }
     }
+
 }

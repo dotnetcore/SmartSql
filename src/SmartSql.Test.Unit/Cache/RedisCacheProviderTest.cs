@@ -18,7 +18,7 @@ namespace SmartSql.Test.Unit.Cache
             SqlMapper = smartSqlFixture.SqlMapper;
         }
 
-//        [Fact]
+        [Fact(Skip = "The database environment that the project depends on does not exist.")]
         public void QueryByRedisCache()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -36,7 +36,7 @@ namespace SmartSql.Test.Unit.Cache
             Assert.Equal(list.Count(), cachedList.Count());
         }
 
-//        [Fact]
+        [Fact(Skip = "The database environment that the project depends on does not exist.")]
         public void QueryByRedisCacheWithKey()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -56,7 +56,7 @@ namespace SmartSql.Test.Unit.Cache
             Assert.Equal(list.Count(), cachedList.Count());
         }
 
-//        [Fact]
+        [Fact(Skip = "The database environment that the project depends on does not exist.")]
         public void QueryByRedisCacheWithKeyParam()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext

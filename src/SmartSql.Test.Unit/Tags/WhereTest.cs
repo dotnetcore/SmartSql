@@ -16,7 +16,8 @@ namespace SmartSql.Test.Unit.Tags
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void Where_Min()
         {
             var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
@@ -27,7 +28,8 @@ namespace SmartSql.Test.Unit.Tags
             });
             Assert.Equal("Where", msg);
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void Where_Min_Fail()
         {
             try
@@ -46,7 +48,8 @@ namespace SmartSql.Test.Unit.Tags
             }
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void GetUser_Test()
         {
             var user = SqlMapper.QuerySingle<User>(new RequestContext

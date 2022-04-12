@@ -16,7 +16,8 @@ namespace SmartSql.Test.Unit.Deserializer
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void GetDataSet()
         {
             var result = SqlMapper.GetDataSet(new RequestContext
@@ -26,7 +27,8 @@ namespace SmartSql.Test.Unit.Deserializer
             });
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public async Task GetDataSetAsync()
         {
             var result = await SqlMapper.GetDataSetAsync(new RequestContext

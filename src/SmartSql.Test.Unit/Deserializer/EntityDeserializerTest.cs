@@ -16,7 +16,8 @@ namespace SmartSql.Test.Unit.Deserializer
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void QuerySingle()
         {
             long id = Insert();
@@ -38,7 +39,8 @@ namespace SmartSql.Test.Unit.Deserializer
             });
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void Query()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -55,7 +57,8 @@ namespace SmartSql.Test.Unit.Deserializer
             });
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public async Task QuerySingleAsync()
         {
             long id = Insert();
@@ -67,7 +70,8 @@ namespace SmartSql.Test.Unit.Deserializer
             });
             Assert.Equal(id, entity.Id);
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public async Task QueryAsync()
         {
             var list = await SqlMapper.QueryAsync<AllPrimitive>(new RequestContext

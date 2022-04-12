@@ -17,7 +17,8 @@ namespace SmartSql.Test.Unit.IdGenerator
             SqlMapper = smartSqlFixture.SqlMapper;
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void NextId()
         {
             var id = SnowflakeId.Default.NextId();
@@ -26,7 +27,8 @@ namespace SmartSql.Test.Unit.IdGenerator
             Assert.NotEqual(0, id);
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void Insert()
         {
             var id = SqlMapper.ExecuteScalar<long>(new RequestContext

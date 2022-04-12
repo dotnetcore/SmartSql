@@ -16,7 +16,8 @@ namespace SmartSql.Test.Unit.Tags
             SqlMapper = smartSqlFixture.SqlMapper;
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void Placeholder_Test()
         {
             var UserList = SqlMapper.Query<User>(new RequestContext
@@ -28,7 +29,8 @@ namespace SmartSql.Test.Unit.Tags
             Assert.True(true);
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void Nest_Test()
         {
             var reqParams = new {Nest = new {Sql = "Nest.Sql"}};

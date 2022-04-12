@@ -11,11 +11,11 @@ namespace SmartSql.Test.Unit.Bulk
 {
     public class MySqlConnectorTest
     {
-        [Fact]
+        [Fact(Skip = "The database environment that the project depends on does not exist.")]
         public void Insert()
         {
             var dbSessionFactory = new SmartSqlBuilder()
-                .UseDataSource(DbProvider.MYSQL_CONNECTOR, "Data Source=localhost;database=SmartSqlTestDB;uid=root;pwd=SmartSql.net")
+                .UseDataSource(DbProvider.MYSQL_CONNECTOR, "Data Source=localhost;database=SmartSqlTestDB;uid=root;pwd=root")
                 .UseAlias("MySqlConnectorTest")
                 .Build().GetDbSessionFactory();
 

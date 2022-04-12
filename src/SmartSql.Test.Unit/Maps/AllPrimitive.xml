@@ -8,21 +8,6 @@
 //*******************************-->
 
 <SmartSqlMap Scope="AllPrimitive" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
-    <Caches>
-        <Cache Id="LruCache" Type="Lru">
-            <Property Name="CacheSize" Value="10"/>
-            <FlushOnExecute Statement="AllPrimitive.Insert"/>
-            <FlushInterval Hours="1" Minutes="0" Seconds="0"/>
-        </Cache>
-        <Cache Id="FifoCache" Type="Fifo">
-            <Property Name="CacheSize" Value="10"/>
-        </Cache>
-        <!--    <Cache Id="RedisCache" Type="${RedisCacheProvider}">-->
-        <!--      <Property Name="ConnectionString" Value="${Redis}" />-->
-        <!--      <Property Name="Prefix" Value="RedisCache"/>-->
-        <!--      <FlushInterval Minutes="60"/>-->
-        <!--    </Cache>-->
-    </Caches>
     <MultipleResultMaps>
         <MultipleResultMap Id="GetByPage">
             <Result Property="List"/>
@@ -131,18 +116,6 @@
                 </IsNotEmpty>
 
             </Where>
-        </Statement>
-        <!--    <Statement Id="QueryByRedisCache"  Cache="RedisCache">-->
-        <!--      SELECT Top (@Taken) T.* From T_AllPrimitive T;-->
-        <!--    </Statement>-->
-        <Statement Id="QueryByLruCache" Cache="LruCache">
-            SELECT Top (@Taken) T.* From T_AllPrimitive T;
-        </Statement>
-        <Statement Id="QueryByLruCacheFromRequest" Cache="LruCache">
-            SELECT Top (@Request.Taken) T.* From T_AllPrimitive T;
-        </Statement>
-        <Statement Id="QueryByFifoCache" Cache="FifoCache">
-            SELECT Top (@Taken) T.* From T_AllPrimitive T;
         </Statement>
 
         <Statement Id="GetByPage" MultipleResultMap="GetByPage">

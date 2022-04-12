@@ -15,7 +15,8 @@ namespace SmartSql.Test.Unit.DbSessions
         {
             SqlMapper = smartSqlFixture.SqlMapper;
         }
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void Insert()
         {
             var id = InsertImpl();
@@ -52,7 +53,8 @@ namespace SmartSql.Test.Unit.DbSessions
             };
         }
 
-        [Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void GetById()
         {
             var insertUserExtendedInfo = NewUserExtendedInfo();
