@@ -22,65 +22,58 @@ namespace SmartSql.Test.Unit.DbSessions
         #region Insert_From_RealSql
 
         private const string INSERT_SQL = @"INSERT INTO T_AllPrimitive
-              (Boolean
-              ,[Char]
-              ,[Byte]
-              ,[Int16]
-              ,[Int32]
-              ,[Int64]
-              ,[Single]
-              ,[Decimal]
-              ,[DateTime]
-              ,[String]
-              ,[Guid]
-              ,[TimeSpan]
-              ,[NumericalEnum]
-              ,[NullableBoolean]
-              ,[NullableChar]
-              ,[NullableByte]
-              ,[NullableInt16]
-              ,[NullableInt32]
-              ,[NullableInt64]
-              ,[NullableSingle]
-              ,[NullableDouble]
-              ,[NullableDecimal]
-              ,[NullableDateTime]
-              ,[NullableGuid]
-              ,[NullableTimeSpan]
-              ,[NullableNumericalEnum]
-              ,[NullableString])
+              (`Boolean`
+              ,`Char`
+              ,`Int16`
+              ,`Int32`
+              ,`Int64`
+              ,`Single`
+              ,`Decimal`
+              ,`DateTime`
+              ,`String`
+              ,`Guid`
+              ,`TimeSpan`
+              ,`NumericalEnum`
+              ,`NullableBoolean`
+              ,`NullableChar`
+              ,`NullableInt16`
+              ,`NullableInt32`
+              ,`NullableInt64`
+              ,`NullableSingle`
+              ,`NullableDecimal`
+              ,`NullableDateTime`
+              ,`NullableGuid`
+              ,`NullableTimeSpan`
+              ,`NullableNumericalEnum`
+              ,NullableString)
         VALUES
-              (@Boolean
-              ,@Char
-              ,@Byte
-              ,@Int16
-              ,@Int32 
-              ,@Int64
-              ,@Single
-              ,@Decimal
-              ,@DateTime
-              ,@String
-              ,@Guid
-              ,@TimeSpan
-              ,@NumericalEnum
-              ,@NullableBoolean
-              ,@NullableChar
-              ,@NullableByte
-              ,@NullableInt16
-              ,@NullableInt32
-              ,@NullableInt64
-              ,@NullableSingle
-              ,@NullableDouble
-              ,@NullableDecimal
-              ,@NullableDateTime
-              ,@NullableGuid
-              ,@NullableTimeSpan
-              ,@NullableNumericalEnum
-              ,@NullableString);
-        Select SCOPE_IDENTITY();";
+              (?Boolean
+              ,?Char
+              ,?Int16
+              ,?Int32 
+              ,?Int64
+              ,?Single
+              ,?Decimal
+              ,?DateTime
+              ,?String
+              ,?Guid
+              ,?TimeSpan
+              ,?NumericalEnum
+              ,?NullableBoolean
+              ,?NullableChar
+              ,?NullableInt16
+              ,?NullableInt32
+              ,?NullableInt64
+              ,?NullableSingle
+              ,?NullableDecimal
+              ,?NullableDateTime
+              ,?NullableGuid
+              ,?NullableTimeSpan
+              ,?NullableNumericalEnum
+              ,?NullableString);
+        Select Last_Insert_Id();";
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void Insert_From_RealSql()
         {
             var id = SqlMapper.ExecuteScalar<long>(new RequestContext
@@ -92,12 +85,12 @@ namespace SmartSql.Test.Unit.DbSessions
                     String = "SmartSql",
                 }
             });
+            Assert.NotEqual(0,id);
         }
 
         #endregion
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void Insert()
         {
             var id = SqlMapper.ExecuteScalar<long>(new RequestContext
@@ -112,8 +105,7 @@ namespace SmartSql.Test.Unit.DbSessions
             });
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void InsertByRequestTransaction()
         {
             var id = SqlMapper.ExecuteScalar<long>(new RequestContext
@@ -129,8 +121,7 @@ namespace SmartSql.Test.Unit.DbSessions
             });
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void InsertByStatementTransaction()
         {
             var id = SqlMapper.ExecuteScalar<long>(new RequestContext
@@ -145,8 +136,7 @@ namespace SmartSql.Test.Unit.DbSessions
             });
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void InsertByIdGen()
         {
             var entity = new AllPrimitive
@@ -162,8 +152,7 @@ namespace SmartSql.Test.Unit.DbSessions
             });
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void InsertByIdGenAssignId()
         {
             var entity = new AllPrimitive
@@ -180,20 +169,18 @@ namespace SmartSql.Test.Unit.DbSessions
             Assert.True(entity.Int64 > 0);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public async Task QueryAsync()
         {
             var list = await SqlMapper.QueryAsync<dynamic>(new RequestContext
             {
-                RealSql = "SELECT Top (5) T.* From T_AllPrimitive T With(NoLock)"
+                RealSql = "SELECT T.* From T_AllPrimitive T limit 5"
             });
 
             Assert.NotNull(list);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public async Task InsertAsync()
         {
             var id = await SqlMapper.ExecuteScalarAsync<long>(new RequestContext
@@ -209,8 +196,7 @@ namespace SmartSql.Test.Unit.DbSessions
             Assert.NotEqual(0, id);
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void InsertFromSqlParameters()
         {
             var insertParameters = RequestConvert.Instance.ToSqlParameters(new AllPrimitive
@@ -227,7 +213,8 @@ namespace SmartSql.Test.Unit.DbSessions
             Assert.NotEqual(0, id);
         }
 
-        //[Fact]
+        // TODO
+        [Fact(Skip = "TODO")]
         public void Update()
         {
             var id = SqlMapper.ExecuteScalar<int>(new RequestContext
@@ -242,7 +229,7 @@ namespace SmartSql.Test.Unit.DbSessions
             });
         }
 
-        //[Fact]
+        [Fact]
         public void Delete()
         {
             var id = SqlMapper.ExecuteScalar<int>(new RequestContext
@@ -257,8 +244,7 @@ namespace SmartSql.Test.Unit.DbSessions
             });
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void DeleteCheckIncludeRequired()
         {
             try
@@ -276,8 +262,7 @@ namespace SmartSql.Test.Unit.DbSessions
             }
         }
 
-        // TODO
-        [Fact(Skip = "TODO")]
+        [Fact]
         public void DeleteCheckIsNotEmptyRequired()
         {
             try
