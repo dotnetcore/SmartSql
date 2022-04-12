@@ -3,16 +3,16 @@ using Xunit;
 
 namespace SmartSql.Test.Unit;
 
-public class SkipGitHubCIAttribute : FactAttribute
+public class SkipGitHubActionAttribute : FactAttribute
 {
-    public SkipGitHubCIAttribute()
+    public SkipGitHubActionAttribute()
     {
-        if (IsGitHubCI())
+        if (IsGitHubAction())
         {
             Skip = "Ignore on GitHub CI.";
         }
     }
 
-    private static bool IsGitHubCI()
+    public static bool IsGitHubAction()
         => Environment.GetEnvironmentVariable("GITHUB_ACTION") != null;
 }
