@@ -14,7 +14,7 @@ namespace SmartSql.Test.Unit.DyRepository
             _userRepository = smartSqlFixture.UserRepository;
         }
 
-        [SkipGitHubAction]
+        [EnvironmentFactAttribute(exclude: EnvironmentFactAttribute.GITHUB_ACTION)]
         public void SP_Query()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();

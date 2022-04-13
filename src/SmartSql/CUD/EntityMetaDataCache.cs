@@ -17,8 +17,8 @@ namespace SmartSql.CUD
         public const string DEFAULT_ID_NAME = "Id";
         public static Type EntityType { get; }
         public static EntityMetaData MetaData { get; }
+        public static String Scope => MetaData.Scope;
         public static String TableName => MetaData.TableName;
-
         public static SortedDictionary<int, ColumnAttribute> IndexColumnMaps { get; private set; }
 
         public static ColumnAttribute PrimaryKey
@@ -60,6 +60,7 @@ namespace SmartSql.CUD
         private static void InitMetaData()
         {
             InitTableName();
+            InitScope();
             InitColumns();
         }
 
@@ -128,6 +129,16 @@ namespace SmartSql.CUD
             if (String.IsNullOrEmpty(MetaData.TableName))
             {
                 MetaData.TableName = EntityType.Name;
+            }
+        }
+
+        private static void InitScope()
+        {
+            MetaData.Scope =
+                EntityType.GetCustomAttribute<ScopeAttribute>(false)?.Scope;
+            if (String.IsNullOrEmpty(MetaData.Scope))
+            {
+                MetaData.Scope = MetaData.TableName;
             }
         }
 

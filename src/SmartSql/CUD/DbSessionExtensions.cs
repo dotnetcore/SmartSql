@@ -33,7 +33,7 @@ namespace SmartSql
         public static TEntity GetById<TEntity, TPrimaryKey>(this IDbSession dbSession, TPrimaryKey id,
             bool enablePropertyChangedTrack)
         {
-            var scope = EntityMetaDataCache<TEntity>.TableName;
+            var scope = EntityMetaDataCache<TEntity>.Scope;
             var pkCol = EntityMetaDataCache<TEntity>.PrimaryKey;
             var idParam = new SqlParameter(pkCol.Property.Name, id, pkCol.Property.PropertyType)
             {
@@ -63,7 +63,7 @@ namespace SmartSql
         public static int Insert<TEntity>(this IDbSession dbSession, TEntity entity)
         {
             var dyParams = ToSqlParameters<TEntity>(entity, dbSession.SmartSqlConfig.Settings.IgnoreParameterCase);
-            var scope = EntityMetaDataCache<TEntity>.TableName;
+            var scope = EntityMetaDataCache<TEntity>.Scope;
             return dbSession.Execute(new RequestContext
             {
                 Scope = scope,
@@ -75,7 +75,7 @@ namespace SmartSql
         public static TPrimaryKey Insert<TEntity, TPrimaryKey>(this IDbSession dbSession, TEntity entity)
         {
             var dyParams = ToSqlParameters<TEntity>(entity, dbSession.SmartSqlConfig.Settings.IgnoreParameterCase);
-            var scope = EntityMetaDataCache<TEntity>.TableName;
+            var scope = EntityMetaDataCache<TEntity>.Scope;
 
             var pkCol = EntityMetaDataCache<TEntity>.PrimaryKey;
 
@@ -98,7 +98,7 @@ namespace SmartSql
 
         public static int DeleteById<TEntity, TPrimaryKey>(this IDbSession dbSession, TPrimaryKey id)
         {
-            var scope = EntityMetaDataCache<TEntity>.TableName;
+            var scope = EntityMetaDataCache<TEntity>.Scope;
             var pkCol = EntityMetaDataCache<TEntity>.PrimaryKey;
             var idParam = new SqlParameter(pkCol.Property.Name, id, pkCol.Property.PropertyType)
             {
@@ -114,7 +114,7 @@ namespace SmartSql
 
         public static int DeleteMany<TEntity, TPrimaryKey>(this IDbSession dbSession, IEnumerable<TPrimaryKey> ids)
         {
-            var scope = EntityMetaDataCache<TEntity>.TableName;
+            var scope = EntityMetaDataCache<TEntity>.Scope;
             var pkCol = EntityMetaDataCache<TEntity>.PrimaryKey;
             var sqlParameters = new SqlParameterCollection();
             var index = 0;
@@ -139,7 +139,7 @@ namespace SmartSql
 
         public static int DeleteAll<TEntity>(this IDbSession dbSession)
         {
-            var scope = EntityMetaDataCache<TEntity>.TableName;
+            var scope = EntityMetaDataCache<TEntity>.Scope;
             return dbSession.Execute(new RequestContext
             {
                 SqlId=CUDStatementName.DeleteAll,
@@ -170,8 +170,7 @@ namespace SmartSql
         {
 
             var dyParams = SqlParameterCollection.Create(entity, false);
-            var scope = EntityMetaDataCache<TEntity>.TableName;
-
+            var scope = EntityMetaDataCache<TEntity>.Scope;
 
             return dbSession.Execute(new RequestContext
             {

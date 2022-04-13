@@ -36,7 +36,7 @@ namespace SmartSql.CUD
             _provider = config.Database.DbProvider;
             _analyzer = new StatementAnalyzer();
         }
-
+        
 
 
         private Statement BuildStatement(string statementId, string sql, SqlMap sqlMap)
