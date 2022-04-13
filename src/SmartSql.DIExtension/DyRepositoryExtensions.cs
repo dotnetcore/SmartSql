@@ -91,7 +91,13 @@ namespace Microsoft.Extensions.DependencyInjection
                     {
                         scope = templateParser.Parse(type.Name);
                     }
-                    return factory.CreateInstance(type, sqlMapper, scope);
+                    
+                    var instance = factory.CreateInstance(type, sqlMapper, scope);
+                    if (instance.IsDyRepository())
+                    {
+                        sqlMapper.SmartSqlConfig.CacheManager.Reset();
+                    }
+                    return instance;
                 });
             }
             return builder;
