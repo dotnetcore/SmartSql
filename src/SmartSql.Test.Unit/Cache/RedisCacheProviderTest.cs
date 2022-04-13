@@ -18,7 +18,7 @@ namespace SmartSql.Test.Unit.Cache
             SqlMapper = smartSqlFixture.SqlMapper;
         }
 
-        [Fact]
+        [Fact(Skip = "Missing unit test runtime environment")]
         public void GetByCache()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -36,7 +36,7 @@ namespace SmartSql.Test.Unit.Cache
             Assert.Equal(list.Count, cachedList.Count);
         }
 
-        [Fact]
+        [Fact(Skip = "Missing unit test runtime environment")]
         public void QueryByRedisCacheWithKey()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -56,7 +56,7 @@ namespace SmartSql.Test.Unit.Cache
             Assert.Equal(list.Count(), cachedList.Count());
         }
 
-        [Fact]
+        [Fact(Skip = "Missing unit test runtime environment")]
         public void QueryByRedisCacheWithKeyParam()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
