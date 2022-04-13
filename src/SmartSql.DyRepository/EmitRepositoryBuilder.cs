@@ -314,7 +314,6 @@ namespace SmartSql.DyRepository
                     throw new SmartSqlException($"Statement.FullSqlId:[{fullSqlId}] already exists!");
                 }
 
-                var resultCacheAttr = methodInfo.GetCustomAttribute<ResultCacheAttribute>();
                 statement = new Statement
                 {
                     SqlMap = sqlMap,
@@ -339,14 +338,17 @@ namespace SmartSql.DyRepository
                     statement.SourceChoice = statementAttr.SourceChoice;
                 }
 
-                if (resultCacheAttr != null)
-                {
-                    statement.CacheId = ParseCacheFullId(sqlMap.Scope, resultCacheAttr.CacheId);
-                    statement.Cache = sqlMap.GetCache(statement.CacheId);
-                }
-
                 sqlMap.Statements.Add(statement.FullSqlId, statement);
+
             }
+
+            var resultCacheAttr = methodInfo.GetCustomAttribute<ResultCacheAttribute>();
+            if (resultCacheAttr != null)
+            {
+                statement.CacheId = ParseCacheFullId(sqlMap.Scope, resultCacheAttr.CacheId);
+                statement.Cache = sqlMap.GetCache(statement.CacheId);
+            }
+
 
             returnType = isTaskReturnType ? returnType.GetGenericArguments().FirstOrDefault() : returnType;
             if (returnType == typeof(DataTable))
