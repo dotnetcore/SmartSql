@@ -280,7 +280,7 @@ namespace SmartSql.Test.Unit.DbSessions
             }
         }
 
-        [SkipGitHubAction]
+        [EnvironmentFactAttribute(exclude: EnvironmentFactAttribute.GITHUB_ACTION)]
         public void SP()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();
@@ -300,7 +300,7 @@ namespace SmartSql.Test.Unit.DbSessions
             dbParameterCollection.TryGetParameterValue("Total", out int total);
         }
 
-        [SkipGitHubAction]
+        [EnvironmentFactAttribute(exclude: EnvironmentFactAttribute.GITHUB_ACTION)]
         public void SP_SourceParameter()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();

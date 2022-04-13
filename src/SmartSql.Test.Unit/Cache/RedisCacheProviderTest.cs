@@ -1,10 +1,6 @@
 ﻿using SmartSql.Test.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 using System.Linq;
-using SmartSql.Cache;
 
 namespace SmartSql.Test.Unit.Cache
 {
@@ -18,7 +14,7 @@ namespace SmartSql.Test.Unit.Cache
             SqlMapper = smartSqlFixture.SqlMapper;
         }
 
-        [Fact(Skip = "Missing unit test runtime environment")]
+        [EnvironmentFactAttribute(include: "REDIS")]
         public void GetByCache()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -36,7 +32,7 @@ namespace SmartSql.Test.Unit.Cache
             Assert.Equal(list.Count, cachedList.Count);
         }
 
-        [Fact(Skip = "Missing unit test runtime environment")]
+        [EnvironmentFactAttribute(include: "REDIS")]
         public void QueryByRedisCacheWithKey()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -56,7 +52,7 @@ namespace SmartSql.Test.Unit.Cache
             Assert.Equal(list.Count(), cachedList.Count());
         }
 
-        [Fact(Skip = "Missing unit test runtime environment")]
+        [EnvironmentFactAttribute(include: "REDIS")]
         public void QueryByRedisCacheWithKeyParam()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
