@@ -2,13 +2,9 @@
 using SmartSql.Configuration;
 using SmartSql.Configuration.Tags;
 using SmartSql.DataSource;
-using SmartSql.Reflection.TypeConstants;
 using SmartSql.Utils;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
 
 namespace SmartSql.CUD
 {
@@ -36,9 +32,7 @@ namespace SmartSql.CUD
             _provider = config.Database.DbProvider;
             _analyzer = new StatementAnalyzer();
         }
-
-
-
+        
         private Statement BuildStatement(string statementId, string sql, SqlMap sqlMap)
         {
             return new Statement()

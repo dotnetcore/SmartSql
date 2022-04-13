@@ -62,7 +62,7 @@ namespace SmartSql.Test.Unit
         {
             for (int i = 0; i < 10; i++)
             {
-                SqlMapper.Insert<AllPrimitive, long>(new AllPrimitive());
+                AllPrimitiveRepository.Insert(new AllPrimitive());
             }
         }
 

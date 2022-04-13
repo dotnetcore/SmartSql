@@ -7,6 +7,7 @@ namespace SmartSql.CUD
 {
     public class EntityMetaData
     {
+        public string Scope { get; set; }
         public string TableName { get; set; }
         public ColumnAttribute PrimaryKey { get; set; }
 
