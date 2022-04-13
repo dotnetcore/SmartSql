@@ -25,7 +25,7 @@ namespace SmartSql.Test.Unit.Deserializer
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetByPage",
-                Request = new { PageSize = 10, PageIndex = 1 }
+                Request = new { PageSize = 10, Offset = 0 }
             });
             Assert.NotNull(result);
         }
@@ -36,7 +36,7 @@ namespace SmartSql.Test.Unit.Deserializer
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetByPage",
-                Request = new { PageSize = 10, PageIndex = 1 }
+                Request = new { PageSize = 10, Offset = 0 }
             });
             Assert.NotNull(result);
         }
@@ -48,7 +48,7 @@ namespace SmartSql.Test.Unit.Deserializer
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "GetMultiRoot",
-                Request = new { PageSize = 10, PageIndex = 1 }
+                Request = new { PageSize = 10, Offset = 0 }
             });
             Assert.NotNull(result);
             Assert.NotNull(result.List);

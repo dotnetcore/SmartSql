@@ -8,72 +8,76 @@
 //*******************************-->
 
 <SmartSqlMap Scope="NestTest" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
-  <Statements>
-    
-    <Statement Id="QueryNestObject2">
-      SELECT @User.Info.Id
-    </Statement>
+    <Statements>
+        <Statement Id="QueryNestObject1">
+            Select ?User.Id
+        </Statement>
 
-    <Statement Id="QueryNestArray">
-      SELECT @Order.Items[0]
-    </Statement>
+        <Statement Id="QueryNestObject2">
+            Select ?User.Info.Id
+        </Statement>
 
-    <Statement Id="QueryNestDic">
-      SELECT @Order.Items[Id]
-    </Statement>
+        <Statement Id="QueryNestArray">
+            Select ?Order.Items[0]
+        </Statement>
 
-    <Statement Id="QueryNestArrayObject">
-      SELECT @Order.Items[0].Name
-    </Statement>
+        <Statement Id="QueryNestDic">
+            Select ?Order.Items[Id]
+        </Statement>
 
-    <Statement Id="FilterNestObject1">
-      <IsEqual Property="User.Id" CompareValue="1">
-        SELECT @User.Id
-      </IsEqual>
-    </Statement>
+        <Statement Id="QueryNestArrayObject">
+            Select ?Order.Items[0].Name
+        </Statement>
 
-    <Statement Id="FilterNestObject2">
-      <IsEqual Property="User.Info.Id" CompareValue="1">
-        SELECT @User.Info.Id
-      </IsEqual>
-    </Statement>
+        <Statement Id="FilterNestObject1">
+            <IsEqual Property="User.Id" CompareValue="1">
+                Select ?User.Id
+            </IsEqual>
+        </Statement>
 
-    <Statement Id="FilterNestArray">
-      <IsEqual Property="Order.Items[0]" CompareValue="1">
-        SELECT @Order.Items[0]
-      </IsEqual>
-    </Statement>
+        <Statement Id="FilterNestObject2">
+            <IsEqual Property="User.Info.Id" CompareValue="1">
+                Select ?User.Info.Id
+            </IsEqual>
+        </Statement>
 
-    <Statement Id="FilterNestDic">
-      <IsEqual Property="Order.Items[Id]" CompareValue="1">
-        SELECT @Order.Items[Id]
-      </IsEqual>
-    </Statement>
+        <Statement Id="FilterNestArray">
+            <IsEqual Property="Order.Items[0]" CompareValue="1">
+                Select ?Order.Items[0]
+            </IsEqual>
+        </Statement>
 
-    <Statement Id="FilterNestArrayObject">
-      <IsEqual Property="Order.Items[0].Name" CompareValue="SmartSql">
-        SELECT @Order.Items[0].Name
-      </IsEqual>
-    </Statement>
+        <Statement Id="FilterNestDic">
+            <IsEqual Property="Order.Items[Id]" CompareValue="1">
+                Select ?Order.Items[Id]
+            </IsEqual>
+        </Statement>
 
-    <Statement Id="FilterNestDicMul">
-      Select '
-      <Dynamic>
-        <IsProperty Property="Fields[Id]" Prepend=",">
-          <Placeholder Property="Fields[Id]"/>
-        </IsProperty>
-        <IsProperty Property="Fields[Name]" Prepend=",">
-          <Placeholder Property="Fields[Name]"/>
-        </IsProperty>
-        <IsProperty Property="Fields[CreateTime]" Prepend=",">
-          <Placeholder Property="Fields[CreateTime]"/>
-        </IsProperty>
-        <IsProperty Property="Fields[Deleted]" Prepend=",">
-          <Placeholder Property="Fields[Deleted]"/>
-        </IsProperty>
-      </Dynamic>
-      '
-    </Statement>
-    
-  </Statements>
+        <Statement Id="FilterNestArrayObject">
+            <IsEqual Property="Order.Items[0].Name" CompareValue="SmartSql">
+                Select ?Order.Items[0].Name
+            </IsEqual>
+        </Statement>
+
+        <Statement Id="FilterNestDicMul">
+            Select'
+            <Dynamic>
+                <IsProperty Property="Fields[Id]" Prepend=",">
+                    <Placeholder Property="Fields[Id]"/>
+                </IsProperty>
+                <IsProperty Property="Fields[Name]" Prepend=",">
+                    <Placeholder Property="Fields[Name]"/>
+                </IsProperty>
+                <IsProperty Property="Fields[CreateTime]" Prepend=",">
+                    <Placeholder Property="Fields[CreateTime]"/>
+                </IsProperty>
+                <IsProperty Property="Fields[Deleted]" Prepend=",">
+                    <Placeholder Property="Fields[Deleted]"/>
+                </IsProperty>
+            </Dynamic>
+            '
+        </Statement>
+
+
+    </Statements>
 </SmartSqlMap>

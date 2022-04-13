@@ -1,72 +1,102 @@
 ﻿using SmartSql.Configuration.Tags;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Tags
 {
     [Collection("GlobalSmartSql")]
-    public class IsNotEmptyTest 
+    public class IsNotEmptyTest
     {
-        protected ISqlMapper SqlMapper { get; }
+        SmartSqlConfig SmartSqlConfig { get; }
 
         public IsNotEmptyTest(SmartSqlFixture smartSqlFixture)
         {
-            SqlMapper = smartSqlFixture.SqlMapper;
+            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
         }
 
         [Fact]
-        public void IsNotEmpty()
+        public void BuildSql()
         {
-            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(IsNotEmptyTest),
+                Scope = "TagTest",
                 SqlId = "IsNotEmpty",
-                Request = new { UserName = "SmartSql" }
-            });
-            Assert.Equal("UserName IsNotEmpty", msg);
+                Request = new { Property = true }
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal("Property IsNotEmpty", requestCtx.SqlBuilder.ToString().Trim());
         }
 
         [Fact]
-        public void GetEntity_IsNotEmpty()
+        public void BuildSqlWhenStringIsEmpty()
         {
-            var msg = SqlMapper.Query<Object>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(IsNotEmptyTest),
-                SqlId = "GetEntity",
-                Request = new { UserName = "SmartSql" }
-            });
+                Scope = "TagTest",
+                SqlId = "IsNotEmpty",
+                Request = new { Property = "" }
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
         }
 
         [Fact]
-        public void IsNotEmpty_Required()
+        public void BuildSqlWhenListIsEmpty()
         {
-            var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
+            var requestCtx = new RequestContext
             {
-                Scope = nameof(IsNotEmptyTest),
-                SqlId = "IsNotEmpty_Required",
-                Request = new { UserName = "SmartSql" }
-            });
-            Assert.Equal("UserName IsNotEmpty", msg);
+                Scope = "TagTest",
+                SqlId = "IsNotEmpty",
+                Request = new { Property = new List<String>() }
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
         }
+
         [Fact]
-        public void IsNotEmpty_Required_Fail()
+        public void BuildSqlWhenIsEmpty()
         {
-            try
+            var requestCtx = new RequestContext
             {
-                var msg = SqlMapper.ExecuteScalar<String>(new RequestContext
-                {
-                    Scope = nameof(IsNotEmptyTest),
-                    SqlId = "IsNotEmpty_Required",
-                    Request = new { }
-                });
-                Assert.True(false);
-            }
-            catch (TagRequiredFailException ex)
+                Scope = "TagTest",
+                SqlId = "IsNotEmpty"
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            statement.BuildSql(requestCtx);
+
+            Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
+        }
+
+        [Fact]
+        public void BuildSqlRequiredFail()
+        {
+            var requestCtx = new RequestContext
             {
-                Assert.True(true);
-            }
+                Scope = "TagTest",
+                SqlId = "IsNotEmptyRequired"
+            };
+            requestCtx.SetupParameters();
+
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+            Assert.Throws<TagRequiredFailException>(() => statement.BuildSql(requestCtx));
         }
     }
 }

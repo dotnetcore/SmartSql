@@ -10,7 +10,7 @@ namespace SmartSql.Test.Entities
     {
         public virtual long UserId { get; set; }
 
-        [Column(FieldType = typeof(String),Alias = "GlobalSmartSql",TypeHandler = "Json")]
+        [Column(FieldType = typeof(String), Alias = "GlobalSmartSql", TypeHandler = "Json")]
         public virtual UserInfo Data { get; set; }
     }
 }

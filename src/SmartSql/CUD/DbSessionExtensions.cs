@@ -3,7 +3,10 @@ using SmartSql.Data;
 using SmartSql.DbSession;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
+using SmartSql.Configuration;
+using SmartSql.Configuration.Tags;
 using SmartSql.Reflection;
 using SmartSql.Reflection.PropertyAccessor;
 using SmartSql.DataSource;
@@ -11,6 +14,7 @@ using SmartSql.CUD;
 using SmartSql.Reflection.Convert;
 using SmartSql.Reflection.EntityProxy;
 using SmartSql.TypeHandlers;
+using StatementType = SmartSql.Configuration.StatementType;
 
 namespace SmartSql
 {

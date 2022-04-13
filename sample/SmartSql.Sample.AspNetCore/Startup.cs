@@ -3,16 +3,8 @@ using AspectCore.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SkyApm.Diagnostics.SmartSql;
-using SkyApm.Utilities.DependencyInjection;
-using SmartSql.Cache.Sync;
-using SmartSql.ConfigBuilder;
-using SmartSql.DIExtension;
-using SmartSql.InvokeSync;
-using SmartSql.InvokeSync.Kafka;
 using SmartSql.InvokeSync.RabbitMQ;
 using SmartSql.Sample.AspNetCore.Service;
 using Swashbuckle.AspNetCore.Swagger;
@@ -37,6 +29,8 @@ namespace SmartSql.Sample.AspNetCore
                 .AddSmartSql((sp, builder) =>
                 {
                     builder.UseProperties(Configuration);
+                    
+                    
 //                    var subscriber = sp.GetRequiredService<ISubscriber>();
 //                    builder.UseCacheManager(new SyncCacheManager(subscriber));
                 })

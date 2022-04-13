@@ -17,37 +17,35 @@ namespace SmartSql.Test.Unit.Cache
         }
 
         [Fact]
-        public void QueryByLruCache()
+        public void GetByCache()
         {
-            var list = SqlMapper.Query<AllPrimitive>(new RequestContext
+            var expected = SqlMapper.QuerySingle<CachedEntity>(new RequestContext
             {
-                Scope = nameof(AllPrimitive),
-                SqlId = "QueryByLruCache",
-                Request = new {Taken = 8}
+                Scope = "LruCache",
+                SqlId = "GetByCache"
             });
-            var cachedList = SqlMapper.Query<AllPrimitive>(new RequestContext
+            var actual = SqlMapper.QuerySingle<CachedEntity>(new RequestContext
             {
-                Scope = nameof(AllPrimitive),
-                SqlId = "QueryByLruCache",
-                Request = new {Taken = 8}
+                Scope = "LruCache",
+                SqlId = "GetByCache"
             });
-            Assert.Equal(list.GetHashCode(), cachedList.GetHashCode());
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public void QueryByLruCacheFromRequest()
+        public void GetByCacheFromRequest()
         {
-            var list = SqlMapper.Query<AllPrimitive>(new RequestContext
+            var list = SqlMapper.Query<CachedEntity>(new RequestContext
             {
-                Scope = nameof(AllPrimitive),
-                SqlId = "QueryByLruCacheFromRequest",
-                Request = new {Request = new {Taken = 8}}
+                Scope = "LruCache",
+                SqlId = "GetByCacheFromRequest",
+                Request = new { CacheKey = "CacheKey" }
             });
-            var cachedList = SqlMapper.Query<AllPrimitive>(new RequestContext
+            var cachedList = SqlMapper.Query<CachedEntity>(new RequestContext
             {
-                Scope = nameof(AllPrimitive),
-                SqlId = "QueryByLruCacheFromRequest",
-                Request = new {Request = new {Taken = 8}}
+                Scope = "LruCache",
+                SqlId = "GetByCacheFromRequest",
+                Request = new { CacheKey = "CacheKey" }
             });
             Assert.Equal(list.GetHashCode(), cachedList.GetHashCode());
         }

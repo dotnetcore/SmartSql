@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+//*******************************
+// Create By Ahoo Wang
+// Date 2019-01-24 17:54
+// Code Generate By SmartCode
+// Code Generate Github : https://github.com/Ahoo-Wang/SmartCode
+//*******************************-->
+
+<SmartSqlMap Scope="LruCache" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+    <Caches>
+        <Cache Id="Cache" Type="Lru">
+            <Property Name="CacheSize" Value="10"/>
+        </Cache>
+    </Caches>
+    <Statements>
+        <Statement Id="GetByCache" Cache="Cache">
+            SELECT 'lru' as Name;
+        </Statement>
+        <Statement Id="GetByCacheFromRequest" Cache="Cache">
+            SELECT ?CacheKey as Name;
+        </Statement>
+        
+    </Statements>
+</SmartSqlMap>

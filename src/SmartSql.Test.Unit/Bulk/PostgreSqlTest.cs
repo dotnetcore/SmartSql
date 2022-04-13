@@ -11,7 +11,7 @@ namespace SmartSql.Test.Unit.Bulk
 {
     public class PostgreSqlTest
     {
-        [Fact]
+        [Fact(Skip = "The database environment that the project depends on does not exist.")]
         public void Insert()
         {
             var dbSessionFactory = new SmartSqlBuilder()

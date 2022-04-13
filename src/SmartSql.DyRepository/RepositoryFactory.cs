@@ -1,21 +1,21 @@
 ﻿using Microsoft.Extensions.Logging;
 using SmartSql.Reflection.TypeConstants;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Collections.Concurrent;
 
 namespace SmartSql.DyRepository
 {
     public class RepositoryFactory : IRepositoryFactory
     {
-        private readonly IDictionary<Type, object> _cachedRepository = new Dictionary<Type, object>();
+        private readonly ConcurrentDictionary<Type, object>
+            _cachedRepository = new ConcurrentDictionary<Type, object>();
 
         private readonly IRepositoryBuilder _repositoryBuilder;
         private readonly ILogger _logger;
 
         public RepositoryFactory(IRepositoryBuilder repositoryBuilder
             , ILogger logger
-            )
+        )
         {
             _repositoryBuilder = repositoryBuilder;
             _logger = logger;
@@ -23,30 +23,26 @@ namespace SmartSql.DyRepository
 
         public object CreateInstance(Type interfaceType, ISqlMapper sqlMapper, string scope = "")
         {
-            if (!_cachedRepository.ContainsKey(interfaceType))
+            return _cachedRepository.GetOrAdd(interfaceType, (key) =>
             {
-                lock (this)
+                if (_logger.IsEnabled(LogLevel.Debug))
                 {
-                    if (!_cachedRepository.ContainsKey(interfaceType))
-                    {
-                        if (_logger.IsEnabled(LogLevel.Debug))
-                        {
-                            _logger.LogDebug($"RepositoryFactory.CreateInstance :InterfaceType.FullName:[{interfaceType.FullName}] Start");
-                        }
-                        var implType = _repositoryBuilder.Build(interfaceType, sqlMapper.SmartSqlConfig, scope);
-
-                        var obj = sqlMapper.SmartSqlConfig.ObjectFactoryBuilder
-                            .GetObjectFactory(implType, new Type[] { ISqlMapperType.Type })(new object[] { sqlMapper });
-                        _cachedRepository.Add(interfaceType, obj);
-                        if (_logger.IsEnabled(LogLevel.Debug))
-                        {
-                            _logger.LogDebug($"RepositoryFactory.CreateInstance :InterfaceType.FullName:[{interfaceType.FullName}],ImplType.FullName:[{implType.FullName}] End");
-                        }
-                    }
+                    _logger.LogDebug(
+                        $"RepositoryFactory.CreateInstance :InterfaceType.FullName:[{interfaceType.FullName}] Start");
                 }
-            }
-            return _cachedRepository[interfaceType];
-        }
 
+                var implType = _repositoryBuilder.Build(interfaceType, sqlMapper.SmartSqlConfig, scope);
+
+                var obj = sqlMapper.SmartSqlConfig.ObjectFactoryBuilder
+                    .GetObjectFactory(implType, new Type[] { ISqlMapperType.Type })(new object[] { sqlMapper });
+                if (_logger.IsEnabled(LogLevel.Debug))
+                {
+                    _logger.LogDebug(
+                        $"RepositoryFactory.CreateInstance :InterfaceType.FullName:[{interfaceType.FullName}],ImplType.FullName:[{implType.FullName}] End");
+                }
+
+                return obj;
+            });
+        }
     }
 }

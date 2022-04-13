@@ -71,7 +71,7 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.AddRepositoryFactory();
             var options = new AssemblyAutoRegisterOptions
             {
-                Filter = (type) => type.IsInterface
+                Filter = type => type.IsInterface
             };
             setupOptions(options);
             ScopeTemplateParser templateParser = new ScopeTemplateParser(options.ScopeTemplate);

@@ -22,10 +22,10 @@
     <Statement Id="QueryParams">
       <Where>
         <IsNotEmpty Prepend="And" Property="UserId">
-          T.UserId = @UserId
+          T.UserId = ?UserId
         </IsNotEmpty>
         <IsNotEmpty Prepend="And" Property="Data">
-          T.Data = @Data
+          T.Data = ?Data
         </IsNotEmpty>
       </Where>
     </Statement>
@@ -40,15 +40,15 @@
       )
       VALUES
       (
-      @UserId,
-      @Data
+      ?UserId,
+      ?Data
       )
     </Statement>
 
     <!--删除-->
     <Statement Id="Delete">
       Delete From T_UserExtendedInfo
-      Where UserId=@UserId
+      Where UserId=?UserId
     </Statement>
 
     <!--更新-->
@@ -56,17 +56,17 @@
       UPDATE T_UserExtendedInfo
       <Set>
         <IsProperty Prepend="," Property="Data">
-          Data = @Data
+          Data = ?Data
         </IsProperty>
       </Set>
-      Where UserId=@UserId
+      Where UserId=?UserId
     </Statement>
 
     <!--获取数据列-->
     <Statement Id="Query" >
       SELECT
       <IsNotEmpty Prepend="Top" Property="Taken">
-        (@Taken)
+        (?Taken)
       </IsNotEmpty>
       T.* From T_UserExtendedInfo T
       <Include RefId="QueryParams" />
@@ -75,39 +75,42 @@
           T.UserId Desc
         </Default>
       </Switch>
+      <IsNotEmpty Prepend="limit" Property="Taken">
+        ?Taken
+      </IsNotEmpty>
     </Statement>
 
 
     <!--获取分页数据-->
     <Statement Id="QueryByPage" >
-
-      Select T.* From T_UserExtendedInfo T With(NoLock)
+      Select T.* From T_UserExtendedInfo
       <Include RefId="QueryParams" />
       Order By T.UserId Desc
-      Offset ((@PageIndex-1)*@PageSize) Rows Fetch Next @PageSize Rows Only;
+      limit ?Offset,?PageSize;
     </Statement>
 
 
     <!--获取记录数-->
     <Statement Id="GetRecord">
-      Select Count(1) From T_UserExtendedInfo T
+      Select Count(*) From T_UserExtendedInfo T
       <Include RefId="QueryParams" />
     </Statement>
 
     <!--获取表映射实体-->
     <Statement Id="GetEntity"  ResultMap="UserResult">
-      Select Top 1 T.* From T_UserExtendedInfo T With(NoLock)
+      Select T.* From T_UserExtendedInfo T
       <Where Min="1">
         <IsNotEmpty Prepend="And" Property="UserId">
-          T.UserId=@UserId
+          T.UserId=?UserId
         </IsNotEmpty>
       </Where>
+      limit 1;
     </Statement>
 
 
     <!--是否存在该记录-->
     <Statement Id="IsExist">
-      Select Count(1) From T_UserExtendedInfo T
+      Select Count(*) From T_UserExtendedInfo T
       <Include RefId="QueryParams" />
     </Statement>
 

@@ -1,4 +1,5 @@
-﻿using SmartSql.Configuration;
+﻿using System;
+using SmartSql.Configuration;
 using SmartSql.Configuration.Tags;
 using Xunit;
 
@@ -14,62 +15,54 @@ namespace SmartSql.Test.Unit.Tags
             SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
         }
 
-
         [Fact]
-        public void Include_Test()
+        public void BuildSql()
         {
             var requestCtx = new RequestContext
             {
-                Scope = nameof(IncludeTest),
-                SqlId = "Query",
-                Request = new {UserName = "SmartSql"}
+                Scope = "TagTest",
+                SqlId = "Include",
+                Request = new { Property = "Property" }
             };
             requestCtx.SetupParameters();
 
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Select * From T_User T
-       Where     
-        T.UserName=@UserName", requestCtx.SqlBuilder.ToString().Trim());
-        }
-
-
-        [Fact]
-        public void Include_Empty_Test()
-        {
-            Assert.Throws<TagRequiredFailException>(() =>
-            {
-                var requestCtx = new RequestContext
-                {
-                    Scope = nameof(IncludeTest),
-                    SqlId = "Query",
-                    Request = new {UserName = ""}
-                };
-                requestCtx.SetupParameters();
-
-                var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-                statement.BuildSql(requestCtx);
-            });
-
+            Assert.Equal(@"Where     
+                Property=?Property", requestCtx.SqlBuilder.ToString().Trim());
         }
 
         [Fact]
-        public void Include_Empty_Not_Required_Test()
+        public void BuildSqlWhenEmpty()
         {
             var requestCtx = new RequestContext
             {
-                Scope = nameof(IncludeTest),
-                SqlId = "Query_Not_Required",
-                Request = new {UserName = ""}
+                Scope = "TagTest",
+                SqlId = "Include",
+                Request = new { Property = "" }
             };
             requestCtx.SetupParameters();
 
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
+            Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
+        }
 
+        [Fact]
+        public void IncludeRequired()
+        {
+            var requestCtx = new RequestContext
+            {
+                Scope = "TagTest",
+                SqlId = "IncludeRequired",
+                Request = new { Property = "" }
+            };
+            requestCtx.SetupParameters();
 
-            Assert.Equal(@"Select * From T_User T", requestCtx.SqlBuilder.ToString().Trim());
+            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+
+            Assert.Throws<TagRequiredFailException>(() => { statement.BuildSql(requestCtx); });
         }
     }
 }

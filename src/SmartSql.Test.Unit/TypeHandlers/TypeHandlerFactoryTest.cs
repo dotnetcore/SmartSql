@@ -8,23 +8,19 @@ namespace SmartSql.Test.Unit.TypeHandlers
 {
     public class TypeHandlerFactoryTest
     {
-        TypeHandlerFactory typeHandlerFactory = new TypeHandlerFactory();
-        Type enumType = typeof(NumericalEnum);
+        private readonly TypeHandlerFactory _typeHandlerFactory = new TypeHandlerFactory();
+        private readonly Type _enumType = typeof(NumericalEnum);
 
         [Fact]
-        public void TestEnumType()
+        public void GetEnumTypeHandler()
         {
-            var typeHandler = typeHandlerFactory.GetTypeHandler(enumType);
-
-            Assert.NotNull(typeHandler);
+            var typeHandler = _typeHandlerFactory.GetTypeHandler(_enumType);
+            Assert.Equal(typeof(EnumTypeHandler<NumericalEnum>), typeHandler.GetType());
         }
 
-
         [Fact]
-        public void TestConcurrentRegisterEnum()
+        public void ConcurrentGetEnumTypeHandler()
         {
-            var enumType = typeof(NumericalEnum);
-
             var taskMax = 200;
             var current = 0;
             var tasks = new Task[taskMax];
@@ -32,24 +28,14 @@ namespace SmartSql.Test.Unit.TypeHandlers
             {
                 var task = new Task(() =>
                 {
-                    var typeHandler = typeHandlerFactory.GetTypeHandler(enumType);
+                    var typeHandler = _typeHandlerFactory.GetTypeHandler(_enumType);
                 });
                 tasks[current] = task;
                 task.Start();
                 current++;
             }
 
-            try
-            {
-                Task.WaitAll(tasks);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                var typeHandler = typeHandlerFactory.GetTypeHandler(enumType);
-                throw;
-            }
-
+            Task.WaitAll(tasks);
         }
     }
 }

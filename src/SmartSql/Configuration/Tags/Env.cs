@@ -9,8 +9,8 @@ namespace SmartSql.Configuration.Tags
         public string DbProvider { get; set; }
         public override bool IsCondition(AbstractRequestContext context)
         {
-            var dbProvierName = context.ExecutionContext.SmartSqlConfig.Database.DbProvider.Name;
-            return dbProvierName == DbProvider;
+            var dbProviderName = context.ExecutionContext.SmartSqlConfig.Database.DbProvider.Name;
+            return dbProviderName == DbProvider;
         }
     }
 }
