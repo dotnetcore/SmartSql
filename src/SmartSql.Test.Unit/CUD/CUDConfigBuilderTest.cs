@@ -58,7 +58,7 @@ namespace SmartSql.Test.Unit.CUD
                 {
                     Console.WriteLine($"class {scope}.{statement.Value.Id} found");
                 }
-                Assert.Equal(6, v.Statements.Count);
+                Assert.Equal(7, v.Statements.Count);
             }
         }
     }
