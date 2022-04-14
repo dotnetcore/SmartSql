@@ -38,9 +38,7 @@ namespace SmartSql.CUD
             }
 
             SmartSqlConfig = Parent.Build();
-
-
-
+            
             var sqlGen = new CUDSqlGenerator(SmartSqlConfig);
 
             foreach (var entityType in _entityTypeList)

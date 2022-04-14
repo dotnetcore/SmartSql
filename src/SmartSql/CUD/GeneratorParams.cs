@@ -3,7 +3,6 @@ using SmartSql.Configuration;
 using SmartSql.Reflection.TypeConstants;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SmartSql.CUD
 {

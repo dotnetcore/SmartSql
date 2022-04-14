@@ -4,10 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using SmartSql.Configuration;
 using SmartSql.Reflection.PropertyAccessor;
-using SmartSql.TypeHandlers;
 
 namespace SmartSql.CUD
 {

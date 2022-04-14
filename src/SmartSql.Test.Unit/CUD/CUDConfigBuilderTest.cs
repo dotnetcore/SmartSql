@@ -1,5 +1,4 @@
 using System;
-using Microsoft.Extensions.Logging;
 using SmartSql.ConfigBuilder;
 using SmartSql.CUD;
 using SmartSql.Utils;

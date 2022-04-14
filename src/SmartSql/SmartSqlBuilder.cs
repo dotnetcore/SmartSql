@@ -54,7 +54,7 @@ namespace SmartSql
             new List<KeyValuePair<string, string>>();
 
         public IList<Type> EntityTypes { get; } = new List<Type>();
-        public bool IsUseCUDConfigBuilder { get; private set; } = false;
+        public bool IsUseCUDConfigBuilder { get; private set; }
         public IList<IMiddleware> Middlewares { get; set; } = new List<IMiddleware>();
 
         public SmartSqlBuilder Build()
