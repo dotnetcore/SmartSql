@@ -13,7 +13,7 @@ namespace SmartSql.Test.Unit.Deserializer
         public void CustomDeserialize()
         {
             var builder = new SmartSqlBuilder()
-                .UseDataSource("MySql", "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB")
+                .UseDataSource("MySql", "server=localhost;uid=root;pwd=root;database=SmartSqlStarterDB")
                 .UseAlias("DeserializerFactoryTest")
                 .AddDeserializer(new CustomDeserializer())
                 .Build();
