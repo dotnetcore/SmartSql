@@ -412,7 +412,7 @@
 
 		<Statement Id="DeleteMany">
 			Delete From T_AllPrimitive
-			Where Id in (?ids)
+			Where Id in ?Ids
 		</Statement>
 
         <!--更新-->
@@ -530,7 +530,7 @@
         </Statement>
 
         <!--获取表映射实体-->
-        <Statement Id="GetEntity">
+        <Statement Id="GetById">
             Select T.* From T_AllPrimitive T
             <Where>
                 <IsNotEmpty Prepend="And" Property="Id">
