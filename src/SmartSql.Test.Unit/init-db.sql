@@ -3,7 +3,7 @@ use SmartSqlStarterDB;
 
 create table if not exists T_AllPrimitive
 (
-    Id                    bigint       not null primary key,
+    Id                    bigint       not null AUTO_INCREMENT primary key,
     Boolean               boolean      not null,
     `Char`                char(1)      not null,
     Int16                 mediumint    not null,
@@ -13,7 +13,7 @@ create table if not exists T_AllPrimitive
     `Decimal`             decimal      not null,
     DateTime              datetime     not null,
     String                varchar(100) not null,
-    Guid                  char(32)     not null,
+    Guid                  char(36)     not null,
     TimeSpan              time         not null,
     NumericalEnum         tinyint(1)   not null,
     NullableBoolean       boolean,

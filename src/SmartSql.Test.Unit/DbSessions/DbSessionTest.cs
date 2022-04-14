@@ -187,7 +187,7 @@ namespace SmartSql.Test.Unit.DbSessions
             var id = await SqlMapper.ExecuteScalarAsync<long>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
-                SqlId = "Insert",
+                SqlId = "InsertReturnId",
                 Request = new AllPrimitive
                 {
                     DateTime = DateTime.Now,
@@ -235,7 +235,7 @@ namespace SmartSql.Test.Unit.DbSessions
             var id = SqlMapper.ExecuteScalar<int>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
-                SqlId = "Delete",
+                SqlId = "DeleteById",
                 Request = new AllPrimitive
                 {
                     DateTime = DateTime.Now,

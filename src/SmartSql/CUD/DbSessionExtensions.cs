@@ -117,17 +117,8 @@ namespace SmartSql
             var scope = EntityMetaDataCache<TEntity>.Scope;
             var pkCol = EntityMetaDataCache<TEntity>.PrimaryKey;
             var sqlParameters = new SqlParameterCollection();
-            var index = 0;
-            foreach (var id in ids)
-            {
-                var idName = $"{pkCol.Name}_{index}";
-                var sqlParameter = new SqlParameter(idName, id, id.GetType())
-                {
-                    TypeHandler = TypeHandlerCache<TPrimaryKey, TPrimaryKey>.Handler
-                };
-                sqlParameters.TryAdd(sqlParameter);
-                index++;
-            }
+
+            sqlParameters.TryAdd($"{pkCol.Name}s", ids);
 
             return dbSession.Execute(new RequestContext
             {
