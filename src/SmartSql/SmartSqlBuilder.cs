@@ -226,13 +226,13 @@ namespace SmartSql
             DataReaderDeserializers.Insert(2, deser);
             deser = new DynamicDeserializer();
             DataReaderDeserializers.Insert(3, deser);
+            deser = new EntityDeserializer();
+            // add EntityDeserializer to the end
+            DataReaderDeserializers.Add(deser);
             foreach (var deserializer in DataReaderDeserializers)
             {
                 SmartSqlConfig.DeserializerFactory.Add(deserializer);
             }
-            deser = new EntityDeserializer();
-            SmartSqlConfig.DeserializerFactory.Add(deser);
-            DataReaderDeserializers.Add(deser);
         }
 
         private bool UsedCache => SmartSqlConfig.Settings.IsCacheEnabled;
