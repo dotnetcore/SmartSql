@@ -540,6 +540,15 @@
             limit 1
         </Statement>
 
+        <Statement Id="GetEntity">
+            Select * From T_AllPrimitive T
+            <Where>
+                <IsNotEmpty Prepend="And" Property="Id">
+                    T.Id=?Id
+                </IsNotEmpty>
+            </Where>
+            limit 1
+        </Statement>
 
         <!--是否存在该记录-->
         <Statement Id="IsExist">
