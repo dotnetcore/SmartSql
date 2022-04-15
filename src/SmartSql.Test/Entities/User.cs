@@ -30,9 +30,14 @@ namespace SmartSql.Test.Entities
             Status = status;
         }
 
+        [Column("id")]
         public virtual long Id { get; set; }
+        [Column("user_name")]
         public virtual String UserName { get; set; }
+        [Column("status")]
         public virtual UserStatus Status { get; set; }
+        [Column("is_delete")]
+        public virtual bool IsDelete { get; set; }
     }
 
     public enum UserStatus : Int16
