@@ -54,7 +54,7 @@ namespace SmartSql
             new List<KeyValuePair<string, string>>();
 
         public IList<Type> EntityTypes { get; } = new List<Type>();
-        public bool IsUseCUDConfigBuilder { get; private set; } = false;
+        public bool IsUseCUDConfigBuilder { get; private set; }
         public IList<IMiddleware> Middlewares { get; set; } = new List<IMiddleware>();
 
         public SmartSqlBuilder Build()
@@ -226,12 +226,13 @@ namespace SmartSql
             DataReaderDeserializers.Insert(2, deser);
             deser = new DynamicDeserializer();
             DataReaderDeserializers.Insert(3, deser);
+            deser = new EntityDeserializer();
+            // add EntityDeserializer to the end
+            DataReaderDeserializers.Add(deser);
             foreach (var deserializer in DataReaderDeserializers)
             {
                 SmartSqlConfig.DeserializerFactory.Add(deserializer);
             }
-            deser = new EntityDeserializer();
-            SmartSqlConfig.DeserializerFactory.Add(deser);
         }
 
         private bool UsedCache => SmartSqlConfig.Settings.IsCacheEnabled;

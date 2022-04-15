@@ -1,20 +1,11 @@
-﻿using SmartSql.Annotations;
-using SmartSql.Data;
+﻿using SmartSql.Data;
 using SmartSql.DbSession;
-using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Text;
-using SmartSql.Configuration;
-using SmartSql.Configuration.Tags;
 using SmartSql.Reflection;
 using SmartSql.Reflection.PropertyAccessor;
-using SmartSql.DataSource;
 using SmartSql.CUD;
 using SmartSql.Reflection.Convert;
-using SmartSql.Reflection.EntityProxy;
 using SmartSql.TypeHandlers;
-using StatementType = SmartSql.Configuration.StatementType;
 
 namespace SmartSql
 {
@@ -44,7 +35,7 @@ namespace SmartSql
                 EnablePropertyChangedTrack = enablePropertyChangedTrack,
                 Scope = scope,
                 SqlId = CUDStatementName.GetById,
-                Request = new SqlParameterCollection {idParam}
+                Request = new SqlParameterCollection { idParam }
             });
         }
 
@@ -108,7 +99,7 @@ namespace SmartSql
             {
                 Scope = scope,
                 SqlId = CUDStatementName.DeleteById,
-                Request = new SqlParameterCollection {idParam}
+                Request = new SqlParameterCollection { idParam }
             });
         }
 
@@ -123,7 +114,7 @@ namespace SmartSql
             return dbSession.Execute(new RequestContext
             {
                 Scope = scope,
-                SqlId=CUDStatementName.DeleteMany,
+                SqlId = CUDStatementName.DeleteMany,
                 Request = sqlParameters
             });
         }
@@ -133,7 +124,7 @@ namespace SmartSql
             var scope = EntityMetaDataCache<TEntity>.Scope;
             return dbSession.Execute(new RequestContext
             {
-                SqlId=CUDStatementName.DeleteAll,
+                SqlId = CUDStatementName.DeleteAll,
                 Scope = scope
             });
         }
@@ -159,14 +150,13 @@ namespace SmartSql
 
         public static int DyUpdate<TEntity>(this IDbSession dbSession, object entity, bool? enablePropertyChangedTrack)
         {
-
             var dyParams = SqlParameterCollection.Create(entity, false);
             var scope = EntityMetaDataCache<TEntity>.Scope;
 
             return dbSession.Execute(new RequestContext
             {
                 Scope = scope,
-                SqlId=CUDStatementName.Update,
+                SqlId = CUDStatementName.Update,
                 Request = dyParams
             });
         }

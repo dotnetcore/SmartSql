@@ -1,5 +1,5 @@
 name: Integration Test
-on: [ push ]
+on: [ push, pull_request ]
 jobs:
   SmartSql-Unit-Test:
     name: SmartSql Unit Test

@@ -2,25 +2,19 @@
 using SmartSql.Configuration;
 using SmartSql.Configuration.Tags;
 using SmartSql.DataSource;
-using SmartSql.Reflection.TypeConstants;
 using SmartSql.Utils;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
 
 namespace SmartSql.CUD
 {
     public class CUDSqlGenerator : ICUDSqlGenerator
     {
-
-
+        
         private IDictionary<string, Func<GeneratorParams, Statement>> _generatorFuncList;
         private DbProvider _provider;
         private StatementAnalyzer _analyzer;
-
-
+        
         public CUDSqlGenerator(SmartSqlConfig config)
         {
             _generatorFuncList = new Dictionary<string, Func<GeneratorParams, Statement>>
@@ -37,8 +31,6 @@ namespace SmartSql.CUD
             _analyzer = new StatementAnalyzer();
         }
         
-
-
         private Statement BuildStatement(string statementId, string sql, SqlMap sqlMap)
         {
             return new Statement()
@@ -50,7 +42,7 @@ namespace SmartSql.CUD
                 SqlTags = new List<ITag>
                     {
                         new SqlText(sql, _provider.ParameterPrefix)
-                    },
+                    }
             };
         }
 
