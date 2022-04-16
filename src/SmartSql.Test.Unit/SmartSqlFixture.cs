@@ -30,11 +30,13 @@ namespace SmartSql.Test.Unit
                 .UseLoggerFactory(LoggerFactory)
                 .UseAlias(GLOBAL_SMART_SQL)
                 .AddFilter<TestPrepareStatementFilter>()
-                .RegisterEntity(new TypeScanOptions
-                {
-                    AssemblyString = "SmartSql.Test",
-                    Filter = type => type.Namespace == "SmartSql.Test.Entities"
-                })
+                .RegisterEntity(typeof(AllPrimitive))
+                // .RegisterEntity(new TypeScanOptions
+                // {
+                //     AssemblyString = "SmartSql.Test",
+                //     Filter = type => type.Namespace == "SmartSql.Test.Entities"
+                // })
+                .UseCUDConfigBuilder()
                 .Build();
             DbSessionFactory = SmartSqlBuilder.DbSessionFactory;
             SqlMapper = SmartSqlBuilder.SqlMapper;

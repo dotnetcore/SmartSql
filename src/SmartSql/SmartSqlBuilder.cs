@@ -163,7 +163,7 @@ namespace SmartSql
 
             if (IsUseCUDConfigBuilder)
             {
-                ConfigBuilder = new CUDConfigBuilder(ConfigBuilder, EntityTypes);
+                ConfigBuilder = new CUDConfigBuilder(ConfigBuilder, EntityTypes, LoggerFactory);
             }
 
             SmartSqlConfig = ConfigBuilder.Build();

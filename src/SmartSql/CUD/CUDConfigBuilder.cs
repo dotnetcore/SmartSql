@@ -43,7 +43,7 @@ namespace SmartSql.CUD
 
             foreach (var entityType in _entityTypeList)
             {
-                var scope = EntityMetaDataCacheType.GetTableName(entityType);
+                var scope = EntityMetaDataCacheType.GetScope(entityType);
                 if (!SmartSqlConfig.SqlMaps.TryGetValue(scope, out SqlMap sqlMap))
                 {
                     sqlMap = new SqlMap
