@@ -47,7 +47,7 @@ namespace SmartSql.Test.Unit.Cache
                 SqlId = "GetByCacheFromRequest",
                 Request = new { CacheKey = "CacheKey" }
             });
-            Assert.Equal(list.GetHashCode(), cachedList.GetHashCode());
+            Assert.Equal(list, cachedList);
         }
     }
 }

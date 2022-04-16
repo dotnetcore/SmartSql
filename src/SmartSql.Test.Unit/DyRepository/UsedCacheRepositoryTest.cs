@@ -19,7 +19,7 @@ namespace SmartSql.Test.Unit.DyRepository
         public void GetNow()
         {
             var datetime = _usedCacheRepository.GetNow();
-            Thread.Sleep(1000);
+            Thread.Sleep(2000);
             var datetime1 = _usedCacheRepository.GetNow();
             Assert.Equal(datetime, datetime1);
         }
