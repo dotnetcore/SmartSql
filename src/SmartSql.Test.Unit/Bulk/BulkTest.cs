@@ -16,7 +16,7 @@ namespace SmartSql.Test.Unit.Bulk
             _output = output;
         }
 
-        [Fact(Skip = "none env")]
+        [Fact]
         public void ToDataTable()
         {
             var list = new List<AllPrimitive>();
@@ -32,6 +32,7 @@ namespace SmartSql.Test.Unit.Bulk
             var dataTable = list.ToDataTable();
             _output.WriteLine($"ToDataTable taken :{watch.ElapsedMilliseconds}");
             watch.Stop();
+            Assert.Equal(list.Count, dataTable.Rows.Count);
         }
     }
 }

@@ -4,7 +4,8 @@ using SmartSql.Annotations;
 namespace SmartSql.Test.Entities
 {
     [System.ComponentModel.DataAnnotations.Schema.Table("T_AllPrimitive")]
-    [Table("AllPrimitive")]
+    [Scope("CUD_AllPrimitive")]
+    [Table("T_AllPrimitive")]
     public class AllPrimitive
     {
         public AllPrimitive()

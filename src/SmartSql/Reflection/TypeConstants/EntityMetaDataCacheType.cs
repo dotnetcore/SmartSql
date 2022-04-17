@@ -22,6 +22,10 @@ namespace SmartSql.Reflection.TypeConstants
         {
             return GetEntityMetaData<string>(entityType, "TableName");
         }
+        public static string GetScope(Type entityType)
+        {
+            return GetEntityMetaData<string>(entityType, "Scope");
+        }
 
         public static TData GetEntityMetaData<TData>(Type entityType, string propertyName)
         {
