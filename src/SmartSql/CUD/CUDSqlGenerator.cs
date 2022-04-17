@@ -83,7 +83,7 @@ namespace SmartSql.CUD
 
         public Statement BuildDeleteMany(GeneratorParams gParams)
         {
-            var sql = $"Delete From {gParams.TableName} Where {gParams.PkCol.Name} In {FormatParameterName(_provider, gParams.PkCol.Name)}";
+            var sql = $"Delete From {gParams.TableName} Where {gParams.PkCol.Name} In {FormatParameterName(_provider, gParams.PkCol.Name + "s")}";
             return BuildStatement(CUDStatementName.DeleteMany, sql, gParams.Map);
         }
 
@@ -113,7 +113,7 @@ namespace SmartSql.CUD
             }
             else
             {
-                statement.SqlTags.Add(new SqlText($"; {_provider.SelectAutoIncrement};", _provider.ParameterPrefix));
+                statement.SqlTags.Add(new SqlText($"{_provider.SelectAutoIncrement}", _provider.ParameterPrefix));
             }
 
             return statement;
