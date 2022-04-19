@@ -29,7 +29,7 @@ namespace SmartSql.Test.Unit.DI
             var dbSessionFactory = serviceProvider.GetRequiredService<IDbSessionFactory>();
         }
 
-        protected String ConnectionString => "Data Source=.;Initial Catalog=SmartSqlStarterDB;Integrated Security=True";
+        protected String ConnectionString => "Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True";
 
         [Fact]
         public void AddSmartSqlByFunc()
