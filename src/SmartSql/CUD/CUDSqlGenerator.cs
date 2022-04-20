@@ -62,14 +62,14 @@ namespace SmartSql.CUD
         public Statement BuildGetEntity(GeneratorParams gParams)
         {
             var sql =
-                $"select * From {gParams.TableName} Where {WrapColumnEqParameter(_provider, gParams.PkCol)}";
+                $"Select * From {gParams.TableName} Where {WrapColumnEqParameter(_provider, gParams.PkCol)}";
 
             return BuildStatement(CUDStatementName.GetById, sql, gParams.Map);
         }
 
         public Statement BuildDeleteAll(GeneratorParams gParams)
         {
-            var sql = $"delete from {gParams.TableName}";
+            var sql = $"Delete From {gParams.TableName}";
             return BuildStatement(CUDStatementName.DeleteAll, sql, gParams.Map);
         }
 
@@ -99,7 +99,7 @@ namespace SmartSql.CUD
                 colNames += $",{FormatColumnName(_provider, col.Value.Name)}";
                 colVals += $",{FormatParameterName(_provider, col.Value.Property.Name)}";
             }
-            var sql = $"insert into {gParams.TableName} ({colNames.Substring(1)}) values ({colVals.Substring(1)})";
+            var sql = $"Insert Into {gParams.TableName} ({colNames.Substring(1)}) Values ({colVals.Substring(1)})";
             return BuildStatement(CUDStatementName.Insert, sql, gParams.Map);
         }
 
@@ -142,12 +142,12 @@ namespace SmartSql.CUD
 
             var sqlTags = new List<ITag>()
             {
-                new SqlText($"update {gParams.TableName}", dbPrefix),
+                new SqlText($"Update {gParams.TableName}", dbPrefix),
                 new Set()
                 {
                     ChildTags = updateTags
                 },
-                new SqlText($" where {WrapColumnEqParameter(_provider, gParams.PkCol)}", dbPrefix),
+                new SqlText($" Where {WrapColumnEqParameter(_provider, gParams.PkCol)}", dbPrefix),
             };
             
             return BuildStatement(CUDStatementName.Update, sqlTags, gParams.Map);

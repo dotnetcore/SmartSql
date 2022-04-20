@@ -17,11 +17,6 @@ namespace SmartSql.CUD
         private ILoggerFactory _loggerFactory;
         private ILogger _logger;
 
-        public CUDConfigBuilder(IEnumerable<Type> entityTypeList)
-            : this(new NativeConfigBuilder(new SmartSqlConfig()), entityTypeList)
-        {
-        }
-
         public CUDConfigBuilder(IConfigBuilder parent, IEnumerable<Type> entityTypeList, ILoggerFactory loggerFactory = null)
         {
             Parent = parent;
