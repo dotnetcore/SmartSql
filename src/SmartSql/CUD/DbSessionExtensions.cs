@@ -34,7 +34,7 @@ namespace SmartSql
             {
                 EnablePropertyChangedTrack = enablePropertyChangedTrack,
                 Scope = scope,
-                SqlId = CUDStatementName.GetById,
+                SqlId = CUDStatementName.GET_BY_ID,
                 Request = new SqlParameterCollection { idParam }
             });
         }
@@ -58,7 +58,7 @@ namespace SmartSql
             return dbSession.Execute(new RequestContext
             {
                 Scope = scope,
-                SqlId = CUDStatementName.Insert,
+                SqlId = CUDStatementName.INSERT,
                 Request = dyParams
             });
         }
@@ -74,7 +74,7 @@ namespace SmartSql
             var id = dbSession.ExecuteScalar<TPrimaryKey>(new RequestContext
             {
                 Scope = scope,
-                SqlId = CUDStatementName.InsertReturnId,
+                SqlId = CUDStatementName.INSERT_RETURN_ID,
                 Request = dyParams
             });
 
@@ -98,7 +98,7 @@ namespace SmartSql
             return dbSession.Execute(new RequestContext
             {
                 Scope = scope,
-                SqlId = CUDStatementName.DeleteById,
+                SqlId = CUDStatementName.DELETE_BY_ID,
                 Request = new SqlParameterCollection { idParam }
             });
         }
@@ -114,7 +114,7 @@ namespace SmartSql
             return dbSession.Execute(new RequestContext
             {
                 Scope = scope,
-                SqlId = CUDStatementName.DeleteMany,
+                SqlId = CUDStatementName.DELETE_MANY,
                 Request = sqlParameters
             });
         }
@@ -124,7 +124,7 @@ namespace SmartSql
             var scope = EntityMetaDataCache<TEntity>.Scope;
             return dbSession.Execute(new RequestContext
             {
-                SqlId = CUDStatementName.DeleteAll,
+                SqlId = CUDStatementName.DELETE_ALL,
                 Scope = scope
             });
         }
@@ -156,7 +156,7 @@ namespace SmartSql
             return dbSession.Execute(new RequestContext
             {
                 Scope = scope,
-                SqlId = CUDStatementName.Update,
+                SqlId = CUDStatementName.UPDATE,
                 Request = dyParams
             });
         }

@@ -5,32 +5,32 @@ using SmartSql.DataSource;
 using SmartSql.Utils;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace SmartSql.CUD
 {
     public class CUDSqlGenerator : ICUDSqlGenerator
     {
-        
-        private IDictionary<string, Func<GeneratorParams, Statement>> _generatorFuncList;
-        private DbProvider _provider;
-        private StatementAnalyzer _analyzer;
-        
+        private readonly IDictionary<string, Func<GeneratorParams, Statement>> _generatorFuncList;
+        private readonly DbProvider _provider;
+        private readonly StatementAnalyzer _analyzer;
+
         public CUDSqlGenerator(SmartSqlConfig config)
         {
             _generatorFuncList = new Dictionary<string, Func<GeneratorParams, Statement>>
             {
-                { CUDStatementName.GetById, BuildGetEntity},
-                { CUDStatementName.Insert, BuildInsert },
-                { CUDStatementName.InsertReturnId, BuildInsertReturnId },
-                { CUDStatementName.Update, BuildUpdate },
-                { CUDStatementName.DeleteById, BuildDeleteById },
-                { CUDStatementName.DeleteAll, BuildDeleteAll },
-                { CUDStatementName.DeleteMany, BuildDeleteMany },
+                { CUDStatementName.GET_BY_ID, BuildGetEntity },
+                { CUDStatementName.INSERT, BuildInsert },
+                { CUDStatementName.INSERT_RETURN_ID, BuildInsertReturnId },
+                { CUDStatementName.UPDATE, BuildUpdate },
+                { CUDStatementName.DELETE_BY_ID, BuildDeleteById },
+                { CUDStatementName.DELETE_ALL, BuildDeleteAll },
+                { CUDStatementName.DELETE_MANY, BuildDeleteMany },
             };
             _provider = config.Database.DbProvider;
             _analyzer = new StatementAnalyzer();
         }
-        
+
         private Statement BuildStatement(string statementId, string sql, SqlMap sqlMap)
         {
             return new Statement()
@@ -40,9 +40,9 @@ namespace SmartSql.CUD
                 CommandType = System.Data.CommandType.Text,
                 StatementType = _analyzer.Analyse(sql),
                 SqlTags = new List<ITag>
-                    {
-                        new SqlText(sql, _provider.ParameterPrefix)
-                    }
+                {
+                    new SqlText(sql, _provider.ParameterPrefix)
+                }
             };
         }
 
@@ -64,13 +64,13 @@ namespace SmartSql.CUD
             var sql =
                 $"Select * From {gParams.TableName} Where {WrapColumnEqParameter(_provider, gParams.PkCol)}";
 
-            return BuildStatement(CUDStatementName.GetById, sql, gParams.Map);
+            return BuildStatement(CUDStatementName.GET_BY_ID, sql, gParams.Map);
         }
 
         public Statement BuildDeleteAll(GeneratorParams gParams)
         {
             var sql = $"Delete From {gParams.TableName}";
-            return BuildStatement(CUDStatementName.DeleteAll, sql, gParams.Map);
+            return BuildStatement(CUDStatementName.DELETE_ALL, sql, gParams.Map);
         }
 
         public Statement BuildDeleteById(GeneratorParams gParams)
@@ -78,29 +78,42 @@ namespace SmartSql.CUD
             var sql =
                 $"Delete From {gParams.TableName} Where {WrapColumnEqParameter(_provider, gParams.PkCol)}";
 
-            return BuildStatement(CUDStatementName.DeleteById, sql, gParams.Map);
+            return BuildStatement(CUDStatementName.DELETE_BY_ID, sql, gParams.Map);
         }
 
         public Statement BuildDeleteMany(GeneratorParams gParams)
         {
-            var sql = $"Delete From {gParams.TableName} Where {gParams.PkCol.Name} In {FormatParameterName(_provider, gParams.PkCol.Name + "s")}";
-            return BuildStatement(CUDStatementName.DeleteMany, sql, gParams.Map);
+            var sql =
+                $"Delete From {gParams.TableName} Where {gParams.PkCol.Name} In {FormatParameterName(_provider, gParams.PkCol.Name + "s")}";
+            return BuildStatement(CUDStatementName.DELETE_MANY, sql, gParams.Map);
         }
 
         public Statement BuildInsert(GeneratorParams gParams)
         {
-            var cols = gParams.ColumnMaps;
-            string colNames = string.Empty;
-            string colVals = string.Empty;
-            foreach (var col in cols)
+            var columnMaps = gParams.ColumnMaps.Values;
+            StringBuilder colNamesBuilder = new StringBuilder(columnMaps.Count);
+            StringBuilder colValuesBuilder = new StringBuilder(columnMaps.Count);
+            bool isFirst = true;
+            foreach (var column in columnMaps)
             {
-                if (col.Value.IsAutoIncrement)
+                if (column.IsAutoIncrement)
+                {
                     continue;
-                colNames += $",{FormatColumnName(_provider, col.Value.Name)}";
-                colVals += $",{FormatParameterName(_provider, col.Value.Property.Name)}";
+                }
+
+                if (!isFirst)
+                {
+                    colNamesBuilder.Append(",");
+                    colValuesBuilder.Append(",");
+                }
+                isFirst = false;
+
+                colNamesBuilder.Append(FormatColumnName(_provider, column.Name));
+                colValuesBuilder.Append(FormatParameterName(_provider, column.Property.Name));
             }
-            var sql = $"Insert Into {gParams.TableName} ({colNames.Substring(1)}) Values ({colVals.Substring(1)})";
-            return BuildStatement(CUDStatementName.Insert, sql, gParams.Map);
+
+            var sql = $"Insert Into {gParams.TableName} ({colNamesBuilder}) Values ({colValuesBuilder})";
+            return BuildStatement(CUDStatementName.INSERT, sql, gParams.Map);
         }
 
         public Statement BuildInsertReturnId(GeneratorParams arg)
@@ -128,19 +141,19 @@ namespace SmartSql.CUD
             {
                 if (col.IsPrimaryKey)
                     continue;
-                var p = new IsProperty()
+                var p = new IsProperty
                 {
                     Prepend = ",",
                     Property = col.Property.Name,
-                    ChildTags = new List<ITag>()
+                    ChildTags = new List<ITag>
                     {
-                        new SqlText($"{WrapColumnEqParameter(_provider,col)}", dbPrefix)
+                        new SqlText($"{WrapColumnEqParameter(_provider, col)}", dbPrefix)
                     }
                 };
                 updateTags.Add(p);
             }
 
-            var sqlTags = new List<ITag>()
+            var sqlTags = new List<ITag>
             {
                 new SqlText($"Update {gParams.TableName}", dbPrefix),
                 new Set()
@@ -149,8 +162,8 @@ namespace SmartSql.CUD
                 },
                 new SqlText($" Where {WrapColumnEqParameter(_provider, gParams.PkCol)}", dbPrefix),
             };
-            
-            return BuildStatement(CUDStatementName.Update, sqlTags, gParams.Map);
+
+            return BuildStatement(CUDStatementName.UPDATE, sqlTags, gParams.Map);
         }
 
         public IDictionary<string, Statement> Generate(SqlMap map, Type entityType)
@@ -165,6 +178,7 @@ namespace SmartSql.CUD
                     statementList.Add($"{map.Scope}.{item.Key}", item.Value(gParams));
                 }
             }
+
             return statementList;
         }
 
@@ -183,6 +197,5 @@ namespace SmartSql.CUD
         {
             return $"{dbProvider.ParameterPrefix}{paramName}";
         }
-
     }
 }

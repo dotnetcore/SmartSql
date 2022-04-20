@@ -14,8 +14,8 @@ namespace SmartSql.CUD
         public SmartSqlConfig SmartSqlConfig { get; private set; }
         public IConfigBuilder Parent { get; }
         private readonly IEnumerable<Type> _entityTypeList;
-        private ILoggerFactory _loggerFactory;
-        private ILogger _logger;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger _logger;
 
         public CUDConfigBuilder(IConfigBuilder parent, IEnumerable<Type> entityTypeList, ILoggerFactory loggerFactory = null)
         {
@@ -72,7 +72,7 @@ namespace SmartSql.CUD
 
         public void SetParent(IConfigBuilder configBuilder)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void Dispose()
