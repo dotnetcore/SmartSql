@@ -1,11 +1,13 @@
-create database if not exists SmartSqlStarterDB;
-use SmartSqlStarterDB;
+create database SmartSqlTestDB;
 
-create table if not exists T_AllPrimitive
+use SmartSqlTestDB;
+
+create table T_AllPrimitive
 (
-    Id                    bigint       not null AUTO_INCREMENT primary key,
-    Boolean               boolean      not null,
-    `Char`                char(1)      not null,
+    Id                    bigint auto_increment
+        primary key,
+    Boolean               tinyint(1)   not null,
+    `Char`                char         not null,
     Int16                 mediumint    not null,
     Int32                 int          not null,
     Int64                 bigint       not null,
@@ -16,17 +18,53 @@ create table if not exists T_AllPrimitive
     Guid                  char(36)     not null,
     TimeSpan              time         not null,
     NumericalEnum         tinyint(1)   not null,
-    NullableBoolean       boolean,
-    NullableChar          char(1),
-    NullableInt16         mediumint,
-    NullableInt32         int,
-    NullableInt64         bigint,
-    NullableSingle        float,
-    NullableDecimal       decimal,
-    NullableDateTime      datetime,
-    NullableGuid          char(32),
-    NullableTimeSpan      time,
-    NullableNumericalEnum tinyint(1),
-    NullableString        varchar(100)
-) engine = InnoDB;
+    NullableBoolean       tinyint(1)   null,
+    NullableChar          char         null,
+    NullableInt16         mediumint    null,
+    NullableInt32         int          null,
+    NullableInt64         bigint       null,
+    NullableSingle        float        null,
+    NullableDecimal       decimal      null,
+    NullableDateTime      datetime     null,
+    NullableGuid          char(36)     null,
+    NullableTimeSpan      time         null,
+    NullableNumericalEnum tinyint(1)   null,
+    NullableString        varchar(100) null
+) engine = InnoDb
+;
 
+create table t_column_annotation_entity
+(
+    id          bigint auto_increment
+        primary key,
+    name        varchar(100)                 not null,
+    extend_data longtext collate utf8mb4_bin not null,
+    constraint extend_data
+        check (json_valid(`extend_data`))
+) engine = InnoDb
+;
+
+create table T_User
+(
+    Id       bigint auto_increment
+        primary key,
+    UserName varchar(50) not null,
+    Status   tinyint(2)  not null
+);
+
+create table T_UserExtendedInfo
+(
+    UserId bigint auto_increment
+        primary key,
+    Data   json not null
+);
+
+
+
+# Create PROCEDURE SP_Query(out Total int)
+# 
+# BEGIN
+#     Select Count(*) into Total From T_AllPrimitive T;
+#     SELECT T.* From T_AllPrimitive T limit 10;
+# END
+# ;

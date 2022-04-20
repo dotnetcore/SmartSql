@@ -24,7 +24,7 @@ namespace SmartSql.Test.Unit.Deserializer
             var entity = SqlMapper.QuerySingle<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
-                SqlId = "GetEntity",
+                SqlId = "GetById",
                 Request = new { Id = id }
             });
             Assert.Equal(id, entity.Id);
@@ -58,7 +58,7 @@ namespace SmartSql.Test.Unit.Deserializer
             var entity = await SqlMapper.QuerySingleAsync<AllPrimitive>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
-                SqlId = "GetEntity",
+                SqlId = "GetById",
                 Request = new { Id = id }
             });
             Assert.Equal(id, entity.Id);

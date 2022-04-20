@@ -10,6 +10,6 @@ public class EntityMetaDataCacheTypeTest
     public void GetTableName()
     {
         var tableName = EntityMetaDataCacheType.GetTableName(typeof(AllPrimitive));
-        Assert.Equal("AllPrimitive", tableName);
+        Assert.Equal("T_AllPrimitive", tableName);
     }
 }
