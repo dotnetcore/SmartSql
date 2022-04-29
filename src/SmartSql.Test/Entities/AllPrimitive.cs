@@ -1,10 +1,11 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
+using SmartSql.Annotations;
 
 namespace SmartSql.Test.Entities
 {
+    [System.ComponentModel.DataAnnotations.Schema.Table("T_AllPrimitive")]
+    [Scope("CUD_AllPrimitive")]
     [Table("T_AllPrimitive")]
-    [Annotations.Table("T_AllPrimitive")]
     public class AllPrimitive
     {
         public AllPrimitive()

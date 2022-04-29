@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -18,7 +17,7 @@ namespace SmartSql.Configuration.Tags
         {
             BodyText = bodyText;
             _dbPrefix = dbPrefix;
-            _sqlInParamsTokens = new Regex(@"[i|I][n|N]\s*[" + dbPrefix + @"]([\p{L}\p{N}_.]+)");
+            _sqlInParamsTokens = new Regex(@"in\s*[" + dbPrefix + @"]([\S_.]+)", RegexOptions.IgnoreCase);
             _hasInSyntax = _sqlInParamsTokens.IsMatch(bodyText);
         }
 

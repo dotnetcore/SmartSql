@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using SmartSql.Bulk;
 using SmartSql.Bulk.MySql;
 using SmartSql.DataSource;
 using SmartSql.Test.Entities;
-using Xunit;
 
 namespace SmartSql.Test.Unit.Bulk
 {
     public class MySqlTest
     {
-        [Fact(Skip = "The database environment that the project depends on does not exist.")]
+        [EnvironmentFact(include:"MY_SQL")]
         public void Insert()
         {
             var dbSessionFactory = new SmartSqlBuilder()

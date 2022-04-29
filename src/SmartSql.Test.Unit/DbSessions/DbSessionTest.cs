@@ -187,7 +187,7 @@ namespace SmartSql.Test.Unit.DbSessions
             var id = await SqlMapper.ExecuteScalarAsync<long>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
-                SqlId = "Insert",
+                SqlId = "InsertReturnId",
                 Request = new AllPrimitive
                 {
                     DateTime = DateTime.Now,
@@ -235,7 +235,7 @@ namespace SmartSql.Test.Unit.DbSessions
             var id = SqlMapper.ExecuteScalar<int>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
-                SqlId = "Delete",
+                SqlId = "DeleteById",
                 Request = new AllPrimitive
                 {
                     DateTime = DateTime.Now,
@@ -280,7 +280,7 @@ namespace SmartSql.Test.Unit.DbSessions
             }
         }
 
-        [SkipGitHubAction]
+        [EnvironmentFactAttribute(exclude: EnvironmentFactAttribute.GITHUB_ACTION)]
         public void SP()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();
@@ -300,7 +300,7 @@ namespace SmartSql.Test.Unit.DbSessions
             dbParameterCollection.TryGetParameterValue("Total", out int total);
         }
 
-        [SkipGitHubAction]
+        [EnvironmentFactAttribute(exclude: EnvironmentFactAttribute.GITHUB_ACTION)]
         public void SP_SourceParameter()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();

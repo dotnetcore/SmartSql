@@ -17,5 +17,19 @@ namespace SmartSql.Reflection.TypeConstants
         {
             GenericType.MakeGenericType(entityType).GetMethod("InitTypeHandler").Invoke(null, null);
         }
+
+        public static string GetTableName(Type entityType)
+        {
+            return GetEntityMetaData<string>(entityType, "TableName");
+        }
+        public static string GetScope(Type entityType)
+        {
+            return GetEntityMetaData<string>(entityType, "Scope");
+        }
+
+        public static TData GetEntityMetaData<TData>(Type entityType, string propertyName)
+        {
+            return (TData)GenericType.MakeGenericType(entityType).GetProperty(propertyName).GetValue(null);
+        }
     }
 }

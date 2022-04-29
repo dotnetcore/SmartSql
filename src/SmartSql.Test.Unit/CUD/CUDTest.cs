@@ -25,6 +25,14 @@ namespace SmartSql.Test.Unit.CUD
         }
 
         [Fact]
+        public void GetWithPropertyTrack()
+        {
+            AllPrimitive insertEntity = InsertReturnIdImpl(out long id);
+            var entity = SqlMapper.GetById<AllPrimitive, long>(id, true);
+            Assert.NotNull(entity);
+        }
+
+        [Fact]
         public void Insert()
         {
             var insertEntity = new AllPrimitive

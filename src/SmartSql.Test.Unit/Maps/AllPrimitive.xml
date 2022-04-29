@@ -174,8 +174,64 @@
             ?NullableNumericalEnum,
             ?NullableString
             )
-            ;Select Last_Insert_Id();
         </Statement>
+		<Statement Id="InsertReturnId">
+			INSERT INTO T_AllPrimitive
+			(
+			Boolean,
+			`Char`,
+			Int16,
+			Int32,
+			Int64,
+			Single,
+			`Decimal`,
+			DateTime,
+			String,
+			Guid,
+			TimeSpan,
+			NumericalEnum,
+			NullableBoolean,
+			NullableChar,
+			NullableInt16,
+			NullableInt32,
+			NullableInt64,
+			NullableSingle,
+			NullableDecimal,
+			NullableDateTime,
+			NullableGuid,
+			NullableTimeSpan,
+			NullableNumericalEnum,
+			NullableString
+			)
+			VALUES
+			(
+			?Boolean,
+			?Char,
+			?Int16,
+			?Int32,
+			?Int64,
+			?Single,
+			?Decimal,
+			?DateTime,
+			?String,
+			?Guid,
+			?TimeSpan,
+			?NumericalEnum,
+			?NullableBoolean,
+			?NullableChar,
+			?NullableInt16,
+			?NullableInt32,
+			?NullableInt64,
+			?NullableSingle,
+			?NullableDecimal,
+			?NullableDateTime,
+			?NullableGuid,
+			?NullableTimeSpan,
+			?NullableNumericalEnum,
+			?NullableString
+			)
+			;Select Last_Insert_Id();
+		</Statement>
         <Statement Id="InsertByStatementTransaction" Transaction="Unspecified">
             INSERT INTO T_AllPrimitive
             (
@@ -349,10 +405,15 @@
             );
         </Statement>
         <!--删除-->
-        <Statement Id="Delete">
+        <Statement Id="DeleteById">
             Delete From T_AllPrimitive
             Where Id=?Id
         </Statement>
+
+		<Statement Id="DeleteMany">
+			Delete From T_AllPrimitive
+			Where Id in ?Ids
+		</Statement>
 
         <!--更新-->
         <Statement Id="Update">
@@ -469,7 +530,7 @@
         </Statement>
 
         <!--获取表映射实体-->
-        <Statement Id="GetEntity">
+        <Statement Id="GetById">
             Select T.* From T_AllPrimitive T
             <Where>
                 <IsNotEmpty Prepend="And" Property="Id">
@@ -479,6 +540,15 @@
             limit 1
         </Statement>
 
+        <Statement Id="GetEntity">
+            Select * From T_AllPrimitive T
+            <Where>
+                <IsNotEmpty Prepend="And" Property="Id">
+                    T.Id=?Id
+                </IsNotEmpty>
+            </Where>
+            limit 1
+        </Statement>
 
         <!--是否存在该记录-->
         <Statement Id="IsExist">

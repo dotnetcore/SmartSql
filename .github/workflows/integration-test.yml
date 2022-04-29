@@ -4,6 +4,8 @@ jobs:
   SmartSql-Unit-Test:
     name: SmartSql Unit Test
     runs-on: ubuntu-latest
+    env:
+      REDIS: true
     strategy:
       matrix:
         dotnet: [ '6.0.x' ]
