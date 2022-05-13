@@ -17,7 +17,7 @@ namespace SmartSql.Configuration.Tags
         {
             BodyText = bodyText;
             _dbPrefix = dbPrefix;
-            _sqlInParamsTokens = new Regex(@"in\s*[" + dbPrefix + @"]([\S_.]+)", RegexOptions.IgnoreCase);
+            _sqlInParamsTokens = new Regex(@"in\s*[" + dbPrefix + @"]([\p{L}\p{N}_.]+)", RegexOptions.IgnoreCase);
             _hasInSyntax = _sqlInParamsTokens.IsMatch(bodyText);
         }
 
