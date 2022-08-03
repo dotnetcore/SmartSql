@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using SmartSql.Utils;
 
 namespace SmartSql.DIExtension
@@ -10,8 +8,8 @@ namespace SmartSql.DIExtension
         /// <summary>
         /// 实例别名
         /// </summary>
-        public String SmartSqlAlias { get; set; }
-        
+        public String SmartSqlAlias { get; set; } = SmartSqlBuilder.DEFAULT_ALIAS;
+
         /// <summary>
         /// Scope模板
         /// 默认：I{Scope}Repository
