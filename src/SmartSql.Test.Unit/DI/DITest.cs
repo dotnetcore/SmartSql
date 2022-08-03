@@ -54,7 +54,7 @@ namespace SmartSql.Test.Unit.DI
         public void AddRepositoryFromAssembly()
         {
             IServiceCollection services = new ServiceCollection();
-            services.AddSmartSql("AddRepositoryFromAssembly")
+            services.AddSmartSql()
                 .AddRepositoryFromAssembly(o =>
                 {
                     o.AssemblyString = "SmartSql.Test";
