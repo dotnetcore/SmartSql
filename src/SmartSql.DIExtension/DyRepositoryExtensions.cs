@@ -1,12 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using System;
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using SmartSql;
 using SmartSql.DIExtension;
 using SmartSql.DyRepository;
-using System;
-using System.Linq;
-using System.Reflection;
-using SmartSql.Exceptions;
 using SmartSql.Utils;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -48,13 +45,12 @@ namespace Microsoft.Extensions.DependencyInjection
         public static SmartSqlDIBuilder AddRepository<T>(this SmartSqlDIBuilder builder, string smartSqlAlias, string scope = "") where T : class
         {
             builder.AddRepositoryFactory();
-            builder.Services.AddSingleton<T>(sp =>
+            builder.Services.AddSingleton(sp =>
             {
-                ISqlMapper sqlMapper = sp.GetRequiredService<ISqlMapper>(); ;
-                if (!String.IsNullOrEmpty(smartSqlAlias))
-                {
-                    sqlMapper = sp.EnsureSmartSql(smartSqlAlias).SqlMapper;
-                }
+                var sqlMapper = string.IsNullOrEmpty(smartSqlAlias)
+                    ? sp.EnsureSmartSql().SqlMapper
+                    : sp.EnsureSmartSql(smartSqlAlias).SqlMapper;
+
                 var factory = sp.GetRequiredService<IRepositoryFactory>();
                 return factory.CreateInstance(typeof(T), sqlMapper, scope) as T;
             });
@@ -80,18 +76,17 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 builder.Services.AddSingleton(type, sp =>
                 {
-                    ISqlMapper sqlMapper = sp.GetRequiredService<ISqlMapper>(); ;
-                    if (!String.IsNullOrEmpty(options.SmartSqlAlias))
-                    {
-                        sqlMapper = sp.EnsureSmartSql(options.SmartSqlAlias).SqlMapper;
-                    }
+                    var sqlMapper = string.IsNullOrEmpty(options.SmartSqlAlias)
+                        ? sp.EnsureSmartSql().SqlMapper
+                        : sp.EnsureSmartSql(options.SmartSqlAlias).SqlMapper;
+
                     var factory = sp.GetRequiredService<IRepositoryFactory>();
                     var scope = string.Empty;
                     if (!String.IsNullOrEmpty(options.ScopeTemplate))
                     {
                         scope = templateParser.Parse(type.Name);
                     }
-                    
+
                     var instance = factory.CreateInstance(type, sqlMapper, scope);
                     if (instance.IsDyRepository())
                     {
