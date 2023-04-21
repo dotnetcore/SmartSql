@@ -1,7 +1,4 @@
-﻿using SmartSql.Data;
-using SmartSql.Exceptions;
-using SmartSql.Reflection.TypeConstants;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -9,11 +6,13 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using SmartSql.Annotations;
 using SmartSql.Configuration;
 using SmartSql.CUD;
+using SmartSql.Data;
+using SmartSql.Exceptions;
 using SmartSql.Reflection;
 using SmartSql.Reflection.EntityProxy;
+using SmartSql.Reflection.TypeConstants;
 using SmartSql.TypeHandlers;
 using SmartSql.Utils;
 
@@ -124,7 +123,7 @@ namespace SmartSql.Deserializer
                 .ToDictionary(col => col.ColumnName);
 
             var deserFunc = new DynamicMethod("Deserialize" + Guid.NewGuid().ToString("N"), resultType,
-                new[] {DataType.DataReaderWrapper, RequestContextType.AbstractType}, resultType, true);
+                new[] { DataType.DataReaderWrapper, RequestContextType.AbstractType }, resultType, true);
             var ilGen = deserFunc.GetILGenerator();
             ilGen.DeclareLocal(resultType); // return value
             ilGen.DeclareLocal(CommonType.Int32); // current column index
@@ -133,7 +132,7 @@ namespace SmartSql.Deserializer
 
             #region New
 
-            ConstructorInfo resultCtor = null;
+            ConstructorInfo resultCtor;
             if (constructorMap == null)
             {
                 resultCtor = resultType.GetConstructor(
@@ -171,8 +170,7 @@ namespace SmartSql.Deserializer
             {
                 #region Ensure Property & TypeHanlder
 
-                if (!ResolveProperty<TResult>(resultMap, resultType, col.Value, out var propertyHolder)
-                )
+                if (!ResolveProperty<TResult>(resultMap, resultType, col.Value, out var propertyHolder))
                 {
                     continue;
                 }
@@ -287,9 +285,11 @@ namespace SmartSql.Deserializer
             {
                 if (resultMap.Properties.TryGetValue(columnDescriptor.ColumnName, out var resultProperty))
                 {
+                    var property = resultType.GetProperty(resultProperty.Name) ??
+                                   throw new SmartSqlException($"ResultMap:[{resultMap.Id}], can not find property:[{resultProperty.Name}] in class:[{resultType.Name}]");
                     propertyHolder = new PropertyHolder
                     {
-                        Property = resultType.GetProperty(resultProperty.Name),
+                        Property = property,
                         TypeHandler = resultProperty.TypeHandler
                     };
                     return true;
@@ -337,7 +337,7 @@ namespace SmartSql.Deserializer
 
             #endregion
 
-            MethodInfo getValMethod = null;
+            MethodInfo getValMethod;
             if (String.IsNullOrEmpty(typeHandler))
             {
                 LoadTypeHandlerInvokeArgs(ilGen, propertyType);

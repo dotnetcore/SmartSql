@@ -53,7 +53,7 @@ namespace SmartSql.DyRepository
         private void EmitBuildCtor(string scope, TypeBuilder typeBuilder, FieldBuilder sqlMapperField,
             FieldBuilder scopeField)
         {
-            var paramTypes = new Type[] {ISqlMapperType.Type};
+            var paramTypes = new Type[] { ISqlMapperType.Type };
             var ctorBuilder = typeBuilder.DefineConstructor(
                 MethodAttributes.Public, CallingConventions.Standard, paramTypes);
             var ilGen = ctorBuilder.GetILGenerator();
@@ -321,17 +321,20 @@ namespace SmartSql.DyRepository
                     StatementType = _statementAnalyzer.Analyse(statementAttr.Sql),
                     SqlTags = new List<ITag>
                     {
-                        new SqlText(statementAttr.Sql, sqlMap.SmartSqlConfig.Database.DbProvider.ParameterPrefix)
+                        new SqlText(
+                            statementAttr.Sql.Replace(sqlMap.SmartSqlConfig.Settings.ParameterPrefix,
+                                sqlMap.SmartSqlConfig.Database.DbProvider.ParameterPrefix),
+                            sqlMap.SmartSqlConfig.Database.DbProvider.ParameterPrefix)
                     },
                     CommandType = statementAttr.CommandType,
                     EnablePropertyChangedTrack = statementAttr.EnablePropertyChangedTrack,
                     ReadDb = statementAttr.ReadDb
                 };
+
                 if (statementAttr.CommandTimeout > 0)
                 {
                     statement.CommandTimeout = statementAttr.CommandTimeout;
                 }
-
 
                 if (statementAttr.SourceChoice != DataSourceChoice.Unknow)
                 {
@@ -339,7 +342,6 @@ namespace SmartSql.DyRepository
                 }
 
                 sqlMap.Statements.Add(statement.FullSqlId, statement);
-
             }
 
             var resultCacheAttr = methodInfo.GetCustomAttribute<ResultCacheAttribute>();
@@ -348,7 +350,6 @@ namespace SmartSql.DyRepository
                 statement.CacheId = ParseCacheFullId(sqlMap.Scope, resultCacheAttr.CacheId);
                 statement.Cache = sqlMap.GetCache(statement.CacheId);
             }
-
 
             returnType = isTaskReturnType ? returnType.GetGenericArguments().FirstOrDefault() : returnType;
             if (returnType == typeof(DataTable))
@@ -406,47 +407,47 @@ namespace SmartSql.DyRepository
                 switch (executeBehavior)
                 {
                     case ExecuteBehavior.Execute:
-                    {
-                        executeMethod = ISqlMapperType.Method.ExecuteAsync;
-                        break;
-                    }
+                        {
+                            executeMethod = ISqlMapperType.Method.ExecuteAsync;
+                            break;
+                        }
 
                     case ExecuteBehavior.ExecuteScalar:
-                    {
-                        executeMethod = ISqlMapperType.Method.ExecuteScalarAsync.MakeGenericMethod(realReturnType);
-                        break;
-                    }
+                        {
+                            executeMethod = ISqlMapperType.Method.ExecuteScalarAsync.MakeGenericMethod(realReturnType);
+                            break;
+                        }
 
                     case ExecuteBehavior.QuerySingle:
-                    {
-                        executeMethod = ISqlMapperType.Method.QuerySingleAsync.MakeGenericMethod(realReturnType);
-                        break;
-                    }
+                        {
+                            executeMethod = ISqlMapperType.Method.QuerySingleAsync.MakeGenericMethod(realReturnType);
+                            break;
+                        }
 
                     case ExecuteBehavior.Query:
-                    {
-                        var method = ISqlMapperType.Method.QueryAsync;
-                        var enumerableType = realReturnType.GenericTypeArguments[0];
-                        executeMethod = method.MakeGenericMethod(enumerableType);
-                        break;
-                    }
+                        {
+                            var method = ISqlMapperType.Method.QueryAsync;
+                            var enumerableType = realReturnType.GenericTypeArguments[0];
+                            executeMethod = method.MakeGenericMethod(enumerableType);
+                            break;
+                        }
 
                     case ExecuteBehavior.GetDataTable:
-                    {
-                        executeMethod = ISqlMapperType.Method.GetDataTableAsync;
-                        break;
-                    }
+                        {
+                            executeMethod = ISqlMapperType.Method.GetDataTableAsync;
+                            break;
+                        }
 
                     case ExecuteBehavior.GetDataSet:
-                    {
-                        executeMethod = ISqlMapperType.Method.GetDataSetAsync;
-                        break;
-                    }
+                        {
+                            executeMethod = ISqlMapperType.Method.GetDataSetAsync;
+                            break;
+                        }
 
                     default:
-                    {
-                        throw new ArgumentException();
-                    }
+                        {
+                            throw new ArgumentException();
+                        }
                 }
             }
             else
@@ -454,47 +455,47 @@ namespace SmartSql.DyRepository
                 switch (executeBehavior)
                 {
                     case ExecuteBehavior.Execute:
-                    {
-                        executeMethod = ISqlMapperType.Method.Execute;
-                        break;
-                    }
+                        {
+                            executeMethod = ISqlMapperType.Method.Execute;
+                            break;
+                        }
 
                     case ExecuteBehavior.ExecuteScalar:
-                    {
-                        executeMethod = ISqlMapperType.Method.ExecuteScalar.MakeGenericMethod(returnType);
-                        break;
-                    }
+                        {
+                            executeMethod = ISqlMapperType.Method.ExecuteScalar.MakeGenericMethod(returnType);
+                            break;
+                        }
 
                     case ExecuteBehavior.QuerySingle:
-                    {
-                        executeMethod = ISqlMapperType.Method.QuerySingle.MakeGenericMethod(returnType);
-                        break;
-                    }
+                        {
+                            executeMethod = ISqlMapperType.Method.QuerySingle.MakeGenericMethod(returnType);
+                            break;
+                        }
 
                     case ExecuteBehavior.Query:
-                    {
-                        var method = ISqlMapperType.Method.Query;
-                        var enumerableType = returnType.GenericTypeArguments[0];
-                        executeMethod = method.MakeGenericMethod(new Type[] {enumerableType});
-                        break;
-                    }
+                        {
+                            var method = ISqlMapperType.Method.Query;
+                            var enumerableType = returnType.GenericTypeArguments[0];
+                            executeMethod = method.MakeGenericMethod(new Type[] { enumerableType });
+                            break;
+                        }
 
                     case ExecuteBehavior.GetDataTable:
-                    {
-                        executeMethod = ISqlMapperType.Method.GetDataTable;
-                        break;
-                    }
+                        {
+                            executeMethod = ISqlMapperType.Method.GetDataTable;
+                            break;
+                        }
 
                     case ExecuteBehavior.GetDataSet:
-                    {
-                        executeMethod = ISqlMapperType.Method.GetDataSet;
-                        break;
-                    }
+                        {
+                            executeMethod = ISqlMapperType.Method.GetDataSet;
+                            break;
+                        }
 
                     default:
-                    {
-                        throw new ArgumentException();
-                    }
+                        {
+                            throw new ArgumentException();
+                        }
                 }
             }
 
@@ -547,7 +548,7 @@ namespace SmartSql.DyRepository
                     var transactionLevel = attrType.GetProperty("Level")?.GetValue(transactionAttribute);
                     if (transactionLevel != null)
                     {
-                        isolationLevel = (IsolationLevel) transactionLevel;
+                        isolationLevel = (IsolationLevel)transactionLevel;
                     }
 
                     break;
@@ -654,7 +655,8 @@ namespace SmartSql.DyRepository
             {
                 Configuration.Cache cache = new Configuration.Cache
                 {
-                    FlushInterval = new FlushInterval(), Id = ParseCacheFullId(sqlMap.Scope, cacheAttribute.Id)
+                    FlushInterval = new FlushInterval(),
+                    Id = ParseCacheFullId(sqlMap.Scope, cacheAttribute.Id)
                 };
                 if (sqlMap.Caches.ContainsKey(cache.Id))
                 {
