@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
@@ -9,7 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.140" />
+      <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.180" />
     </ItemGroup>
 
 </Project>
