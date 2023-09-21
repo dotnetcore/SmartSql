@@ -25,7 +25,7 @@
       <PackageReference Include="MySql.Data" Version="8.0.30" />
       <PackageReference Include="Npgsql" Version="4.1.12" />
       <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.180" />
-      <PackageReference Include="Serilog.Extensions.Hosting" Version="3.0.0-dev-00019" />
+      <PackageReference Include="Serilog.Extensions.Hosting" Version="3.1.0" />
       <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
       <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
       <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
