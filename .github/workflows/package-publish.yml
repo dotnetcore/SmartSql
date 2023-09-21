@@ -1,0 +1,25 @@
+name: Packages Publish
+on:
+  release:
+    types: [created]
+
+jobs:
+  nuget-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Set up dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Pack
+        run: dotnet pack -c Release -o ./nuget
+        
+      - name: Publish
+        run: dotnet nuget push "./nuget/*.nupkg" -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
