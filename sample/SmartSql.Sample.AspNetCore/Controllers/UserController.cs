@@ -76,7 +76,7 @@ namespace SmartSql.Sample.AspNetCore.Controllers
             return _userRepository.Query(taken);
         }
 
-        [HttpGet]
+        [HttpGet("/[controller]/QueryAsync")]
         public async Task<IEnumerable<User>> QueryAsync(int taken = 10)
         {
             return await _userRepository.QueryAsync(taken);
