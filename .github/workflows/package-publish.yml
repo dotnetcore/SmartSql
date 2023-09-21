@@ -1,5 +1,7 @@
 name: Packages Publish
-on: [ push, pull_request ]
+on:
+  release:
+    types: [created]
 
 jobs:
   nuget-publish:
