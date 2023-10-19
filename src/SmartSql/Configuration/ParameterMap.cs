@@ -1,7 +1,7 @@
-﻿using SmartSql.TypeHandlers;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Data;
+using SmartSql.TypeHandlers;
 
 namespace SmartSql.Configuration
 {
@@ -24,6 +24,9 @@ namespace SmartSql.Configuration
     public class Parameter
     {
         public string Property { get; set; }
+
+        public DbType? DbType { get; set; }
+
         public ITypeHandler Handler { get; set; }
     }
 }

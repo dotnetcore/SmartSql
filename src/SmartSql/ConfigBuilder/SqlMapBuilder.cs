@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Xml;
 using SmartSql.AutoConverter;
 using SmartSql.Cache;
-using SmartSql.Cache.Default;
 using SmartSql.Configuration;
 using SmartSql.Configuration.Tags;
 using SmartSql.DataSource;
 using SmartSql.Exceptions;
-using SmartSql.Reflection;
-using SmartSql.Reflection.TypeConstants;
 
 namespace SmartSql.ConfigBuilder
 {
@@ -110,48 +106,48 @@ namespace SmartSql.ConfigBuilder
                 switch (childNode.Name)
                 {
                     case "Property":
-                    {
-                        childNode.Attributes.TryGetValueAsString("Name", out var name, SmartSqlConfig.Properties);
-                        childNode.Attributes.TryGetValueAsString("Value", out var propVal, SmartSqlConfig.Properties);
-                        cache.Parameters.Add(name, propVal);
-                        break;
-                    }
-
-                    case "FlushInterval":
-                    {
-                        childNode.Attributes.TryGetValueAsInt32("Hours", out var hours, SmartSqlConfig.Properties);
-                        childNode.Attributes.TryGetValueAsInt32("Minutes", out var minutes, SmartSqlConfig.Properties);
-                        childNode.Attributes.TryGetValueAsInt32("Seconds", out var seconds, SmartSqlConfig.Properties);
-                        cache.FlushInterval = new FlushInterval
                         {
-                            Hours = hours,
-                            Minutes = minutes,
-                            Seconds = seconds
-                        };
-
-                        cache.Parameters.Add("FlushInterval", cache.FlushInterval);
-                        break;
-                    }
-
-                    case "FlushOnExecute":
-                    {
-                        childNode.Attributes.TryGetValueAsString("Statement", out var statementId,
-                            SmartSqlConfig.Properties);
-                        if (!String.IsNullOrEmpty(statementId))
-                        {
-                            if (statementId.IndexOf('.') < 0)
-                            {
-                                statementId = $"{SqlMap.Scope}.{statementId}";
-                            }
-
-                            cache.FlushOnExecutes.Add(new FlushOnExecute
-                            {
-                                Statement = statementId
-                            });
+                            childNode.Attributes.TryGetValueAsString("Name", out var name, SmartSqlConfig.Properties);
+                            childNode.Attributes.TryGetValueAsString("Value", out var propVal, SmartSqlConfig.Properties);
+                            cache.Parameters.Add(name, propVal);
+                            break;
                         }
 
-                        break;
-                    }
+                    case "FlushInterval":
+                        {
+                            childNode.Attributes.TryGetValueAsInt32("Hours", out var hours, SmartSqlConfig.Properties);
+                            childNode.Attributes.TryGetValueAsInt32("Minutes", out var minutes, SmartSqlConfig.Properties);
+                            childNode.Attributes.TryGetValueAsInt32("Seconds", out var seconds, SmartSqlConfig.Properties);
+                            cache.FlushInterval = new FlushInterval
+                            {
+                                Hours = hours,
+                                Minutes = minutes,
+                                Seconds = seconds
+                            };
+
+                            cache.Parameters.Add("FlushInterval", cache.FlushInterval);
+                            break;
+                        }
+
+                    case "FlushOnExecute":
+                        {
+                            childNode.Attributes.TryGetValueAsString("Statement", out var statementId,
+                                SmartSqlConfig.Properties);
+                            if (!String.IsNullOrEmpty(statementId))
+                            {
+                                if (statementId.IndexOf('.') < 0)
+                                {
+                                    statementId = $"{SqlMap.Scope}.{statementId}";
+                                }
+
+                                cache.FlushOnExecutes.Add(new FlushOnExecute
+                                {
+                                    Statement = statementId
+                                });
+                            }
+
+                            break;
+                        }
                 }
             }
 
@@ -206,6 +202,16 @@ namespace SmartSql.ConfigBuilder
                     {
                         Property = property
                     };
+
+                    if (parameterNode.Attributes.TryGetValueAsString("DbType", out var dbTypeStr,
+                            SmartSqlConfig.Properties))
+                    {
+                        if (Enum.TryParse(dbTypeStr, true, out DbType dbType))
+                        {
+                            parameter.DbType = dbType;
+                        }
+                    }
+
                     if (parameterNode.Attributes.TryGetValueAsString("TypeHandler", out var handlerName,
                         SmartSqlConfig.Properties))
                     {
@@ -263,7 +269,7 @@ namespace SmartSql.ConfigBuilder
                 argNode.Attributes.TryGetValueAsString(nameof(Arg.Column), out var column, SmartSqlConfig.Properties);
                 argNode.Attributes.TryGetValueAsString(nameof(Arg.CSharpType), out var argTypeStr,
                     SmartSqlConfig.Properties);
-                var arg = new Arg {Column = column, CSharpType = ArgTypeConvert(argTypeStr)};
+                var arg = new Arg { Column = column, CSharpType = ArgTypeConvert(argTypeStr) };
                 ctorMap.Args.Add(arg);
             }
 
@@ -275,89 +281,89 @@ namespace SmartSql.ConfigBuilder
             switch (typeStr)
             {
                 case "Boolean":
-                {
-                    return typeof(Boolean);
-                }
+                    {
+                        return typeof(Boolean);
+                    }
 
                 case "Char":
-                {
-                    return typeof(Char);
-                }
+                    {
+                        return typeof(Char);
+                    }
 
                 case "SByte":
-                {
-                    return typeof(SByte);
-                }
+                    {
+                        return typeof(SByte);
+                    }
 
                 case "Byte":
-                {
-                    return typeof(Byte);
-                }
+                    {
+                        return typeof(Byte);
+                    }
 
                 case "Int16":
-                {
-                    return typeof(Int16);
-                }
+                    {
+                        return typeof(Int16);
+                    }
 
                 case "UInt16":
-                {
-                    return typeof(UInt16);
-                }
+                    {
+                        return typeof(UInt16);
+                    }
 
                 case "Int32":
-                {
-                    return typeof(Int32);
-                }
+                    {
+                        return typeof(Int32);
+                    }
 
                 case "UInt32":
-                {
-                    return typeof(UInt32);
-                }
+                    {
+                        return typeof(UInt32);
+                    }
 
                 case "Int64":
-                {
-                    return typeof(Int64);
-                }
+                    {
+                        return typeof(Int64);
+                    }
 
                 case "UInt64":
-                {
-                    return typeof(UInt64);
-                }
+                    {
+                        return typeof(UInt64);
+                    }
 
                 case "Single":
-                {
-                    return typeof(Single);
-                }
+                    {
+                        return typeof(Single);
+                    }
 
                 case "Double":
-                {
-                    return typeof(Double);
-                }
+                    {
+                        return typeof(Double);
+                    }
 
                 case "Decimal":
-                {
-                    return typeof(Decimal);
-                }
+                    {
+                        return typeof(Decimal);
+                    }
 
                 case "DateTime":
-                {
-                    return typeof(DateTime);
-                }
+                    {
+                        return typeof(DateTime);
+                    }
 
                 case "String":
-                {
-                    return typeof(String);
-                }
+                    {
+                        return typeof(String);
+                    }
 
                 case "Guid":
-                {
-                    return typeof(Guid);
-                }
+                    {
+                        return typeof(Guid);
+                    }
 
                 default:
-                {
-                    return Type.GetType(typeStr, true);
-                }
+                    {
+                        return Type.GetType(typeStr, true);
+                    }
             }
         }
 
@@ -610,21 +616,21 @@ namespace SmartSql.ConfigBuilder
             switch (xmlNode.Name)
             {
                 case "#comment":
-                {
-                    return null;
-                }
+                    {
+                        return null;
+                    }
 
                 case "#text":
                 case "#cdata-section":
-                {
-                    return SmartSqlConfig.TagBuilderFactory.Get(xmlNode.Name).Build(xmlNode, statement);
-                }
+                    {
+                        return SmartSqlConfig.TagBuilderFactory.Get(xmlNode.Name).Build(xmlNode, statement);
+                    }
 
                 default:
-                {
-                    tag = SmartSqlConfig.TagBuilderFactory.Get(xmlNode.Name).Build(xmlNode, statement);
-                    break;
-                }
+                    {
+                        tag = SmartSqlConfig.TagBuilderFactory.Get(xmlNode.Name).Build(xmlNode, statement);
+                        break;
+                    }
             }
 
             #endregion
