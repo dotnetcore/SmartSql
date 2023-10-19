@@ -69,12 +69,14 @@ namespace SmartSql.Middlewares
                         return nameWithPrefix;
                     }
 
-                    ITypeHandler typeHandler =
-                        (reqConetxt.ParameterMap?.GetParameter(paramName)?.Handler ?? sqlParameter.TypeHandler) ??
+                    var parameter = reqConetxt.ParameterMap?.GetParameter(paramName);
+
+                    var typeHandler =
+                        (parameter?.Handler ?? sqlParameter.TypeHandler) ??
                         _typeHandlerFactory.GetTypeHandler(sqlParameter.ParameterType);
 
                     var sourceParam = _dbProviderFactory.CreateParameter();
-                    InitSourceDbParameter(sourceParam, sqlParameter);
+                    InitSourceDbParameter(sourceParam, sqlParameter, parameter?.DbType);
                     sourceParam.ParameterName = sqlParameter.Name;
                     typeHandler.SetParameter(sourceParam, sqlParameter.Value);
                     sqlParameter.SourceParameter = sourceParam;
@@ -89,11 +91,16 @@ namespace SmartSql.Middlewares
             }
         }
 
-        private void InitSourceDbParameter(DbParameter sourceParam, SqlParameter sqlParameter)
+        private void InitSourceDbParameter(DbParameter sourceParam, SqlParameter sqlParameter,
+            DbType? parameterDbType = null)
         {
             if (sqlParameter.DbType.HasValue)
             {
                 sourceParam.DbType = sqlParameter.DbType.Value;
+            }
+            else if (parameterDbType.HasValue)
+            {
+                sourceParam.DbType = parameterDbType.Value;
             }
 
             if (sqlParameter.Direction.HasValue)
