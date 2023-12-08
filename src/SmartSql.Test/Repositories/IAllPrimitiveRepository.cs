@@ -28,8 +28,8 @@ namespace SmartSql.Test.Repositories
         [Statement(Id = "QueryDictionary", Sql = "SELECT T.* From T_AllPrimitive T limit ?Taken")]
         IList<IDictionary<string, object>> QueryDictionary([Param("Taken")] int taken);
 
-        [Statement(Sql = "SELECT NumericalEnum FROM T_AllPrimitive WHERE Id = ?id")]
-        List<NumericalEnum11> GetNumericalEnums(int id);
+        [Statement(Sql = "SELECT NumericalEnum FROM T_AllPrimitive WHERE NumericalEnum = ?numericalEnum")]
+        List<NumericalEnum11> GetNumericalEnums(int numericalEnum);
 
         [Statement(Sql = "truncate table T_AllPrimitive")]
         void Truncate();
