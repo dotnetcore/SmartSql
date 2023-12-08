@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SmartSql.Exceptions;
 using SmartSql.Reflection.TypeConstants;
 using SmartSql.TypeHandlers;
 
@@ -17,7 +18,7 @@ namespace SmartSql.Deserializer
         public TResult ToSingle<TResult>(ExecutionContext executionContext)
         {
             var dataReader = executionContext.DataReaderWrapper;
-            if (!dataReader.HasRows) return default(TResult);
+            if (!dataReader.HasRows) return default;
             dataReader.Read();
             return TypeHandlerCache<TResult, AnyFieldType>.Handler.GetValue(dataReader, VALUE_ORDINAL, executionContext.Result.ResultType); ;
         }
@@ -28,6 +29,16 @@ namespace SmartSql.Deserializer
             if (!dataReader.HasRows) return list;
 
             var typeHandler = TypeHandlerCache<TResult, AnyFieldType>.Handler;
+
+            var resultType = typeof(TResult);
+            if (typeHandler == null)
+            {
+                typeHandler =
+                    (ITypeHandler<TResult, AnyFieldType>)executionContext.SmartSqlConfig.TypeHandlerFactory
+                        .GetTypeHandler(resultType) ??
+                    throw new SmartSqlException($"Not Find TypeHandler.Type:{resultType.FullName}.");
+            }
+
             while (dataReader.Read())
             {
                 var val = typeHandler.GetValue(dataReader, VALUE_ORDINAL, executionContext.Result.ResultType);
@@ -39,7 +50,7 @@ namespace SmartSql.Deserializer
         public async Task<TResult> ToSingleAsync<TResult>(ExecutionContext executionContext)
         {
             var dataReader = executionContext.DataReaderWrapper;
-            if (!dataReader.HasRows) return default(TResult);
+            if (!dataReader.HasRows) return default;
             await dataReader.ReadAsync();
             return TypeHandlerCache<TResult, AnyFieldType>.Handler.GetValue(dataReader, VALUE_ORDINAL, executionContext.Result.ResultType);
         }
