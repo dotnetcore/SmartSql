@@ -4,8 +4,7 @@ use SmartSqlTestDB;
 
 create table T_AllPrimitive
 (
-    Id                    bigint auto_increment
-        primary key,
+    Id                    bigint auto_increment primary key,
     Boolean               tinyint(1)   not null,
     `Char`                char         not null,
     Int16                 mediumint    not null,
@@ -17,7 +16,7 @@ create table T_AllPrimitive
     String                varchar(100) not null,
     Guid                  char(36)     not null,
     TimeSpan              time         not null,
-    NumericalEnum         tinyint(1)   not null,
+    NumericalEnum         smallint   not null,
     NullableBoolean       tinyint(1)   null,
     NullableChar          char         null,
     NullableInt16         mediumint    null,
@@ -28,10 +27,9 @@ create table T_AllPrimitive
     NullableDateTime      datetime     null,
     NullableGuid          char(36)     null,
     NullableTimeSpan      time         null,
-    NullableNumericalEnum tinyint(1)   null,
+    NullableNumericalEnum smallint   null,
     NullableString        varchar(100) null
-) engine = InnoDb
-;
+) engine = InnoDb;
 
 create table t_column_annotation_entity
 (

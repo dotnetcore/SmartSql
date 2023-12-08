@@ -26,6 +26,12 @@ namespace SmartSql.Test.Repositories
         long InsertByAnnotationAOPTransaction(AllPrimitive entity);
 
         [Statement(Id = "QueryDictionary", Sql = "SELECT T.* From T_AllPrimitive T limit ?Taken")]
-        IList<IDictionary<String, Object>> QueryDictionary([Param("Taken")] int taken);
+        IList<IDictionary<string, object>> QueryDictionary([Param("Taken")] int taken);
+
+        [Statement(Sql = "SELECT NumericalEnum FROM T_AllPrimitive WHERE Id = ?id")]
+        List<NumericalEnum11> GetNumericalEnums(int id);
+
+        [Statement(Sql = "truncate table T_AllPrimitive")]
+        void Truncate();
     }
 }

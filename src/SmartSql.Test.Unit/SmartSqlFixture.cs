@@ -62,9 +62,13 @@ namespace SmartSql.Test.Unit
 
         protected void InitTestData()
         {
+            AllPrimitiveRepository.Truncate();
             for (int i = 0; i < 10; i++)
             {
-                AllPrimitiveRepository.Insert(new AllPrimitive());
+                AllPrimitiveRepository.Insert(new AllPrimitive()
+                {
+                    NumericalEnum = i % 2 == 0 ? NumericalEnum.One : NumericalEnum.Two
+                });
             }
         }
 
