@@ -39,7 +39,7 @@ namespace SmartSql.Test.Unit.DyRepository
         {
             var list = _mapper.Query<NumericalEnum11?>(new RequestContext
             {
-                RealSql = "SELECT NumericalEnum FROM T_AllPrimitive WHERE Id = ?id",
+                RealSql = "SELECT NumericalEnum FROM T_AllPrimitive WHERE NumericalEnum = ?id",
                 Request = new { id }
             });
 
