@@ -35,18 +35,18 @@ namespace SmartSql.Test.Unit.DyRepository
         [Theory]
         [InlineData(1, NumericalEnum11.One)]
         [InlineData(2, NumericalEnum11.Two)]
-        public void GetNumericalEnums(int id, NumericalEnum11 numericalEnum)
+        public void GetNumericalEnums(int value, NumericalEnum11 numericalEnum)
         {
             var list = _mapper.Query<NumericalEnum11?>(new RequestContext
             {
-                RealSql = "SELECT NumericalEnum FROM T_AllPrimitive WHERE Id = ?id",
-                Request = new { id }
+                RealSql = "SELECT NumericalEnum FROM T_AllPrimitive WHERE NumericalEnum = ?value",
+                Request = new { value }
             });
 
             Assert.NotNull(list);
             Assert.True(list.All(t => t == numericalEnum));
 
-            var result = _repository.GetNumericalEnums(id);
+            var result = _repository.GetNumericalEnums(value);
 
             Assert.NotNull(result);
             Assert.True(result.All(t => t == numericalEnum));
