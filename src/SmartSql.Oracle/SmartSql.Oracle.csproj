@@ -9,7 +9,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.180" />
+      <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.220" />
+      <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     </ItemGroup>
 
 </Project>

@@ -17,13 +17,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SmartSql.AOP\SmartSql.AOP.csproj" />
     <ProjectReference Include="..\SmartSql.DyRepository\SmartSql.DyRepository.csproj" />
     <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
   </ItemGroup>
 
 </Project>

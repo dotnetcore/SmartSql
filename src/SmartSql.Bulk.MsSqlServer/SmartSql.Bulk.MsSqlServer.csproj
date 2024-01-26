@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.1" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
     </ItemGroup>
 
     <ItemGroup>
@@ -20,5 +20,9 @@
       <Compile Include="..\SmartSql.Bulk.SqlServer\BulkInsert.cs">
         <Link>BulkInsert.cs</Link>
       </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     </ItemGroup>
 </Project>
