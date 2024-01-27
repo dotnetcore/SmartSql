@@ -69,7 +69,7 @@ namespace SmartSql.Sample.AspNetCore
 //                });
             services.AddSingleton<UserService>();
             RegisterConfigureSwagger(services);
-            return services.BuildAspectInjectorProvider();
+            return services.BuildDynamicProxyProvider();//.BuildAspectInjectorProvider();
         }
 
         private void RegisterConfigureSwagger(IServiceCollection services)
