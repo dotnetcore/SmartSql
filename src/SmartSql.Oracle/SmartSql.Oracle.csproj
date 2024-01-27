@@ -1,20 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+	</PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SmartSql\SmartSql.csproj" />
+	</ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.220" />
-      <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.0" />
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Condition="'$(TargetFramework)' == 'netstandard2.0'" Include="Oracle.ManagedDataAccess.Core" Version="2.19.220" />
+		<PackageReference Condition="'$(TargetFramework)' == 'netstandard2.1'" Include="Oracle.ManagedDataAccess.Core" Version="3.21.130" />
+		<PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.0" />
+	</ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
+	</ItemGroup>
 
 </Project>

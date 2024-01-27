@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net6.0</TargetFramework>
+        <!--<TargetFramework>net6.0</TargetFramework>-->
+		<TargetFrameworks>netstandard2.0;netstandard2.1;</TargetFrameworks>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>SmartSql.DataConnector</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -25,7 +26,9 @@
       <PackageReference Include="MySql.Data" Version="8.3.0" />
       <PackageReference Include="MySqlConnector" Version="2.3.5" />
       <PackageReference Include="Npgsql" Version="8.0.1" />
-      <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.220" />
+      <!--<PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.220" />-->
+		<PackageReference Condition="'$(TargetFramework)' == 'netstandard2.0'" Include="Oracle.ManagedDataAccess.Core" Version="2.19.220" />
+		<PackageReference Condition="'$(TargetFramework)' == 'netstandard2.1'" Include="Oracle.ManagedDataAccess.Core" Version="3.21.130" />
       <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
       <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
       <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
