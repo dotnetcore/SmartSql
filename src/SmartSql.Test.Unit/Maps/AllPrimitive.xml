@@ -8,6 +8,12 @@
 //*******************************-->
 
 <SmartSqlMap Scope="AllPrimitive" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+  <ResultMaps>
+    <ResultMap Id="NestedPropertyResultMap">
+      <Result Column="Id" Property="Id"/>
+      <Result Column="String" Property="NestedProp1.NestedProp2.NestedProp3"/>
+    </ResultMap>
+  </ResultMaps>
     <MultipleResultMaps>
         <MultipleResultMap Id="GetByPage">
             <Result Property="List"/>
@@ -500,6 +506,21 @@
 
         <!--获取数据列-->
         <Statement Id="Query">
+            SELECT
+            T.* From T_AllPrimitive T
+            <Include RefId="QueryParams"/>
+            <Switch Prepend="Order By" Property="OrderBy">
+                <Default>
+                    T.Id Desc
+                </Default>
+            </Switch>
+            <IsNotEmpty Prepend="limit" Property="Taken">
+                ?Taken
+            </IsNotEmpty>
+        </Statement>
+
+        <!--获取数据列 返回的ResultMap包含连续属性访问-->
+        <Statement Id="QueryNestedPropertyResult" ResultMap="NestedPropertyResultMap">
             SELECT
             T.* From T_AllPrimitive T
             <Include RefId="QueryParams"/>

@@ -197,11 +197,70 @@ namespace SmartSql.Deserializer
                     ilGen.Call(DataType.Method.IsDBNull);
                     ilGen.IfTrueS(isDbNullLabel);
                 }
+                // Handle property chain access logic (处理属性链访问逻辑)
+                if (propertyHolder.IsChain)
+                {
+                    // Load root object instance (加载根对象实例)
+                    ilGen.LoadLocalVar(0); // Stack: [currentObj]
 
-                ilGen.LoadLocalVar(0);
-                LoadPropertyValue(ilGen, executionContext, propertyType, columnDescriptor.FieldType,
-                    propertyHolder.TypeHandler);
-                ilGen.Call(propertyHolder.SetMethod);
+                    // Traverse all properties except the last one in the chain (遍历属性链中除最后属性外的所有属性)
+                    foreach (var prop in propertyHolder.PropertyChain.Take(propertyHolder.PropertyChain.Count - 1))
+                    {
+                        // Define null-check label (定义空值检查标签)
+                        var notNullLabel = ilGen.DefineLabel();
+
+                        // ==== Start null-check logic ==== (开始空值检查逻辑)
+
+                        // 1. Preserve current instance reference (保留当前实例引用)
+                        ilGen.Dup(); // Stack: [currentObj, currentObj]
+
+                        // 2. Get child property value (获取子属性值)
+                        ilGen.Call(prop.GetMethod); // Stack: [childObj, currentObj]
+
+                        // 3. Check if child object is null (检查子对象是否为空)
+                        ilGen.IfTrueS(notNullLabel); // Stack: [currentObj] (consumes childObj)
+
+                        // ==== Null branch ==== (空值分支)
+
+                        // 1. Preserve parent instance again (再次保留父实例)
+                        ilGen.Dup(); // Stack: [currentObj, currentObj]
+
+                        // 2. Create new child instance (创建新的子实例)
+                        ilGen.New(prop.PropertyType.GetConstructor(Type.EmptyTypes)); // Stack: [newChildObj, currentObj, currentObj]
+
+                        // 3. Assign new instance to parent property (将新实例赋值给父属性)
+                        ilGen.Call(prop.SetMethod); // Stack: [currentObj] (consumes currentObj and newChildObj)
+
+                        // ==== Non-null branch ==== (非空值分支)
+                        ilGen.MarkLabel(notNullLabel);  // Stack: [currentObj]
+
+                        // Get child object (either existing or newly created) (获取子对象：已存在的或新创建的)
+                        ilGen.Call(prop.GetMethod); // Stack: [childObj]
+
+                        // Now childObj becomes the new currentObj for next iteration (此时childObj成为下一轮迭代的currentObj)
+                    }
+
+                    // ==== Set final property value ==== (设置最终属性值)
+
+                    // 1. Load property value onto stack (加载属性值到栈顶)
+                    LoadPropertyValue(ilGen, executionContext, propertyType, columnDescriptor.FieldType, propertyHolder.TypeHandler);
+
+                    // 2. Call final set method (调用最终set方法)
+                    ilGen.Call(propertyHolder.SetMethod); // Stack: [] (consumes childObj and value)
+                }
+                // Handle single property access (处理单属性访问)
+                else
+                {
+                    // 1. Load root instance (加载根实例)
+                    ilGen.LoadLocalVar(0); // Stack: [currentObj]
+
+                    // 2. Load property value (加载属性值)
+                    LoadPropertyValue(ilGen, executionContext, propertyType, columnDescriptor.FieldType, propertyHolder.TypeHandler);
+
+                    // 3. Directly set property (直接设置属性)
+                    ilGen.Call(propertyHolder.SetMethod); // Stack: [] (consumes currentObj and value)
+                }
+
                 if (ignoreDbNull)
                 {
                     ilGen.MarkLabel(isDbNullLabel);
@@ -278,21 +337,46 @@ namespace SmartSql.Deserializer
 
         private static bool ResolveProperty<TResult>(ResultMap resultMap, Type resultType,
             ColumnDescriptor columnDescriptor
-            , out PropertyHolder propertyHolder)
+            , out IPropertyHolder propertyHolder)
         {
             propertyHolder = null;
             if (resultMap?.Properties != null)
             {
                 if (resultMap.Properties.TryGetValue(columnDescriptor.ColumnName, out var resultProperty))
                 {
-                    var property = resultType.GetProperty(resultProperty.Name) ??
-                                   throw new SmartSqlException($"ResultMap:[{resultMap.Id}], can not find property:[{resultProperty.Name}] in class:[{resultType.Name}]");
-                    propertyHolder = new PropertyHolder
+                    // Handle nested property path (处理嵌套属性路径)
+                    if (resultProperty.Name.Contains('.'))
                     {
-                        Property = property,
-                        TypeHandler = resultProperty.TypeHandler
-                    };
-                    return true;
+                        // Parse property chain (e.g. "User.Address.City") and create chain holder
+                        // 解析属性链（例如"User.Address.City"）并创建链式属性容器
+                        propertyHolder = new PropertyChainHolder(
+                            ParsePropertyChain(
+                                resultMapId: resultMap.Id,      // 当前ResultMap ID
+                                rootType: resultType,           // 根对象类型
+                                propertyPath: resultProperty.Name // 属性路径字符串
+                            ),
+                            resultProperty.TypeHandler          // 类型处理器
+                        );
+                        return true; // Successfully resolved property chain (成功解析属性链)
+                    }
+                    // Handle single property (处理单属性)
+                    else
+                    {
+                        // Get property info from result type (从结果类型获取属性信息)
+                        var property = resultType.GetProperty(resultProperty.Name)
+                            ?? throw new SmartSqlException(
+                                $"ResultMap:[{resultMap.Id}], can not find property:[{resultProperty.Name}] in class:[{resultType.Name}]"
+                            // 错误格式：结果映射:[ID], 在类[类名]中找不到属性[属性名]
+                            );
+
+                        // Create standard property holder (创建标准属性容器)
+                        propertyHolder = new PropertyHolder
+                        {
+                            Property = property,                // 目标属性
+                            TypeHandler = resultProperty.TypeHandler // 类型处理器
+                        };
+                        return true; // Successfully resolved single property (成功解析单属性)
+                    }
                 }
             }
 
@@ -319,6 +403,27 @@ namespace SmartSql.Deserializer
             }
 
             return false;
+        }
+
+        private static List<PropertyInfo> ParsePropertyChain(string resultMapId, Type rootType, string propertyPath)
+        {
+            var propertyNames = propertyPath.Split('.');
+            var chain = new List<PropertyInfo>();
+            Type currentType = rootType;
+
+            foreach (var name in propertyNames)
+            {
+                var property = currentType.GetProperty(name);
+                if (property == null)
+                {
+                    throw new SmartSqlException($"ResultMap:[{resultMapId}], Cannot find property:[{name}] in type:[{currentType.Name}] for path:[{propertyPath}]");
+                }
+
+                chain.Add(property);
+                currentType = property.PropertyType;
+            }
+
+            return chain;
         }
 
         private void LoadPropertyValue(ILGenerator ilGen, ExecutionContext executionContext,
