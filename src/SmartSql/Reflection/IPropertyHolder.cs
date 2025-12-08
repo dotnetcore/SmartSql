@@ -6,7 +6,7 @@ namespace SmartSql.Reflection
 {
     internal interface IPropertyHolder
     {
-        PropertyInfo Property { get; set; }
+        PropertyInfo Property { get; }
         String TypeHandler { get; set; }
 
         Type PropertyType { get; }
@@ -15,14 +15,8 @@ namespace SmartSql.Reflection
 
         MethodInfo SetMethod { get; }
 
-        /// <summary>
-        /// 是否为属性链（如 User.Address.City）
-        /// </summary>
         bool IsChain { get; }
 
-        /// <summary>
-        /// 属性链中的中间属性（仅当 IsChain = true 时有效）
-        /// </summary>
         IReadOnlyList<PropertyInfo> PropertyChain { get; }
     }
 }

@@ -6,7 +6,7 @@ namespace SmartSql.Reflection
 {
     public class PropertyHolder : IPropertyHolder
     {
-        public PropertyInfo Property { get; set; }
+        public PropertyInfo Property { get; }
         public String TypeHandler { get; set; }
 
         public Type PropertyType => Property.PropertyType;
@@ -18,6 +18,12 @@ namespace SmartSql.Reflection
         public bool IsChain => false;
 
         public IReadOnlyList<PropertyInfo> PropertyChain => throw new NotSupportedException();
+
+        public PropertyHolder(PropertyInfo property, string typeHandler)
+        {
+            this.Property = property;
+            this.TypeHandler = typeHandler;
+        }
 
     }
 }
