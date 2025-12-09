@@ -26,7 +26,7 @@ namespace SmartSql.Test.Unit.DyRepository
             Assert.Equal(id, entity.Id);
         }
 
-        [Fact]
+        //[Fact]
         public int Insert()
         {
             var id = _repository.Insert(new ColumnAnnotationEntity
@@ -42,14 +42,14 @@ namespace SmartSql.Test.Unit.DyRepository
         }
 
         [Fact]
-        public int InsertByParamAnnotations()
+        public void InsertByParamAnnotations()
         {
             var id = _repository.Insert(nameof(InsertByParamAnnotations), new ColumnAnnotationEntity.ExtendData
             {
                 Info = nameof(InsertByParamAnnotations)
             });
             Assert.NotEqual(0, id);
-            return id;
+            //return id;
         }
     }
 }
