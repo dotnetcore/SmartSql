@@ -197,11 +197,45 @@ namespace SmartSql.Deserializer
                     ilGen.Call(DataType.Method.IsDBNull);
                     ilGen.IfTrueS(isDbNullLabel);
                 }
+                if (propertyHolder.IsChain)
+                {
+                    ilGen.LoadLocalVar(0);
 
-                ilGen.LoadLocalVar(0);
-                LoadPropertyValue(ilGen, executionContext, propertyType, columnDescriptor.FieldType,
-                    propertyHolder.TypeHandler);
-                ilGen.Call(propertyHolder.SetMethod);
+                    foreach (var prop in propertyHolder.PropertyChain.Take(propertyHolder.PropertyChain.Count - 1))
+                    {
+                        var notNullLabel = ilGen.DefineLabel();
+
+                        ilGen.Dup();
+
+                        ilGen.Call(prop.GetMethod);
+
+                        ilGen.IfTrueS(notNullLabel);
+
+                        ilGen.Dup();
+
+                        ilGen.New(prop.PropertyType.GetConstructor(Type.EmptyTypes));
+
+                        ilGen.Call(prop.SetMethod);
+
+                        ilGen.MarkLabel(notNullLabel);
+
+                        ilGen.Call(prop.GetMethod);
+
+                    }
+
+                    LoadPropertyValue(ilGen, executionContext, propertyType, columnDescriptor.FieldType, propertyHolder.TypeHandler);
+
+                    ilGen.Call(propertyHolder.SetMethod);
+                }
+                else
+                {
+                    ilGen.LoadLocalVar(0);
+
+                    LoadPropertyValue(ilGen, executionContext, propertyType, columnDescriptor.FieldType, propertyHolder.TypeHandler);
+
+                    ilGen.Call(propertyHolder.SetMethod);
+                }
+
                 if (ignoreDbNull)
                 {
                     ilGen.MarkLabel(isDbNullLabel);
@@ -278,47 +312,74 @@ namespace SmartSql.Deserializer
 
         private static bool ResolveProperty<TResult>(ResultMap resultMap, Type resultType,
             ColumnDescriptor columnDescriptor
-            , out PropertyHolder propertyHolder)
+            , out IPropertyHolder propertyHolder)
         {
             propertyHolder = null;
             if (resultMap?.Properties != null)
             {
                 if (resultMap.Properties.TryGetValue(columnDescriptor.ColumnName, out var resultProperty))
                 {
-                    var property = resultType.GetProperty(resultProperty.Name) ??
-                                   throw new SmartSqlException($"ResultMap:[{resultMap.Id}], can not find property:[{resultProperty.Name}] in class:[{resultType.Name}]");
-                    propertyHolder = new PropertyHolder
+                    if (resultProperty.Name.Contains('.'))
                     {
-                        Property = property,
-                        TypeHandler = resultProperty.TypeHandler
-                    };
-                    return true;
+                        propertyHolder = new PropertyChainHolder(
+                            ParsePropertyChain(
+                                resultMapId: resultMap.Id,
+                                rootType: resultType,
+                                propertyPath: resultProperty.Name
+                            ),
+                            resultProperty.TypeHandler
+                        );
+                        return true;
+                    }
+                    else
+                    {
+                        var property = resultType.GetProperty(resultProperty.Name)
+                            ?? throw new SmartSqlException(
+                                $"ResultMap:[{resultMap.Id}], can not find property:[{resultProperty.Name}] in class:[{resultType.Name}]"
+                            );
+
+                        propertyHolder = new PropertyHolder(property, resultProperty.TypeHandler);
+                        return true;
+                    }
                 }
             }
 
             if (EntityMetaDataCache<TResult>.TryGetColumnByColumnName(columnDescriptor.ColumnName,
                 out var columnAttribute))
             {
-                propertyHolder = new PropertyHolder
-                {
-                    Property = columnAttribute.Property,
-                    TypeHandler = columnAttribute.TypeHandler
-                };
+                propertyHolder = new PropertyHolder(columnAttribute.Property, columnAttribute.TypeHandler);
                 return true;
             }
 
             if (EntityMetaDataCache<TResult>.TryGetColumnByPropertyName(columnDescriptor.PropertyName,
                 out columnAttribute))
             {
-                propertyHolder = new PropertyHolder
-                {
-                    Property = columnAttribute.Property,
-                    TypeHandler = columnAttribute.TypeHandler
-                };
+                propertyHolder = new PropertyHolder(columnAttribute.Property, columnAttribute.TypeHandler);
                 return true;
             }
 
             return false;
+        }
+
+        private static List<PropertyInfo> ParsePropertyChain(string resultMapId, Type rootType, string propertyPath)
+        {
+            var propertyNames = propertyPath.Split('.');
+            var chain = new List<PropertyInfo>();
+            Type currentType = rootType;
+
+            foreach (var name in propertyNames)
+            {
+                var property = currentType.GetProperty(name);
+                if (property == null)
+                {
+                    throw new SmartSqlException($"ResultMap:[{resultMapId}], Cannot find property:[{name}] in type:[{currentType.Name}] for path:[{propertyPath}]");
+                }
+
+                chain.Add(property);
+                currentType = property.PropertyType;
+            }
+
+            return chain;
         }
 
         private void LoadPropertyValue(ILGenerator ilGen, ExecutionContext executionContext,

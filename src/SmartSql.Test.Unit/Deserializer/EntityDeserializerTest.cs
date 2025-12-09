@@ -1,6 +1,7 @@
 ﻿using SmartSql.Test.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -74,6 +75,24 @@ namespace SmartSql.Test.Unit.Deserializer
                 Request = new { Taken = 10000 }
             });
             Assert.NotNull(list);
+        }
+
+        [Fact]
+        public void NestedPropertyMappingTest()
+        {
+            var list = SqlMapper.Query<NestedEntity>(new RequestContext
+            {
+                Scope = nameof(AllPrimitive),
+                SqlId = "QueryNestedPropertyResult",
+                Request = new { Taken = 10000 }
+            });
+
+            Assert.NotNull(list);
+
+            Assert.NotNull(list.First().NestedProp1);
+            Assert.NotNull(list.First().NestedProp1.NestedProp2);
+            Assert.NotNull(list.First().NestedProp1.NestedProp2.NestedProp3);
+
         }
     }
 }
