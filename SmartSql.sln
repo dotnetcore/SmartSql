@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.168
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34616.47
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql", "src\SmartSql\SmartSql.csproj", "{88EAF92D-6365-494C-96CC-FABD961B4CA5}"
 EndProject
@@ -86,19 +86,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Bulk.MySqlConnecto
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sync", "Sync", "{903A0C86-20AC-4E4A-A33F-25706FA0E20A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.InvokeSync", "src\SmartSql.InvokeSync\SmartSql.InvokeSync.csproj", "{F97E8897-6A81-49FE-A4CC-636F33A12AF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.InvokeSync", "src\SmartSql.InvokeSync\SmartSql.InvokeSync.csproj", "{F97E8897-6A81-49FE-A4CC-636F33A12AF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.InvokeSync.Kafka", "src\SmartSql.InvokeSync.Kafka\SmartSql.InvokeSync.Kafka.csproj", "{351A1466-8FE0-41F0-8A13-4F1BA973C58F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.InvokeSync.Kafka", "src\SmartSql.InvokeSync.Kafka\SmartSql.InvokeSync.Kafka.csproj", "{351A1466-8FE0-41F0-8A13-4F1BA973C58F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.InvokeSync.RabbitMQ", "src\SmartSql.InvokeSync.RabbitMQ\SmartSql.InvokeSync.RabbitMQ.csproj", "{9FC40FC1-8FEC-4048-A78B-AA392F87DCA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.InvokeSync.RabbitMQ", "src\SmartSql.InvokeSync.RabbitMQ\SmartSql.InvokeSync.RabbitMQ.csproj", "{9FC40FC1-8FEC-4048-A78B-AA392F87DCA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.Cache.Sync", "src\SmartSql.Cache.Sync\SmartSql.Cache.Sync.csproj", "{1F4EA4D3-D710-480E-9561-69DE388EAFE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Cache.Sync", "src\SmartSql.Cache.Sync\SmartSql.Cache.Sync.csproj", "{1F4EA4D3-D710-480E-9561-69DE388EAFE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.DataConnector", "src\SmartSql.DataConnector\SmartSql.DataConnector.csproj", "{B6C8A252-B5D8-479B-8518-21AB79B65670}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.DataConnector", "src\SmartSql.DataConnector\SmartSql.DataConnector.csproj", "{B6C8A252-B5D8-479B-8518-21AB79B65670}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.Oracle", "src\SmartSql.Oracle\SmartSql.Oracle.csproj", "{F27F1F16-F219-43FF-BEBE-6BDF9FC89A9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Oracle", "src\SmartSql.Oracle\SmartSql.Oracle.csproj", "{F27F1F16-F219-43FF-BEBE-6BDF9FC89A9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.Bulk.MsSqlServer", "src\SmartSql.Bulk.MsSqlServer\SmartSql.Bulk.MsSqlServer.csproj", "{8CC66FDB-3775-4D17-B555-D8462AD693D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Bulk.MsSqlServer", "src\SmartSql.Bulk.MsSqlServer\SmartSql.Bulk.MsSqlServer.csproj", "{8CC66FDB-3775-4D17-B555-D8462AD693D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSql.Bulk.Oracle", "src\SmartSql.Bulk.Oracle\SmartSql.Bulk.Oracle.csproj", "{DD1E3E05-CEF2-4C46-A5F1-D78F4615054E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -210,6 +212,10 @@ Global
 		{8CC66FDB-3775-4D17-B555-D8462AD693D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CC66FDB-3775-4D17-B555-D8462AD693D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CC66FDB-3775-4D17-B555-D8462AD693D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD1E3E05-CEF2-4C46-A5F1-D78F4615054E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD1E3E05-CEF2-4C46-A5F1-D78F4615054E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD1E3E05-CEF2-4C46-A5F1-D78F4615054E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD1E3E05-CEF2-4C46-A5F1-D78F4615054E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -249,6 +255,7 @@ Global
 		{B6C8A252-B5D8-479B-8518-21AB79B65670} = {903A0C86-20AC-4E4A-A33F-25706FA0E20A}
 		{F27F1F16-F219-43FF-BEBE-6BDF9FC89A9E} = {FB71A21B-B0FD-4F40-985D-4BB7756D33BF}
 		{8CC66FDB-3775-4D17-B555-D8462AD693D9} = {10CE96D5-C0F2-48F4-AF24-4B07C1B36FA8}
+		{DD1E3E05-CEF2-4C46-A5F1-D78F4615054E} = {10CE96D5-C0F2-48F4-AF24-4B07C1B36FA8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6942F9AB-D574-4C16-8CF7-0D10B637237B}
