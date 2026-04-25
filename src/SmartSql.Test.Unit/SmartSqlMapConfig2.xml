@@ -3,14 +3,14 @@
     <Settings IgnoreParameterCase="false" ParameterPrefix="$" IsCacheEnabled="true" EnablePropertyChangedTrack="true"
               IgnoreDbNull="true"/>
     <Properties>
-        <Property Name="DbProvider" Value="MySql" />
+        <!--    <Property Name="Redis" Value="localhost"/>-->
+        <Property Name="DbProvider" Value="MsSqlServer"/>
         <Property Name="ConnectionString"
-                  Value="server=localhost;uid=root;pwd=root;database=SmartSqlTestDB"/>
+                  Value="Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True"/>
         <Property Name="JsonTypeHandler`" Value="SmartSql.TypeHandler.JsonTypeHandler`1,SmartSql.TypeHandler"/>
         <Property Name="JsonTypeHandler" Value="SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"/>
         <Property Name="ScriptBuilder" Value="SmartSql.ScriptTag.ScriptBuilder,SmartSql.ScriptTag"/>
         <Property Name="RedisCacheProvider" Value="SmartSql.Cache.Redis.RedisCacheProvider,SmartSql.Cache.Redis"/>
-        <Property Name="Redis" Value="localhost"/>
     </Properties>
     <AutoConverters>
         <AutoConverter Name="NoneConverter">
@@ -53,7 +53,7 @@
         <DbProvider Name="${DbProvider}"/>
         <Write Name="WriteDB" ConnectionString="${ConnectionString}"/>
         <Read Name="ReadDb-1" ConnectionString="${ConnectionString}" Weight="100"/>
-        <Read Name="ReadDb-2" ConnectionString="${ConnectionString}"  Weight="100"  />
+        <Read Name="ReadDb-2" ConnectionString="${ConnectionString}"  />
     </Database>
     <TypeHandlers>
         <TypeHandler PropertyType="SmartSql.Test.Entities.UserInfo,SmartSql.Test" Type="${JsonTypeHandler`}">
