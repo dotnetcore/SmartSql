@@ -1,0 +1,51 @@
+# SmartSql
+
+> .NET ORM inspired by MyBatis — XML-managed SQL with read/write splitting, caching, dynamic repositories, and diagnostics.
+
+## Onboarding
+
+- [Contributor Guide](wiki/onboarding/contributor.md): Guide for new contributors to the SmartSql project
+- [Staff Engineer Guide](wiki/onboarding/staff-engineer.md): Architectural deep-dive for staff/principal engineers
+- [Executive Guide](wiki/onboarding/executive.md): Capability map and investment thesis for engineering leaders
+- [Product Manager Guide](wiki/onboarding/product-manager.md): Feature overview for PMs and non-engineering stakeholders
+
+## Architecture
+
+- [Architecture Overview](wiki/architecture/index.md): Three-layer architecture, core abstractions, middleware pipeline
+- [Middleware Pipeline](wiki/architecture/middleware-pipeline.md): Linked-list middleware chain with 7 stages
+- [XML Tag System](wiki/architecture/xml-tags.md): Dynamic SQL tags for conditional SQL construction
+- [DataSource & R/W Splitting](wiki/architecture/datasource.md): Read/write data source management with weighted load balancing
+- [Caching](wiki/architecture/caching.md): LRU, FIFO, and Redis cache with flush strategies
+- [Deserialization](wiki/architecture/deserialization.md): DataReader to object deserialization chain
+- [Diagnostics](wiki/architecture/diagnostics.md): DiagnosticSource events for monitoring
+
+## Getting Started
+
+- [Introduction](wiki/guide/index.md): What is SmartSql, why choose it, feature overview
+- [Quick Start](wiki/guide/quick-start.md): Installation, setup, first queries
+- [Configuration](wiki/guide/configuration.md): SmartSqlMapConfig.xml and SmartSqlBuilder API
+- [XML SQL Maps](wiki/guide/xml-sql-maps.md): Writing dynamic SQL in XML with 30+ tags
+
+## Extensions
+
+- [Extensions Overview](wiki/extensions/index.md): All SmartSql extension packages
+- [Dynamic Repository](wiki/extensions/dy-repository.md): Auto-implement repository interfaces via IL emit
+- [DI Integration](wiki/extensions/di-extension.md): ASP.NET Core dependency injection
+- [AOP Transactions](wiki/extensions/aop.md): Attribute-based transaction management
+- [Bulk Insert](wiki/extensions/bulk-insert.md): High-performance bulk insert for 5 databases
+- [Type Handlers](wiki/extensions/type-handlers.md): JSON, XML, and Crypto type handlers
+- [Redis Cache](wiki/extensions/redis-cache.md): Distributed cache via StackExchange.Redis
+- [InvokeSync](wiki/extensions/invoke-sync.md): Kafka/RabbitMQ data synchronization
+
+## API Reference
+
+- [Core Interfaces](wiki/api/core-interfaces.md): ISqlMapper, IDbSession, IDbSessionFactory
+- [Configuration API](wiki/api/configuration.md): SmartSqlBuilder fluent API
+- [Middleware API](wiki/api/middleware.md): Custom middleware development
+
+## Optional
+
+- [Changelog](wiki/guide/changelog.md): Version history and milestones
+- [Build & CI](wiki/building/index.md): Build commands and CI pipeline
+- [Contributing](wiki/building/contributing.md): How to contribute
+- [Publishing](wiki/building/publishing.md): NuGet package publishing
