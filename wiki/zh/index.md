@@ -4,6 +4,9 @@ layout: home
 hero:
   name: SmartSql
   text: 受 MyBatis 启发的 .NET ORM
+  image:
+    src: /SmartSql.png
+    alt: SmartSql
   tagline: 使用 XML 管理 SQL，支持读写分离、缓存、动态仓储与诊断 —— 简单、高效、高性能。
   actions:
     - theme: brand

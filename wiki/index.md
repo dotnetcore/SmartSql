@@ -4,6 +4,9 @@ layout: home
 hero:
   name: SmartSql
   text: .NET ORM Inspired by MyBatis
+  image:
+    src: /SmartSql.png
+    alt: SmartSql
   tagline: XML-managed SQL with read/write splitting, caching, dynamic repositories, and diagnostics — simple, efficient, high-performance.
   actions:
     - theme: brand
