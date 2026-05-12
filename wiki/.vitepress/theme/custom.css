@@ -1,0 +1,102 @@
+:root {
+  --vp-c-brand-1: #6d5dfc;
+  --vp-c-brand-2: #5a4bd6;
+  --vp-c-brand-3: #4a3cc0;
+  --vp-c-brand-soft: rgba(109, 93, 252, 0.14);
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(135deg, #6d5dfc 40%, #00d4aa);
+  --vp-home-hero-image-background-image: linear-gradient(135deg, rgba(109, 93, 252, 0.3) 50%, rgba(0, 212, 170, 0.3));
+  --vp-home-hero-image-filter: blur(44px);
+}
+
+.dark {
+  --vp-c-bg: #0d1117;
+  --vp-c-bg-soft: #161b22;
+  --vp-c-bg-mute: #21262d;
+  --vp-c-border: #30363d;
+  --vp-c-text-1: #e6edf3;
+  --vp-c-text-2: #8b949e;
+}
+
+/* Mermaid diagram styling — responsive */
+.mermaid,
+.vitepress-mermaid-renderer,
+[class*="mermaid"] {
+  background: #161b22 !important;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  width: 100% !important;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+
+.mermaid svg,
+.vitepress-mermaid-renderer svg,
+[class*="mermaid"] svg {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+}
+
+/* Mermaid zoom container */
+.mermaid-zoom-container,
+[class*="mermaid-control"] {
+  width: 100%;
+}
+
+.mermaid-zoom-container {
+  cursor: zoom-in;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.mermaid-zoom-container.zoomed {
+  cursor: zoom-out;
+}
+
+/* Medium zoom for images */
+.medium-zoom-overlay {
+  z-index: 200;
+}
+
+.medium-zoom-image--opened {
+  z-index: 201;
+}
+
+/* Wider content area for readability */
+.VPDoc.has-aside .content-container {
+  max-width: 100% !important;
+}
+
+.VPDoc .container {
+  max-width: 1440px !important;
+}
+
+.VPDoc .content {
+  max-width: 100% !important;
+  padding-right: 32px !important;
+}
+
+/* Also widen for pages without aside */
+.VPDoc:not(.has-aside) .content,
+.VPDoc:not(.has-aside) .content-container {
+  max-width: 100% !important;
+}
+
+/* Code group styling */
+.vp-code-group .tabs label {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Custom container */
+.custom-block.tip {
+  border-color: var(--vp-c-brand-1);
+}
+
+/* Inter font for body text */
+:root {
+  --vp-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, 'Courier New', monospace;
+}

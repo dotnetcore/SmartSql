@@ -1,0 +1,22 @@
+{
+  "name": "smartsql-wiki",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview",
+    "fix:mermaid": "node scripts/fix-mermaid.mjs"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "devDependencies": {
+    "vitepress": "^1.6.4",
+    "vitepress-mermaid-renderer": "^1.1.23"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

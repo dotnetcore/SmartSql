@@ -1,0 +1,59 @@
+# SmartSql
+
+> .NET ORM inspired by MyBatis — XML-managed SQL with read/write splitting, caching, dynamic repositories, and diagnostics. Version 4.1.68.
+
+## Onboarding
+
+- [Contributor Guide](onboarding/contributor.md): Comprehensive onboarding for new contributors — .NET ORM foundations, SmartSql architecture, getting productive, common patterns
+- [Staff Engineer Guide](onboarding/staff-engineer.md): Dense architectural analysis for staff/principal engineers — design tradeoffs, performance characteristics, extension points
+- [Executive Guide](onboarding/executive.md): Strategic overview for engineering leadership — capability map, cost model, team impact, decision framework
+- [Product Manager Guide](onboarding/product-manager.md): Non-technical overview for PMs and stakeholders — feature capabilities, developer experience, performance, limitations
+
+## Architecture
+
+- [Architecture Overview](architecture/index.md): Three-layer architecture with ISqlMapper, middleware pipeline, and database access
+- [Middleware Pipeline](architecture/middleware-pipeline.md): Linked-list middleware chain with 7 stages from initialization to result deserialization
+- [XML Tag System](architecture/xml-tags.md): Dynamic SQL tags for conditional construction — Where, Set, IsNotEmpty, Switch, For, Include, and 30+ tags
+- [DataSource & R/W Splitting](architecture/datasource.md): Read/write data source management with weighted load balancing
+- [Caching](architecture/caching.md): LRU, FIFO, and Redis cache with flush-on-execute and flush-interval strategies
+- [Deserialization](architecture/deserialization.md): DataReader to object deserialization chain with IL-emit optimization
+- [Diagnostics](architecture/diagnostics.md): DiagnosticSource events for APM tool integration and monitoring
+
+## Getting Started
+
+- [Introduction](guide/index.md): What is SmartSql, why choose it over EF Core or Dapper, feature overview
+- [Quick Start](guide/quick-start.md): Install via NuGet, configure XML, build SmartSqlMapper, run first queries in 5 minutes
+- [Configuration](guide/configuration.md): SmartSqlMapConfig.xml structure, Settings, Database, TypeHandlers, IdGenerators, and SmartSqlBuilder fluent API
+- [XML SQL Maps](guide/xml-sql-maps.md): Writing SmartSqlMap files with Statement, ResultMap, MultipleResultMap, Cache, ParameterMap, and all dynamic tags
+
+## Extensions
+
+- [Extensions Overview](extensions/index.md): All SmartSql extension packages and how they relate to the core library
+- [Dynamic Repository](extensions/dy-repository.md): Auto-implement repository interfaces via IL emit with naming conventions and annotations
+- [DI Integration](extensions/di-extension.md): ASP.NET Core dependency injection with services.AddSmartSql() and AddRepositoryFromAssembly()
+- [Options Pattern](extensions/options.md): Configure SmartSql from appsettings.json using IOptions pattern
+- [AOP Transactions](extensions/aop.md): Declarative transaction management via [Transaction] attribute using AspectCore
+- [Bulk Insert](extensions/bulk-insert.md): High-performance bulk insert for SQL Server, MySQL, PostgreSQL using native APIs
+- [Type Handlers](extensions/type-handlers.md): JSON, XML, Crypto, and PostgreSQL-specific type handlers
+- [Redis Cache](extensions/redis-cache.md): Distributed query result caching via StackExchange.Redis
+- [Cache Sync](extensions/cache-sync.md): Distributed cache invalidation across instances via message queue subscribers
+- [InvokeSync](extensions/invoke-sync.md): Data synchronization across services via Kafka and RabbitMQ
+- [Script Tag](extensions/script-tag.md): JavaScript-based dynamic SQL conditions using Jint engine
+- [Oracle Support](extensions/oracle.md): Oracle database provider with BindByName configuration
+
+## API Reference
+
+- [API Overview](api/index.md): Public API surface, NuGet packages, main entry points
+- [Core Interfaces](api/core-interfaces.md): ISqlMapper, IDbSession, IDbSessionFactory, IDbSessionStore, ITransaction
+- [Configuration API](api/configuration.md): SmartSqlBuilder fluent API, SmartSqlConfig properties, build process
+- [Middleware API](api/middleware.md): IMiddleware interface, built-in middleware chain, custom middleware and filter creation
+
+## Building
+
+- [Build & CI](building/index.md): Build commands, CI/CD pipeline, test environment, solution structure
+- [Contributing](building/contributing.md): Fork/branch/PR workflow, coding conventions, testing requirements
+- [Publishing](building/publishing.md): Version management, NuGet publishing pipeline, release checklist
+
+## Optional
+
+- [Changelog](guide/changelog.md): Version history, key milestones, and release notes
