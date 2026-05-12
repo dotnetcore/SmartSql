@@ -21,6 +21,9 @@ export default defineConfig({
       ...zh,
     },
   },
+  sitemap: {
+    hostname: 'https://wiki.smartsql.net',
+  },
   markdown: {
     lineNumbers: true,
   },
