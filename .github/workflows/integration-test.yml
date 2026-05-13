@@ -8,7 +8,7 @@ jobs:
       REDIS: true
     strategy:
       matrix:
-        dotnet: [ '6.0.x' ]
+        dotnet: [ '8.0.x' ]
     services:
       redis:
         image: redis
@@ -35,7 +35,7 @@ jobs:
           settings-path: ${{ github.workspace }}
 
       - name: Init SmartSql-Test-Db
-        run: mysql -vvv -h localhost -uroot -proot < src/SmartSql.Test.Unit/DB/init-mysql-db.sql
+        run: mysql -vvv -h localhost -uroot -proot < src/SmartSql.Test.Integration/DB/init-mysql-db.sql
 
       - name: Unit Test
         run: dotnet test

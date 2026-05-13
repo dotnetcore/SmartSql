@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Test", "src\SmartS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Test.Performance", "src\SmartSql.Test.Performance\SmartSql.Test.Performance.csproj", "{6B342B2E-DF7D-40D7-A9E1-A410BA33E339}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Test.Unit", "src\SmartSql.Test.Unit\SmartSql.Test.Unit.csproj", "{4A105342-B8C1-4797-B647-2BFF876637F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.Test.Integration", "src\SmartSql.Test.Integration\SmartSql.Test.Integration.csproj", "{4A105342-B8C1-4797-B647-2BFF876637F2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSql.ScriptTag", "src\SmartSql.ScriptTag\SmartSql.ScriptTag.csproj", "{B3F8B542-78C2-4C0A-B72F-944038955D07}"
 EndProject
