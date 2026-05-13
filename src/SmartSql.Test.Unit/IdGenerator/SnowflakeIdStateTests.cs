@@ -12,12 +12,14 @@ public class SnowflakeIdStateTests
     private readonly DateTimeOffset _epochTime;
     private readonly long _epoch;
 
-    // Bit layout constants
+    // Default layout from AbstractSnowflakeId:
+    // MachineIdBits = 10, SequenceBits = 12
+    // TimestampShift = MachineIdBits + SequenceBits = 22
     private const int MachineIdBits = 10;
     private const int SequenceBits = 12;
-    private const int MaxMachineMask = 4095; // 2^12 - 1
-    private const int SequenceMask = 4095;   // 2^12 - 1
-    private const int TimestampShift = 22;   // MachineIdBits + SequenceBits
+    private const int MaxMachineMask = 1023;   // 2^10 - 1
+    private const int SequenceMask = 4095;     // 2^12 - 1
+    private const int TimestampShift = 22;
     private const long TimestampMask = (1L << 41) - 1; // 2^41 - 1
     private const long MachineId = 1L;
 
