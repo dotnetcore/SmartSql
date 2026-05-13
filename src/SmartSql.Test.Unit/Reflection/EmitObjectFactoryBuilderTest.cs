@@ -1,10 +1,10 @@
 ﻿using SmartSql.Reflection.ObjectFactoryBuilder;
-using SmartSql.Test.Entities;
+using SmartSql.Test.Unit.TestEntities;
 using System;
 using SmartSql.Reflection.TypeConstants;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Reflection
+namespace SmartSql.Test.Unit.Reflection
 {
     public class EmitObjectFactoryBuilderTest : ObjectFactoryBuilderTest
     {

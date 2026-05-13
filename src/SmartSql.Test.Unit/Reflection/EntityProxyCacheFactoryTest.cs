@@ -1,9 +1,9 @@
 using System;
 using SmartSql.Reflection.EntityProxy;
-using SmartSql.Test.Entities;
+using SmartSql.Test.Unit.TestEntities;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Reflection
+namespace SmartSql.Test.Unit.Reflection
 {
     public class EntityProxyCacheFactoryTest
     {

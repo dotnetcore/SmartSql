@@ -1,5 +1,5 @@
 ﻿using SmartSql.Reflection.PropertyAccessor;
-using SmartSql.Test.Entities;
+using SmartSql.Test.Unit.TestEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using SmartSql.Reflection;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Reflection
+namespace SmartSql.Test.Unit.Reflection
 {
     public class GetAccessorFactoryTest
     {

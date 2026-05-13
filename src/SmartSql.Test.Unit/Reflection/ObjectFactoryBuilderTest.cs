@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using SmartSql.Test.Entities;
+using SmartSql.Test.Unit.TestEntities;
 
-namespace SmartSql.Test.Integration.Reflection
+namespace SmartSql.Test.Unit.Reflection
 {
     public class ObjectFactoryBuilderTest
     {

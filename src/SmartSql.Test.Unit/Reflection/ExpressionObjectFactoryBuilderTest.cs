@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using SmartSql.Reflection.ObjectFactoryBuilder;
 using SmartSql.Reflection.TypeConstants;
-using SmartSql.Test.Entities;
+using SmartSql.Test.Unit.TestEntities;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Reflection
+namespace SmartSql.Test.Unit.Reflection
 {
     public class ExpressionObjectFactoryBuilderTest : ObjectFactoryBuilderTest
     {

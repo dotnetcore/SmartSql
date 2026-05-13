@@ -5,7 +5,7 @@ using SmartSql.Reflection;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SmartSql.Test.Integration.Reflection
+namespace SmartSql.Test.Unit.Reflection
 {
     public class PropertyTokenizerTest
     {

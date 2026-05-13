@@ -1,12 +1,12 @@
 ﻿using SmartSql.Reflection;
 using SmartSql.Reflection.Convert;
-using SmartSql.Test.Entities;
+using SmartSql.Test.Unit.TestEntities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Reflection
+namespace SmartSql.Test.Unit.Reflection
 {
     public class RequestConvertTest
     {
