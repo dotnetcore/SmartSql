@@ -11,15 +11,15 @@ jobs:
       packages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
 
-      - name: Set up dotnet
-        uses: actions/setup-dotnet@v2
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 8.0.x
 
       - name: Pack
         run: dotnet pack -c Release -o ./nuget
-        
+
       - name: Publish
         run: dotnet nuget push "./nuget/*.nupkg" -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
