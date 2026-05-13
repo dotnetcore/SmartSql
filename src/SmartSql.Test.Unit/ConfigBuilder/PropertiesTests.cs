@@ -97,12 +97,13 @@ public class PropertiesTests
     }
 
     [Fact]
-    public void Should_ReturnRawString_When_KeyNotFound()
+    public void Should_Throw_When_KeyNotFound()
     {
         var properties = new Properties();
 
-        var result = properties.GetPropertyValue("${Unknown}");
+        var act = () => properties.GetPropertyValue("${Unknown}");
 
-        result.Should().Be("${Unknown}");
+        act.Should().Throw<SmartSqlException>()
+            .WithMessage("*Unknown*");
     }
 }
