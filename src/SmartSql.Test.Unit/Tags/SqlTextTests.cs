@@ -1,23 +1,26 @@
+using FluentAssertions;
 using SmartSql.Configuration.Tags;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Tags;
 
-public class SqlTextTest
+public class SqlTextTests
 {
     [Fact]
-    public void BuildSql()
+    public void Should_BuildSql_When_NoInSyntax()
     {
         var expected = "id=?id";
         SqlText sqlText = new SqlText(expected, "?");
         RequestContext requestContext = new RequestContext();
+
         sqlText.BuildSql(requestContext);
+
         var actual = requestContext.SqlBuilder.ToString();
-        Assert.Equal(expected, actual);
+        actual.Should().Be(expected);
     }
-    
+
     [Fact]
-    public void BuildSqlWithIn()
+    public void Should_ExpandInClause_When_ParameterIsArray()
     {
         SqlText sqlText = new SqlText("in ?Ids", "?");
         RequestContext requestContext = new RequestContext()
@@ -28,13 +31,15 @@ public class SqlTextTest
             }
         };
         requestContext.SetupParameters();
+
         sqlText.BuildSql(requestContext);
+
         var actual = requestContext.SqlBuilder.ToString();
-        Assert.Equal("In (?Ids_0,?Ids_1)", actual);
+        actual.Should().Be("In (?Ids_0,?Ids_1)");
     }
-    
+
     [Fact]
-    public void BuildSqlWithInAndSemicolon()
+    public void Should_ExpandInClause_When_FollowedBySemicolon()
     {
         SqlText sqlText = new SqlText("in ?Ids;", "?");
         RequestContext requestContext = new RequestContext()
@@ -45,8 +50,10 @@ public class SqlTextTest
             }
         };
         requestContext.SetupParameters();
+
         sqlText.BuildSql(requestContext);
+
         var actual = requestContext.SqlBuilder.ToString();
-        Assert.Equal("In (?Ids_0,?Ids_1);", actual);
+        actual.Should().Be("In (?Ids_0,?Ids_1);");
     }
 }

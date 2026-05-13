@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http.Headers;
-using System.Text;
+using FluentAssertions;
 using SmartSql.TypeHandler;
 using SmartSql.TypeHandlers;
+using System.Collections.Generic;
 using Xunit;
 
 namespace SmartSql.Test.Unit.TypeHandlers
 {
-    public class NamedTypeHandlerCacheTest
+    public class NamedTypeHandlerCacheTests
     {
         [Fact]
-        public void Build()
+        public void Should_BuildAndRetrieveTypeHandlers_When_CacheIsBuilt()
         {
             var alias = "NamedTypeHandlerCacheTest";
 
@@ -24,11 +22,12 @@ namespace SmartSql.Test.Unit.TypeHandlers
             };
 
             NamedTypeHandlerCache.Build(alias, namedTypeHandlers);
+
             var actualJson = NamedTypeHandlerCache.GetTypeHandlerField(alias, "Json").GetValue(null);
-            Assert.Equal(expectedJson, actualJson);
+            actualJson.Should().Be(expectedJson);
 
             var actualXml = NamedTypeHandlerCache.GetTypeHandlerField(alias, "Xml").GetValue(null);
-            Assert.Equal(expectedXml, actualXml);
+            actualXml.Should().Be(expectedXml);
         }
     }
 }

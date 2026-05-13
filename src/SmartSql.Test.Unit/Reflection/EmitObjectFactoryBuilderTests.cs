@@ -7,7 +7,7 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Reflection
 {
-    public class EmitObjectFactoryBuilderTests : ObjectFactoryBuilderTest
+    public class EmitObjectFactoryBuilderTests : ObjectFactoryBuilderTests
     {
         private readonly EmitObjectFactoryBuilder _emitObjectFactoryBuilder;
 
