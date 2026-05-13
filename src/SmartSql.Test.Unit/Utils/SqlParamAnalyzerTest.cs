@@ -2,7 +2,7 @@ using System.Linq;
 using SmartSql.Utils;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Utils
+namespace SmartSql.Test.Unit.Utils
 {
     public class SqlParamAnalyzerTest
     {

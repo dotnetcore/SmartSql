@@ -4,7 +4,7 @@ using System.Text;
 using SmartSql.Reflection;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Utils
+namespace SmartSql.Test.Unit.Utils
 {
     public class ValueTupleConvertTest
     {

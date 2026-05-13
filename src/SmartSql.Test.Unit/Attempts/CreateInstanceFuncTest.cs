@@ -1,5 +1,5 @@
 ﻿using SmartSql.Reflection.TypeConstants;
-using SmartSql.Test.Entities;
+using SmartSql.Test.Unit.TestEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 using System.Text;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Attempts
+namespace SmartSql.Test.Unit.Attempts
 {
     public class CreateInstanceFunc_Test
     {

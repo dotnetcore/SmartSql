@@ -24,6 +24,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
+    <ProjectReference Include="..\SmartSql.InvokeSync\SmartSql.InvokeSync.csproj" />
+    <ProjectReference Include="..\SmartSql.TypeHandler\SmartSql.TypeHandler.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="SmartSqlMapConfig-Embedded.xml" />
+    <EmbeddedResource Include="SmartSqlMapConfig-Embedded.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Include="SmartSqlMapConfig.xml" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>

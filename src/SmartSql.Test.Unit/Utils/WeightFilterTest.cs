@@ -7,7 +7,7 @@ using SmartSql.DataSource;
 using SmartSql.Utils;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Utils
+namespace SmartSql.Test.Unit.Utils
 {
     public class WeightFilterTest
     {

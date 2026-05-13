@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SmartSql.TypeHandler.Crypto;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Cryptos
+namespace SmartSql.Test.Unit.Cryptos
 {
     public class DESCryptoTest
     {

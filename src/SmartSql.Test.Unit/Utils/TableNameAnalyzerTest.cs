@@ -5,7 +5,7 @@ using SmartSql.InvokeSync;
 using SmartSql.InvokeSync.Utils;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Utils
+namespace SmartSql.Test.Unit.Utils
 {
     public class TableNameAnalyzerTest
     {

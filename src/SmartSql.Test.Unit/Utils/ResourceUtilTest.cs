@@ -5,7 +5,7 @@ using System.Text;
 using SmartSql.Utils;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Utils
+namespace SmartSql.Test.Unit.Utils
 {
     public class ResourceUtilTest
     {
@@ -13,7 +13,7 @@ namespace SmartSql.Test.Integration.Utils
         public void LoadUriAsXml()
         {
             var smartSqlConfig_github =
-                "https://raw.githubusercontent.com/Smart-Kit/SmartSql/master/src/SmartSql.Test.Integration/SmartSqlMapConfig.xml";
+                "https://raw.githubusercontent.com/Smart-Kit/SmartSql/master/src/SmartSql.Test.Unit/SmartSqlMapConfig.xml";
             Uri uri=new Uri(smartSqlConfig_github);
             var xml = ResourceUtil.LoadUriAsXml(uri);
             Assert.NotNull(xml);
@@ -21,7 +21,7 @@ namespace SmartSql.Test.Integration.Utils
         [Fact]
         public void LoadEmbeddedAsXml()
         {
-            var xml = ResourceUtil.LoadEmbeddedAsXml("SmartSql.Test.Integration.SmartSqlMapConfig-Embedded.xml,SmartSql.Test.Integration");
+            var xml = ResourceUtil.LoadEmbeddedAsXml("SmartSql.Test.Unit.SmartSqlMapConfig-Embedded.xml,SmartSql.Test.Unit");
             Assert.NotNull(xml);
         }
         [Fact]
