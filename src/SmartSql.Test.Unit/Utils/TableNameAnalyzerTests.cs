@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using FluentAssertions;
 using SmartSql.Configuration;
 using SmartSql.InvokeSync;
 using SmartSql.InvokeSync.Utils;
@@ -7,17 +8,17 @@ using Xunit;
 
 namespace SmartSql.Test.Unit.Utils
 {
-    public class TableNameAnalyzerTest
+    public class TableNameAnalyzerTests
     {
         private TableNameAnalyzer _tableNameAnalyzer;
 
-        public TableNameAnalyzerTest()
+        public TableNameAnalyzerTests()
         {
             _tableNameAnalyzer = new TableNameAnalyzer();
         }
 
         [Fact]
-        public void Insert()
+        public void Should_ReplaceTableName_When_InsertStatement()
         {
             var insertSql = @"Insert Into T_User
             (
@@ -35,8 +36,8 @@ namespace SmartSql.Test.Unit.Utils
             {
                 return operation + "new_user";
             });
-            
-            Assert.Equal(@"Insert Into new_user
+
+            newSql.Should().Be(@"Insert Into new_user
             (
             UserName,
             Status
@@ -46,52 +47,58 @@ namespace SmartSql.Test.Unit.Utils
             @UserName,
             @Status
             )
-            ;select last_insert_rowid() from T_User",newSql);
+            ;select last_insert_rowid() from T_User");
         }
 
         [Fact]
-        public void Update()
+        public void Should_ReplaceTableName_When_UpdateStatement()
         {
             var updateSql = @"UPDATE T_User
             Set
                 UserName = @UserName
                 Status = @Status
                 Where Id=@Id";
+
             var newSql = _tableNameAnalyzer.Replace(StatementType.Update, updateSql, (tableName, operation) =>
             {
                 return operation + "new_user";
             });
-            Assert.Equal(@"UPDATE new_user
+
+            newSql.Should().Be(@"UPDATE new_user
             Set
                 UserName = @UserName
                 Status = @Status
-                Where Id=@Id",newSql);
+                Where Id=@Id");
         }
 
         [Fact]
-        public void Delete()
+        public void Should_ReplaceTableName_When_DeleteStatement()
         {
             var updateSql = @"Delete T_User
       Where Id=@Id";
+
             var newSql = _tableNameAnalyzer.Replace(StatementType.Delete, updateSql, (tableName, operation) =>
             {
                 return operation + "new_user";
             });
-            Assert.Equal(@"Delete new_user
-      Where Id=@Id",newSql);
+
+            newSql.Should().Be(@"Delete new_user
+      Where Id=@Id");
         }
 
         [Fact]
-        public void DeleteFrom()
+        public void Should_ReplaceTableName_When_DeleteFromStatement()
         {
             var updateSql = @"Delete From T_User
       Where Id=@Id";
+
             var newSql = _tableNameAnalyzer.Replace(StatementType.Delete, updateSql, (tableName, operation) =>
             {
                 return operation + "new_user";
             });
-            Assert.Equal(@"Delete From new_user
-      Where Id=@Id",newSql);
+
+            newSql.Should().Be(@"Delete From new_user
+      Where Id=@Id");
         }
     }
 }

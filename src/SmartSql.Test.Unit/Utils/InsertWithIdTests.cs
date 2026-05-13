@@ -1,19 +1,20 @@
+using FluentAssertions;
 using SmartSql.InvokeSync.Utils;
 using Xunit;
 
 namespace SmartSql.Test.Unit.Utils
 {
-    public class InsertWithIdTest
+    public class InsertWithIdTests
     {
         private InsertWithId _insertWithId;
 
-        public InsertWithIdTest()
+        public InsertWithIdTests()
         {
             _insertWithId = new InsertWithId();
         }
 
         [Fact]
-        public void Replace()
+        public void Should_ReplaceIdPlaceholder_When_SqlContainsId()
         {
             var insertSql = @"Insert Into T_User
             (
@@ -28,7 +29,8 @@ namespace SmartSql.Test.Unit.Utils
             ;select last_insert_rowid() from T_User";
 
             var newSql = _insertWithId.Replace(insertSql, "id", "Id", "@");
-            Assert.Equal(@"Insert Into T_User
+
+            newSql.Should().Be(@"Insert Into T_User
             (id,
             UserName,
             Status
@@ -38,10 +40,11 @@ namespace SmartSql.Test.Unit.Utils
             @UserName,
             @Status
             )
-            ;select last_insert_rowid() from T_User",newSql);
+            ;select last_insert_rowid() from T_User");
         }
+
         [Fact]
-        public void Replace2()
+        public void Should_ReplaceIdPlaceholder_When_SqlHasColumnList()
         {
             var insertSql = @"Insert Into T_User(
             UserName,
@@ -54,7 +57,8 @@ namespace SmartSql.Test.Unit.Utils
             ;select last_insert_rowid() from T_User";
 
             var newSql = _insertWithId.Replace(insertSql, "id", "Id", "@");
-            Assert.Equal(@"Insert Into T_User(id,
+
+            newSql.Should().Be(@"Insert Into T_User(id,
             UserName,
             Status
             )
@@ -62,7 +66,7 @@ namespace SmartSql.Test.Unit.Utils
             @UserName,
             @Status
             )
-            ;select last_insert_rowid() from T_User",newSql);
+            ;select last_insert_rowid() from T_User");
         }
     }
 }
