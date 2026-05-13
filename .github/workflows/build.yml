@@ -1,0 +1,50 @@
+name: Build & Unit Test
+on:
+  push:
+    branches: [ master, refactor ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build & Unit Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore SmartSql.sln
+
+      - name: Build
+        run: dotnet build SmartSql.sln --no-restore --configuration Release
+
+      - name: Run Unit Tests
+        run: dotnet test src/SmartSql.Test.Unit/SmartSql.Test.Unit.csproj --no-build --configuration Release --collect:"XPlat Code Coverage" --results-directory ./coverage
+
+      - name: Generate Coverage Report
+        run: |
+          dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.* || true
+          reportgenerator -reports:"./coverage/**/coverage.cobertura.xml" -targetdir:"./coverage/report" -reporttypes:"Html;Cobertura;TextSummary"
+
+      - name: Print Coverage Summary
+        run: cat ./coverage/report/Summary.txt
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: ./coverage/report/
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/**/coverage.cobertura.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
