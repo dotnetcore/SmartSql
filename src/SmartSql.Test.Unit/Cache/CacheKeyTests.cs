@@ -26,7 +26,7 @@ public class CacheKeyTests
     }
 
     [Fact]
-    public void Should_NotBeEqual_When_DifferentResultType()
+    public void Should_BeEqual_When_SameKeyButDifferentResultType()
     {
         var key1 = new CacheKey("sql-key", typeof(string));
         var key2 = new CacheKey("sql-key", typeof(int));
