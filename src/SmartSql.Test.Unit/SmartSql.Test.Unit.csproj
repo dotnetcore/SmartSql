@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
@@ -18,7 +19,7 @@
     <PackageReference Include="FluentAssertions" Version="7.1.0" />
     <PackageReference Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
@@ -26,6 +27,7 @@
     <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
     <ProjectReference Include="..\SmartSql.InvokeSync\SmartSql.InvokeSync.csproj" />
     <ProjectReference Include="..\SmartSql.TypeHandler\SmartSql.TypeHandler.csproj" />
+    <ProjectReference Include="..\SmartSql.ScriptTag\SmartSql.ScriptTag.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +36,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Include="SmartSqlMapConfig.xml" CopyToOutputDirectory="Always" />
+    <None Include="SmartSqlMapConfig-UnitTest.xml" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>

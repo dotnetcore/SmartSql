@@ -1,7 +1,7 @@
 ﻿using SmartSql.TypeHandlers;
 using Xunit;
 
-namespace SmartSql.Test.Integration.TypeHandlers
+namespace SmartSql.Test.Unit.TypeHandlers
 {
     public class Int64TypeHandlerTest
     {

@@ -1,7 +1,7 @@
 using SmartSql.Configuration.Tags;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Tags;
+namespace SmartSql.Test.Unit.Tags;
 
 public class SqlTextTest
 {

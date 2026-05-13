@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using SmartSql.Test.Entities;
+using SmartSql.Test.Unit.TestEntities;
 using SmartSql.TypeHandlers;
 using Xunit;
 
-namespace SmartSql.Test.Integration.TypeHandlers
+namespace SmartSql.Test.Unit.TypeHandlers
 {
     public class TypeHandlerFactoryTest
     {

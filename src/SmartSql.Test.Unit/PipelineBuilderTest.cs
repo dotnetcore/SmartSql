@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace SmartSql.Test.Integration
+namespace SmartSql.Test.Unit
 {
     public class PipelineBuilderTest
     {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Data.Common;
 using SmartSql.Data;
 
-namespace SmartSql.Test.Integration.TypeHandlers
+namespace SmartSql.Test.Unit.TypeHandlers
 {
 
     public class MockTypeHandlerDbDataReader : DbDataReader

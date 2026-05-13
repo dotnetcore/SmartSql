@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace SmartSql.Test.Integration.ConfigBuilder
+namespace SmartSql.Test.Unit.ConfigBuilder
 {
     public class PropertiesTest
     {
