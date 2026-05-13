@@ -1,14 +1,17 @@
 name: Integration Test
-on: [ push, pull_request ]
+on:
+  push:
+    branches: [ master, refactor ]
+  pull_request:
+    branches: [ master ]
+
 jobs:
-  SmartSql-Unit-Test:
-    name: SmartSql Unit Test
+  integration-test:
+    name: Integration Test
     runs-on: ubuntu-latest
     env:
       REDIS: true
-    strategy:
-      matrix:
-        dotnet: [ '8.0.x' ]
+
     services:
       redis:
         image: redis
@@ -21,21 +24,19 @@ jobs:
           - 6379:6379
 
     steps:
-      - name: Start Mysql
+      - name: Start MySQL
         run: sudo /etc/init.d/mysql start
 
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
 
-      - name: Set up dotnet
-        uses: actions/setup-dotnet@v2
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ matrix.dotnet }}
-          server-id: github
-          settings-path: ${{ github.workspace }}
+          dotnet-version: 8.0.x
 
       - name: Init SmartSql-Test-Db
         run: mysql -vvv -h localhost -uroot -proot < src/SmartSql.Test.Integration/DB/init-mysql-db.sql
 
-      - name: Unit Test
-        run: dotnet test
+      - name: Run Integration Tests
+        run: dotnet test src/SmartSql.Test.Integration/SmartSql.Test.Integration.csproj
