@@ -18,7 +18,7 @@
             SELECT 'lru' as Name;
         </Statement>
         <Statement Id="GetByCacheFromRequest" Cache="Cache">
-            SELECT ?CacheKey as Name;
+            SELECT $CacheKey as Name;
         </Statement>
         
     </Statements>

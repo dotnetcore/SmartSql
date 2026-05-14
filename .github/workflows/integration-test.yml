@@ -27,4 +27,4 @@ jobs:
           restore-keys: ${{ runner.os }}-nuget-
 
       - name: Run Integration Tests
-        run: dotnet test src/SmartSql.Test.Integration/SmartSql.Test.Integration.csproj
+        run: dotnet test src/SmartSql.Test.Integration/SmartSql.Test.Integration.csproj --filter "FullyQualifiedName!~PostgreSql&FullyQualifiedName!~SqlServer"

@@ -31,85 +31,88 @@
             Select T.* From T_AllPrimitive T
             <Include RefId="QueryParams"/>
             Order By T.Id Desc
-            Limit ?Offset,?PageSize;
+            <Env DbProvider="MySql">Limit $Offset,$PageSize;</Env>
+            <Env DbProvider="PostgreSql">LIMIT $PageSize OFFSET $Offset;</Env>
+            <Env DbProvider="SQLite">Limit $Offset,$PageSize;</Env>
+            <Env DbProvider="SqlServer">OFFSET $Offset ROWS FETCH NEXT $PageSize ROWS ONLY;</Env>
         </Statement>
 
         <Statement Id="QueryParams">
             <Where>
                 <IsNotEmpty Prepend="And" Property="Id">
-                    T.Id = ?Id
+                    T.Id = $Id
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="Boolean">
-                    T.Boolean = ?Boolean
+                    T.Boolean = $Boolean
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="Char">
-                    T.Char = ?Char
+                    T.Char = $Char
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="Int16">
-                    T.Int16 = ?Int16
+                    T.Int16 = $Int16
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="Int32">
-                    T.Int32 = ?Int32
+                    T.Int32 = $Int32
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="Int64">
-                    T.Int64 = ?Int64
+                    T.Int64 = $Int64
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="Single">
-                    T.Single = ?Single
+                    T.Single = $Single
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="Decimal">
-                    T.Decimal = ?Decimal
+                    T.Decimal = $Decimal
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="DateTime">
-                    T.DateTime = ?DateTime
+                    T.DateTime = $DateTime
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="String">
-                    T.String = ?String
+                    T.String = $String
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="Guid">
-                    T.Guid = ?Guid
+                    T.Guid = $Guid
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="TimeSpan">
-                    T.TimeSpan = ?TimeSpan
+                    T.TimeSpan = $TimeSpan
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="NumericalEnum">
-                    T.NumericalEnum = ?NumericalEnum
+                    T.NumericalEnum = $NumericalEnum
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="NullableBoolean">
-                    T.NullableBoolean = ?NullableBoolean
+                    T.NullableBoolean = $NullableBoolean
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="NullableChar">
-                    T.NullableChar = ?NullableChar
+                    T.NullableChar = $NullableChar
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="NullableInt16">
-                    T.NullableInt16 = ?NullableInt16
+                    T.NullableInt16 = $NullableInt16
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="NullableInt32">
-                    T.NullableInt32 = ?NullableInt32
+                    T.NullableInt32 = $NullableInt32
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="NullableInt64">
-                    T.NullableInt64 = ?NullableInt64
+                    T.NullableInt64 = $NullableInt64
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="NullableSingle">
-                    T.NullableSingle = ?NullableSingle
+                    T.NullableSingle = $NullableSingle
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="NullableDecimal">
-                    T.NullableDecimal = ?NullableDecimal
+                    T.NullableDecimal = $NullableDecimal
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="NullableDateTime">
-                    T.NullableDateTime = ?NullableDateTime
+                    T.NullableDateTime = $NullableDateTime
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="NullableGuid">
-                    T.NullableGuid = ?NullableGuid
+                    T.NullableGuid = $NullableGuid
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="NullableTimeSpan">
-                    T.NullableTimeSpan = ?NullableTimeSpan
+                    T.NullableTimeSpan = $NullableTimeSpan
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="NullableNumericalEnum">
-                    T.NullableNumericalEnum = ?NullableNumericalEnum
+                    T.NullableNumericalEnum = $NullableNumericalEnum
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="NullableString">
-                    T.NullableString = ?NullableString
+                    T.NullableString = $NullableString
                 </IsNotEmpty>
 
             </Where>
@@ -119,7 +122,10 @@
             Select T.* From T_AllPrimitive T
             <Include RefId="QueryParams"/>
             Order By T.Id Desc
-            Limit ?Offset,?PageSize;
+            <Env DbProvider="MySql">Limit $Offset,$PageSize;</Env>
+            <Env DbProvider="PostgreSql">LIMIT $PageSize OFFSET $Offset;</Env>
+            <Env DbProvider="SQLite">Limit $Offset,$PageSize;</Env>
+            <Env DbProvider="SqlServer">OFFSET $Offset ROWS FETCH NEXT $PageSize ROWS ONLY;</Env>
 
             Select Count(1) From T_AllPrimitive T
             <Include RefId="QueryParams"/>;
@@ -155,30 +161,30 @@
             )
             VALUES
             (
-            ?Boolean,
-            ?Char,
-            ?Int16,
-            ?Int32,
-            ?Int64,
-            ?Single,
-            ?Decimal,
-            ?DateTime,
-            ?String,
-            ?Guid,
-            ?TimeSpan,
-            ?NumericalEnum,
-            ?NullableBoolean,
-            ?NullableChar,
-            ?NullableInt16,
-            ?NullableInt32,
-            ?NullableInt64,
-            ?NullableSingle,
-            ?NullableDecimal,
-            ?NullableDateTime,
-            ?NullableGuid,
-            ?NullableTimeSpan,
-            ?NullableNumericalEnum,
-            ?NullableString
+            $Boolean,
+            $Char,
+            $Int16,
+            $Int32,
+            $Int64,
+            $Single,
+            $Decimal,
+            $DateTime,
+            $String,
+            $Guid,
+            $TimeSpan,
+            $NumericalEnum,
+            $NullableBoolean,
+            $NullableChar,
+            $NullableInt16,
+            $NullableInt32,
+            $NullableInt64,
+            $NullableSingle,
+            $NullableDecimal,
+            $NullableDateTime,
+            $NullableGuid,
+            $NullableTimeSpan,
+            $NullableNumericalEnum,
+            $NullableString
             )
         </Statement>
 		<Statement Id="InsertReturnId">
@@ -211,32 +217,32 @@
 			)
 			VALUES
 			(
-			?Boolean,
-			?Char,
-			?Int16,
-			?Int32,
-			?Int64,
-			?Single,
-			?Decimal,
-			?DateTime,
-			?String,
-			?Guid,
-			?TimeSpan,
-			?NumericalEnum,
-			?NullableBoolean,
-			?NullableChar,
-			?NullableInt16,
-			?NullableInt32,
-			?NullableInt64,
-			?NullableSingle,
-			?NullableDecimal,
-			?NullableDateTime,
-			?NullableGuid,
-			?NullableTimeSpan,
-			?NullableNumericalEnum,
-			?NullableString
+			$Boolean,
+			$Char,
+			$Int16,
+			$Int32,
+			$Int64,
+			$Single,
+			$Decimal,
+			$DateTime,
+			$String,
+			$Guid,
+			$TimeSpan,
+			$NumericalEnum,
+			$NullableBoolean,
+			$NullableChar,
+			$NullableInt16,
+			$NullableInt32,
+			$NullableInt64,
+			$NullableSingle,
+			$NullableDecimal,
+			$NullableDateTime,
+			$NullableGuid,
+			$NullableTimeSpan,
+			$NullableNumericalEnum,
+			$NullableString
 			)
-			;Select Last_Insert_Id();
+			<Env DbProvider="MySql">;Select Last_Insert_Id();</Env><Env DbProvider="PostgreSql"> RETURNING "Id";</Env><Env DbProvider="SqlServer">;SELECT SCOPE_IDENTITY();</Env><Env DbProvider="SQLite">;SELECT last_insert_rowid();</Env>
 		</Statement>
         <Statement Id="InsertByStatementTransaction" Transaction="Unspecified">
             INSERT INTO T_AllPrimitive
@@ -268,32 +274,32 @@
             )
             VALUES
             (
-            ?Boolean,
-            ?Char,
-            ?Int16,
-            ?Int32,
-            ?Int64,
-            ?Single,
-            ?Decimal,
-            ?DateTime,
-            ?String,
-            ?Guid,
-            ?TimeSpan,
-            ?NumericalEnum,
-            ?NullableBoolean,
-            ?NullableChar,
-            ?NullableInt16,
-            ?NullableInt32,
-            ?NullableInt64,
-            ?NullableSingle,
-            ?NullableDecimal,
-            ?NullableDateTime,
-            ?NullableGuid,
-            ?NullableTimeSpan,
-            ?NullableNumericalEnum,
-            ?NullableString
+            $Boolean,
+            $Char,
+            $Int16,
+            $Int32,
+            $Int64,
+            $Single,
+            $Decimal,
+            $DateTime,
+            $String,
+            $Guid,
+            $TimeSpan,
+            $NumericalEnum,
+            $NullableBoolean,
+            $NullableChar,
+            $NullableInt16,
+            $NullableInt32,
+            $NullableInt64,
+            $NullableSingle,
+            $NullableDecimal,
+            $NullableDateTime,
+            $NullableGuid,
+            $NullableTimeSpan,
+            $NullableNumericalEnum,
+            $NullableString
             )
-            ;Select Last_Insert_Id();
+            <Env DbProvider="MySql">;Select Last_Insert_Id();</Env><Env DbProvider="PostgreSql"> RETURNING "Id";</Env><Env DbProvider="SqlServer">;SELECT SCOPE_IDENTITY();</Env><Env DbProvider="SQLite">;SELECT last_insert_rowid();</Env>
         </Statement>
         <Statement Id="InsertByIdGen">
             <IdGenerator Id="Int64" Assign="false"/>
@@ -326,32 +332,32 @@
             )
             VALUES
             (
-            ?Boolean,
-            ?Char,
-            ?Int16,
-            ?Int32,
-            ?Int64,
-            ?Single,
-            ?Decimal,
-            ?DateTime,
-            ?String,
-            ?Guid,
-            ?TimeSpan,
-            ?NumericalEnum,
-            ?NullableBoolean,
-            ?NullableChar,
-            ?NullableInt16,
-            ?NullableInt32,
-            ?NullableInt64,
-            ?NullableSingle,
-            ?NullableDecimal,
-            ?NullableDateTime,
-            ?NullableGuid,
-            ?NullableTimeSpan,
-            ?NullableNumericalEnum,
-            ?NullableString
+            $Boolean,
+            $Char,
+            $Int16,
+            $Int32,
+            $Int64,
+            $Single,
+            $Decimal,
+            $DateTime,
+            $String,
+            $Guid,
+            $TimeSpan,
+            $NumericalEnum,
+            $NullableBoolean,
+            $NullableChar,
+            $NullableInt16,
+            $NullableInt32,
+            $NullableInt64,
+            $NullableSingle,
+            $NullableDecimal,
+            $NullableDateTime,
+            $NullableGuid,
+            $NullableTimeSpan,
+            $NullableNumericalEnum,
+            $NullableString
             )
-            ;Select ?Int64;
+            ;Select $Int64;
         </Statement>
         <Statement Id="InsertByIdGenAssignId">
             <IdGenerator Id="Int64"/>
@@ -384,41 +390,41 @@
             )
             VALUES
             (
-            ?Boolean,
-            ?Char,
-            ?Int16,
-            ?Int32,
-            ?Int64,
-            ?Single,
-            ?Decimal,
-            ?DateTime,
-            ?String,
-            ?Guid,
-            ?TimeSpan,
-            ?NumericalEnum,
-            ?NullableBoolean,
-            ?NullableChar,
-            ?NullableInt16,
-            ?NullableInt32,
-            ?NullableInt64,
-            ?NullableSingle,
-            ?NullableDecimal,
-            ?NullableDateTime,
-            ?NullableGuid,
-            ?NullableTimeSpan,
-            ?NullableNumericalEnum,
-            ?NullableString
+            $Boolean,
+            $Char,
+            $Int16,
+            $Int32,
+            $Int64,
+            $Single,
+            $Decimal,
+            $DateTime,
+            $String,
+            $Guid,
+            $TimeSpan,
+            $NumericalEnum,
+            $NullableBoolean,
+            $NullableChar,
+            $NullableInt16,
+            $NullableInt32,
+            $NullableInt64,
+            $NullableSingle,
+            $NullableDecimal,
+            $NullableDateTime,
+            $NullableGuid,
+            $NullableTimeSpan,
+            $NullableNumericalEnum,
+            $NullableString
             );
         </Statement>
         <!--删除-->
         <Statement Id="DeleteById">
             Delete From T_AllPrimitive
-            Where Id=?Id
+            Where Id=$Id
         </Statement>
 
 		<Statement Id="DeleteMany">
 			Delete From T_AllPrimitive
-			Where Id in ?Ids
+			Where Id in $Ids
 		</Statement>
 
         <!--更新-->
@@ -426,82 +432,82 @@
             UPDATE T_AllPrimitive
             <Set>
                 <IsProperty Prepend="," Property="Boolean">
-                    Boolean = ?Boolean
+                    Boolean = $Boolean
                 </IsProperty>
                 <IsProperty Prepend="," Property="Char">
-                    `Char` = ?Char
+                    `Char` = $Char
                 </IsProperty>
                 <IsProperty Prepend="," Property="Int16">
-                    Int16 = ?Int16
+                    Int16 = $Int16
                 </IsProperty>
                 <IsProperty Prepend="," Property="Int32">
-                    Int32 = ?Int32
+                    Int32 = $Int32
                 </IsProperty>
                 <IsProperty Prepend="," Property="Int64">
-                    Int64 = ?Int64
+                    Int64 = $Int64
                 </IsProperty>
                 <IsProperty Prepend="," Property="Single">
-                    Single = ?Single
+                    Single = $Single
                 </IsProperty>
                 <IsProperty Prepend="," Property="Double">
-                    Double = ?Double
+                    Double = $Double
                 </IsProperty>
                 <IsProperty Prepend="," Property="Decimal">
-                    `Decimal` = ?Decimal
+                    `Decimal` = $Decimal
                 </IsProperty>
                 <IsProperty Prepend="," Property="DateTime">
-                    DateTime = ?DateTime
+                    DateTime = $DateTime
                 </IsProperty>
                 <IsProperty Prepend="," Property="String">
-                    String = ?String
+                    String = $String
                 </IsProperty>
                 <IsProperty Prepend="," Property="Guid">
-                    Guid = ?Guid
+                    Guid = $Guid
                 </IsProperty>
                 <IsProperty Prepend="," Property="TimeSpan">
-                    TimeSpan = ?TimeSpan
+                    TimeSpan = $TimeSpan
                 </IsProperty>
                 <IsProperty Prepend="," Property="NumericalEnum">
-                    NumericalEnum = ?NumericalEnum
+                    NumericalEnum = $NumericalEnum
                 </IsProperty>
                 <IsProperty Prepend="," Property="NullableBoolean">
-                    NullableBoolean = ?NullableBoolean
+                    NullableBoolean = $NullableBoolean
                 </IsProperty>
                 <IsProperty Prepend="," Property="NullableChar">
-                    NullableChar = ?NullableChar
+                    NullableChar = $NullableChar
                 </IsProperty>
                 <IsProperty Prepend="," Property="NullableInt16">
-                    NullableInt16 = ?NullableInt16
+                    NullableInt16 = $NullableInt16
                 </IsProperty>
                 <IsProperty Prepend="," Property="NullableInt32">
-                    NullableInt32 = ?NullableInt32
+                    NullableInt32 = $NullableInt32
                 </IsProperty>
                 <IsProperty Prepend="," Property="NullableInt64">
-                    NullableInt64 = ?NullableInt64
+                    NullableInt64 = $NullableInt64
                 </IsProperty>
                 <IsProperty Prepend="," Property="NullableSingle">
-                    NullableSingle = ?NullableSingle
+                    NullableSingle = $NullableSingle
                 </IsProperty>
                 <IsProperty Prepend="," Property="NullableDecimal">
-                    NullableDecimal = ?NullableDecimal
+                    NullableDecimal = $NullableDecimal
                 </IsProperty>
                 <IsProperty Prepend="," Property="NullableDateTime">
-                    NullableDateTime = ?NullableDateTime
+                    NullableDateTime = $NullableDateTime
                 </IsProperty>
                 <IsProperty Prepend="," Property="NullableGuid">
-                    NullableGuid = ?NullableGuid
+                    NullableGuid = $NullableGuid
                 </IsProperty>
                 <IsProperty Prepend="," Property="NullableTimeSpan">
-                    NullableTimeSpan = ?NullableTimeSpan
+                    NullableTimeSpan = $NullableTimeSpan
                 </IsProperty>
                 <IsProperty Prepend="," Property="NullableNumericalEnum">
-                    NullableNumericalEnum = ?NullableNumericalEnum
+                    NullableNumericalEnum = $NullableNumericalEnum
                 </IsProperty>
                 <IsProperty Prepend="," Property="NullableString">
-                    NullableString = ?NullableString
+                    NullableString = $NullableString
                 </IsProperty>
             </Set>
-            Where Id=?Id
+            Where Id=$Id
         </Statement>
 
         <!--获取数据列-->
@@ -514,8 +520,10 @@
                     T.Id Desc
                 </Default>
             </Switch>
-            <IsNotEmpty Prepend="limit" Property="Taken">
-                ?Taken
+            <IsNotEmpty Property="Taken">
+                <Env DbProvider="MySql" Prepend="limit">$Taken</Env>
+                <Env DbProvider="PostgreSql" Prepend="LIMIT">$Taken</Env>
+                <Env DbProvider="SQLite" Prepend="LIMIT">$Taken</Env>
             </IsNotEmpty>
         </Statement>
 
@@ -529,8 +537,10 @@
                     T.Id Desc
                 </Default>
             </Switch>
-            <IsNotEmpty Prepend="limit" Property="Taken">
-                ?Taken
+            <IsNotEmpty Property="Taken">
+                <Env DbProvider="MySql" Prepend="limit">$Taken</Env>
+                <Env DbProvider="PostgreSql" Prepend="LIMIT">$Taken</Env>
+                <Env DbProvider="SQLite" Prepend="LIMIT">$Taken</Env>
             </IsNotEmpty>
         </Statement>
 
@@ -540,7 +550,10 @@
             Select T.* From T_AllPrimitive T
             <Include RefId="QueryParams"/>
             Order By T.Id Desc
-            Limit ?Offset,?PageSize
+            <Env DbProvider="MySql">Limit $Offset,$PageSize</Env>
+            <Env DbProvider="PostgreSql">LIMIT $PageSize OFFSET $Offset</Env>
+            <Env DbProvider="SQLite">Limit $Offset,$PageSize</Env>
+            <Env DbProvider="SqlServer">OFFSET $Offset ROWS FETCH NEXT $PageSize ROWS ONLY</Env>
         </Statement>
 
 
@@ -555,20 +568,24 @@
             Select T.* From T_AllPrimitive T
             <Where>
                 <IsNotEmpty Prepend="And" Property="Id">
-                    T.Id=?Id
+                    T.Id=$Id
                 </IsNotEmpty>
             </Where>
-            limit 1
+            <Env DbProvider="MySql">limit 1</Env>
+            <Env DbProvider="PostgreSql">LIMIT 1</Env>
+            <Env DbProvider="SQLite">LIMIT 1</Env>
         </Statement>
 
         <Statement Id="GetEntity">
-            Select * From T_AllPrimitive T
+            Select T.* From T_AllPrimitive T
             <Where>
                 <IsNotEmpty Prepend="And" Property="Id">
-                    T.Id=?Id
+                    T.Id=$Id
                 </IsNotEmpty>
             </Where>
-            limit 1
+            <Env DbProvider="MySql">limit 1</Env>
+            <Env DbProvider="PostgreSql">LIMIT 1</Env>
+            <Env DbProvider="SQLite">LIMIT 1</Env>
         </Statement>
 
         <!--是否存在该记录-->
@@ -578,16 +595,16 @@
         </Statement>
 
         <Statement Id="GetDataSet">
-            SELECT T.* From T_AllPrimitive T limit 6;
-            SELECT T.* From T_AllPrimitive T limit 8;
+            SELECT T.* From T_AllPrimitive T <Env DbProvider="MySql">limit 6</Env><Env DbProvider="PostgreSql">LIMIT 6</Env><Env DbProvider="SQLite">LIMIT 6</Env>;
+            SELECT T.* From T_AllPrimitive T <Env DbProvider="MySql">limit 8</Env><Env DbProvider="PostgreSql">LIMIT 8</Env><Env DbProvider="SQLite">LIMIT 8</Env>;
         </Statement>
         <Statement Id="DeleteQueryParams">
             <Where>
                 <IsNotEmpty Prepend="And" Property="Id">
-                    Id=?Id
+                    Id=$Id
                 </IsNotEmpty>
                 <IsNotEmpty Prepend="And" Property="Name">
-                    Name=?Name
+                    Name=$Name
                 </IsNotEmpty>
             </Where>
         </Statement>
@@ -599,18 +616,24 @@
             Delete From T_AllPrimitive
             <Where>
                 <IsNotEmpty Prepend="And" Property="Id" Required="true">
-                    Id=?Id
+                    Id=$Id
                 </IsNotEmpty>
             </Where>
         </Statement>
         <Statement Id="GetGuid">
-            Select uuid();
+            <Env DbProvider="MySql">Select uuid();</Env>
+            <Env DbProvider="PostgreSql">SELECT gen_random_uuid();</Env>
+            <Env DbProvider="SqlServer">SELECT NEWID();</Env>
+            <Env DbProvider="SQLite">SELECT lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-' || '4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6)));</Env>
         </Statement>
         <Statement Id="GetByPage_ValueTuple">
             Select T.* From T_AllPrimitive T
             <Include RefId="QueryParams"/>
             Order By T.Id Desc
-            Limit ?Offset,?PageSize;
+            <Env DbProvider="MySql">Limit $Offset,$PageSize;</Env>
+            <Env DbProvider="PostgreSql">LIMIT $PageSize OFFSET $Offset;</Env>
+            <Env DbProvider="SQLite">Limit $Offset,$PageSize;</Env>
+            <Env DbProvider="SqlServer">OFFSET $Offset ROWS FETCH NEXT $PageSize ROWS ONLY;</Env>
 
             Select Count(1) From T_AllPrimitive T
             <Include RefId="QueryParams"/>;

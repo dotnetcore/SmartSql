@@ -10,7 +10,10 @@
     </Caches>
     <Statements>
         <Statement Id="GetByCache" Cache="RedisCache">
-            SELECT T.* From T_AllPrimitive T limit ?Taken;
+            SELECT T.* From T_AllPrimitive T
+            <Env DbProvider="MySql">limit $Taken;</Env>
+            <Env DbProvider="PostgreSql">LIMIT $Taken;</Env>
+            <Env DbProvider="SQLite">LIMIT $Taken;</Env>
         </Statement>
     </Statements>
 </SmartSqlMap>

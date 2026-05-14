@@ -41,6 +41,7 @@
     <None Include="TestSqlMap-DynamicTags.xml" CopyToOutputDirectory="Always" />
     <None Include="TestSqlMap-CacheAndMaps.xml" CopyToOutputDirectory="Always" />
     <None Include="SmartSqlMapConfig-DeepTest.xml" CopyToOutputDirectory="Always" />
+    <None Include="SmartSqlMapConfig-UnitTest-ReadDb.xml" CopyToOutputDirectory="Always" />
     <None Include="SmartSqlMapConfig-MultipleRead.xml" CopyToOutputDirectory="Always" />
     <None Include="SmartSqlMapConfig-NoSettings.xml" CopyToOutputDirectory="Always" />
   </ItemGroup>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
+  <Settings IgnoreParameterCase="false" ParameterPrefix="$" IsCacheEnabled="false" EnablePropertyChangedTrack="true" IgnoreDbNull="true"/>
+  <Properties>
+    <Property Name="DbProvider" Value="SqlServer" />
+    <Property Name="ConnectionString" Value="Server=localhost;Database=SmartSqlTestDB;User Id=sa;Password=StrongPassword!;TrustServerCertificate=True" />
+    <Property Name="JsonTypeHandler`" Value="SmartSql.TypeHandler.JsonTypeHandler`1,SmartSql.TypeHandler"/>
+    <Property Name="JsonTypeHandler" Value="SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"/>
+  </Properties>
+  <Database>
+    <DbProvider Name="${DbProvider}"/>
+    <Write Name="WriteDB" ConnectionString="${ConnectionString}"/>
+  </Database>
+  <TypeHandlers>
+    <TypeHandler PropertyType="SmartSql.Test.Entities.UserInfo,SmartSql.Test" Type="${JsonTypeHandler`}">
+      <Properties>
+        <Property Name="DateFormat" Value="yyyy-MM-dd mm:ss"/>
+        <Property Name="NamingStrategy" Value="Camel"/>
+      </Properties>
+    </TypeHandler>
+    <TypeHandler Name="Json" Type="${JsonTypeHandler}"/>
+    <TypeHandler Name="AnsiStringTypeHandler" Type="SmartSql.TypeHandlers.StringTypeHandler,SmartSql">
+      <Properties>
+        <Property Name="DbType" Value="AnsiString"/>
+      </Properties>
+    </TypeHandler>
+    <TypeHandler Name="AnsiStringFixedLengthTypeHandler" Type="SmartSql.TypeHandlers.StringTypeHandler,SmartSql">
+      <Properties>
+        <Property Name="DbType" Value="AnsiStringFixedLength"/>
+      </Properties>
+    </TypeHandler>
+  </TypeHandlers>
+  <IdGenerators>
+    <IdGenerator Name="SnowflakeId" Type="SnowflakeId">
+      <Properties>
+        <Property Name="WorkerIdBits" Value="9"/>
+        <Property Name="WorkerId" Value="511"/>
+        <Property Name="Sequence" Value="14"/>
+      </Properties>
+    </IdGenerator>
+    <IdGenerator Name="DbSequence" Type="DbSequence">
+      <Properties>
+        <Property Name="Step" Value="10"/>
+        <Property Name="SequenceSql" Value="SELECT NEXT VALUE FOR IdSequence;"/>
+      </Properties>
+    </IdGenerator>
+  </IdGenerators>
+  <SmartSqlMaps>
+    <SmartSqlMap Path="Maps/AllPrimitive.xml" Type="File"></SmartSqlMap>
+    <SmartSqlMap Path="Maps/User.xml" Type="File"></SmartSqlMap>
+    <SmartSqlMap Path="Maps/UserExtendedInfo.xml" Type="File"></SmartSqlMap>
+    <SmartSqlMap Path="Maps/NestTest.xml" Type="File"></SmartSqlMap>
+    <SmartSqlMap Path="Maps/CustomizeTypeHandlerTest.xml" Type="File"></SmartSqlMap>
+    <SmartSqlMap Path="Maps/UseIdGenEntity.xml" Type="File"></SmartSqlMap>
+  </SmartSqlMaps>
+</SmartSqlMapConfig>

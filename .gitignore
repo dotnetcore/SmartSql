@@ -185,3 +185,4 @@ StyleCopReport.xml
 *.xsd.cs
 .mfractor/
 nuget/
+docs/superpowers/

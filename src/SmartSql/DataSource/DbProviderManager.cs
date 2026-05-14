@@ -62,7 +62,7 @@ namespace SmartSql.DataSource
             Name = DbProvider.SQLITE,
             ParameterPrefix = "@",
             Type = "Microsoft.Data.Sqlite.SqliteFactory,Microsoft.Data.Sqlite",
-            SelectAutoIncrement = ""
+            SelectAutoIncrement = ";Select last_insert_rowid();"
         };
 
         public static DbProviderManager Instance = new DbProviderManager();

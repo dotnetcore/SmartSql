@@ -50,12 +50,26 @@ namespace SmartSql
         public FilterCollection Filters { get; } = new FilterCollection();
         public Action<ExecutionContext> InvokeSucceeded { get; set; }
 
+        private DataSource.DbProvider _dbProviderOverride;
+        private string _connectionStringOverride;
+
         public IList<KeyValuePair<string, string>> ImportProperties { get; } =
             new List<KeyValuePair<string, string>>();
 
         public IList<Type> EntityTypes { get; } = new List<Type>();
         public bool IsUseCUDConfigBuilder { get; private set; }
         public IList<IMiddleware> Middlewares { get; set; } = new List<IMiddleware>();
+
+        public SmartSqlBuilder UseDatabase(string dbProviderName, string connectionString)
+        {
+            if (!DataSource.DbProviderManager.Instance.TryGet(dbProviderName, out var dbProvider))
+            {
+                throw new SmartSqlException($"can not find {dbProviderName}.");
+            }
+            _dbProviderOverride = dbProvider;
+            _connectionStringOverride = connectionString;
+            return this;
+        }
 
         public SmartSqlBuilder Build()
         {
@@ -180,6 +194,22 @@ namespace SmartSql
             if (IgnoreDbNull.HasValue)
             {
                 SmartSqlConfig.Settings.IgnoreDbNull = IgnoreDbNull.Value;
+            }
+
+            if (_dbProviderOverride != null)
+            {
+                SmartSqlConfig.Database.DbProvider = _dbProviderOverride;
+            }
+            if (!string.IsNullOrEmpty(_connectionStringOverride))
+            {
+                SmartSqlConfig.Database.Write.ConnectionString = _connectionStringOverride;
+                if (SmartSqlConfig.Database.Reads != null)
+                {
+                    foreach (var read in SmartSqlConfig.Database.Reads.Values)
+                    {
+                        read.ConnectionString = _connectionStringOverride;
+                    }
+                }
             }
 
             if (InvokeSucceeded != null)
