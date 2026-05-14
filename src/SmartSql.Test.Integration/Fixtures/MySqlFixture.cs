@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SmartSql.ConfigBuilder;
 using SmartSql.DyRepository;
 using SmartSql.Middlewares.Filters;
 using SmartSql.Test.Entities;
@@ -77,7 +78,7 @@ EOF" });
         LoggerFactory.AddFile(logPath, LogLevel.Trace);
 
         SmartSqlBuilder = new SmartSqlBuilder()
-            .UseXmlConfig()
+            .UseXmlConfig(ResourceType.File, "SmartSqlMapConfig.MySql.xml")
             .UseDatabase(DataSource.DbProvider.MYSQL, connectionString)
             .UseLoggerFactory(LoggerFactory)
             .UseAlias(ALIAS)

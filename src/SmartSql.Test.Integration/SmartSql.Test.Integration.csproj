@@ -32,6 +32,9 @@
     <None Update="SmartSqlMapConfig.SqlServer.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="SmartSqlMapConfig.MySql.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
