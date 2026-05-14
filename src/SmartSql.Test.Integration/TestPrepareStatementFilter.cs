@@ -1,39 +1,17 @@
 using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using SmartSql.Middlewares.Filters;
-using Xunit;
 
-namespace SmartSql.Test.Integration
+namespace SmartSql.Test.Integration;
+
+public class TestPrepareStatementFilter : IPrepareStatementFilter, ISetupSmartSql
 {
-    public class TestPrepareStatementFilter : IPrepareStatementFilter, ISetupSmartSql
-    {
-        private ILogger<TestPrepareStatementFilter> _logger;
+    private ILogger<TestPrepareStatementFilter> _logger;
 
-        public void OnInvoking(ExecutionContext context)
-        {
-            _logger.LogDebug("TestPrepareStatementFilter.OnInvoking");
-        }
-
-        public void OnInvoked(ExecutionContext context)
-        {
-            _logger.LogDebug("TestPrepareStatementFilter.OnInvoked");
-        }
-
-        public Task OnInvokingAsync(ExecutionContext context)
-        {
-            _logger.LogDebug("TestPrepareStatementFilter.OnInvokingAsync");
-            return Task.CompletedTask;
-        }
-
-        public Task OnInvokedAsync(ExecutionContext context)
-        {
-            _logger.LogDebug("TestPrepareStatementFilter.OnInvokedAsync");
-            return Task.CompletedTask;
-        }
-
-        public void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
-        {
-            _logger = smartSqlBuilder.LoggerFactory.CreateLogger<TestPrepareStatementFilter>();
-        }
-    }
+    public void OnInvoking(ExecutionContext context) => _logger.LogDebug("TestPrepareStatementFilter.OnInvoking");
+    public void OnInvoked(ExecutionContext context) => _logger.LogDebug("TestPrepareStatementFilter.OnInvoked");
+    public Task OnInvokingAsync(ExecutionContext context) { _logger.LogDebug("TestPrepareStatementFilter.OnInvokingAsync"); return Task.CompletedTask; }
+    public Task OnInvokedAsync(ExecutionContext context) { _logger.LogDebug("TestPrepareStatementFilter.OnInvokedAsync"); return Task.CompletedTask; }
+    public void SetupSmartSql(SmartSqlBuilder smartSqlBuilder) => _logger = smartSqlBuilder.LoggerFactory.CreateLogger<TestPrepareStatementFilter>();
 }

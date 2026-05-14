@@ -1,0 +1,57 @@
+using FluentAssertions;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using SmartSql.Test.DTO;
+using SmartSql.Test.Entities;
+using Xunit;
+
+namespace SmartSql.Test.Integration.Deserializer
+{
+    public class MultipleResultDeserializerTest : IntegrationTestBase
+    {
+        public MultipleResultDeserializerTest(SmartSqlFixture fixture) : base(fixture) { }
+
+        [Fact]
+        public void GetByPage()
+        {
+            var result = SqlMapper.QuerySingle<GetByPageResponse<AllPrimitive>>(new RequestContext
+            {
+                Scope = nameof(AllPrimitive),
+                SqlId = "GetByPage",
+                Request = new { PageSize = 10, Offset = 0 }
+            });
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async Task GetByPageAsync()
+        {
+            var result = await SqlMapper.QuerySingleAsync<GetByPageResponse<AllPrimitive>>(new RequestContext
+            {
+                Scope = nameof(AllPrimitive),
+                SqlId = "GetByPage",
+                Request = new { PageSize = 10, Offset = 0 }
+            });
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void GetMultiRoot()
+        {
+            var result = SqlMapper.QuerySingle<PagedList>(new RequestContext
+            {
+                Scope = nameof(AllPrimitive),
+                SqlId = "GetMultiRoot",
+                Request = new { PageSize = 10, Offset = 0 }
+            });
+            Assert.NotNull(result);
+            Assert.NotNull(result.List);
+        }
+
+        public class PagedList
+        {
+            public long Total { get; set; }
+            public IList<AllPrimitive> List { get; set; }
+        }
+    }
+}

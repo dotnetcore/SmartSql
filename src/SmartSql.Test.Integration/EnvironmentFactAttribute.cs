@@ -1,33 +1,31 @@
 using System;
 using Xunit;
 
-namespace SmartSql.Test.Integration
+namespace SmartSql.Test.Integration;
+
+public class EnvironmentFactAttribute : FactAttribute
 {
-    public class EnvironmentFactAttribute : FactAttribute
+    public const string GITHUB_ACTION = "GITHUB_ACTION";
+
+    public EnvironmentFactAttribute(string include = null, string exclude = null)
     {
-        public const String GITHUB_ACTION = "GITHUB_ACTION";
+        Include = include;
+        Exclude = exclude;
 
-        public EnvironmentFactAttribute(String include = null, String exclude = null)
+        if (!string.IsNullOrEmpty(include) && !ContainsEnvVar(include))
         {
-            Include = include;
-            Exclude = exclude;
-
-            if (!String.IsNullOrEmpty(include) && !ContainsEnvVar(include))
-            {
-                Skip = $"Ignore on Environment When Not Include:[{include}].";
-            }
-
-            if (!String.IsNullOrEmpty(exclude) && ContainsEnvVar(exclude))
-            {
-                Skip = $"Ignore on Environment When Contains Include:[{include}].";
-            }
-
+            Skip = $"Skip: requires env [{include}].";
         }
-        
-        public String Include { get; }
-        public String Exclude { get; }
 
-        private static bool ContainsEnvVar(String envVar)
-            => Environment.GetEnvironmentVariable(envVar) != null;
+        if (!string.IsNullOrEmpty(exclude) && ContainsEnvVar(exclude))
+        {
+            Skip = $"Skip: excluded by env [{exclude}].";
+        }
     }
+
+    public string Include { get; }
+    public string Exclude { get; }
+
+    private static bool ContainsEnvVar(string envVar)
+        => Environment.GetEnvironmentVariable(envVar) != null;
 }
