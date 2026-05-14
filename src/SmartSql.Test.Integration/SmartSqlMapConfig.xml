@@ -94,6 +94,12 @@
         </IdGenerator>
     </IdGenerators>
     <SmartSqlMaps>
-        <SmartSqlMap Path="Maps" Type="Directory"></SmartSqlMap>
+        <SmartSqlMap Path="Maps/AllPrimitive.xml" Type="File"></SmartSqlMap>
+        <SmartSqlMap Path="Maps/User.xml" Type="File"></SmartSqlMap>
+        <SmartSqlMap Path="Maps/UserExtendedInfo.xml" Type="File"></SmartSqlMap>
+        <SmartSqlMap Path="Maps/NestTest.xml" Type="File"></SmartSqlMap>
+        <SmartSqlMap Path="Maps/CustomizeTypeHandlerTest.xml" Type="File"></SmartSqlMap>
+        <SmartSqlMap Path="Maps/UseIdGenEntity.xml" Type="File"></SmartSqlMap>
+        <SmartSqlMap Path="Maps/TagTest.xml" Type="File"></SmartSqlMap>
     </SmartSqlMaps>
 </SmartSqlMapConfig>
