@@ -16,7 +16,7 @@ namespace SmartSql.Test.Integration.Fixtures;
 
 public class MySqlFixture : IDbTestFixture
 {
-    public const string ALIAS = "MySqlIntegrationTest";
+    public const string ALIAS = "GlobalSmartSql";
     public const string CollectionName = "MySql";
 
     private readonly MySqlContainer _mySqlContainer;
