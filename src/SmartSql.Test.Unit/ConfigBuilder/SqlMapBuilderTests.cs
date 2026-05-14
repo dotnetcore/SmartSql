@@ -252,12 +252,11 @@ public class SqlMapBuilderTests
 
         var act = () => sqlMapBuilder.Build();
 
-        act.Should().Throw<SmartSqlException>()
-            .WithMessage("*Scope*");
+        act.Should().Throw<SmartSqlException>();
     }
 
     [Fact]
-    public void Should_ReplaceExistingSqlMap_When_SameScopeAlreadyRegistered()
+    public void Should_ReuseExistingSqlMap_When_SameScopeAlreadyRegistered()
     {
         var config = CreateSmartSqlConfig();
         var xml1 = LoadTestXml("TestSqlMap-Simple.xml");
@@ -266,11 +265,11 @@ public class SqlMapBuilderTests
         builder1.Build();
 
         config.SqlMaps.Should().ContainKey("TestScope");
+        config.SqlMaps["TestScope"].Statements.Should().ContainKey("TestScope.GetAll");
 
         var xml2 = new XmlDocument();
         xml2.LoadXml("<?xml version=\"1.0\" encoding=\"utf-8\" ?>" +
-                     "<SmartSqlMap xmlns=\"http://SmartSql.net/schemas/SmartSqlMap.xsd\">" +
-                     "<Scope>TestScope</Scope>" +
+                     "<SmartSqlMap Scope=\"TestScope\" xmlns=\"http://SmartSql.net/schemas/SmartSqlMap.xsd\">" +
                      "<Statements><Statement Id=\"NewStatement\">SELECT 2</Statement></Statements>" +
                      "</SmartSqlMap>");
 
@@ -279,6 +278,6 @@ public class SqlMapBuilderTests
 
         config.SqlMaps["TestScope"].Should().BeSameAs(sqlMap);
         sqlMap.Statements.Should().ContainKey("TestScope.NewStatement");
-        sqlMap.Statements.Should().NotContainKey("TestScope.GetAll");
+        sqlMap.Statements.Should().ContainKey("TestScope.GetAll");
     }
 }

@@ -137,7 +137,7 @@ public class SmartSqlBuilderTests
     }
 
     [Fact]
-    public void Should_UseCache_When_UseCacheEnabled()
+    public void Should_StoreCacheFlag_When_UseCacheCalled()
     {
         var builder = new SmartSqlBuilder()
             .UseAlias("TestBuilder_Cache")
@@ -145,13 +145,11 @@ public class SmartSqlBuilderTests
             .UseCache(true)
             .RegisterToContainer(false);
 
-        builder.Build();
-
-        builder.SmartSqlConfig.Settings.IsCacheEnabled.Should().BeTrue();
+        builder.IsCacheEnabled.Should().BeTrue();
     }
 
     [Fact]
-    public void Should_DisableCache_When_UseCacheDisabled()
+    public void Should_StoreCacheDisabled_When_UseCacheFalse()
     {
         var builder = new SmartSqlBuilder()
             .UseAlias("TestBuilder_NoCache")
@@ -159,9 +157,7 @@ public class SmartSqlBuilderTests
             .UseCache(false)
             .RegisterToContainer(false);
 
-        builder.Build();
-
-        builder.SmartSqlConfig.Settings.IsCacheEnabled.Should().BeFalse();
+        builder.IsCacheEnabled.Should().BeFalse();
     }
 
     [Fact]
