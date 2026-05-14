@@ -9,6 +9,7 @@ using SmartSql.DbSession;
 using SmartSql.DyRepository;
 using SmartSql.Middlewares.Filters;
 using SmartSql.Test.Entities;
+using SmartSql.Test.Integration.Fixtures;
 using SmartSql.Test.Repositories;
 using Testcontainers.MySql;
 using Testcontainers.Redis;
@@ -16,7 +17,7 @@ using Xunit;
 
 namespace SmartSql.Test.Integration;
 
-public class SmartSqlFixture : IAsyncLifetime
+public class SmartSqlFixture : IDbTestFixture
 {
     public const string GLOBAL_SMART_SQL = "GlobalSmartSql";
 
@@ -113,6 +114,7 @@ EOF" });
 
     public SmartSqlBuilder SmartSqlBuilder { get; private set; }
     public ISqlMapper SqlMapper { get; private set; }
+    public string DbProvider => DataSource.DbProvider.MYSQL;
     public ILoggerFactory LoggerFactory { get; private set; }
     public IRepositoryBuilder RepositoryBuilder { get; private set; }
     public IRepositoryFactory RepositoryFactory { get; private set; }

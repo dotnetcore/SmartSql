@@ -16,7 +16,7 @@ public class SmartSqlBuilderTests : IntegrationTestBase
     {
         var dbSessionFactory = new SmartSqlBuilder()
             .UseOracleCommandExecuter()
-            .UseDataSource(DbProvider.MYSQL, "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB")
+            .UseDataSource(DataSource.DbProvider.MYSQL, "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB")
             .UseAlias("Build_By_DataSource")
             .AddTypeHandler(new Configuration.TypeHandler
             {
@@ -33,7 +33,7 @@ public class SmartSqlBuilderTests : IntegrationTestBase
     [Fact]
     public void Should_BuildSession_When_UsingNativeConfig()
     {
-        DbProviderManager.Instance.TryGet(DbProvider.MYSQL, out var dbProvider);
+        DbProviderManager.Instance.TryGet(DataSource.DbProvider.MYSQL, out var dbProvider);
         var dbSessionFactory = new SmartSqlBuilder()
             .UseNativeConfig(new Configuration.SmartSqlConfig
             {
@@ -57,7 +57,7 @@ public class SmartSqlBuilderTests : IntegrationTestBase
     public void Should_BuildSession_When_UsingXmlConfig()
     {
         new SmartSqlBuilder()
-            .UseDataSource(DbProvider.MYSQL, "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB")
+            .UseDataSource(DataSource.DbProvider.MYSQL, "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB")
             .UseAlias("Build_By_Xml")
             .Build();
     }
@@ -66,7 +66,7 @@ public class SmartSqlBuilderTests : IntegrationTestBase
     public void Should_ReturnSqlMapper_When_BuildingAsMapper()
     {
         new SmartSqlBuilder()
-            .UseDataSource(DbProvider.MYSQL, "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB")
+            .UseDataSource(DataSource.DbProvider.MYSQL, "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB")
             .UseAlias("Build_As_Mapper")
             .Build()
             .GetSqlMapper();

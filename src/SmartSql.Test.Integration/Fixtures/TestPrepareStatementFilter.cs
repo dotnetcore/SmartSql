@@ -3,7 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using SmartSql.Middlewares.Filters;
 
-namespace SmartSql.Test.Integration;
+namespace SmartSql.Test.Integration.Fixtures;
 
 public class TestPrepareStatementFilter : IPrepareStatementFilter, ISetupSmartSql
 {
