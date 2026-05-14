@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
+  <Settings IgnoreParameterCase="true" ParameterPrefix="@" IsCacheEnabled="true"
+            EnablePropertyChangedTrack="true" IgnoreDbNull="true"/>
+  <Properties>
+    <Property Name="DbProvider" Value="SQLite"/>
+    <Property Name="ConnectionString" Value="Data Source=:memory:"/>
+    <Property Name="ReadConnStr" Value="Data Source=:memory:Read"/>
+  </Properties>
+  <Database>
+    <DbProvider Name="${DbProvider}"/>
+    <Write Name="WriteDB" ConnectionString="${ConnectionString}"/>
+    <Read Name="ReadDb-1" ConnectionString="${ReadConnStr}" Weight="100"/>
+    <Read Name="ReadDb-2" ConnectionString="${ReadConnStr}" Weight="50"/>
+  </Database>
+  <TypeHandlers>
+  </TypeHandlers>
+  <TagBuilders>
+  </TagBuilders>
+  <IdGenerators>
+    <IdGenerator Name="SnowflakeId" Type="SnowflakeId">
+      <Properties>
+        <Property Name="WorkerIdBits" Value="9"/>
+        <Property Name="WorkerId" Value="511"/>
+        <Property Name="Sequence" Value="14"/>
+      </Properties>
+    </IdGenerator>
+  </IdGenerators>
+  <SmartSqlMaps>
+    <SmartSqlMap Path="TestSqlMap-Simple.xml" Type="File"/>
+    <SmartSqlMap Path="TestSqlMap-CacheAndMaps.xml" Type="File"/>
+  </SmartSqlMaps>
+</SmartSqlMapConfig>

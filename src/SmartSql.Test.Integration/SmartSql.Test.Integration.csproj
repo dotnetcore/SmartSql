@@ -1,0 +1,67 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>SmartSql.Test.Integration</RootNamespace>
+    <AssemblyName>SmartSql.Test.Integration</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Maps\**\*.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DB\*.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="SmartSqlMapConfig-Embedded.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Update="SmartSqlMapConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SmartSqlMapConfig.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="7.1.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.1.0" />
+    <PackageReference Include="Jint" Version="2.11.58" />
+    <PackageReference Include="Testcontainers.MySql" Version="4.11.0" />
+    <PackageReference Include="Testcontainers.Redis" Version="4.11.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SmartSql.Bulk.MsSqlServer\SmartSql.Bulk.MsSqlServer.csproj" />
+    <ProjectReference Include="..\SmartSql.Bulk.MySqlConnector\SmartSql.Bulk.MySqlConnector.csproj" />
+    <ProjectReference Include="..\SmartSql.Bulk.MySql\SmartSql.Bulk.MySql.csproj" />
+    <ProjectReference Include="..\SmartSql.Bulk.PostgreSql\SmartSql.Bulk.PostgreSql.csproj" />
+    <ProjectReference Include="..\SmartSql.Bulk.SqlServer\SmartSql.Bulk.SqlServer.csproj" />
+    <ProjectReference Include="..\SmartSql.Cache.Redis\SmartSql.Cache.Redis.csproj" />
+    <ProjectReference Include="..\SmartSql.DIExtension\SmartSql.DIExtension.csproj" />
+    <ProjectReference Include="..\SmartSql.DyRepository\SmartSql.DyRepository.csproj" />
+    <ProjectReference Include="..\SmartSql.InvokeSync\SmartSql.InvokeSync.csproj" />
+    <ProjectReference Include="..\SmartSql.Options\SmartSql.Options.csproj" />
+    <ProjectReference Include="..\SmartSql.Oracle\SmartSql.Oracle.csproj" />
+    <ProjectReference Include="..\SmartSql.ScriptTag\SmartSql.ScriptTag.csproj" />
+    <ProjectReference Include="..\SmartSql.Test\SmartSql.Test.csproj" />
+    <ProjectReference Include="..\SmartSql.TypeHandler.PostgreSql\SmartSql.TypeHandler.PostgreSql.csproj" />
+    <ProjectReference Include="..\SmartSql.TypeHandler\SmartSql.TypeHandler.csproj" />
+    <ProjectReference Include="..\SmartSql\SmartSql.csproj" />
+  </ItemGroup>
+</Project>

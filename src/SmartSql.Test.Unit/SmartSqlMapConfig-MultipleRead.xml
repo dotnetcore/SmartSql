@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
+  <Settings IgnoreParameterCase="false" IsCacheEnabled="false"/>
+  <Properties>
+    <Property Name="DbProvider" Value="SQLite"/>
+    <Property Name="ConnectionString" Value="Data Source=:memory:"/>
+    <Property Name="ReadConn1" Value="Data Source=:memory:R1"/>
+    <Property Name="ReadConn2" Value="Data Source=:memory:R2"/>
+    <Property Name="ReadConn3" Value="Data Source=:memory:R3"/>
+  </Properties>
+  <Database>
+    <DbProvider Name="${DbProvider}"/>
+    <Write Name="WriteDB" ConnectionString="${ConnectionString}"/>
+    <Read Name="ReadDb-1" ConnectionString="${ReadConn1}" Weight="100"/>
+    <Read Name="ReadDb-2" ConnectionString="${ReadConn2}" Weight="50"/>
+    <Read Name="ReadDb-3" ConnectionString="${ReadConn3}" Weight="200"/>
+  </Database>
+  <TypeHandlers>
+  </TypeHandlers>
+  <TagBuilders>
+  </TagBuilders>
+  <IdGenerators>
+  </IdGenerators>
+  <SmartSqlMaps>
+    <SmartSqlMap Path="TestSqlMap-Simple.xml" Type="File"/>
+  </SmartSqlMaps>
+</SmartSqlMapConfig>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMap Scope="TestScope" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+  <Statements>
+    <Statement Id="GetAll">
+      SELECT * FROM Users
+    </Statement>
+    <Statement Id="GetById">
+      SELECT * FROM Users WHERE Id = $Id
+    </Statement>
+  </Statements>
+</SmartSqlMap>

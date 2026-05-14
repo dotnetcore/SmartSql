@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMap Scope="DynamicScope" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+  <Statements>
+    <Statement Id="QueryUsers">
+      SELECT * FROM Users
+      <Where>
+        <IsNotEmpty Property="Name">
+          AND Name = $Name
+        </IsNotEmpty>
+        <IsNotEmpty Property="Age">
+          AND Age = $Age
+        </IsNotEmpty>
+      </Where>
+    </Statement>
+  </Statements>
+</SmartSqlMap>
