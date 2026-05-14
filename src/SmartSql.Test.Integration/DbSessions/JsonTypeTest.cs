@@ -1,21 +1,12 @@
-﻿using SmartSql.Test.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using SmartSql.IdGenerator;
+using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Integration.DbSessions
 {
-    [Collection("GlobalSmartSql")]
-    public class JsonTypeTest
+    public class JsonTypeTest : IntegrationTestBase
     {
-        protected ISqlMapper SqlMapper { get; }
-
-        public JsonTypeTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
+        public JsonTypeTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void Insert()
@@ -26,10 +17,7 @@ namespace SmartSql.Test.Integration.DbSessions
 
         private long InsertImpl(UserExtendedInfo userExtendedInfo = null)
         {
-            if (userExtendedInfo == null)
-            {
-                userExtendedInfo = NewUserExtendedInfo();
-            }
+            userExtendedInfo ??= NewUserExtendedInfo();
             SqlMapper.Execute(new RequestContext
             {
                 Scope = nameof(UserExtendedInfo),

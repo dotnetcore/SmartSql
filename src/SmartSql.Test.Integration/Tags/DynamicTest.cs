@@ -1,18 +1,11 @@
-﻿using System;
-using SmartSql.Configuration;
+using System;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class DynamicTest
+    public class DynamicTest : IntegrationTestBase
     {
-        SmartSqlConfig SmartSqlConfig { get; }
-
-        public DynamicTest(SmartSqlFixture smartSqlFixture)
-        {
-            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
-        }
+        public DynamicTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void BuildSql()
@@ -28,7 +21,7 @@ namespace SmartSql.Test.Integration.Tags
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Where   
+            Assert.Equal(@"Where
                     T.Property=?Property", requestCtx.SqlBuilder.ToString().Trim());
         }
 

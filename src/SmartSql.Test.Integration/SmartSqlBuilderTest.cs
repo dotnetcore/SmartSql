@@ -1,13 +1,16 @@
-﻿using SmartSql.DataSource;
 using System;
 using System.Collections.Generic;
+using SmartSql.DataSource;
 using SmartSql.TypeHandler;
 using Xunit;
 
 namespace SmartSql.Test.Integration
 {
-    public class SmartSqlBuilderTest : AbstractTest
+    public class SmartSqlBuilderTest
     {
+        private const string DbType = "MySql";
+        private const string ConnectionString = "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB";
+
         [Fact]
         public void Build_By_DataSource()
         {
@@ -24,7 +27,6 @@ namespace SmartSql.Test.Integration
 
             using (var dbSession = dbSessionFactory.Open())
             {
-
             }
         }
 
@@ -54,7 +56,7 @@ namespace SmartSql.Test.Integration
         [Fact]
         public void Build_By_Xml()
         {
-            var dbSessionFactory = new SmartSqlBuilder()
+            new SmartSqlBuilder()
                 .UseXmlConfig()
                 .UseAlias("Build_By_Xml")
                 .Build();
@@ -63,7 +65,7 @@ namespace SmartSql.Test.Integration
         [Fact]
         public void Build_As_Mapper()
         {
-            var sqlMapper = new SmartSqlBuilder()
+            new SmartSqlBuilder()
                 .UseXmlConfig()
                 .UseAlias("Build_As_Mapper")
                 .Build()

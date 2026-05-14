@@ -1,22 +1,14 @@
-﻿using SmartSql.Test.DTO;
-using SmartSql.Test.Entities;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
+using SmartSql.Test.DTO;
+using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Deserializer
 {
-    [Collection("GlobalSmartSql")]
-    public class MultipleResultDeserializerTest 
+    public class MultipleResultDeserializerTest : IntegrationTestBase
     {
-        protected ISqlMapper SqlMapper { get; }
-
-        public MultipleResultDeserializerTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
+        public MultipleResultDeserializerTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void GetByPage()
@@ -29,6 +21,7 @@ namespace SmartSql.Test.Integration.Deserializer
             });
             Assert.NotNull(result);
         }
+
         [Fact]
         public async Task GetByPageAsync()
         {
@@ -40,7 +33,7 @@ namespace SmartSql.Test.Integration.Deserializer
             });
             Assert.NotNull(result);
         }
-        
+
         [Fact]
         public void GetMultiRoot()
         {
@@ -53,7 +46,7 @@ namespace SmartSql.Test.Integration.Deserializer
             Assert.NotNull(result);
             Assert.NotNull(result.List);
         }
-        
+
         public class PagedList
         {
             public long Total { get; set; }

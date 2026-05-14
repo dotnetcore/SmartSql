@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class EnvTest
+    public class EnvTest : IntegrationTestBase
     {
-        SmartSqlConfig SmartSqlConfig { get; }
-
-        public EnvTest(SmartSqlFixture smartSqlFixture)
-        {
-            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
-        }
+        public EnvTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void BuildSql()
@@ -25,7 +16,6 @@ namespace SmartSql.Test.Integration.Tags
                 SqlId = "Env",
                 Request = new { Property = "Property" }
             };
-
             var executionContext = new ExecutionContext
             {
                 Request = requestCtx,

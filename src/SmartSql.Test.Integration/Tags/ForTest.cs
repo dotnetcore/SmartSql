@@ -1,20 +1,11 @@
-using System;
 using SmartSql.Configuration;
-using SmartSql.Configuration.Tags;
-using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class ForTest
+    public class ForTest : IntegrationTestBase
     {
-        SmartSqlConfig SmartSqlConfig { get; }
-
-        public ForTest(SmartSqlFixture smartSqlFixture)
-        {
-            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
-        }
+        public ForTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void BuildSqlWhenDirectValue()
@@ -39,7 +30,7 @@ namespace SmartSql.Test.Integration.Tags
 
             Assert.Equal(@"(
                 ?Item_For__0
-             , 
+             ,
                 ?Item_For__1
             )", requestCtx.SqlBuilder.ToString().Trim());
 
@@ -70,7 +61,7 @@ namespace SmartSql.Test.Integration.Tags
 
             Assert.Equal(@"(
                 ?Item_For__Id_0
-             , 
+             ,
                 ?Item_For__Id_1
             )", requestCtx.SqlBuilder.ToString().Trim());
 
@@ -101,7 +92,7 @@ namespace SmartSql.Test.Integration.Tags
 
             Assert.Equal(@"(
                 ?Item_For__Id_0
-             , 
+             ,
                 ?Item_For__Id_1
             )", requestCtx.SqlBuilder.ToString().Trim());
 
@@ -139,13 +130,12 @@ namespace SmartSql.Test.Integration.Tags
 
             Assert.Equal(@"(
                 ?Item_For__Info_Id_0
-             , 
+             ,
                 ?Item_For__Info_Id_1
             )", requestCtx.SqlBuilder.ToString().Trim());
 
             Assert.Equal(1, requestCtx.Parameters["Item_For__Info_Id_0"].Value);
             Assert.Equal(2, requestCtx.Parameters["Item_For__Info_Id_1"].Value);
-
         }
     }
 }

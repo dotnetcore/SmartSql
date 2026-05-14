@@ -1,29 +1,24 @@
-﻿using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SmartSql.DbSession;
 using SmartSql.DyRepository;
 using SmartSql.Middlewares.Filters;
 using SmartSql.Test.Entities;
 using SmartSql.Test.Repositories;
-using SmartSql.Utils;
 using Xunit;
 
 namespace SmartSql.Test.Integration
 {
-    public class SmartSqlFixture : IDisposable
+    public class SmartSqlFixture : System.IDisposable
     {
         public const string GLOBAL_SMART_SQL = "GlobalSmartSql";
-        public static int CtorCount = 0;
 
         public SmartSqlFixture()
         {
             LoggerFactory = new LoggerFactory(Enumerable.Empty<ILoggerProvider>(),
                 new LoggerFilterOptions { MinLevel = LogLevel.Debug });
-            var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "SmartSql.log");
+            var logPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "logs", "SmartSql.log");
             LoggerFactory.AddFile(logPath, LogLevel.Trace);
             SmartSqlBuilder = new SmartSqlBuilder()
                 .UseXmlConfig()
@@ -31,11 +26,6 @@ namespace SmartSql.Test.Integration
                 .UseAlias(GLOBAL_SMART_SQL)
                 .AddFilter<TestPrepareStatementFilter>()
                 .RegisterEntity(typeof(AllPrimitive))
-                // .RegisterEntity(new TypeScanOptions
-                // {
-                //     AssemblyString = "SmartSql.Test",
-                //     Filter = type => type.Namespace == "SmartSql.Test.Entities"
-                // })
                 .UseCUDConfigBuilder()
                 .Build();
             DbSessionFactory = SmartSqlBuilder.DbSessionFactory;
@@ -97,38 +87,5 @@ namespace SmartSql.Test.Integration
     [CollectionDefinition(SmartSqlFixture.GLOBAL_SMART_SQL)]
     public class SmartSqlCollection : ICollectionFixture<SmartSqlFixture>
     {
-    }
-
-
-    public class TestPrepareStatementFilter : IPrepareStatementFilter, ISetupSmartSql
-    {
-        private ILogger<TestPrepareStatementFilter> _logger;
-
-        public void OnInvoking(ExecutionContext context)
-        {
-            _logger.LogDebug("TestPrepareStatementFilter.OnInvoking");
-        }
-
-        public void OnInvoked(ExecutionContext context)
-        {
-            _logger.LogDebug("TestPrepareStatementFilter.OnInvoked");
-        }
-
-        public Task OnInvokingAsync(ExecutionContext context)
-        {
-            _logger.LogDebug("TestPrepareStatementFilter.OnInvokingAsync");
-            return Task.CompletedTask;
-        }
-
-        public Task OnInvokedAsync(ExecutionContext context)
-        {
-            _logger.LogDebug("TestPrepareStatementFilter.OnInvokedAsync");
-            return Task.CompletedTask;
-        }
-
-        public void SetupSmartSql(SmartSqlBuilder smartSqlBuilder)
-        {
-            _logger = smartSqlBuilder.LoggerFactory.CreateLogger<TestPrepareStatementFilter>();
-        }
     }
 }

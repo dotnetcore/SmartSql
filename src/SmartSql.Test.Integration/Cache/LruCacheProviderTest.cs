@@ -1,20 +1,11 @@
-﻿using SmartSql.Test.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Cache
 {
-    [Collection("GlobalSmartSql")]
-    public class LruCacheProviderTest
+    public class LruCacheProviderTest : IntegrationTestBase
     {
-        protected ISqlMapper SqlMapper { get; }
-
-        public LruCacheProviderTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
+        public LruCacheProviderTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void GetByCache()

@@ -1,20 +1,12 @@
-﻿using SmartSql.Test.Entities;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Deserializer
 {
-    [Collection("GlobalSmartSql")]
-    public class ValueTypeDeserializerTest
+    public class ValueTypeDeserializerTest : IntegrationTestBase
     {
-        protected ISqlMapper SqlMapper { get; }
-
-        public ValueTypeDeserializerTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
+        public ValueTypeDeserializerTest(SmartSqlFixture fixture) : base(fixture) { }
 
         private const int ONE = 1;
         private const string SELECT_ONE = "Select 1;";
@@ -78,6 +70,7 @@ namespace SmartSql.Test.Integration.Deserializer
         #endregion
 
         #region Timespan
+
         private readonly static TimeSpan TEST_TIMESPAN = TimeSpan.Parse("08:08:08");
         private readonly static string SELECT_TIMESPAN = $"Select CONVERT('{TEST_TIMESPAN:g}',time)";
 
@@ -135,14 +128,13 @@ namespace SmartSql.Test.Integration.Deserializer
 
         #region Null
 
-        private readonly static int DEFAULT_INT = default(int);
-        private readonly static String SELECT_NULL = "Select Null;";
+        private readonly static string SELECT_NULL = "Select Null;";
 
         [Fact]
         public void NullToInt()
         {
             var result = SqlMapper.ExecuteScalar<int>(new RequestContext { RealSql = SELECT_NULL });
-            Assert.Equal(DEFAULT_INT, result);
+            Assert.Equal(default(int), result);
         }
 
         [Fact]

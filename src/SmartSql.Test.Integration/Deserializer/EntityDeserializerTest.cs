@@ -1,22 +1,14 @@
-﻿using SmartSql.Test.Entities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Deserializer
 {
-    [Collection("GlobalSmartSql")]
-    public class EntityDeserializerTest
+    public class EntityDeserializerTest : IntegrationTestBase
     {
-        protected ISqlMapper SqlMapper { get; }
-
-        public EntityDeserializerTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
+        public EntityDeserializerTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void QuerySingle()
@@ -86,13 +78,10 @@ namespace SmartSql.Test.Integration.Deserializer
                 SqlId = "QueryNestedPropertyResult",
                 Request = new { Taken = 10000 }
             });
-
             Assert.NotNull(list);
-
             Assert.NotNull(list.First().NestedProp1);
             Assert.NotNull(list.First().NestedProp1.NestedProp2);
             Assert.NotNull(list.First().NestedProp1.NestedProp2.NestedProp3);
-
         }
     }
 }

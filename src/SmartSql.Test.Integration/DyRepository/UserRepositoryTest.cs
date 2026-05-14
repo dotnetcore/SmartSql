@@ -1,20 +1,19 @@
-﻿using SmartSql.Data;
+using SmartSql.Data;
 using SmartSql.Test.Repositories;
 using Xunit;
 
 namespace SmartSql.Test.Integration.DyRepository
 {
-    [Collection("GlobalSmartSql")]
-    public class UserRepositoryTest
+    public class UserRepositoryTest : IntegrationTestBase
     {
-        private IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
 
-        public UserRepositoryTest(SmartSqlFixture smartSqlFixture)
+        public UserRepositoryTest(SmartSqlFixture fixture) : base(fixture)
         {
-            _userRepository = smartSqlFixture.UserRepository;
+            _userRepository = fixture.UserRepository;
         }
 
-        [EnvironmentFactAttribute(exclude: EnvironmentFactAttribute.GITHUB_ACTION)]
+        [EnvironmentFact(exclude: EnvironmentFactAttribute.GITHUB_ACTION)]
         public void SP_Query()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();

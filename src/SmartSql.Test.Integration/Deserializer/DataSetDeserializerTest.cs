@@ -1,27 +1,17 @@
-﻿using SmartSql.Test.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
+using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Deserializer
 {
-    [Collection("GlobalSmartSql")]
-    public class DataSetDeserializerTest
+    public class DataSetDeserializerTest : IntegrationTestBase
     {
-        protected ISqlMapper SqlMapper { get; }
-
-        public DataSetDeserializerTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
+        public DataSetDeserializerTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void GetDataSet()
         {
             SqlMapper.Insert<AllPrimitive, long>(new AllPrimitive());
-
             var result = SqlMapper.GetDataSet(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
@@ -30,7 +20,6 @@ namespace SmartSql.Test.Integration.Deserializer
             Assert.NotNull(result);
             Assert.Equal(2, result.Tables.Count);
         }
-
 
         [Fact]
         public async Task GetDataSetAsync()

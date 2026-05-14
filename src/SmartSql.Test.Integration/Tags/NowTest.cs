@@ -1,18 +1,11 @@
-﻿using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class NowTest
+    public class NowTest : IntegrationTestBase
     {
-        SmartSqlConfig SmartSqlConfig { get; }
+        public NowTest(SmartSqlFixture fixture) : base(fixture) { }
 
-        public NowTest(SmartSqlFixture smartSqlFixture)
-        {
-            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
-        }
-        
         [Fact]
         public void AppendNowTime()
         {
@@ -27,7 +20,6 @@ namespace SmartSql.Test.Integration.Tags
             statement.BuildSql(requestCtx);
 
             Assert.True(requestCtx.Parameters.ContainsKey("NowTime"));
-            
             Assert.Equal("?NowTime", requestCtx.SqlBuilder.ToString().Trim());
         }
     }

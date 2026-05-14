@@ -1,42 +1,30 @@
-﻿using SmartSql.Test.Entities;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Deserializer
 {
-    [Collection("GlobalSmartSql")]
-    public class DataTableDeserializerTest 
+    public class DataTableDeserializerTest : IntegrationTestBase
     {
-        protected ISqlMapper SqlMapper { get; }
-
-        public DataTableDeserializerTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
+        public DataTableDeserializerTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void GetDataTable()
         {
             var result = SqlMapper.GetDataTable(new RequestContext
             {
-                Scope = nameof(AllPrimitive),
+                Scope = "AllPrimitive",
                 SqlId = "Query",
                 Request = new { Taken = 10 }
             });
             Assert.NotNull(result);
         }
-        
 
         [Fact]
         public async Task GetDataTableAsync()
         {
             var result = await SqlMapper.GetDataTableAsync(new RequestContext
             {
-                Scope = nameof(AllPrimitive),
+                Scope = "AllPrimitive",
                 SqlId = "Query",
                 Request = new { Taken = 10 }
             });

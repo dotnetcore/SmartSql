@@ -1,21 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using SmartSql.Test.DTO;
 using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Deserializer
 {
-    [Collection("GlobalSmartSql")]
-    public class ValueTupleDeserializerTest 
+    public class ValueTupleDeserializerTest : IntegrationTestBase
     {
-        protected ISqlMapper SqlMapper { get; }
-
-        public ValueTupleDeserializerTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
+        public ValueTupleDeserializerTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void GetByPage_ValueTuple()
@@ -26,7 +18,6 @@ namespace SmartSql.Test.Integration.Deserializer
                 SqlId = "GetByPage_ValueTuple",
                 Request = new { PageSize = 10, Offset = 0 }
             });
-            
             Assert.NotNull(result);
         }
     }

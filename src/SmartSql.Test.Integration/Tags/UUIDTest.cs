@@ -1,18 +1,10 @@
-using System;
-using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class UUIDTest
+    public class UUIDTest : IntegrationTestBase
     {
-        SmartSqlConfig SmartSqlConfig { get; }
-
-        public UUIDTest(SmartSqlFixture smartSqlFixture)
-        {
-            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
-        }
+        public UUIDTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void UUID()

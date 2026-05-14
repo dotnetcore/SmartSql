@@ -1,20 +1,14 @@
-﻿using SmartSql.Test.Entities;
-using Xunit;
 using System.Linq;
+using SmartSql.Test.Entities;
+using Xunit;
 
 namespace SmartSql.Test.Integration.Cache
 {
-    [Collection("GlobalSmartSql")]
-    public class RedisCacheProviderTest
+    public class RedisCacheProviderTest : IntegrationTestBase
     {
-        protected ISqlMapper SqlMapper { get; }
+        public RedisCacheProviderTest(SmartSqlFixture fixture) : base(fixture) { }
 
-        public RedisCacheProviderTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
-
-        [EnvironmentFactAttribute(include: "REDIS")]
+        [EnvironmentFact(include: "REDIS")]
         public void GetByCache()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -32,7 +26,7 @@ namespace SmartSql.Test.Integration.Cache
             Assert.Equal(list.Count, cachedList.Count);
         }
 
-        [EnvironmentFactAttribute(include: "REDIS")]
+        [EnvironmentFact(include: "REDIS")]
         public void QueryByRedisCacheWithKey()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -52,7 +46,7 @@ namespace SmartSql.Test.Integration.Cache
             Assert.Equal(list.Count(), cachedList.Count());
         }
 
-        [EnvironmentFactAttribute(include: "REDIS")]
+        [EnvironmentFact(include: "REDIS")]
         public void QueryByRedisCacheWithKeyParam()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext

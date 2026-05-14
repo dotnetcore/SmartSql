@@ -1,18 +1,11 @@
 using System;
-using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class IsNotPropertyTest 
+    public class IsNotPropertyTest : IntegrationTestBase
     {
-        SmartSqlConfig SmartSqlConfig { get; }
-
-        public IsNotPropertyTest(SmartSqlFixture smartSqlFixture)
-        {
-            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
-        }
+        public IsNotPropertyTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void BuildSql()
@@ -29,7 +22,7 @@ namespace SmartSql.Test.Integration.Tags
 
             Assert.Equal("IsNotProperty", requestCtx.SqlBuilder.ToString().Trim());
         }
-        
+
         [Fact]
         public void BuildSqlWhenHasProperty()
         {

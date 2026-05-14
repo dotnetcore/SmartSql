@@ -1,22 +1,13 @@
-﻿using SmartSql.Configuration.Tags;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartSql.Configuration;
+using SmartSql.Configuration.Tags;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class IsGreaterThanTest 
+    public class IsGreaterThanTest : IntegrationTestBase
     {
-        SmartSqlConfig SmartSqlConfig { get; }
+        public IsGreaterThanTest(SmartSqlFixture fixture) : base(fixture) { }
 
-        public IsGreaterThanTest(SmartSqlFixture smartSqlFixture)
-        {
-            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
-        }
-        
         [Fact]
         public void IsGreaterThan()
         {
@@ -33,7 +24,7 @@ namespace SmartSql.Test.Integration.Tags
 
             Assert.Equal("Property IsGreaterThan 10", requestCtx.SqlBuilder.ToString().Trim());
         }
-        
+
         [Fact]
         public void IsGreaterThanOutside()
         {
@@ -50,7 +41,6 @@ namespace SmartSql.Test.Integration.Tags
 
             Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
         }
-
 
         [Fact]
         public void IsGreaterThanRequiredEmptyFail()

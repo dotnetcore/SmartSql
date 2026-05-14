@@ -1,24 +1,16 @@
-﻿using SmartSql.Configuration.Tags;
-using SmartSql.Reflection;
-using SmartSql.Test.Entities;
 using System;
 using System.Data;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 using SmartSql.Data;
+using SmartSql.Reflection.EntityProxy;
+using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Integration.DbSessions
 {
-    [Collection("GlobalSmartSql")]
-    public class DbSessionTest
+    public class DbSessionTest : IntegrationTestBase
     {
-        protected ISqlMapper SqlMapper { get; }
-
-        public DbSessionTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
+        public DbSessionTest(SmartSqlFixture fixture) : base(fixture) { }
 
         #region Insert_From_RealSql
 
@@ -51,7 +43,7 @@ namespace SmartSql.Test.Integration.DbSessions
               (?Boolean
               ,?Char
               ,?Int16
-              ,?Int32 
+              ,?Int32
               ,?Int64
               ,?Single
               ,?Decimal
@@ -94,7 +86,7 @@ namespace SmartSql.Test.Integration.DbSessions
         [Fact]
         public void Insert()
         {
-            var id = SqlMapper.ExecuteScalar<long>(new RequestContext
+            SqlMapper.ExecuteScalar<long>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Insert",
@@ -109,7 +101,7 @@ namespace SmartSql.Test.Integration.DbSessions
         [Fact]
         public void InsertByRequestTransaction()
         {
-            var id = SqlMapper.ExecuteScalar<long>(new RequestContext
+            SqlMapper.ExecuteScalar<long>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Insert",
@@ -125,7 +117,7 @@ namespace SmartSql.Test.Integration.DbSessions
         [Fact]
         public void InsertByStatementTransaction()
         {
-            var id = SqlMapper.ExecuteScalar<long>(new RequestContext
+            SqlMapper.ExecuteScalar<long>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "InsertByStatementTransaction",
@@ -145,7 +137,7 @@ namespace SmartSql.Test.Integration.DbSessions
                 DateTime = DateTime.Now,
                 String = "SmartSql",
             };
-            var id = SqlMapper.ExecuteScalar<long>(new RequestContext
+            SqlMapper.ExecuteScalar<long>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "InsertByIdGen",
@@ -177,7 +169,6 @@ namespace SmartSql.Test.Integration.DbSessions
             {
                 RealSql = "SELECT T.* From T_AllPrimitive T limit 5"
             });
-
             Assert.NotNull(list);
         }
 
@@ -200,7 +191,7 @@ namespace SmartSql.Test.Integration.DbSessions
         [Fact]
         public void InsertFromSqlParameters()
         {
-            var insertParameters = RequestConvert.Instance.ToSqlParameters(new AllPrimitive
+            var insertParameters = SmartSql.Reflection.RequestConvert.Instance.ToSqlParameters(new AllPrimitive
             {
                 DateTime = DateTime.Now,
                 String = "SmartSql",
@@ -217,7 +208,7 @@ namespace SmartSql.Test.Integration.DbSessions
         [Fact]
         public void Update()
         {
-            var id = SqlMapper.ExecuteScalar<int>(new RequestContext
+            SqlMapper.ExecuteScalar<int>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "Update",
@@ -232,7 +223,7 @@ namespace SmartSql.Test.Integration.DbSessions
         [Fact]
         public void Delete()
         {
-            var id = SqlMapper.ExecuteScalar<int>(new RequestContext
+            SqlMapper.ExecuteScalar<int>(new RequestContext
             {
                 Scope = nameof(AllPrimitive),
                 SqlId = "DeleteById",
@@ -249,14 +240,14 @@ namespace SmartSql.Test.Integration.DbSessions
         {
             try
             {
-                var id = SqlMapper.ExecuteScalar<int>(new RequestContext
+                SqlMapper.ExecuteScalar<int>(new RequestContext
                 {
                     Scope = nameof(AllPrimitive),
                     SqlId = "DeleteCheckIncludeRequired",
                     Request = new { }
                 });
             }
-            catch (TagRequiredFailException ex)
+            catch (Configuration.Tags.TagRequiredFailException)
             {
                 Assert.True(true);
             }
@@ -267,32 +258,32 @@ namespace SmartSql.Test.Integration.DbSessions
         {
             try
             {
-                var id = SqlMapper.ExecuteScalar<int>(new RequestContext
+                SqlMapper.ExecuteScalar<int>(new RequestContext
                 {
                     Scope = nameof(AllPrimitive),
                     SqlId = "DeleteCheckIsNotEmptyRequired",
                     Request = new { }
                 });
             }
-            catch (TagRequiredFailException ex)
+            catch (Configuration.Tags.TagRequiredFailException)
             {
                 Assert.True(true);
             }
         }
 
-        [EnvironmentFactAttribute(exclude: EnvironmentFactAttribute.GITHUB_ACTION)]
+        [EnvironmentFact(exclude: EnvironmentFactAttribute.GITHUB_ACTION)]
         public void SP()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();
             dbParameterCollection.Add(new SqlParameter
             {
                 Name = "Total",
-                DbType = System.Data.DbType.Int32,
-                Direction = System.Data.ParameterDirection.Output
+                DbType = DbType.Int32,
+                Direction = ParameterDirection.Output
             });
             RequestContext context = new RequestContext
             {
-                CommandType = System.Data.CommandType.StoredProcedure,
+                CommandType = CommandType.StoredProcedure,
                 RealSql = "SP_Query",
                 Request = dbParameterCollection
             };
@@ -300,13 +291,13 @@ namespace SmartSql.Test.Integration.DbSessions
             dbParameterCollection.TryGetParameterValue("Total", out int total);
         }
 
-        [EnvironmentFactAttribute(exclude: EnvironmentFactAttribute.GITHUB_ACTION)]
+        [EnvironmentFact(exclude: EnvironmentFactAttribute.GITHUB_ACTION)]
         public void SP_SourceParameter()
         {
             SqlParameterCollection dbParameterCollection = new SqlParameterCollection();
             dbParameterCollection.Add(new SqlParameter("Total", null)
             {
-                SourceParameter = new MySqlParameter("Total", DbType.Int32)
+                SourceParameter = new MySql.Data.MySqlClient.MySqlParameter("Total", DbType.Int32)
                 {
                     Direction = ParameterDirection.Output
                 }

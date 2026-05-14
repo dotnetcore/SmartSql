@@ -1,21 +1,10 @@
-﻿using SmartSql.Test.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class PlaceholderTest
+    public class PlaceholderTest : IntegrationTestBase
     {
-        SmartSqlConfig SmartSqlConfig { get; }
-
-        public PlaceholderTest(SmartSqlFixture smartSqlFixture)
-        {
-            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
-        }
+        public PlaceholderTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void Placeholder()
@@ -37,12 +26,11 @@ namespace SmartSql.Test.Integration.Tags
         [Fact]
         public void NestPlaceholder()
         {
-            var reqParams = new { Nest = new { Placeholder = "Placeholder" } };
             var requestCtx = new RequestContext
             {
                 Scope = "TagTest",
                 SqlId = nameof(NestPlaceholder),
-                Request = reqParams
+                Request = new { Nest = new { Placeholder = "Placeholder" } }
             };
             requestCtx.SetupParameters();
 

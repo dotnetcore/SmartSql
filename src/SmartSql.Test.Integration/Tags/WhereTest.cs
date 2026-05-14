@@ -1,20 +1,13 @@
-﻿using SmartSql.Configuration.Tags;
 using System;
-using SmartSql.Configuration;
+using SmartSql.Configuration.Tags;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class WhereTest 
+    public class WhereTest : IntegrationTestBase
     {
-        SmartSqlConfig SmartSqlConfig { get; }
+        public WhereTest(SmartSqlFixture fixture) : base(fixture) { }
 
-        public WhereTest(SmartSqlFixture smartSqlFixture)
-        {
-            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
-        }
-        
         [Fact]
         public void BuildSql()
         {
@@ -29,9 +22,10 @@ namespace SmartSql.Test.Integration.Tags
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Where   
+            Assert.Equal(@"Where
                     T.Property=?Property", requestCtx.SqlBuilder.ToString().Trim());
         }
+
         [Fact]
         public void BuildSqlWhenRequestIsEmpty()
         {
@@ -47,8 +41,7 @@ namespace SmartSql.Test.Integration.Tags
 
             Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
         }
-        
-        
+
         [Fact]
         public void BuildSqlMin()
         {
@@ -63,7 +56,7 @@ namespace SmartSql.Test.Integration.Tags
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Where   
+            Assert.Equal(@"Where
                     T.Property=?Property", requestCtx.SqlBuilder.ToString().Trim());
         }
 
@@ -78,10 +71,7 @@ namespace SmartSql.Test.Integration.Tags
             requestCtx.SetupParameters();
 
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-
             Assert.Throws<TagMinMatchedFailException>(() => { statement.BuildSql(requestCtx); });
         }
-
-
     }
 }

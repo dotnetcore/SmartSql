@@ -1,18 +1,11 @@
 using System;
-using System.Data;
 using Xunit;
 
 namespace SmartSql.Test.Integration.TypeHandlers
 {
-    [Collection("GlobalSmartSql")]
-    public class CustomizeTypeHandlerTest
+    public class CustomizeTypeHandlerTest : IntegrationTestBase
     {
-        protected ISqlMapper SqlMapper { get; }
-
-        public CustomizeTypeHandlerTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
+        public CustomizeTypeHandlerTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void QueryByAnsiString()
@@ -37,16 +30,13 @@ namespace SmartSql.Test.Integration.TypeHandlers
             {
                 AnsiStringFixedLength = "AnsiStringFixedLength"
             };
-            
             var actual = SqlMapper.QuerySingle<String>(new RequestContext
             {
                 Scope = nameof(CustomizeTypeHandlerTest),
                 SqlId = nameof(QueryByAnsiStringFixedLength),
                 Request = reqParams
             });
-            
             Assert.Equal(reqParams.AnsiStringFixedLength, actual);
         }
     }
 }
-

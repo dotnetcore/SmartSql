@@ -1,22 +1,11 @@
-﻿using SmartSql.Test.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartSql.Configuration;
 using SmartSql.Configuration.Tags;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class SetTest
+    public class SetTest : IntegrationTestBase
     {
-        SmartSqlConfig SmartSqlConfig { get; }
-
-        public SetTest(SmartSqlFixture smartSqlFixture)
-        {
-            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
-        }
+        public SetTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void Set()
@@ -32,9 +21,9 @@ namespace SmartSql.Test.Integration.Tags
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Set   
+            Assert.Equal(@"Set
                     Property1=?Property1
-                 , 
+                 ,
                     Property2=?Property2", requestCtx.SqlBuilder.ToString().Trim());
         }
 

@@ -1,19 +1,11 @@
-﻿using SmartSql.Test.Entities;
-using System;
-using SmartSql.Cache.Default;
+using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Cache
 {
-    [Collection("GlobalSmartSql")]
-    public class FifoCacheProviderTest
+    public class FifoCacheProviderTest : IntegrationTestBase
     {
-        protected ISqlMapper SqlMapper { get; }
-
-        public FifoCacheProviderTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
+        public FifoCacheProviderTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void GetByCache()

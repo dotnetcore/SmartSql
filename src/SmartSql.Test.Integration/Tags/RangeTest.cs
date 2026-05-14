@@ -1,21 +1,12 @@
-﻿using SmartSql.Configuration.Tags;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartSql.Configuration;
+using SmartSql.Configuration.Tags;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class RangeTest
+    public class RangeTest : IntegrationTestBase
     {
-        SmartSqlConfig SmartSqlConfig { get; }
-
-        public RangeTest(SmartSqlFixture smartSqlFixture)
-        {
-            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
-        }
+        public RangeTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void Range()
@@ -33,6 +24,7 @@ namespace SmartSql.Test.Integration.Tags
 
             Assert.Equal("Property Between 0 And 10", requestCtx.SqlBuilder.ToString().Trim());
         }
+
         [Fact]
         public void RangeOutside()
         {

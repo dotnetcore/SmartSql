@@ -1,20 +1,17 @@
-using System;
 using SmartSql.DyRepository;
+using SmartSql.Test.Entities;
 using SmartSql.Test.Repositories;
 using Xunit;
-using Microsoft.Extensions.Logging;
-using SmartSql.Test.Entities;
 
 namespace SmartSql.Test.Integration.DyRepository
 {
-    [Collection("GlobalSmartSql")]
-    public class ColumnAnnotationRepositoryTest
+    public class ColumnAnnotationRepositoryTest : IntegrationTestBase
     {
-        private IColumnAnnotationRepository _repository;
+        private readonly IColumnAnnotationRepository _repository;
 
-        public ColumnAnnotationRepositoryTest(SmartSqlFixture smartSqlFixture)
+        public ColumnAnnotationRepositoryTest(SmartSqlFixture fixture) : base(fixture)
         {
-            _repository = smartSqlFixture.ColumnAnnotationRepository;
+            _repository = fixture.ColumnAnnotationRepository;
         }
 
         [Fact]
@@ -35,7 +32,7 @@ namespace SmartSql.Test.Integration.DyRepository
 
         private int DoInsert()
         {
-            var id = _repository.Insert(new ColumnAnnotationEntity
+            return _repository.Insert(new ColumnAnnotationEntity
             {
                 Name = nameof(IColumnAnnotationRepository),
                 Data = new ColumnAnnotationEntity.ExtendData
@@ -43,7 +40,6 @@ namespace SmartSql.Test.Integration.DyRepository
                     Info = nameof(IColumnAnnotationRepository)
                 }
             });
-            return id;
         }
 
         [Fact]

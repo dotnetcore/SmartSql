@@ -1,22 +1,13 @@
-﻿using SmartSql.Configuration.Tags;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using SmartSql.Configuration;
+using SmartSql.Configuration.Tags;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class IsNotEmptyTest
+    public class IsNotEmptyTest : IntegrationTestBase
     {
-        SmartSqlConfig SmartSqlConfig { get; }
-
-        public IsNotEmptyTest(SmartSqlFixture smartSqlFixture)
-        {
-            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
-        }
+        public IsNotEmptyTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void BuildSql()

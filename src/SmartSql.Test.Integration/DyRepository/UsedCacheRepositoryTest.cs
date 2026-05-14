@@ -1,18 +1,17 @@
 using System.Threading;
-using SmartSql.Test.Repositories;
 using SmartSql.Test.Entities;
+using SmartSql.Test.Repositories;
 using Xunit;
 
 namespace SmartSql.Test.Integration.DyRepository
 {
-    [Collection("GlobalSmartSql")]
-    public class UsedCacheRepositoryTest
+    public class UsedCacheRepositoryTest : IntegrationTestBase
     {
-        private IUsedCacheRepository _usedCacheRepository;
+        private readonly IUsedCacheRepository _usedCacheRepository;
 
-        public UsedCacheRepositoryTest(SmartSqlFixture smartSqlFixture)
+        public UsedCacheRepositoryTest(SmartSqlFixture fixture) : base(fixture)
         {
-            _usedCacheRepository = smartSqlFixture.UsedCacheRepository;
+            _usedCacheRepository = fixture.UsedCacheRepository;
         }
 
         [Fact]
@@ -27,7 +26,7 @@ namespace SmartSql.Test.Integration.DyRepository
         [Fact]
         public void GetUserById()
         {
-            var userId = _usedCacheRepository.Insert(new User {UserName = "SmartSql", Status = UserStatus.Ok});
+            var userId = _usedCacheRepository.Insert(new User { UserName = "SmartSql", Status = UserStatus.Ok });
             var user = _usedCacheRepository.GetUserById(userId);
             var user1 = _usedCacheRepository.GetUserById(userId);
             Assert.Equal(user, user1);
@@ -36,7 +35,7 @@ namespace SmartSql.Test.Integration.DyRepository
         [Fact]
         public void FlushOnExecute()
         {
-            var userId = _usedCacheRepository.Insert(new User {UserName = "SmartSql", Status = UserStatus.Ok});
+            var userId = _usedCacheRepository.Insert(new User { UserName = "SmartSql", Status = UserStatus.Ok });
             var user = _usedCacheRepository.GetUserById(userId);
             _usedCacheRepository.UpdateUserName(userId, "SmartSql");
             var user1 = _usedCacheRepository.GetUserById(userId);
@@ -46,7 +45,7 @@ namespace SmartSql.Test.Integration.DyRepository
         [Fact]
         public void GetId()
         {
-            var userId = _usedCacheRepository.Insert(new User {UserName = "SmartSql", Status = UserStatus.Ok});
+            var userId = _usedCacheRepository.Insert(new User { UserName = "SmartSql", Status = UserStatus.Ok });
             var id = _usedCacheRepository.GetId(userId);
             var id1 = _usedCacheRepository.GetId(userId);
             Assert.Equal(id, id1);
@@ -55,7 +54,7 @@ namespace SmartSql.Test.Integration.DyRepository
         [Fact]
         public void UpdateUserName()
         {
-            var userId = _usedCacheRepository.Insert(new User {UserName = "SmartSql", Status = UserStatus.Ok});
+            var userId = _usedCacheRepository.Insert(new User { UserName = "SmartSql", Status = UserStatus.Ok });
             var affected = _usedCacheRepository.UpdateUserName(userId, "SmartSql");
             Assert.True(affected > 0);
         }

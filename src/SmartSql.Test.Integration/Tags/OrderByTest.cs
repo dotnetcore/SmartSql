@@ -1,19 +1,12 @@
 using System;
 using System.Collections.Generic;
-using SmartSql.Configuration;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class OrderByTest
+    public class OrderByTest : IntegrationTestBase
     {
-        SmartSqlConfig SmartSqlConfig { get; }
-
-        public OrderByTest(SmartSqlFixture smartSqlFixture)
-        {
-            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
-        }
+        public OrderByTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void BuildSql()
@@ -27,7 +20,6 @@ namespace SmartSql.Test.Integration.Tags
                     OrderBy = new KeyValuePair<String, String>("Id", "Desc")
                 }
             };
-
             requestCtx.SetupParameters();
 
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
@@ -35,7 +27,7 @@ namespace SmartSql.Test.Integration.Tags
 
             Assert.Equal("Order By Id Desc", requestCtx.SqlBuilder.ToString().Trim());
         }
-        
+
         [Fact]
         public void BuildSqlWhenEmpty()
         {
@@ -44,7 +36,6 @@ namespace SmartSql.Test.Integration.Tags
                 Scope = "TagTest",
                 SqlId = "OrderBy"
             };
-
             requestCtx.SetupParameters();
 
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
@@ -69,7 +60,6 @@ namespace SmartSql.Test.Integration.Tags
                     }
                 }
             };
-
             requestCtx.SetupParameters();
 
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);

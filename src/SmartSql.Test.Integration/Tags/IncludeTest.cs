@@ -1,19 +1,12 @@
-﻿using System;
-using SmartSql.Configuration;
+using System;
 using SmartSql.Configuration.Tags;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class IncludeTest
+    public class IncludeTest : IntegrationTestBase
     {
-        SmartSqlConfig SmartSqlConfig { get; }
-
-        public IncludeTest(SmartSqlFixture smartSqlFixture)
-        {
-            SmartSqlConfig = smartSqlFixture.SqlMapper.SmartSqlConfig;
-        }
+        public IncludeTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void BuildSql()
@@ -29,7 +22,7 @@ namespace SmartSql.Test.Integration.Tags
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
             statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Where     
+            Assert.Equal(@"Where
                 Property=?Property", requestCtx.SqlBuilder.ToString().Trim());
         }
 
@@ -61,7 +54,6 @@ namespace SmartSql.Test.Integration.Tags
             requestCtx.SetupParameters();
 
             var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-
             Assert.Throws<TagRequiredFailException>(() => { statement.BuildSql(requestCtx); });
         }
     }

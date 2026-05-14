@@ -1,23 +1,16 @@
-﻿using SmartSql.Test.Entities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using SmartSql.Test.Entities;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Deserializer
 {
-    [Collection("GlobalSmartSql")]
-    public class DynamicDeserializerTest
+    public class DynamicDeserializerTest : IntegrationTestBase
     {
-        protected ISqlMapper SqlMapper { get; }
-
-        public DynamicDeserializerTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
+        public DynamicDeserializerTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void QuerySingle_Dynamic()
@@ -73,7 +66,6 @@ namespace SmartSql.Test.Integration.Deserializer
                 {
                     hashTable.Add(kv.Key, kv.Value);
                 }
-
                 return hashTable;
             });
         }

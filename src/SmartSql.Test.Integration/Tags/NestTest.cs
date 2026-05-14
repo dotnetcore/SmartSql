@@ -1,21 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
-using SmartSql.Configuration;
-using StackExchange.Redis;
 using Xunit;
 
-namespace SmartSql.Test.Integration.DbSessions
+namespace SmartSql.Test.Integration.Tags
 {
-    [Collection("GlobalSmartSql")]
-    public class NestTest
+    public class NestTest : IntegrationTestBase
     {
-        ISqlMapper SqlMapper { get; }
-
-        public NestTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
+        public NestTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public void QueryNestObject1()
@@ -70,7 +61,6 @@ namespace SmartSql.Test.Integration.DbSessions
                 }
             };
             var result = SqlMapper.ExecuteScalar<int>(requestCtx);
-
             Assert.Equal(1, result);
             Assert.Equal("Select ?Order_Items_Idx_0", requestCtx.RealSql);
         }
@@ -86,16 +76,11 @@ namespace SmartSql.Test.Integration.DbSessions
                 {
                     Order = new
                     {
-                        Items = new List<int>
-                        {
-                            1
-                        }
+                        Items = new List<int> { 1 }
                     }
                 }
             };
-
             var result = SqlMapper.ExecuteScalar<int>(requestCtx);
-
             Assert.Equal(1, result);
             Assert.Equal("Select ?Order_Items_Idx_0", requestCtx.RealSql);
         }
@@ -111,16 +96,11 @@ namespace SmartSql.Test.Integration.DbSessions
                 {
                     Order = new
                     {
-                        Items = new Dictionary<string, int>
-                        {
-                            { "Id", 1 }
-                        }
+                        Items = new Dictionary<string, int> { { "Id", 1 } }
                     }
                 }
             };
-
             var result = SqlMapper.ExecuteScalar<int>(requestCtx);
-
             Assert.Equal(1, result);
             Assert.Equal("Select ?Order_Items_Idx_Id", requestCtx.RealSql);
         }
@@ -136,16 +116,11 @@ namespace SmartSql.Test.Integration.DbSessions
                 {
                     Order = new
                     {
-                        Items = new[]
-                        {
-                            new { Name = "SmartSql" }
-                        }
+                        Items = new[] { new { Name = "SmartSql" } }
                     }
                 }
             };
-
             var result = SqlMapper.ExecuteScalar<String>(requestCtx);
-
             Assert.Equal("SmartSql", result);
             Assert.Equal("Select ?Order_Items_Idx_0_Name", requestCtx.RealSql);
         }
@@ -161,20 +136,14 @@ namespace SmartSql.Test.Integration.DbSessions
                 {
                     Order = new
                     {
-                        Items = new[]
-                        {
-                            new OrderItem { Name = "SmartSql" }
-                        }
+                        Items = new[] { new OrderItem { Name = "SmartSql" } }
                     }
                 }
             };
-
             var result = SqlMapper.ExecuteScalar<String>(requestCtx);
-
             Assert.Equal("SmartSql", result);
             Assert.Equal("Select ?Order_Items_Idx_0_Name", requestCtx.RealSql);
         }
-
 
         [Fact]
         public void FilterNestObject1()
@@ -185,9 +154,7 @@ namespace SmartSql.Test.Integration.DbSessions
                 SqlId = "FilterNestObject1",
                 Request = new { User = new { Id = 1 } }
             };
-
             var result = SqlMapper.ExecuteScalar<int>(requestCtx);
-
             Assert.Equal(1, result);
             Assert.Equal("Select ?User_Id", requestCtx.RealSql);
         }
@@ -203,16 +170,11 @@ namespace SmartSql.Test.Integration.DbSessions
                 {
                     User = new
                     {
-                        Info = new
-                        {
-                            Id = 1
-                        }
+                        Info = new { Id = 1 }
                     }
                 }
             };
-
             var result = SqlMapper.ExecuteScalar<int>(requestCtx);
-
             Assert.Equal(1, result);
             Assert.Equal("Select ?User_Info_Id", requestCtx.RealSql);
         }
@@ -226,15 +188,10 @@ namespace SmartSql.Test.Integration.DbSessions
                 SqlId = "FilterNestArray",
                 Request = new
                 {
-                    Order = new
-                    {
-                        Items = new[] { 1 }
-                    }
+                    Order = new { Items = new[] { 1 } }
                 }
             };
-
             var result = SqlMapper.ExecuteScalar<int>(requestCtx);
-
             Assert.Equal(1, result);
             Assert.Equal("Select ?Order_Items_Idx_0", requestCtx.RealSql);
         }
@@ -250,16 +207,11 @@ namespace SmartSql.Test.Integration.DbSessions
                 {
                     Order = new
                     {
-                        Items = new Dictionary<string, int>
-                        {
-                            { "Id", 1 }
-                        }
+                        Items = new Dictionary<string, int> { { "Id", 1 } }
                     }
                 }
             };
-
             var result = SqlMapper.ExecuteScalar<int>(requestCtx);
-
             Assert.Equal(1, result);
             Assert.Equal("Select ?Order_Items_Idx_Id", requestCtx.RealSql);
         }
@@ -275,22 +227,15 @@ namespace SmartSql.Test.Integration.DbSessions
                 {
                     Order = new
                     {
-                        Items = new[]
-                        {
-                            new OrderItem { Name = "SmartSql" }
-                        }
+                        Items = new[] { new OrderItem { Name = "SmartSql" } }
                     }
                 }
             };
-
             var result = SqlMapper.ExecuteScalar<String>(requestCtx);
-
             Assert.Equal("SmartSql", result);
             Assert.Equal("Select ?Order_Items_Idx_0_Name", requestCtx.RealSql);
-
         }
 
-        
         [Fact]
         public void FilterNestDicMul()
         {
@@ -308,15 +253,13 @@ namespace SmartSql.Test.Integration.DbSessions
                     }
                 }
             };
-
             var result = SqlMapper.ExecuteScalar<String>(requestCtx);
-
             Assert.Equal("Id , Name , CreateTime", result.Trim());
             Assert.Equal(@"Select'
                 Id , Name , CreateTime
             '", requestCtx.RealSql.Trim());
         }
-        
+
         public class OrderItem
         {
             public String Name { get; set; }

@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using SmartSql.Reflection.EntityProxy;
 using SmartSql.Test.Entities;
@@ -8,15 +5,9 @@ using Xunit;
 
 namespace SmartSql.Test.Integration.DbSessions
 {
-    [Collection("GlobalSmartSql")]
-    public class SqlMapperTest
+    public class SqlMapperTest : IntegrationTestBase
     {
-        protected ISqlMapper SqlMapper { get; }
-
-        public SqlMapperTest(SmartSqlFixture smartSqlFixture)
-        {
-            SqlMapper = smartSqlFixture.SqlMapper;
-        }
+        public SqlMapperTest(SmartSqlFixture fixture) : base(fixture) { }
 
         [Fact]
         public async Task QueryAsync()
@@ -25,50 +16,49 @@ namespace SmartSql.Test.Integration.DbSessions
             {
                 RealSql = "SELECT T.* From T_AllPrimitive T limit 5"
             });
-
             Assert.NotNull(list);
         }
+
         [Fact]
-        public  void QuerySingleDynamic()
+        public void QuerySingleDynamic()
         {
-            var list =  SqlMapper.QuerySingleDynamic(new RequestContext
+            var list = SqlMapper.QuerySingleDynamic(new RequestContext
             {
                 RealSql = "SELECT T.* From T_AllPrimitive T limit 1"
             });
-
             Assert.NotNull(list);
         }
+
         [Fact]
-        public  void QueryDynamic()
+        public void QueryDynamic()
         {
-            var list =  SqlMapper.QueryDynamic(new RequestContext
+            var list = SqlMapper.QueryDynamic(new RequestContext
             {
                 RealSql = "SELECT T.* From T_AllPrimitive T limit 5"
             });
-
             Assert.NotNull(list);
         }
+
         [Fact]
-        public  void QueryDictionary()
+        public void QueryDictionary()
         {
-            var list =  SqlMapper.QueryDictionary(new RequestContext
+            var list = SqlMapper.QueryDictionary(new RequestContext
             {
                 RealSql = "SELECT T.* From T_AllPrimitive T limit 5"
             });
-
             Assert.NotNull(list);
         }
+
         [Fact]
-        public  void QuerySingleDictionary()
+        public void QuerySingleDictionary()
         {
-            var list =  SqlMapper.QuerySingleDictionary(new RequestContext
+            var list = SqlMapper.QuerySingleDictionary(new RequestContext
             {
                 RealSql = "SELECT T.* From T_AllPrimitive T limit 1"
             });
-
             Assert.NotNull(list);
         }
-        
+
         [Fact]
         public void Query()
         {
@@ -76,7 +66,6 @@ namespace SmartSql.Test.Integration.DbSessions
             {
                 RealSql = "SELECT T.* From T_AllPrimitive T limit 5"
             });
-
             Assert.NotNull(list);
         }
 
