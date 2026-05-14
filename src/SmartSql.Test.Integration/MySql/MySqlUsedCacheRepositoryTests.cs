@@ -18,7 +18,7 @@ public class MySqlUsedCacheRepositoryTests : IntegrationTestBase
             as IUsedCacheRepository;
     }
 
-    [Fact]
+    [Fact(Skip = "Requires Redis cache")]
     public void Should_ReturnCachedDateTime_When_CacheIsEnabled()
     {
         var datetime = _usedCacheRepository.GetNow();
@@ -27,7 +27,7 @@ public class MySqlUsedCacheRepositoryTests : IntegrationTestBase
         datetime1.Should().Be(datetime);
     }
 
-    [Fact]
+    [Fact(Skip = "Requires Redis cache")]
     public void Should_ReturnSameUser_When_CacheIsHit()
     {
         var userId = _usedCacheRepository.Insert(new User { UserName = "SmartSql", Status = UserStatus.Ok });
@@ -36,7 +36,7 @@ public class MySqlUsedCacheRepositoryTests : IntegrationTestBase
         user1.Should().Be(user);
     }
 
-    [Fact]
+    [Fact(Skip = "Requires Redis cache")]
     public void Should_InvalidateCache_When_FlushOnExecute()
     {
         var userId = _usedCacheRepository.Insert(new User { UserName = "SmartSql", Status = UserStatus.Ok });
@@ -46,7 +46,7 @@ public class MySqlUsedCacheRepositoryTests : IntegrationTestBase
         user1.Should().NotBe(user);
     }
 
-    [Fact]
+    [Fact(Skip = "Requires Redis cache")]
     public void Should_ReturnCachedId_When_CacheIsHit()
     {
         var userId = _usedCacheRepository.Insert(new User { UserName = "SmartSql", Status = UserStatus.Ok });
@@ -55,7 +55,7 @@ public class MySqlUsedCacheRepositoryTests : IntegrationTestBase
         id1.Should().Be(id);
     }
 
-    [Fact]
+    [Fact(Skip = "Requires Redis cache")]
     public void Should_AffectRows_When_UpdatingUserName()
     {
         var userId = _usedCacheRepository.Insert(new User { UserName = "SmartSql", Status = UserStatus.Ok });

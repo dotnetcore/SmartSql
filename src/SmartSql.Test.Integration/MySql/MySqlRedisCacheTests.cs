@@ -11,7 +11,7 @@ public class MySqlRedisCacheTests : IntegrationTestBase
 {
     public MySqlRedisCacheTests(MySqlFixture fixture) : base(fixture) { }
 
-    [Fact]
+    [Fact(Skip = "Requires Redis container")]
     public void Should_ReturnSameCount_When_QueryTwice()
     {
         var first = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -25,7 +25,7 @@ public class MySqlRedisCacheTests : IntegrationTestBase
         second.Should().HaveCount(first.Count);
     }
 
-    [Fact]
+    [Fact(Skip = "Requires Redis container")]
     public void Should_ReturnSameCount_When_QueryWithCustomCacheKey()
     {
         var first = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -41,7 +41,7 @@ public class MySqlRedisCacheTests : IntegrationTestBase
         second.Should().HaveCount(first.Count());
     }
 
-    [Fact]
+    [Fact(Skip = "Requires Redis container")]
     public void Should_ReturnResults_When_QueryWithKeyParam()
     {
         var list = SqlMapper.Query<AllPrimitive>(new RequestContext
