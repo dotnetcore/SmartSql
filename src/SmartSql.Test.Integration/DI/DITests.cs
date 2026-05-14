@@ -7,10 +7,8 @@ using Xunit;
 
 namespace SmartSql.Test.Integration.DI;
 
-public class DITests : IntegrationTestBase
+public class DITests
 {
-    public DITests(SmartSqlFixture fixture) : base(fixture) { }
-
     [Fact]
     public void Should_ResolveServices_When_AddingSmartSql()
     {
