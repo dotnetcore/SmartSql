@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SmartSql;
+using SmartSql.ConfigBuilder;
 using SmartSql.DyRepository;
 using SmartSql.Middlewares.Filters;
 using SmartSql.Test.Entities;
@@ -57,8 +59,8 @@ public class SqlServerFixture : IDbTestFixture
         LoggerFactory.AddFile(logPath, LogLevel.Trace);
 
         SmartSqlBuilder = new SmartSqlBuilder()
-            .UseXmlConfig()
-            .UseDataSource(DataSource.DbProvider.SQLSERVER, connectionString)
+            .UseXmlConfig(ResourceType.File, "SmartSqlMapConfig.SqlServer.xml")
+            .UseDatabase(DataSource.DbProvider.SQLSERVER, connectionString)
             .UseLoggerFactory(LoggerFactory)
             .UseAlias(ALIAS)
             .AddFilter<TestPrepareStatementFilter>()

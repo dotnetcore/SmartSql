@@ -23,6 +23,7 @@ public class MySqlFixture : IDbTestFixture
     public MySqlFixture()
     {
         _mySqlContainer = new MySqlBuilder("mysql:8.0")
+            .WithPortBinding(3306, 3306)
             .WithDatabase("SmartSqlTestDB")
             .WithUsername("root")
             .WithPassword("root")
@@ -77,13 +78,14 @@ EOF" });
 
         SmartSqlBuilder = new SmartSqlBuilder()
             .UseXmlConfig()
-            .UseDataSource(SmartSql.DataSource.DbProvider.MYSQL, connectionString)
+            .UseDatabase(DataSource.DbProvider.MYSQL, connectionString)
             .UseLoggerFactory(LoggerFactory)
             .UseAlias(ALIAS)
             .AddFilter<TestPrepareStatementFilter>()
             .RegisterEntity(typeof(AllPrimitive))
             .UseCUDConfigBuilder()
             .Build();
+
         SqlMapper = SmartSqlBuilder.SqlMapper;
 
         var repositoryBuilder = new EmitRepositoryBuilder(null, null,

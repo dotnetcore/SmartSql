@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using SmartSql;
+using SmartSql.ConfigBuilder;
 using SmartSql.DyRepository;
 using SmartSql.Middlewares.Filters;
 using SmartSql.Test.Entities;
@@ -34,7 +35,7 @@ public class SqliteFixture : IDbTestFixture
             new LoggerFilterOptions { MinLevel = LogLevel.Debug });
 
         SmartSqlBuilder = new SmartSqlBuilder()
-            .UseDataSource(DataSource.DbProvider.SQLITE, "Data Source=:memory:;Cache=Shared")
+            .UseXmlConfig(ResourceType.File, "SmartSqlMapConfig.Sqlite.xml")
             .UseLoggerFactory(LoggerFactory)
             .UseAlias(ALIAS)
             .AddFilter<TestPrepareStatementFilter>()
@@ -43,7 +44,7 @@ public class SqliteFixture : IDbTestFixture
             .Build();
         SqlMapper = SmartSqlBuilder.SqlMapper;
 
-        _keepAliveConnection = new SqliteConnection("Data Source=:memory:;Cache=Shared");
+        _keepAliveConnection = new SqliteConnection("Data Source=InMemory;Mode=Memory;Cache=Shared");
         _keepAliveConnection.Open();
 
         InitDatabase();

@@ -16,15 +16,17 @@ public abstract class DbSessionTestBase : IntegrationTestBase
     {
         var columns = "Boolean,`Char`,Int16,Int32,Int64,Single,`Decimal`,DateTime,String,Guid,TimeSpan,NumericalEnum," +
                       "NullableBoolean,NullableChar,NullableInt16,NullableInt32,NullableInt64,NullableSingle,NullableDecimal,NullableDateTime,NullableGuid,NullableTimeSpan,NullableNumericalEnum,NullableString";
-        var values = "$Boolean,$Char,$Int16,$Int32,$Int64,$Single,$Decimal,$DateTime,$String,$Guid,$TimeSpan,$NumericalEnum," +
-                     "$NullableBoolean,$NullableChar,$NullableInt16,$NullableInt32,$NullableInt64,$NullableSingle,$NullableDecimal,$NullableDateTime,$NullableGuid,$NullableTimeSpan,$NullableNumericalEnum,$NullableString";
+        var atValues = "@Boolean,@Char,@Int16,@Int32,@Int64,@Single,@Decimal,@DateTime,@String,@Guid,@TimeSpan,@NumericalEnum," +
+                       "@NullableBoolean,@NullableChar,@NullableInt16,@NullableInt32,@NullableInt64,@NullableSingle,@NullableDecimal,@NullableDateTime,@NullableGuid,@NullableTimeSpan,@NullableNumericalEnum,@NullableString";
+        var dollarValues = "$Boolean,$Char,$Int16,$Int32,$Int64,$Single,$Decimal,$DateTime,$String,$Guid,$TimeSpan,$NumericalEnum," +
+                          "$NullableBoolean,$NullableChar,$NullableInt16,$NullableInt32,$NullableInt64,$NullableSingle,$NullableDecimal,$NullableDateTime,$NullableGuid,$NullableTimeSpan,$NullableNumericalEnum,$NullableString";
 
         return DbProvider switch
         {
-            "PostgreSql" => @$"INSERT INTO ""T_AllPrimitive"" ({columns.Replace("`", "\"")}) VALUES ({values}); RETURNING ""Id""",
-            "SqlServer" => $"INSERT INTO T_AllPrimitive ({columns.Replace("`", "[").Replace("]", "]").Replace("[Char]", "[Char]").Replace("[Decimal]", "[Decimal]")}) VALUES ({values}); SELECT SCOPE_IDENTITY()",
-            "SQLite" => @$"INSERT INTO T_AllPrimitive ({columns.Replace("`", "\"")}) VALUES ({values}); SELECT last_insert_rowid()",
-            _ => $"INSERT INTO T_AllPrimitive ({columns}) VALUES ({values}); Select Last_Insert_Id()"
+            "PostgreSql" => @$"INSERT INTO ""T_AllPrimitive"" ({columns.Replace("`", "\"")}) VALUES ({dollarValues}); RETURNING ""Id""",
+            "SqlServer" => $"INSERT INTO T_AllPrimitive ({columns.Replace("`", "[").Replace("]", "]").Replace("[Char]", "[Char]").Replace("[Decimal]", "[Decimal]")}) VALUES ({atValues}); SELECT SCOPE_IDENTITY()",
+            "SQLite" => @$"INSERT INTO T_AllPrimitive ({columns.Replace("`", "\"")}) VALUES ({atValues}); SELECT last_insert_rowid()",
+            _ => $"INSERT INTO T_AllPrimitive ({columns}) VALUES ({atValues}); Select Last_Insert_Id()"
         };
     }
 

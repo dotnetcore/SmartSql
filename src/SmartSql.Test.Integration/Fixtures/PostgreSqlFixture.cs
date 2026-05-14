@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SmartSql;
+using SmartSql.ConfigBuilder;
 using SmartSql.DyRepository;
 using SmartSql.Middlewares.Filters;
 using SmartSql.Test.Entities;
@@ -23,6 +25,7 @@ public class PostgreSqlFixture : IDbTestFixture
     {
         _pgContainer = new PostgreSqlBuilder()
             .WithImage("postgres:16")
+            .WithPortBinding(5432, true)
             .WithDatabase("SmartSqlTestDB")
             .WithUsername("postgres")
             .WithPassword("postgres")
@@ -60,8 +63,8 @@ public class PostgreSqlFixture : IDbTestFixture
         LoggerFactory.AddFile(logPath, LogLevel.Trace);
 
         SmartSqlBuilder = new SmartSqlBuilder()
-            .UseXmlConfig()
-            .UseDataSource(DataSource.DbProvider.POSTGRESQL, connectionString)
+            .UseXmlConfig(ResourceType.File, "SmartSqlMapConfig.PostgreSql.xml")
+            .UseDatabase(DataSource.DbProvider.POSTGRESQL, _pgContainer.GetConnectionString())
             .UseLoggerFactory(LoggerFactory)
             .UseAlias(ALIAS)
             .AddFilter<TestPrepareStatementFilter>()
