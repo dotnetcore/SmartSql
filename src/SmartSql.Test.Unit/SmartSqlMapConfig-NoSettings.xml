@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
+  <Properties>
+    <Property Name="DbProvider" Value="SQLite"/>
+    <Property Name="ConnectionString" Value="Data Source=:memory:"/>
+  </Properties>
+  <Database>
+    <DbProvider Name="${DbProvider}"/>
+    <Write Name="WriteDB" ConnectionString="${ConnectionString}"/>
+  </Database>
+  <TypeHandlers>
+  </TypeHandlers>
+  <TagBuilders>
+  </TagBuilders>
+  <IdGenerators>
+  </IdGenerators>
+  <SmartSqlMaps>
+    <SmartSqlMap Path="TestSqlMap-Simple.xml" Type="File"/>
+  </SmartSqlMaps>
+</SmartSqlMapConfig>
