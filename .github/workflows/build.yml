@@ -19,6 +19,13 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', 'Directory.Build.props') }}
+          restore-keys: ${{ runner.os }}-nuget-
+
       - name: Restore dependencies
         run: dotnet restore SmartSql.sln
 
@@ -29,11 +36,13 @@ jobs:
         run: dotnet test src/SmartSql.Test.Unit/SmartSql.Test.Unit.csproj --no-build --configuration Release --collect:"XPlat Code Coverage" --results-directory ./coverage
 
       - name: Generate Coverage Report
+        if: always()
         run: |
           dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.* || true
           reportgenerator -reports:"./coverage/**/coverage.cobertura.xml" -targetdir:"./coverage/report" -reporttypes:"Html;Cobertura;TextSummary"
 
       - name: Print Coverage Summary
+        if: always()
         run: cat ./coverage/report/Summary.txt
 
       - name: Upload Coverage Report
@@ -45,6 +54,7 @@ jobs:
 
       - name: Upload to Codecov
         uses: codecov/codecov-action@v4
+        if: always()
         with:
           files: ./coverage/**/coverage.cobertura.xml
           token: ${{ secrets.CODECOV_TOKEN }}
