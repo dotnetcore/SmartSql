@@ -31,8 +31,6 @@ public class InitializerMiddlewareTests
         var dbSession = CreateDbSession();
         var request = new RequestContext
         {
-            Scope = "TestScope",
-            SqlId = "GetEntity",
             RealSql = "SELECT * FROM Users WHERE Id=@Id"
         };
         var result = new SingleResultContext<string>();
@@ -56,6 +54,13 @@ public class InitializerMiddlewareTests
         var middleware = new InitializerMiddleware();
         var config = CreateSmartSqlConfig();
         var sqlMap = CreateSqlMap();
+        var statement = new Statement
+        {
+            SqlMap = sqlMap,
+            Id = "GetById",
+            StatementType = StatementType.Select
+        };
+        sqlMap.Statements["TestScope.GetById"] = statement;
         config.SqlMaps["TestScope"] = sqlMap;
         SetupMiddleware(middleware, config);
 
@@ -205,7 +210,8 @@ public class InitializerMiddlewareTests
             SqlMap = sqlMap,
             Id = "GetById",
             StatementType = StatementType.Select,
-            CacheId = "UserCache"
+            CacheId = "UserCache",
+            Cache = cache
         };
         sqlMap.Statements["TestScope.GetById"] = statement;
         config.SqlMaps["TestScope"] = sqlMap;

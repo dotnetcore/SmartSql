@@ -95,7 +95,9 @@ public class EntityDeserializerTests
         mockReader.Setup(r => r.GetFieldType(0)).Returns(typeof(long));
         mockReader.Setup(r => r.GetFieldType(1)).Returns(typeof(string));
         mockReader.Setup(r => r.IsDBNull(It.IsAny<int>())).Returns(false);
+        mockReader.Setup(r => r.GetInt64(0)).Returns(1L);
         mockReader.Setup(r => r.GetValue(0)).Returns(1L);
+        mockReader.Setup(r => r.GetString(1)).Returns("TestUser");
         mockReader.Setup(r => r.GetValue(1)).Returns("TestUser");
 
         var context = CreateContext<User>(mockReader);
@@ -125,11 +127,13 @@ public class EntityDeserializerTests
         mockReader.Setup(r => r.IsDBNull(It.IsAny<int>())).Returns(false);
 
         var callCount = 0;
-        mockReader.Setup(r => r.GetValue(0)).Returns(() =>
+        mockReader.Setup(r => r.GetInt64(0)).Returns(() =>
         {
             callCount++;
             return (long)callCount;
         });
+        mockReader.Setup(r => r.GetValue(0)).Returns(() => (long)callCount);
+        mockReader.Setup(r => r.GetString(1)).Returns(() => $"User{callCount}");
         mockReader.Setup(r => r.GetValue(1)).Returns(() => $"User{callCount}");
 
         var context = CreateContext<User>(mockReader);

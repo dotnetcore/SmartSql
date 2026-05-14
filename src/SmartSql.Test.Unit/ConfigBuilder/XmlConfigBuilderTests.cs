@@ -116,6 +116,6 @@ public class XmlConfigBuilderTests
         var config = configBuilder.Build();
 
         config.IdGenerators.Should().NotBeNull();
-        config.IdGenerators.Should().ContainKey("Default");
+        config.IdGenerators.Should().BeEmpty();
     }
 }

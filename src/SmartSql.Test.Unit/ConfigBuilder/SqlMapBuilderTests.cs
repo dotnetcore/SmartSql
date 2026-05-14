@@ -3,6 +3,7 @@ using FluentAssertions;
 using SmartSql.ConfigBuilder;
 using SmartSql.Configuration;
 using SmartSql.Configuration.Tags;
+using SmartSql.DataSource;
 using SmartSql.Exceptions;
 using Xunit;
 
@@ -12,7 +13,13 @@ public class SqlMapBuilderTests
 {
     private static SmartSqlConfig CreateSmartSqlConfig()
     {
-        return new SmartSqlConfig();
+        return new SmartSqlConfig
+        {
+            Database = new Database
+            {
+                DbProvider = DbProviderManager.SQLITE_DBPROVIDER
+            }
+        };
     }
 
     private static XmlDocument LoadTestXml(string fileName)

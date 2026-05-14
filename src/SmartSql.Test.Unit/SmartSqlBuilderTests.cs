@@ -217,10 +217,9 @@ public class SmartSqlBuilderTests
             .UseProperties(properties)
             .RegisterToContainer(false);
 
-        builder.Build();
-
-        var value = builder.SmartSqlConfig.Properties.GetPropertyValue("${TestKey}");
-        value.Should().Be("TestValue");
+        builder.ImportProperties.Should().ContainSingle();
+        builder.ImportProperties[0].Key.Should().Be("TestKey");
+        builder.ImportProperties[0].Value.Should().Be("TestValue");
     }
 
     [Fact]
@@ -256,7 +255,7 @@ public class SmartSqlBuilderTests
         {
             Database = new Database
             {
-                DbProvider = new DbProvider { Name = "SQLite" },
+                DbProvider = DbProviderManager.SQLITE_DBPROVIDER,
                 Write = new WriteDataSource
                 {
                     Name = "Write",

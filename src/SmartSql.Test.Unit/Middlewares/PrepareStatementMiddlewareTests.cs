@@ -8,6 +8,7 @@ using SmartSql.Command;
 using SmartSql.Configuration;
 using SmartSql.DataSource;
 using SmartSql.DbSession;
+using SmartSql.Utils;
 using SmartSql.TypeHandlers;
 using Xunit;
 using Microsoft.Data.Sqlite;
@@ -207,6 +208,9 @@ public class PrepareStatementMiddlewareTests
         {
             Database = new Database { DbProvider = dbProvider }
         };
+        config.SqlParamAnalyzer = new SqlParamAnalyzer(
+            config.Settings.IgnoreParameterCase,
+            dbProvider.ParameterPrefix);
         return config;
     }
 

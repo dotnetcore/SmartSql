@@ -37,7 +37,7 @@ public class AbstractCacheManagerTests : IDisposable
 
     private static string NewAlias() => $"test_{Guid.NewGuid():N}";
 
-    private static SmartSqlConfig CreateTestConfig(string alias = null)
+    private static SmartSqlConfig CreateTestConfig()
     {
         var write = new WriteDataSource
         {
@@ -48,7 +48,6 @@ public class AbstractCacheManagerTests : IDisposable
 
         return new SmartSqlConfig
         {
-            Alias = alias ?? NewAlias(),
             LoggerFactory = NullLoggerFactory.Instance,
             Database = new Database
             {
@@ -62,12 +61,13 @@ public class AbstractCacheManagerTests : IDisposable
         Action<SmartSqlConfig> configure = null)
     {
         var alias = NewAlias();
-        var config = CreateTestConfig(alias);
+        var config = CreateTestConfig();
         configure?.Invoke(config);
 
         var manager = new TestableCacheManager();
         var builder = new SmartSqlBuilder()
             .UseNativeConfig(config)
+            .UseAlias(alias)
             .UseCacheManager(manager)
             .RegisterToContainer(false);
 
@@ -143,11 +143,12 @@ public class AbstractCacheManagerTests : IDisposable
     public void Should_SetupSmartSql_When_Called()
     {
         var alias = NewAlias();
-        var config = CreateTestConfig(alias);
+        var config = CreateTestConfig();
 
         var manager = new TestableCacheManager();
         var builder = new SmartSqlBuilder()
             .UseNativeConfig(config)
+            .UseAlias(alias)
             .UseCacheManager(manager)
             .RegisterToContainer(false);
 
