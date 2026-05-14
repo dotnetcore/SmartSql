@@ -37,7 +37,9 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.1.0" />
     <PackageReference Include="Jint" Version="2.11.58" />
+    <PackageReference Include="Testcontainers.MsSql" Version="4.11.0" />
     <PackageReference Include="Testcontainers.MySql" Version="4.11.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.11.0" />
     <PackageReference Include="Testcontainers.Redis" Version="4.11.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
