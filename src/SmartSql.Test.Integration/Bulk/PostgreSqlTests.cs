@@ -8,8 +8,9 @@ using SmartSql.DataSource;
 using SmartSql.Test.Entities;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Bulk
-{
+
+namespace SmartSql.Test.Integration.Bulk;
+
     public class PostgreSqlTest
     {
         [EnvironmentFact(include:"POSTGRE_SQL")]
@@ -37,4 +38,3 @@ namespace SmartSql.Test.Integration.Bulk
             }
         }
     }
-}

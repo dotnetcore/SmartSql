@@ -6,8 +6,9 @@ using SmartSql.DataSource;
 using SmartSql.Test.Entities;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Bulk
-{
+
+namespace SmartSql.Test.Integration.Bulk;
+
     public class MySqlConnectorTest
     {
         [EnvironmentFact(include:"MY_SQL")]
@@ -37,4 +38,3 @@ namespace SmartSql.Test.Integration.Bulk
             bulkInsert.Insert();
         }
     }
-}

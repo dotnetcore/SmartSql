@@ -3,58 +3,59 @@ using System;
 using SmartSql.Configuration.Tags;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Tags
+namespace SmartSql.Test.Integration.Tags;
+
+public class IsGreaterThanTests : IntegrationTestBase
 {
-    public class IsGreaterThanTest : IntegrationTestBase
+    public IsGreaterThanTests(SmartSqlFixture fixture) : base(fixture) { }
+
+    [Fact]
+    public void Should_BuildSql_When_PropertyIsGreaterThan()
     {
-        public IsGreaterThanTest(SmartSqlFixture fixture) : base(fixture) { }
-
-        [Fact]
-        public void IsGreaterThan()
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = "IsGreaterThan",
-                Request = new { Property = 11 }
-            };
-            requestCtx.SetupParameters();
+            Scope = "TagTest",
+            SqlId = "IsGreaterThan",
+            Request = new { Property = 11 }
+        };
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
 
-            Assert.Equal("Property IsGreaterThan 10", requestCtx.SqlBuilder.ToString().Trim());
-        }
+        requestCtx.SqlBuilder.ToString().Trim().Should().Be("Property IsGreaterThan 10");
+    }
 
-        [Fact]
-        public void IsGreaterThanOutside()
+    [Fact]
+    public void Should_ReturnEmpty_When_PropertyIsNotGreaterThan()
+    {
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = "IsGreaterThan",
-                Request = new { Property = 10 }
-            };
-            requestCtx.SetupParameters();
+            Scope = "TagTest",
+            SqlId = "IsGreaterThan",
+            Request = new { Property = 10 }
+        };
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
 
-            Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
-        }
+        requestCtx.SqlBuilder.ToString().Trim().Should().BeEmpty();
+    }
 
-        [Fact]
-        public void IsGreaterThanRequiredEmptyFail()
+    [Fact]
+    public void Should_Throw_When_RequiredPropertyIsNull()
+    {
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = "IsGreaterThanRequired"
-            };
-            requestCtx.SetupParameters();
+            Scope = "TagTest",
+            SqlId = "IsGreaterThanRequired"
+        };
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            Assert.Throws<TagRequiredFailException>(() => { statement.BuildSql(requestCtx); });
-        }
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        Action act = () => statement.BuildSql(requestCtx);
+
+        act.Should().Throw<TagRequiredFailException>();
     }
 }

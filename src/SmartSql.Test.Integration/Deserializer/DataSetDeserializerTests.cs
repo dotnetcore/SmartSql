@@ -3,35 +3,34 @@ using System.Threading.Tasks;
 using SmartSql.Test.Entities;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Deserializer
+namespace SmartSql.Test.Integration.Deserializer;
+
+public class DataSetDeserializerTests : IntegrationTestBase
 {
-    public class DataSetDeserializerTest : IntegrationTestBase
+    public DataSetDeserializerTests(SmartSqlFixture fixture) : base(fixture) { }
+
+    [Fact]
+    public void Should_ReturnDataSet_When_GetDataSet()
     {
-        public DataSetDeserializerTest(SmartSqlFixture fixture) : base(fixture) { }
-
-        [Fact]
-        public void GetDataSet()
+        SqlMapper.Insert<AllPrimitive, long>(new AllPrimitive());
+        var result = SqlMapper.GetDataSet(new RequestContext
         {
-            SqlMapper.Insert<AllPrimitive, long>(new AllPrimitive());
-            var result = SqlMapper.GetDataSet(new RequestContext
-            {
-                Scope = nameof(AllPrimitive),
-                SqlId = "GetDataSet"
-            });
-            Assert.NotNull(result);
-            Assert.Equal(2, result.Tables.Count);
-        }
+            Scope = nameof(AllPrimitive),
+            SqlId = "GetDataSet"
+        });
+        result.Should().NotBeNull();
+        result.Tables.Count.Should().Be(2);
+    }
 
-        [Fact]
-        public async Task GetDataSetAsync()
+    [Fact]
+    public async Task Should_ReturnDataSet_When_GetDataSetAsync()
+    {
+        var result = await SqlMapper.GetDataSetAsync(new RequestContext
         {
-            var result = await SqlMapper.GetDataSetAsync(new RequestContext
-            {
-                Scope = nameof(AllPrimitive),
-                SqlId = "GetDataSet"
-            });
-            Assert.NotNull(result);
-            Assert.Equal(2, result.Tables.Count);
-        }
+            Scope = nameof(AllPrimitive),
+            SqlId = "GetDataSet"
+        });
+        result.Should().NotBeNull();
+        result.Tables.Count.Should().Be(2);
     }
 }

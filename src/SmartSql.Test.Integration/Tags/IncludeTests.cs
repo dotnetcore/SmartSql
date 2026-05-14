@@ -3,59 +3,61 @@ using System;
 using SmartSql.Configuration.Tags;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Tags
+namespace SmartSql.Test.Integration.Tags;
+
+public class IncludeTests : IntegrationTestBase
 {
-    public class IncludeTest : IntegrationTestBase
+    public IncludeTests(SmartSqlFixture fixture) : base(fixture) { }
+
+    [Fact]
+    public void Should_BuildSql_When_PropertyIsNotEmpty()
     {
-        public IncludeTest(SmartSqlFixture fixture) : base(fixture) { }
-
-        [Fact]
-        public void BuildSql()
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = "Include",
-                Request = new { Property = "Property" }
-            };
-            requestCtx.SetupParameters();
+            Scope = "TagTest",
+            SqlId = "Include",
+            Request = new { Property = "Property" }
+        };
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Where
-                Property=?Property", requestCtx.SqlBuilder.ToString().Trim());
-        }
+        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"Where
+                Property=?Property");
+    }
 
-        [Fact]
-        public void BuildSqlWhenEmpty()
+    [Fact]
+    public void Should_BuildEmptySql_When_PropertyIsEmpty()
+    {
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = "Include",
-                Request = new { Property = "" }
-            };
-            requestCtx.SetupParameters();
+            Scope = "TagTest",
+            SqlId = "Include",
+            Request = new { Property = "" }
+        };
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
-            Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
-        }
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
 
-        [Fact]
-        public void IncludeRequired()
+        requestCtx.SqlBuilder.ToString().Trim().Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Should_ThrowTagRequiredFailException_When_RequiredIncludeIsEmpty()
+    {
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = "IncludeRequired",
-                Request = new { Property = "" }
-            };
-            requestCtx.SetupParameters();
+            Scope = "TagTest",
+            SqlId = "IncludeRequired",
+            Request = new { Property = "" }
+        };
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            Assert.Throws<TagRequiredFailException>(() => { statement.BuildSql(requestCtx); });
-        }
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        Action act = () => { statement.BuildSql(requestCtx); };
+
+        act.Should().Throw<TagRequiredFailException>();
     }
 }

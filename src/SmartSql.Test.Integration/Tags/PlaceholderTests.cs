@@ -1,43 +1,43 @@
 using FluentAssertions;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Tags
+namespace SmartSql.Test.Integration.Tags;
+
+public class PlaceholderTests : IntegrationTestBase
 {
-    public class PlaceholderTest : IntegrationTestBase
+    public PlaceholderTests(SmartSqlFixture fixture) : base(fixture) { }
+
+    [Fact]
+    public void Should_BuildSql_When_PlaceholderIsSet()
     {
-        public PlaceholderTest(SmartSqlFixture fixture) : base(fixture) { }
-
-        [Fact]
-        public void Placeholder()
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = nameof(Placeholder),
-                Request = new { Placeholder = "Placeholder" }
-            };
-            requestCtx.SetupParameters();
+            Scope = "TagTest",
+            SqlId = "Placeholder",
+            Request = new { Placeholder = "Placeholder" }
+        };
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
 
-            Assert.Equal("Placeholder", requestCtx.SqlBuilder.ToString().Trim());
-        }
+        requestCtx.SqlBuilder.ToString().Trim().Should().Be("Placeholder");
+    }
 
-        [Fact]
-        public void NestPlaceholder()
+    [Fact]
+    public void Should_BuildSql_When_NestPlaceholderIsSet()
+    {
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = nameof(NestPlaceholder),
-                Request = new { Nest = new { Placeholder = "Placeholder" } }
-            };
-            requestCtx.SetupParameters();
+            Scope = "TagTest",
+            SqlId = "NestPlaceholder",
+            Request = new { Nest = new { Placeholder = "Placeholder" } }
+        };
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
-            Assert.Equal("Placeholder", requestCtx.SqlBuilder.ToString().Trim());
-        }
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
+
+        requestCtx.SqlBuilder.ToString().Trim().Should().Be("Placeholder");
     }
 }

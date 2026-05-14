@@ -1,63 +1,53 @@
-using FluentAssertions;
 using System.Linq;
+using FluentAssertions;
 using SmartSql.Test.Entities;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Cache
+namespace SmartSql.Test.Integration.Cache;
+
+public class RedisCacheProviderTests : IntegrationTestBase
 {
-    public class RedisCacheProviderTest : IntegrationTestBase
+    public RedisCacheProviderTests(SmartSqlFixture fixture) : base(fixture) { }
+
+    [Fact]
+    public void Should_ReturnSameCount_When_QueryTwice()
     {
-        public RedisCacheProviderTest(SmartSqlFixture fixture) : base(fixture) { }
-
-        [Fact]
-        public void GetByCache()
+        var first = SqlMapper.Query<AllPrimitive>(new RequestContext
         {
-            var list = SqlMapper.Query<AllPrimitive>(new RequestContext
-            {
-                Scope = "RedisCache",
-                SqlId = "GetByCache",
-                Request = new { Taken = 8 }
-            });
-            var cachedList = SqlMapper.Query<AllPrimitive>(new RequestContext
-            {
-                Scope = "RedisCache",
-                SqlId = "GetByCache",
-                Request = new { Taken = 8 }
-            });
-            Assert.Equal(list.Count, cachedList.Count);
-        }
-
-        [Fact]
-        public void QueryByRedisCacheWithKey()
+            Scope = "RedisCache", SqlId = "GetByCache", Request = new { Taken = 8 }
+        });
+        var second = SqlMapper.Query<AllPrimitive>(new RequestContext
         {
-            var list = SqlMapper.Query<AllPrimitive>(new RequestContext
-            {
-                Scope = "RedisCache",
-                SqlId = "GetByCache",
-                Request = new { Taken = 8 },
-                CacheKeyTemplate = "QueryByRedisCacheWithKey"
-            });
-            var cachedList = SqlMapper.Query<AllPrimitive>(new RequestContext
-            {
-                Scope = "RedisCache",
-                SqlId = "GetByCache",
-                Request = new { Taken = 8 },
-                CacheKeyTemplate = "QueryByRedisCacheWithKey"
-            });
-            Assert.Equal(list.Count(), cachedList.Count());
-        }
+            Scope = "RedisCache", SqlId = "GetByCache", Request = new { Taken = 8 }
+        });
+        second.Should().HaveCount(first.Count);
+    }
 
-        [Fact]
-        public void QueryByRedisCacheWithKeyParam()
+    [Fact]
+    public void Should_ReturnSameCount_When_QueryWithCustomCacheKey()
+    {
+        var first = SqlMapper.Query<AllPrimitive>(new RequestContext
         {
-            var list = SqlMapper.Query<AllPrimitive>(new RequestContext
-            {
-                Scope = "RedisCache",
-                SqlId = "GetByCache",
-                Request = new { Taken = 8, UserId = 1 },
-                CacheKeyTemplate = "QueryByRedisCacheWithKeyParam:uid:$UserId:taken:$Taken"
-            });
-            Assert.NotNull(list);
-        }
+            Scope = "RedisCache", SqlId = "GetByCache",
+            Request = new { Taken = 8 }, CacheKeyTemplate = "QueryByRedisCacheWithKey"
+        });
+        var second = SqlMapper.Query<AllPrimitive>(new RequestContext
+        {
+            Scope = "RedisCache", SqlId = "GetByCache",
+            Request = new { Taken = 8 }, CacheKeyTemplate = "QueryByRedisCacheWithKey"
+        });
+        second.Should().HaveCount(first.Count());
+    }
+
+    [Fact]
+    public void Should_ReturnResults_When_QueryWithKeyParam()
+    {
+        var list = SqlMapper.Query<AllPrimitive>(new RequestContext
+        {
+            Scope = "RedisCache", SqlId = "GetByCache",
+            Request = new { Taken = 8, UserId = 1 },
+            CacheKeyTemplate = "QueryByRedisCacheWithKeyParam:uid:$UserId:taken:$Taken"
+        });
+        list.Should().NotBeNull();
     }
 }

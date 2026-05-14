@@ -4,53 +4,52 @@ using SmartSql.Test.Entities;
 using SmartSql.Test.Repositories;
 using Xunit;
 
-namespace SmartSql.Test.Integration.DyRepository
+namespace SmartSql.Test.Integration.DyRepository;
+
+public class ColumnAnnotationRepositoryTests : IntegrationTestBase
 {
-    public class ColumnAnnotationRepositoryTest : IntegrationTestBase
+    private readonly IColumnAnnotationRepository _repository;
+
+    public ColumnAnnotationRepositoryTests(SmartSqlFixture fixture) : base(fixture)
     {
-        private readonly IColumnAnnotationRepository _repository;
+        _repository = fixture.ColumnAnnotationRepository;
+    }
 
-        public ColumnAnnotationRepositoryTest(SmartSqlFixture fixture) : base(fixture)
-        {
-            _repository = fixture.ColumnAnnotationRepository;
-        }
+    [Fact]
+    public void Should_ReturnEntity_When_GettingById()
+    {
+        var id = DoInsert();
+        var entity = _repository.GetEntity(id);
+        entity.Should().NotBeNull();
+        entity.Id.Should().Be(id);
+    }
 
-        [Fact]
-        public void GetEntity()
-        {
-            var id = DoInsert();
-            var entity = _repository.GetEntity(id);
-            Assert.NotNull(entity);
-            Assert.Equal(id, entity.Id);
-        }
+    [Fact]
+    public void Should_ReturnNonZeroId_When_Inserting()
+    {
+        var id = DoInsert();
+        id.Should().BeGreaterThan(0);
+    }
 
-        [Fact]
-        public void Insert()
+    private int DoInsert()
+    {
+        return _repository.Insert(new ColumnAnnotationEntity
         {
-            var id = DoInsert();
-            Assert.NotEqual(0, id);
-        }
-
-        private int DoInsert()
-        {
-            return _repository.Insert(new ColumnAnnotationEntity
+            Name = nameof(IColumnAnnotationRepository),
+            Data = new ColumnAnnotationEntity.ExtendData
             {
-                Name = nameof(IColumnAnnotationRepository),
-                Data = new ColumnAnnotationEntity.ExtendData
-                {
-                    Info = nameof(IColumnAnnotationRepository)
-                }
-            });
-        }
+                Info = nameof(IColumnAnnotationRepository)
+            }
+        });
+    }
 
-        [Fact]
-        public void InsertByParamAnnotations()
+    [Fact]
+    public void Should_ReturnNonZeroId_When_InsertingByParamAnnotations()
+    {
+        var id = _repository.Insert("InsertByParamAnnotations", new ColumnAnnotationEntity.ExtendData
         {
-            var id = _repository.Insert(nameof(InsertByParamAnnotations), new ColumnAnnotationEntity.ExtendData
-            {
-                Info = nameof(InsertByParamAnnotations)
-            });
-            Assert.NotEqual(0, id);
-        }
+            Info = "InsertByParamAnnotations"
+        });
+        id.Should().BeGreaterThan(0);
     }
 }

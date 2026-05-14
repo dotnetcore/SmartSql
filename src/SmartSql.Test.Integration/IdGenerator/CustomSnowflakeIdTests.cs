@@ -1,56 +1,54 @@
-using FluentAssertions;
-﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using FluentAssertions;
 using SmartSql.IdGenerator;
 using Xunit;
 
-namespace SmartSql.Test.Integration.IdGenerator
+namespace SmartSql.Test.Integration.IdGenerator;
+
+public class CustomSnowflakeIdTests
 {
-    public class CustomSnowflakeIdTest
+    private readonly CustomSnowflakeId _snowflakeId;
+
+    public CustomSnowflakeIdTests()
     {
-        private CustomSnowflakeId snowflakeId;
-
-        public CustomSnowflakeIdTest()
+        _snowflakeId = new CustomSnowflakeId();
+        _snowflakeId.Initialize(new Dictionary<string, object>()
         {
-            snowflakeId = new CustomSnowflakeId();
-            snowflakeId.Initialize(new Dictionary<string, object>()
-            {
-                {"MachineId", 1},
-                {"MachineIdBits", 5},
-                {"SequenceBits", 5},
-                {"EpochDate", "2019-05-10"}
-            });
-        }
+            {"MachineId", 1},
+            {"MachineIdBits", 5},
+            {"SequenceBits", 5},
+            {"EpochDate", "2019-05-10"}
+        });
+    }
 
-        [Fact]
-        public void NextId()
-        {
-            var id = snowflakeId.NextId();
-            Assert.NotEqual(0,id);
-        }
-        [Fact]
-        public void FromIdLong()
-        {
-            var id = snowflakeId.NextId();
-            
-            var idState = snowflakeId.FromId(id);
-            
-            var toId = snowflakeId.FromIdState(idState);
+    [Fact]
+    public void Should_GenerateNonZeroId_When_CallingNextId()
+    {
+        var id = _snowflakeId.NextId();
+        id.Should().BeGreaterThan(0);
+    }
 
-            Assert.Equal(id, toId);
-        }
-        [Fact]
-        public void FromIdString()
-        {
-            
-            var id = snowflakeId.NextId();
-            
-            var idState = snowflakeId.FromId(id);
-            
-            var toId = snowflakeId.FromId(idState.IdString);
+    [Fact]
+    public void Should_RoundTripId_When_UsingFromIdLong()
+    {
+        var id = _snowflakeId.NextId();
 
-            Assert.Equal(id, toId.Id);
-        }
+        var idState = _snowflakeId.FromId(id);
+
+        var toId = _snowflakeId.FromIdState(idState);
+
+        toId.Should().Be(id);
+    }
+
+    [Fact]
+    public void Should_RoundTripId_When_UsingFromIdString()
+    {
+        var id = _snowflakeId.NextId();
+
+        var idState = _snowflakeId.FromId(id);
+
+        var toId = _snowflakeId.FromId(idState.IdString);
+
+        toId.Id.Should().Be(id);
     }
 }

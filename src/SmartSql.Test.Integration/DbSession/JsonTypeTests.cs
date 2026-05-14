@@ -3,59 +3,59 @@ using SmartSql.IdGenerator;
 using SmartSql.Test.Entities;
 using Xunit;
 
-namespace SmartSql.Test.Integration.DbSession
+
+namespace SmartSql.Test.Integration.DbSession;
+
+public class JsonTypeTests : IntegrationTestBase
 {
-    public class JsonTypeTest : IntegrationTestBase
+    public JsonTypeTests(SmartSqlFixture fixture) : base(fixture) { }
+
+    [Fact]
+    public void Should_ReturnId_When_Insert()
     {
-        public JsonTypeTest(SmartSqlFixture fixture) : base(fixture) { }
+        var id = InsertImpl();
+        id.Should().BeGreaterThan(0);
+    }
 
-        [Fact]
-        public void Insert()
+    private long InsertImpl(UserExtendedInfo userExtendedInfo = null)
+    {
+        userExtendedInfo ??= NewUserExtendedInfo();
+        SqlMapper.Execute(new RequestContext
         {
-            var id = InsertImpl();
-            Assert.NotEqual(0, id);
-        }
+            Scope = nameof(UserExtendedInfo),
+            SqlId = "Insert",
+            Request = userExtendedInfo
+        });
+        return userExtendedInfo.UserId;
+    }
 
-        private long InsertImpl(UserExtendedInfo userExtendedInfo = null)
+    private UserExtendedInfo NewUserExtendedInfo()
+    {
+        var id = SnowflakeId.Default.NextId();
+        return new UserExtendedInfo
         {
-            userExtendedInfo ??= NewUserExtendedInfo();
-            SqlMapper.Execute(new RequestContext
+            UserId = id,
+            Data = new UserInfo
             {
-                Scope = nameof(UserExtendedInfo),
-                SqlId = "Insert",
-                Request = userExtendedInfo
-            });
-            return userExtendedInfo.UserId;
-        }
+                Height = 188,
+                Weight = 168
+            }
+        };
+    }
 
-        private UserExtendedInfo NewUserExtendedInfo()
+    [Fact]
+    public void Should_ReturnEntity_When_GetById()
+    {
+        var insertUserExtendedInfo = NewUserExtendedInfo();
+        var userId = InsertImpl(insertUserExtendedInfo);
+        var userExtendedInfo = SqlMapper.QuerySingle<UserExtendedInfo>(new RequestContext
         {
-            var id = SnowflakeId.Default.NextId();
-            return new UserExtendedInfo
-            {
-                UserId = id,
-                Data = new UserInfo
-                {
-                    Height = 188,
-                    Weight = 168
-                }
-            };
-        }
-
-        [Fact]
-        public void GetById()
-        {
-            var insertUserExtendedInfo = NewUserExtendedInfo();
-            var userId = InsertImpl(insertUserExtendedInfo);
-            var userExtendedInfo = SqlMapper.QuerySingle<UserExtendedInfo>(new RequestContext
-            {
-                Scope = nameof(UserExtendedInfo),
-                SqlId = "GetEntity",
-                Request = new { UserId = userId }
-            });
-            Assert.Equal(userId, insertUserExtendedInfo.UserId);
-            Assert.Equal(userExtendedInfo.Data.Height, userExtendedInfo.Data.Height);
-            Assert.Equal(userExtendedInfo.Data.Weight, userExtendedInfo.Data.Weight);
-        }
+            Scope = nameof(UserExtendedInfo),
+            SqlId = "GetEntity",
+            Request = new { UserId = userId }
+        });
+        insertUserExtendedInfo.UserId.Should().Be(userId);
+        userExtendedInfo.Data.Height.Should().Be(insertUserExtendedInfo.Data.Height);
+        userExtendedInfo.Data.Weight.Should().Be(insertUserExtendedInfo.Data.Weight);
     }
 }

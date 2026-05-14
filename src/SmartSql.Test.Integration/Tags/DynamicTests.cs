@@ -2,45 +2,44 @@ using FluentAssertions;
 using System;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Tags
+namespace SmartSql.Test.Integration.Tags;
+
+public class DynamicTests : IntegrationTestBase
 {
-    public class DynamicTest : IntegrationTestBase
+    public DynamicTests(SmartSqlFixture fixture) : base(fixture) { }
+
+    [Fact]
+    public void Should_BuildSql_When_PropertyIsNotEmpty()
     {
-        public DynamicTest(SmartSqlFixture fixture) : base(fixture) { }
-
-        [Fact]
-        public void BuildSql()
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = "Dynamic",
-                Request = new { Property = "Property" }
-            };
-            requestCtx.SetupParameters();
+            Scope = "TagTest",
+            SqlId = "Dynamic",
+            Request = new { Property = "Property" }
+        };
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Where
-                    T.Property=?Property", requestCtx.SqlBuilder.ToString().Trim());
-        }
+        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"Where
+                    T.Property=?Property");
+    }
 
-        [Fact]
-        public void BuildSqlWhenPropertyIsEmpty()
+    [Fact]
+    public void Should_BuildEmptySql_When_PropertyIsEmpty()
+    {
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = "Dynamic",
-                Request = new { Property = "" }
-            };
-            requestCtx.SetupParameters();
+            Scope = "TagTest",
+            SqlId = "Dynamic",
+            Request = new { Property = "" }
+        };
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
 
-            Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
-        }
+        requestCtx.SqlBuilder.ToString().Trim().Should().BeEmpty();
     }
 }

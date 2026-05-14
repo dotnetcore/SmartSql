@@ -23,8 +23,7 @@ public class SmartSqlFixture : IAsyncLifetime
 
     public SmartSqlFixture()
     {
-        _mySqlContainer = new MySqlBuilder()
-            .WithImage("mysql:8.0")
+        _mySqlContainer = new MySqlBuilder("mysql:8.0")
             .WithPortBinding(3306, 3306)
             .WithDatabase("SmartSqlTestDB")
             .WithUsername("root")
@@ -34,8 +33,7 @@ public class SmartSqlFixture : IAsyncLifetime
                 "/docker-entrypoint-initdb.d/init.sql")
             .Build();
 
-        _redisContainer = new RedisBuilder()
-            .WithImage("redis:7")
+        _redisContainer = new RedisBuilder("redis:7")
             .WithPortBinding(6379, 6379)
             .Build();
     }

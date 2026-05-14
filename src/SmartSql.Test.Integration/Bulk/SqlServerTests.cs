@@ -8,8 +8,9 @@ using SmartSql.DataSource;
 using SmartSql.DbSession;
 using SmartSql.Test.Entities;
 
-namespace SmartSql.Test.Integration.Bulk
-{
+
+namespace SmartSql.Test.Integration.Bulk;
+
     public class SqlServerFixture
     {
         public IDbSessionFactory DbSessionFactory { get; }
@@ -100,4 +101,3 @@ namespace SmartSql.Test.Integration.Bulk
             }
         }
     }
-}

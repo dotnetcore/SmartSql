@@ -3,70 +3,69 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Tags
+namespace SmartSql.Test.Integration.Tags;
+
+public class OrderByTests : IntegrationTestBase
 {
-    public class OrderByTest : IntegrationTestBase
+    public OrderByTests(SmartSqlFixture fixture) : base(fixture) { }
+
+    [Fact]
+    public void Should_BuildSql_When_OrderByIsSingle()
     {
-        public OrderByTest(SmartSqlFixture fixture) : base(fixture) { }
-
-        [Fact]
-        public void BuildSql()
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
+            Scope = "TagTest",
+            SqlId = "OrderBy",
+            Request = new
             {
-                Scope = "TagTest",
-                SqlId = "OrderBy",
-                Request = new
+                OrderBy = new KeyValuePair<String, String>("Id", "Desc")
+            }
+        };
+        requestCtx.SetupParameters();
+
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
+
+        requestCtx.SqlBuilder.ToString().Trim().Should().Be("Order By Id Desc");
+    }
+
+    [Fact]
+    public void Should_BuildEmptySql_When_OrderByIsEmpty()
+    {
+        var requestCtx = new RequestContext
+        {
+            Scope = "TagTest",
+            SqlId = "OrderBy"
+        };
+        requestCtx.SetupParameters();
+
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
+
+        requestCtx.SqlBuilder.ToString().Trim().Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Should_BuildSql_When_OrderByIsMulti()
+    {
+        var requestCtx = new RequestContext
+        {
+            Scope = "TagTest",
+            SqlId = "OrderBy",
+            Request = new
+            {
+                OrderBy = new Dictionary<string, string>
                 {
-                    OrderBy = new KeyValuePair<String, String>("Id", "Desc")
+                    { "Id", "Desc" },
+                    { "Name", "Asc" },
                 }
-            };
-            requestCtx.SetupParameters();
+            }
+        };
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
 
-            Assert.Equal("Order By Id Desc", requestCtx.SqlBuilder.ToString().Trim());
-        }
-
-        [Fact]
-        public void BuildSqlWhenEmpty()
-        {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = "OrderBy"
-            };
-            requestCtx.SetupParameters();
-
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
-
-            Assert.Equal(String.Empty, requestCtx.SqlBuilder.ToString().Trim());
-        }
-
-        [Fact]
-        public void BuildSqlWhenMulti()
-        {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = "OrderBy",
-                Request = new
-                {
-                    OrderBy = new Dictionary<string, string>
-                    {
-                        { "Id", "Desc" },
-                        { "Name", "Asc" },
-                    }
-                }
-            };
-            requestCtx.SetupParameters();
-
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
-
-            Assert.Equal("Order By Id Desc,Name Asc", requestCtx.SqlBuilder.ToString().Trim());
-        }
+        requestCtx.SqlBuilder.ToString().Trim().Should().Be("Order By Id Desc,Name Asc");
     }
 }

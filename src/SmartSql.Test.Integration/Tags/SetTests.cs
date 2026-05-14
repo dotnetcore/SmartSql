@@ -1,45 +1,47 @@
 using FluentAssertions;
+using System;
 using SmartSql.Configuration.Tags;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Tags
+namespace SmartSql.Test.Integration.Tags;
+
+public class SetTests : IntegrationTestBase
 {
-    public class SetTest : IntegrationTestBase
+    public SetTests(SmartSqlFixture fixture) : base(fixture) { }
+
+    [Fact]
+    public void Should_BuildSql_When_RequestHasProperties()
     {
-        public SetTest(SmartSqlFixture fixture) : base(fixture) { }
-
-        [Fact]
-        public void Set()
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = nameof(Set),
-                Request = new { Property1 = "SmartSql", Property2 = 1, Id = 1 }
-            };
-            requestCtx.SetupParameters();
+            Scope = "TagTest",
+            SqlId = "Set",
+            Request = new { Property1 = "SmartSql", Property2 = 1, Id = 1 }
+        };
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"Set
+        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"Set
                     Property1=?Property1
                  ,
-                    Property2=?Property2", requestCtx.SqlBuilder.ToString().Trim());
-        }
+                    Property2=?Property2");
+    }
 
-        [Fact]
-        public void SetWhenRequestIsEmpty()
+    [Fact]
+    public void Should_Throw_When_RequestIsEmpty()
+    {
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = nameof(Set)
-            };
-            requestCtx.SetupParameters();
+            Scope = "TagTest",
+            SqlId = "Set"
+        };
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            Assert.Throws<TagMinMatchedFailException>(() => { statement.BuildSql(requestCtx); });
-        }
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        Action act = () => statement.BuildSql(requestCtx);
+
+        act.Should().Throw<TagMinMatchedFailException>();
     }
 }

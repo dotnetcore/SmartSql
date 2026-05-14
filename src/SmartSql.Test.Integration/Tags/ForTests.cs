@@ -1,142 +1,142 @@
 using FluentAssertions;
+using System;
 using SmartSql.Configuration;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Tags
+namespace SmartSql.Test.Integration.Tags;
+
+public class ForTests : IntegrationTestBase
 {
-    public class ForTest : IntegrationTestBase
+    public ForTests(SmartSqlFixture fixture) : base(fixture) { }
+
+    [Fact]
+    public void Should_BuildSql_When_DirectValue()
     {
-        public ForTest(SmartSqlFixture fixture) : base(fixture) { }
-
-        [Fact]
-        public void BuildSqlWhenDirectValue()
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = "ForWhenDirectValue",
-                Request = new { Items = new[] { 1, 2 } }
-            };
-            var executionContext = new ExecutionContext
-            {
-                Request = requestCtx,
-                SmartSqlConfig = SmartSqlConfig
-            };
-            requestCtx.ExecutionContext = executionContext;
+            Scope = "TagTest",
+            SqlId = "ForWhenDirectValue",
+            Request = new { Items = new[] { 1, 2 } }
+        };
+        var executionContext = new ExecutionContext
+        {
+            Request = requestCtx,
+            SmartSqlConfig = SmartSqlConfig
+        };
+        requestCtx.ExecutionContext = executionContext;
 
-            requestCtx.SetupParameters();
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"(
+        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"(
                 ?Item_For__0
              ,
                 ?Item_For__1
-            )", requestCtx.SqlBuilder.ToString().Trim());
+            )");
 
-            Assert.Equal(1, requestCtx.Parameters["Item_For__0"].Value);
-            Assert.Equal(2, requestCtx.Parameters["Item_For__1"].Value);
-        }
+        requestCtx.Parameters["Item_For__0"].Value.Should().Be(1);
+        requestCtx.Parameters["Item_For__1"].Value.Should().Be(2);
+    }
 
-        [Fact]
-        public void BuildSqlWhenNotDirectValue()
+    [Fact]
+    public void Should_BuildSql_When_NotDirectValue()
+    {
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = "ForWhenNotDirectValue",
-                Request = new { Items = new[] { new { Id = 1 }, new { Id = 2 } } }
-            };
-            var executionContext = new ExecutionContext
-            {
-                Request = requestCtx,
-                SmartSqlConfig = SmartSqlConfig
-            };
-            requestCtx.ExecutionContext = executionContext;
+            Scope = "TagTest",
+            SqlId = "ForWhenNotDirectValue",
+            Request = new { Items = new[] { new { Id = 1 }, new { Id = 2 } } }
+        };
+        var executionContext = new ExecutionContext
+        {
+            Request = requestCtx,
+            SmartSqlConfig = SmartSqlConfig
+        };
+        requestCtx.ExecutionContext = executionContext;
 
-            requestCtx.SetupParameters();
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"(
+        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"(
                 ?Item_For__Id_0
              ,
                 ?Item_For__Id_1
-            )", requestCtx.SqlBuilder.ToString().Trim());
+            )");
 
-            Assert.Equal(1, requestCtx.Parameters["Item_For__Id_0"].Value);
-            Assert.Equal(2, requestCtx.Parameters["Item_For__Id_1"].Value);
-        }
+        requestCtx.Parameters["Item_For__Id_0"].Value.Should().Be(1);
+        requestCtx.Parameters["Item_For__Id_1"].Value.Should().Be(2);
+    }
 
-        [Fact]
-        public void BuildSqlWhenNotDirectValueWithKey()
+    [Fact]
+    public void Should_BuildSql_When_NotDirectValueWithKey()
+    {
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = "ForWhenNotDirectValueWithKey",
-                Request = new { Items = new[] { new { Id = 1 }, new { Id = 2 } } }
-            };
-            var executionContext = new ExecutionContext
-            {
-                Request = requestCtx,
-                SmartSqlConfig = SmartSqlConfig
-            };
-            requestCtx.ExecutionContext = executionContext;
+            Scope = "TagTest",
+            SqlId = "ForWhenNotDirectValueWithKey",
+            Request = new { Items = new[] { new { Id = 1 }, new { Id = 2 } } }
+        };
+        var executionContext = new ExecutionContext
+        {
+            Request = requestCtx,
+            SmartSqlConfig = SmartSqlConfig
+        };
+        requestCtx.ExecutionContext = executionContext;
 
-            requestCtx.SetupParameters();
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"(
+        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"(
                 ?Item_For__Id_0
              ,
                 ?Item_For__Id_1
-            )", requestCtx.SqlBuilder.ToString().Trim());
+            )");
 
-            Assert.Equal(1, requestCtx.Parameters["Item_For__Id_0"].Value);
-            Assert.Equal(2, requestCtx.Parameters["Item_For__Id_1"].Value);
-        }
+        requestCtx.Parameters["Item_For__Id_0"].Value.Should().Be(1);
+        requestCtx.Parameters["Item_For__Id_1"].Value.Should().Be(2);
+    }
 
-        [Fact]
-        public void BuildSqlWhenNotDirectNestValueWithKey()
+    [Fact]
+    public void Should_BuildSql_When_NotDirectNestedValueWithKey()
+    {
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
+            Scope = "TagTest",
+            SqlId = "ForWhenNotDirectNestValueWithKey",
+            Request = new
             {
-                Scope = "TagTest",
-                SqlId = "ForWhenNotDirectNestValueWithKey",
-                Request = new
+                Items = new[]
                 {
-                    Items = new[]
-                    {
-                        new { Info = new { Id = 1 } },
-                        new { Info = new { Id = 2 } }
-                    }
+                    new { Info = new { Id = 1 } },
+                    new { Info = new { Id = 2 } }
                 }
-            };
-            var executionContext = new ExecutionContext
-            {
-                Request = requestCtx,
-                SmartSqlConfig = SmartSqlConfig
-            };
-            requestCtx.ExecutionContext = executionContext;
+            }
+        };
+        var executionContext = new ExecutionContext
+        {
+            Request = requestCtx,
+            SmartSqlConfig = SmartSqlConfig
+        };
+        requestCtx.ExecutionContext = executionContext;
 
-            requestCtx.SetupParameters();
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
 
-            Assert.Equal(@"(
+        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"(
                 ?Item_For__Info_Id_0
              ,
                 ?Item_For__Info_Id_1
-            )", requestCtx.SqlBuilder.ToString().Trim());
+            )");
 
-            Assert.Equal(1, requestCtx.Parameters["Item_For__Info_Id_0"].Value);
-            Assert.Equal(2, requestCtx.Parameters["Item_For__Info_Id_1"].Value);
-        }
+        requestCtx.Parameters["Item_For__Info_Id_0"].Value.Should().Be(1);
+        requestCtx.Parameters["Item_For__Info_Id_1"].Value.Should().Be(2);
     }
 }

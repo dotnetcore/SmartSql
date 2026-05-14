@@ -1,5 +1,5 @@
-using FluentAssertions;
 using System;
+using FluentAssertions;
 using SmartSql.ConfigBuilder;
 using SmartSql.Configuration;
 using SmartSql.Configuration.Tags;
@@ -7,71 +7,70 @@ using SmartSql.CUD;
 using SmartSql.Utils;
 using Xunit;
 
-namespace SmartSql.Test.Integration.CUD
+namespace SmartSql.Test.Integration.CUD;
+
+public class CUDConfigBuilderTests
 {
-    public class CUDConfigBuilderTest
+    [Fact]
+    public void Should_Throw_When_ParentIsNativeConfigBuilder()
     {
-        [Fact]
-        public void Build()
+        var entityTypeList = TypeScan.Scan(new TypeScanOptions
         {
-            var entityTypeList = TypeScan.Scan(new TypeScanOptions
-            {
-                AssemblyString = "SmartSql.Test",
-                Filter = type => type.FullName == "SmartSql.Test.Entities.WebMenu"
-            });
-            var configBuilder = new CUDConfigBuilder(new NativeConfigBuilder(new SmartSqlConfig()), entityTypeList);
-            Assert.Throws<NullReferenceException>(() => { configBuilder.Build(); });
-        }
+            AssemblyString = "SmartSql.Test",
+            Filter = type => type.FullName == "SmartSql.Test.Entities.WebMenu"
+        });
+        var configBuilder = new CUDConfigBuilder(new NativeConfigBuilder(new SmartSqlConfig()), entityTypeList);
+        var act = () => configBuilder.Build();
+        act.Should().Throw<NullReferenceException>();
+    }
 
-
-        [Fact]
-        public void BuildWhenParentIsXmlConfigBuilder()
+    [Fact]
+    public void Should_GenerateAllStatements_When_ParentIsXmlConfigBuilder()
+    {
+        var xmlConfigBuilder = new XmlConfigBuilder(ResourceType.File, SmartSqlBuilder.DEFAULT_SMARTSQL_CONFIG_PATH);
+        var entityTypeList = TypeScan.Scan(new TypeScanOptions
         {
-            var xmlConfigBuilder =
-                new XmlConfigBuilder(ResourceType.File, SmartSqlBuilder.DEFAULT_SMARTSQL_CONFIG_PATH);
-            var entityTypeList = TypeScan.Scan(new TypeScanOptions
-            {
-                AssemblyString = "SmartSql.Test",
-                Filter = type => type.FullName == "SmartSql.Test.CUD.CudEntity"
-            });
-            var configBuilder = new CUDConfigBuilder(xmlConfigBuilder, entityTypeList);
-            var smartSqlConfig = configBuilder.Build();
-            Assert.True(smartSqlConfig.SqlMaps.TryGetValue("CudEntity", out SqlMap sqlMap));
+            AssemblyString = "SmartSql.Test",
+            Filter = type => type.FullName == "SmartSql.Test.CUD.CudEntity"
+        });
+        var configBuilder = new CUDConfigBuilder(xmlConfigBuilder, entityTypeList);
+        var config = configBuilder.Build();
 
-            Assert.True(sqlMap.Statements.TryGetValue("CudEntity.Insert", out Statement insertStatement));
-            Assert.Equal("Insert Into CudEntity (`Id`,`Name`) Values (?Id,?Name)",
-                ((SqlText)insertStatement.SqlTags[0]).BodyText);
+        config.SqlMaps.Should().ContainKey("CudEntity");
+        var sqlMap = config.SqlMaps["CudEntity"];
 
-            Assert.True(
-                sqlMap.Statements.TryGetValue("CudEntity.InsertReturnId", out Statement insertReturnIdStatement));
-            Assert.Equal("Insert Into CudEntity (`Id`,`Name`) Values (?Id,?Name)",
-                ((SqlText)insertReturnIdStatement.SqlTags[0]).BodyText);
-            Assert.Equal(";Select Last_Insert_Id();",
-                ((SqlText)insertReturnIdStatement.SqlTags[1]).BodyText);
+        // Insert
+        sqlMap.Statements.Should().ContainKey("CudEntity.Insert");
+        var insertSql = (SqlText)sqlMap.Statements["CudEntity.Insert"].SqlTags[0];
+        insertSql.BodyText.Should().Be("Insert Into CudEntity (`Id`,`Name`) Values (?Id,?Name)");
 
-            Assert.True(sqlMap.Statements.TryGetValue("CudEntity.Update", out Statement updateStatement));
-            Assert.Equal("Update CudEntity",
-                ((SqlText)updateStatement.SqlTags[0]).BodyText);
-            //TODO Assert Child of Set
-            Assert.Equal(typeof(Set), updateStatement.SqlTags[1].GetType());
-            Assert.Equal(" Where `Id`=?Id",
-                ((SqlText)updateStatement.SqlTags[2]).BodyText);
+        // InsertReturnId
+        sqlMap.Statements.Should().ContainKey("CudEntity.InsertReturnId");
+        var insertReturnId = sqlMap.Statements["CudEntity.InsertReturnId"];
+        ((SqlText)insertReturnId.SqlTags[0]).BodyText.Should().Be("Insert Into CudEntity (`Id`,`Name`) Values (?Id,?Name)");
+        ((SqlText)insertReturnId.SqlTags[1]).BodyText.Should().Be(";Select Last_Insert_Id();");
 
-            Assert.True(sqlMap.Statements.TryGetValue("CudEntity.DeleteAll", out Statement deleteAllStatement));
-            Assert.Equal("Delete From CudEntity",
-                ((SqlText)deleteAllStatement.SqlTags[0]).BodyText);
+        // Update
+        sqlMap.Statements.Should().ContainKey("CudEntity.Update");
+        var update = sqlMap.Statements["CudEntity.Update"];
+        ((SqlText)update.SqlTags[0]).BodyText.Should().Be("Update CudEntity");
+        update.SqlTags[1].Should().BeOfType<Set>();
+        ((SqlText)update.SqlTags[2]).BodyText.Should().Be(" Where `Id`=?Id");
 
-            Assert.True(sqlMap.Statements.TryGetValue("CudEntity.DeleteById", out Statement deleteByIdStatement));
-            Assert.Equal("Delete From CudEntity Where `Id`=?Id",
-                ((SqlText)deleteByIdStatement.SqlTags[0]).BodyText);
+        // DeleteAll
+        sqlMap.Statements.Should().ContainKey("CudEntity.DeleteAll");
+        ((SqlText)sqlMap.Statements["CudEntity.DeleteAll"].SqlTags[0]).BodyText.Should().Be("Delete From CudEntity");
 
-            Assert.True(sqlMap.Statements.TryGetValue("CudEntity.DeleteMany", out Statement deleteManyStatement));
-            Assert.Equal("Delete From CudEntity Where Id In ?Ids",
-                ((SqlText)deleteManyStatement.SqlTags[0]).BodyText);
+        // DeleteById
+        sqlMap.Statements.Should().ContainKey("CudEntity.DeleteById");
+        ((SqlText)sqlMap.Statements["CudEntity.DeleteById"].SqlTags[0]).BodyText.Should().Be("Delete From CudEntity Where `Id`=?Id");
 
-            Assert.True(sqlMap.Statements.TryGetValue("CudEntity.GetById", out Statement getByIdStatement));
-            Assert.Equal("Select * From CudEntity Where `Id`=?Id",
-                ((SqlText)getByIdStatement.SqlTags[0]).BodyText);
-        }
+        // DeleteMany
+        sqlMap.Statements.Should().ContainKey("CudEntity.DeleteMany");
+        ((SqlText)sqlMap.Statements["CudEntity.DeleteMany"].SqlTags[0]).BodyText.Should().Be("Delete From CudEntity Where Id In ?Ids");
+
+        // GetById
+        sqlMap.Statements.Should().ContainKey("CudEntity.GetById");
+        ((SqlText)sqlMap.Statements["CudEntity.GetById"].SqlTags[0]).BodyText.Should().Be("Select * From CudEntity Where `Id`=?Id");
     }
 }

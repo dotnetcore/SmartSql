@@ -2,33 +2,32 @@ using FluentAssertions;
 using SmartSql.Configuration;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Tags
+namespace SmartSql.Test.Integration.Tags;
+
+public class EnvTests : IntegrationTestBase
 {
-    public class EnvTest : IntegrationTestBase
+    public EnvTests(SmartSqlFixture fixture) : base(fixture) { }
+
+    [Fact]
+    public void Should_BuildSql_When_EnvMatchesDatabaseProvider()
     {
-        public EnvTest(SmartSqlFixture fixture) : base(fixture) { }
-
-        [Fact]
-        public void BuildSql()
+        var requestCtx = new RequestContext
         {
-            var requestCtx = new RequestContext
-            {
-                Scope = "TagTest",
-                SqlId = "Env",
-                Request = new { Property = "Property" }
-            };
-            var executionContext = new ExecutionContext
-            {
-                Request = requestCtx,
-                SmartSqlConfig = SmartSqlConfig
-            };
-            requestCtx.ExecutionContext = executionContext;
-            requestCtx.SetupParameters();
+            Scope = "TagTest",
+            SqlId = "Env",
+            Request = new { Property = "Property" }
+        };
+        var executionContext = new ExecutionContext
+        {
+            Request = requestCtx,
+            SmartSqlConfig = SmartSqlConfig
+        };
+        requestCtx.ExecutionContext = executionContext;
+        requestCtx.SetupParameters();
 
-            var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
-            statement.BuildSql(requestCtx);
+        var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
+        statement.BuildSql(requestCtx);
 
-            Assert.Equal("Mysql", requestCtx.SqlBuilder.ToString().Trim());
-        }
+        requestCtx.SqlBuilder.ToString().Trim().Should().Be("Mysql");
     }
 }

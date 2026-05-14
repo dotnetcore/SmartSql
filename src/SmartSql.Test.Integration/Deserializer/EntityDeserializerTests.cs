@@ -1,88 +1,77 @@
-using FluentAssertions;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using SmartSql.Test.Entities;
 using Xunit;
 
-namespace SmartSql.Test.Integration.Deserializer
+namespace SmartSql.Test.Integration.Deserializer;
+
+public class EntityDeserializerTests : IntegrationTestBase
 {
-    public class EntityDeserializerTest : IntegrationTestBase
+    public EntityDeserializerTests(SmartSqlFixture fixture) : base(fixture) { }
+
+    private long Insert()
     {
-        public EntityDeserializerTest(SmartSqlFixture fixture) : base(fixture) { }
-
-        [Fact]
-        public void QuerySingle()
+        return SqlMapper.Insert<AllPrimitive, long>(new AllPrimitive
         {
-            long id = Insert();
-            var entity = SqlMapper.QuerySingle<AllPrimitive>(new RequestContext
-            {
-                Scope = nameof(AllPrimitive),
-                SqlId = "GetById",
-                Request = new { Id = id }
-            });
-            Assert.Equal(id, entity.Id);
-        }
+            String = "Insert", DateTime = DateTime.Now
+        });
+    }
 
-        private long Insert()
+    [Fact]
+    public void Should_ReturnEntity_When_QuerySingleById()
+    {
+        long id = Insert();
+        var entity = SqlMapper.QuerySingle<AllPrimitive>(new RequestContext
         {
-            return SqlMapper.Insert<AllPrimitive, long>(new AllPrimitive
-            {
-                String = "Insert",
-                DateTime = DateTime.Now
-            });
-        }
+            Scope = nameof(AllPrimitive), SqlId = "GetById", Request = new { Id = id }
+        });
+        entity.Id.Should().Be(id);
+    }
 
-        [Fact]
-        public void Query()
+    [Fact]
+    public void Should_ReturnList_When_Query()
+    {
+        var list = SqlMapper.Query<AllPrimitive>(new RequestContext
         {
-            var list = SqlMapper.Query<AllPrimitive>(new RequestContext
-            {
-                Scope = nameof(AllPrimitive),
-                SqlId = "Query",
-                Request = new { Taken = 10000 }
-            });
-            Assert.NotNull(list);
-        }
+            Scope = nameof(AllPrimitive), SqlId = "Query", Request = new { Taken = 10000 }
+        });
+        list.Should().NotBeNull();
+    }
 
-        [Fact]
-        public async Task QuerySingleAsync()
+    [Fact]
+    public async Task Should_ReturnEntity_When_QuerySingleAsync()
+    {
+        long id = Insert();
+        var entity = await SqlMapper.QuerySingleAsync<AllPrimitive>(new RequestContext
         {
-            long id = Insert();
-            var entity = await SqlMapper.QuerySingleAsync<AllPrimitive>(new RequestContext
-            {
-                Scope = nameof(AllPrimitive),
-                SqlId = "GetById",
-                Request = new { Id = id }
-            });
-            Assert.Equal(id, entity.Id);
-        }
+            Scope = nameof(AllPrimitive), SqlId = "GetById", Request = new { Id = id }
+        });
+        entity.Id.Should().Be(id);
+    }
 
-        [Fact]
-        public async Task QueryAsync()
+    [Fact]
+    public async Task Should_ReturnList_When_QueryAsync()
+    {
+        var list = await SqlMapper.QueryAsync<AllPrimitive>(new RequestContext
         {
-            var list = await SqlMapper.QueryAsync<AllPrimitive>(new RequestContext
-            {
-                Scope = nameof(AllPrimitive),
-                SqlId = "Query",
-                Request = new { Taken = 10000 }
-            });
-            Assert.NotNull(list);
-        }
+            Scope = nameof(AllPrimitive), SqlId = "Query", Request = new { Taken = 10000 }
+        });
+        list.Should().NotBeNull();
+    }
 
-        [Fact]
-        public void NestedPropertyMappingTest()
+    [Fact]
+    public void Should_MapNestedProperties_When_QueryNestedEntity()
+    {
+        var list = SqlMapper.Query<NestedEntity>(new RequestContext
         {
-            var list = SqlMapper.Query<NestedEntity>(new RequestContext
-            {
-                Scope = nameof(AllPrimitive),
-                SqlId = "QueryNestedPropertyResult",
-                Request = new { Taken = 10000 }
-            });
-            Assert.NotNull(list);
-            Assert.NotNull(list.First().NestedProp1);
-            Assert.NotNull(list.First().NestedProp1.NestedProp2);
-            Assert.NotNull(list.First().NestedProp1.NestedProp2.NestedProp3);
-        }
+            Scope = nameof(AllPrimitive), SqlId = "QueryNestedPropertyResult",
+            Request = new { Taken = 10000 }
+        });
+        list.Should().NotBeNull();
+        list.First().NestedProp1.Should().NotBeNull();
+        list.First().NestedProp1.NestedProp2.Should().NotBeNull();
+        list.First().NestedProp1.NestedProp2.NestedProp3.Should().NotBeNull();
     }
 }

@@ -5,8 +5,9 @@ using SmartSql.Bulk.MySql;
 using SmartSql.DataSource;
 using SmartSql.Test.Entities;
 
-namespace SmartSql.Test.Integration.Bulk
-{
+
+namespace SmartSql.Test.Integration.Bulk;
+
     public class MySqlTest
     {
         [EnvironmentFact(include:"MY_SQL")]
@@ -36,4 +37,3 @@ namespace SmartSql.Test.Integration.Bulk
         }
     }
 
-}
