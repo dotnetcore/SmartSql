@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using SmartSql.Data;
 using SmartSql.Reflection.EntityProxy;
 using SmartSql.Test.Entities;
+using MySqlDataClient = MySql.Data.MySqlClient;
 using Xunit;
 
 
@@ -287,7 +288,7 @@ public class DbSessionTests : IntegrationTestBase
         SqlParameterCollection dbParameterCollection = new SqlParameterCollection();
         dbParameterCollection.Add(new SqlParameter("Total", null)
         {
-            SourceParameter = new MySql.Data.MySqlClient.MySqlParameter("Total", DbType.Int32)
+            SourceParameter = new MySqlDataClient.MySqlParameter("Total", DbType.Int32)
             {
                 Direction = ParameterDirection.Output
             }
