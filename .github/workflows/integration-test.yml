@@ -9,19 +9,6 @@ jobs:
   integration-test:
     name: Integration Test
     runs-on: ubuntu-latest
-    env:
-      REDIS: true
-
-    services:
-      redis:
-        image: redis
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 6379:6379
 
     steps:
       - name: Checkout
@@ -38,12 +25,6 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', 'Directory.Build.props') }}
           restore-keys: ${{ runner.os }}-nuget-
-
-      - name: Start MySQL
-        run: sudo /etc/init.d/mysql start
-
-      - name: Init SmartSql-Test-Db
-        run: mysql -vvv -h localhost -uroot -proot < src/SmartSql.Test.Integration/DB/init-mysql-db.sql
 
       - name: Run Integration Tests
         run: dotnet test src/SmartSql.Test.Integration/SmartSql.Test.Integration.csproj

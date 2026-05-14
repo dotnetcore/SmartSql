@@ -8,7 +8,7 @@ namespace SmartSql.Test.Integration.Cache
     {
         public RedisCacheProviderTest(SmartSqlFixture fixture) : base(fixture) { }
 
-        [EnvironmentFact(include: "REDIS")]
+        [Fact]
         public void GetByCache()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -26,7 +26,7 @@ namespace SmartSql.Test.Integration.Cache
             Assert.Equal(list.Count, cachedList.Count);
         }
 
-        [EnvironmentFact(include: "REDIS")]
+        [Fact]
         public void QueryByRedisCacheWithKey()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext
@@ -46,7 +46,7 @@ namespace SmartSql.Test.Integration.Cache
             Assert.Equal(list.Count(), cachedList.Count());
         }
 
-        [EnvironmentFact(include: "REDIS")]
+        [Fact]
         public void QueryByRedisCacheWithKeyParam()
         {
             var list = SqlMapper.Query<AllPrimitive>(new RequestContext

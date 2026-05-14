@@ -1,6 +1,6 @@
-create database SmartSqlTestDB;
+CREATE DATABASE IF NOT EXISTS SmartSqlTestDB;
 
-use SmartSqlTestDB;
+USE SmartSqlTestDB;
 
 create table T_AllPrimitive
 (
