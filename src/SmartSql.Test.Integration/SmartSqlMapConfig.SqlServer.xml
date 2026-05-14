@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
-  <Settings IgnoreParameterCase="false" ParameterPrefix="$" IsCacheEnabled="true" EnablePropertyChangedTrack="true" IgnoreDbNull="true"/>
+  <Settings IgnoreParameterCase="false" ParameterPrefix="$" IsCacheEnabled="false" EnablePropertyChangedTrack="true" IgnoreDbNull="true"/>
   <Properties>
     <Property Name="DbProvider" Value="SqlServer" />
+    <Property Name="ConnectionString" Value="Server=localhost;Database=SmartSqlTestDB;User Id=sa;Password=StrongPassword!;TrustServerCertificate=True" />
     <Property Name="JsonTypeHandler`" Value="SmartSql.TypeHandler.JsonTypeHandler`1,SmartSql.TypeHandler"/>
     <Property Name="JsonTypeHandler" Value="SmartSql.TypeHandler.JsonTypeHandler,SmartSql.TypeHandler"/>
   </Properties>
@@ -45,6 +46,11 @@
     </IdGenerator>
   </IdGenerators>
   <SmartSqlMaps>
-    <SmartSqlMap Path="Maps" Type="Directory"></SmartSqlMap>
+    <SmartSqlMap Path="Maps/AllPrimitive.xml" Type="File"></SmartSqlMap>
+    <SmartSqlMap Path="Maps/User.xml" Type="File"></SmartSqlMap>
+    <SmartSqlMap Path="Maps/UserExtendedInfo.xml" Type="File"></SmartSqlMap>
+    <SmartSqlMap Path="Maps/NestTest.xml" Type="File"></SmartSqlMap>
+    <SmartSqlMap Path="Maps/CustomizeTypeHandlerTest.xml" Type="File"></SmartSqlMap>
+    <SmartSqlMap Path="Maps/UseIdGenEntity.xml" Type="File"></SmartSqlMap>
   </SmartSqlMaps>
 </SmartSqlMapConfig>
