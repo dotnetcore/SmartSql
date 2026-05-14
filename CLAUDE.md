@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-SmartSql is a .NET ORM library inspired by MyBatis. It uses XML to manage SQL statements, supports read/write splitting, caching (memory & Redis), dynamic repository proxies, bulk inserts, AOP transactions, and diagnostics. Version is managed in `build/version.props` (currently 4.1.67).
+SmartSql is a .NET ORM library inspired by MyBatis. It uses XML to manage SQL statements, supports read/write splitting, caching (memory & Redis), dynamic repository proxies, bulk inserts, AOP transactions, and diagnostics. Version is managed in `build/version.props`.
+
+Core library targets `netstandard2.0` (C# 7.3). Test projects target `net8.0`. All projects use the FluentAssertions library for assertions.
 
 ## Build & Test Commands
 
@@ -12,30 +14,26 @@ SmartSql is a .NET ORM library inspired by MyBatis. It uses XML to manage SQL st
 # Build the entire solution
 dotnet build SmartSql.sln
 
-# Run all unit tests
-dotnet test
-
-# Run a specific test project
+# Run all unit tests (SQLite in-memory, no external dependencies)
 dotnet test src/SmartSql.Test.Unit/SmartSql.Test.Unit.csproj
 
-# Run a specific test by name
+# Run a specific unit test by name
 dotnet test src/SmartSql.Test.Unit/SmartSql.Test.Unit.csproj --filter "FullyQualifiedName~SmartSql.Test.Unit.Tests.CacheTest"
+
+# Run integration tests (requires Docker for Testcontainers: MySQL 8.0 + Redis 7)
+dotnet test src/SmartSql.Test.Integration/SmartSql.Test.Integration.csproj
 
 # Pack NuGet packages (Release)
 dotnet pack -c Release -o ./nuget
 ```
 
-Tests use xUnit. The unit test project (`SmartSql.Test.Unit`) requires MySQL and optionally Redis (see CI workflow). The test fixture (`SmartSqlFixture`) initializes a `SmartSqlBuilder` with XML config, registers test repositories, and seeds test data.
+Tests use xUnit. There are two test projects:
+- **`SmartSql.Test.Unit`** — Pure unit tests using SQLite in-memory (`UseDataSource(DbProvider.SQLITE, "Data Source=:memory:")`). No external services needed.
+- **`SmartSql.Test.Integration`** — Integration tests using Testcontainers (MySQL 8.0 + Redis 7). Requires Docker. The `SmartSqlFixture` (xUnit `IAsyncLifetime`) starts containers, initializes the database from `DB/init-mysql-db.sql`, and registers repositories.
+
+Both test projects reference **`SmartSql.Test`** which contains shared entities, DTOs, and repository interfaces used across tests.
 
 ## Architecture
-
-### Solution Structure
-
-The solution is organized into solution folders within `SmartSql.sln`:
-- **src/** — All source projects including core library, extensions, and tests
-- **sample/** — `SmartSql.Sample.AspNetCore` demo app
-
-**Core project:** `src/SmartSql/` — targets `netstandard2.0`, C# 7.3
 
 ### Key Abstractions
 
