@@ -245,6 +245,50 @@ public class SmartSqlBuilderTests
         builder.SmartSqlConfig.Database.DbProvider.Name.Should().Be("SQLite");
     }
 
+    [Fact]
+    public void Should_OverrideConnectionString_When_UseDatabaseCalledWithXmlConfig()
+    {
+        var builder = new SmartSqlBuilder()
+            .UseAlias("TestBuilder_UseDb")
+            .UseXmlConfig(ResourceType.File, "SmartSqlMapConfig-UnitTest.xml")
+            .UseDatabase(DbProvider.SQLITE, "Data Source=custom_override.db")
+            .RegisterToContainer(false);
+
+        builder.Build();
+
+        var db = builder.SmartSqlConfig.Database;
+        db.DbProvider.Name.Should().Be(DbProviderManager.SQLITE_DBPROVIDER.Name);
+        db.Write.ConnectionString.Should().Be("Data Source=custom_override.db");
+    }
+
+    [Fact]
+    public void Should_Throw_When_UseDatabaseWithUnknownProvider()
+    {
+        var act = () => new SmartSqlBuilder().UseDatabase("UnknownProvider", "Data Source=test.db");
+
+        act.Should().Throw<SmartSqlException>()
+            .WithMessage("*UnknownProvider*");
+    }
+
+    [Fact]
+    public void Should_OverrideReadConnectionStrings_When_UseDatabaseCalled()
+    {
+        var builder = new SmartSqlBuilder()
+            .UseAlias("TestBuilder_UseDbRead")
+            .UseXmlConfig(ResourceType.File, "SmartSqlMapConfig-UnitTest-ReadDb.xml")
+            .UseDatabase(DbProvider.SQLITE, "Data Source=override_read.db")
+            .RegisterToContainer(false);
+
+        builder.Build();
+
+        var db = builder.SmartSqlConfig.Database;
+        db.Write.ConnectionString.Should().Be("Data Source=override_read.db");
+        foreach (var read in db.Reads.Values)
+        {
+            read.ConnectionString.Should().Be("Data Source=override_read.db");
+        }
+    }
+
     private static SmartSqlConfig CreateBasicSmartSqlConfig()
     {
         return new SmartSqlConfig
