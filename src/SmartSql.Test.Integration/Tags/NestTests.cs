@@ -194,7 +194,7 @@ public class NestTests : IntegrationTestBase
     {
         RequestContext requestCtx = new RequestContext
         {
-            Scope = nameof(NestTests),
+            Scope = "NestTest",
             SqlId = "FilterNestArray",
             Request = new
             {
@@ -212,7 +212,7 @@ public class NestTests : IntegrationTestBase
     {
         RequestContext requestCtx = new RequestContext
         {
-            Scope = nameof(NestTests),
+            Scope = "NestTest",
             SqlId = "FilterNestDic",
             Request = new
             {
@@ -233,7 +233,7 @@ public class NestTests : IntegrationTestBase
     {
         RequestContext requestCtx = new RequestContext
         {
-            Scope = nameof(NestTests),
+            Scope = "NestTest",
             SqlId = "FilterNestArrayObject",
             Request = new
             {
@@ -254,7 +254,7 @@ public class NestTests : IntegrationTestBase
     {
         RequestContext requestCtx = new RequestContext
         {
-            Scope = nameof(NestTests),
+            Scope = "NestTest",
             SqlId = "FilterNestDicMul",
             Request = new
             {

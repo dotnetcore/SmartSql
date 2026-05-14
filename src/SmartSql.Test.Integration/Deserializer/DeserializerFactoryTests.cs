@@ -1,15 +1,16 @@
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using SmartSql.Deserializer;
 using Xunit;
 
 namespace SmartSql.Test.Integration.Deserializer;
 
-public class DeserializerFactoryTests
+public class DeserializerFactoryTests : IntegrationTestBase
 {
+    public DeserializerFactoryTests(SmartSqlFixture fixture) : base(fixture) { }
+
     [Fact]
     public void Should_ReturnCustomType_When_UsingCustomDeserializer()
     {

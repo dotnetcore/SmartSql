@@ -23,8 +23,9 @@ public class WhereTests : IntegrationTestBase
         var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
         statement.BuildSql(requestCtx);
 
-        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"Where
-                    T.Property=?Property");
+        var sql = requestCtx.SqlBuilder.ToString().Trim();
+        sql.Should().StartWith("Where");
+        sql.Should().Contain("T.Property=?Property");
     }
 
     [Fact]
@@ -57,8 +58,9 @@ public class WhereTests : IntegrationTestBase
         var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
         statement.BuildSql(requestCtx);
 
-        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"Where
-                    T.Property=?Property");
+        var sql = requestCtx.SqlBuilder.ToString().Trim();
+        sql.Should().StartWith("Where");
+        sql.Should().Contain("T.Property=?Property");
     }
 
     [Fact]

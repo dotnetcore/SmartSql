@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,9 +30,6 @@ public class SmartSqlFixture : IAsyncLifetime
             .WithDatabase("SmartSqlTestDB")
             .WithUsername("root")
             .WithPassword("root")
-            .WithResourceMapping(
-                new FileInfo(Path.Combine("DB", "init-mysql-db.sql")),
-                "/docker-entrypoint-initdb.d/init.sql")
             .Build();
 
         _redisContainer = new RedisBuilder("redis:7")
@@ -42,6 +41,7 @@ public class SmartSqlFixture : IAsyncLifetime
     {
         await _mySqlContainer.StartAsync();
         await _redisContainer.StartAsync();
+        await InitDatabaseAsync();
 
         LoggerFactory = new LoggerFactory(Enumerable.Empty<ILoggerProvider>(),
             new LoggerFilterOptions { MinLevel = LogLevel.Debug });
@@ -56,7 +56,6 @@ public class SmartSqlFixture : IAsyncLifetime
             .RegisterEntity(typeof(AllPrimitive))
             .UseCUDConfigBuilder()
             .Build();
-        DbSessionFactory = SmartSqlBuilder.DbSessionFactory;
         SqlMapper = SmartSqlBuilder.SqlMapper;
 
         RepositoryBuilder = new EmitRepositoryBuilder(null, null,
@@ -74,6 +73,32 @@ public class SmartSqlFixture : IAsyncLifetime
         InitTestData();
     }
 
+    private async Task InitDatabaseAsync()
+    {
+        var initSql = await File.ReadAllTextAsync(Path.Combine("DB", "init-mysql-db.sql"));
+        // Remove the CREATE DATABASE line since Testcontainers already creates the database
+        var tableSql = string.Join('\n', initSql.Split('\n')
+            .Where(line => !line.TrimStart().StartsWith("CREATE DATABASE", StringComparison.OrdinalIgnoreCase)));
+        await _mySqlContainer.ExecScriptAsync(tableSql);
+
+        // Create stored procedure
+        var createSpResult = await _mySqlContainer.ExecAsync(
+            new List<string> { "sh", "-c",
+                @"mysql -uroot -proot SmartSqlTestDB <<'EOF'
+DELIMITER //
+CREATE PROCEDURE SP_Query(out Total int)
+BEGIN
+    Select Count(*) into Total From T_AllPrimitive T;
+    SELECT T.* From T_AllPrimitive T limit 10;
+END //
+DELIMITER ;
+EOF" });
+        if (createSpResult.ExitCode != 0)
+        {
+            throw new Exception($"Failed to create SP: {createSpResult.Stderr}");
+        }
+    }
+
     private void InitTestData()
     {
         AllPrimitiveRepository.Truncate();
@@ -87,7 +112,6 @@ public class SmartSqlFixture : IAsyncLifetime
     }
 
     public SmartSqlBuilder SmartSqlBuilder { get; private set; }
-    public IDbSessionFactory DbSessionFactory { get; private set; }
     public ISqlMapper SqlMapper { get; private set; }
     public ILoggerFactory LoggerFactory { get; private set; }
     public IRepositoryBuilder RepositoryBuilder { get; private set; }
@@ -100,7 +124,7 @@ public class SmartSqlFixture : IAsyncLifetime
 
     public async Task DisposeAsync()
     {
-        SmartSqlBuilder.Dispose();
+        SmartSqlBuilder?.Dispose();
         await _redisContainer.DisposeAsync();
         await _mySqlContainer.DisposeAsync();
     }

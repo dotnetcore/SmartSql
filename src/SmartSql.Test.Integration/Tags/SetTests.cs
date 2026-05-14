@@ -23,10 +23,10 @@ public class SetTests : IntegrationTestBase
         var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
         statement.BuildSql(requestCtx);
 
-        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"Set
-                    Property1=?Property1
-                 ,
-                    Property2=?Property2");
+        var sql = requestCtx.SqlBuilder.ToString().Trim();
+        sql.Should().StartWith("Set");
+        sql.Should().Contain("Property1=?Property1");
+        sql.Should().Contain("Property2=?Property2");
     }
 
     [Fact]

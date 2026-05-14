@@ -9,8 +9,10 @@ using Xunit;
 
 namespace SmartSql.Test.Integration.CUD;
 
-public class CUDConfigBuilderTests
+public class CUDConfigBuilderTests : IntegrationTestBase
 {
+    public CUDConfigBuilderTests(SmartSqlFixture fixture) : base(fixture) { }
+
     [Fact]
     public void Should_Throw_When_ParentIsNativeConfigBuilder()
     {

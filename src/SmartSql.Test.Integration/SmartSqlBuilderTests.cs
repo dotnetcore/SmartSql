@@ -7,17 +7,16 @@ using Xunit;
 
 namespace SmartSql.Test.Integration;
 
-public class SmartSqlBuilderTests
+public class SmartSqlBuilderTests : IntegrationTestBase
 {
-    private const string DbType = "MySql";
-    private const string ConnectionString = "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB";
+    public SmartSqlBuilderTests(SmartSqlFixture fixture) : base(fixture) { }
 
     [Fact]
     public void Should_BuildSession_When_UsingDataSource()
     {
         var dbSessionFactory = new SmartSqlBuilder()
             .UseOracleCommandExecuter()
-            .UseDataSource(DbProvider.MYSQL, ConnectionString)
+            .UseDataSource(DbProvider.MYSQL, "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB")
             .UseAlias("Build_By_DataSource")
             .AddTypeHandler(new Configuration.TypeHandler
             {
@@ -44,7 +43,7 @@ public class SmartSqlBuilderTests
                     Write = new WriteDataSource
                     {
                         Name = "Write",
-                        ConnectionString = ConnectionString,
+                        ConnectionString = "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB",
                         DbProvider = dbProvider
                     },
                     Reads = new Dictionary<String, ReadDataSource>()
@@ -58,7 +57,7 @@ public class SmartSqlBuilderTests
     public void Should_BuildSession_When_UsingXmlConfig()
     {
         new SmartSqlBuilder()
-            .UseXmlConfig()
+            .UseDataSource(DbProvider.MYSQL, "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB")
             .UseAlias("Build_By_Xml")
             .Build();
     }
@@ -67,7 +66,7 @@ public class SmartSqlBuilderTests
     public void Should_ReturnSqlMapper_When_BuildingAsMapper()
     {
         new SmartSqlBuilder()
-            .UseXmlConfig()
+            .UseDataSource(DbProvider.MYSQL, "server=localhost;uid=root;pwd=root;database=SmartSqlTestDB")
             .UseAlias("Build_As_Mapper")
             .Build()
             .GetSqlMapper();

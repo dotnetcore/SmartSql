@@ -1,15 +1,16 @@
 using System;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using SmartSql.DataSource;
 using SmartSql.DbSession;
 using SmartSql.Test.Repositories;
 using Xunit;
 
 namespace SmartSql.Test.Integration.DI;
 
-public class DITests
+public class DITests : IntegrationTestBase
 {
+    public DITests(SmartSqlFixture fixture) : base(fixture) { }
+
     [Fact]
     public void Should_ResolveServices_When_AddingSmartSql()
     {
@@ -26,14 +27,12 @@ public class DITests
         var dbSessionFactory = serviceProvider.GetRequiredService<IDbSessionFactory>();
     }
 
-    protected String ConnectionString => "Data Source=.;Initial Catalog=SmartSqlTestDB;Integrated Security=True";
-
     [Fact]
     public void Should_ResolveServices_When_AddingSmartSqlByFunc()
     {
         IServiceCollection services = new ServiceCollection();
         services.AddSmartSql(sp => new SmartSqlBuilder().UseAlias("AddSmartSqlByFunc")
-            .UseDataSource(DbProvider.SQLSERVER, ConnectionString));
+            .UseXmlConfig().UseCache(false));
         var serviceProvider = services.BuildServiceProvider();
         GetSmartSqlService(serviceProvider);
     }
@@ -42,7 +41,10 @@ public class DITests
     public void Should_ResolveServices_When_AddingSmartSqlByAction()
     {
         IServiceCollection services = new ServiceCollection();
-        services.AddSmartSql((sp, smartsqlBuilder) => { smartsqlBuilder.UseAlias("AddSmartSqlByAction"); });
+        services.AddSmartSql((sp, smartsqlBuilder) =>
+        {
+            smartsqlBuilder.UseAlias("AddSmartSqlByAction");
+        });
         var serviceProvider = services.BuildServiceProvider();
         GetSmartSqlService(serviceProvider);
     }
@@ -51,9 +53,10 @@ public class DITests
     public void Should_ResolveRepository_When_AddingFromAssembly()
     {
         IServiceCollection services = new ServiceCollection();
-        services.AddSmartSql()
+        services.AddSmartSql("AddSmartSqlFromAssembly")
             .AddRepositoryFromAssembly(o =>
             {
+                o.SmartSqlAlias = "AddSmartSqlFromAssembly";
                 o.AssemblyString = "SmartSql.Test";
                 o.Filter = (type) => { return type.Namespace == "SmartSql.Test.Repositories"; };
             });
@@ -66,11 +69,12 @@ public class DITests
     [Fact]
     public void Should_ResolveRepository_When_AddingFromAssemblyWithAlias()
     {
+        const string alias = "AddRepositoryFromAssemblyUseAlias";
         IServiceCollection services = new ServiceCollection();
-        services.AddSmartSql("AddRepositoryFromAssemblyUseAlias")
+        services.AddSmartSql(alias)
             .AddRepositoryFromAssembly(o =>
             {
-                o.SmartSqlAlias = "AddRepositoryFromAssemblyUseAlias";
+                o.SmartSqlAlias = alias;
                 o.AssemblyString = "SmartSql.Test";
                 o.Filter = (type) => { return type.Namespace == "SmartSql.Test.Repositories"; };
             });

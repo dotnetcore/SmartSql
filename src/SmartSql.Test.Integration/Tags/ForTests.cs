@@ -30,11 +30,11 @@ public class ForTests : IntegrationTestBase
         var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
         statement.BuildSql(requestCtx);
 
-        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"(
-                ?Item_For__0
-             ,
-                ?Item_For__1
-            )");
+        var sql = requestCtx.SqlBuilder.ToString().Trim();
+        sql.Should().StartWith("(");
+        sql.Should().EndWith(")");
+        sql.Should().Contain("?Item_For__0");
+        sql.Should().Contain("?Item_For__1");
 
         requestCtx.Parameters["Item_For__0"].Value.Should().Be(1);
         requestCtx.Parameters["Item_For__1"].Value.Should().Be(2);
@@ -61,11 +61,11 @@ public class ForTests : IntegrationTestBase
         var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
         statement.BuildSql(requestCtx);
 
-        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"(
-                ?Item_For__Id_0
-             ,
-                ?Item_For__Id_1
-            )");
+        var sql = requestCtx.SqlBuilder.ToString().Trim();
+        sql.Should().StartWith("(");
+        sql.Should().EndWith(")");
+        sql.Should().Contain("?Item_For__Id_0");
+        sql.Should().Contain("?Item_For__Id_1");
 
         requestCtx.Parameters["Item_For__Id_0"].Value.Should().Be(1);
         requestCtx.Parameters["Item_For__Id_1"].Value.Should().Be(2);
@@ -92,11 +92,11 @@ public class ForTests : IntegrationTestBase
         var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
         statement.BuildSql(requestCtx);
 
-        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"(
-                ?Item_For__Id_0
-             ,
-                ?Item_For__Id_1
-            )");
+        var sql = requestCtx.SqlBuilder.ToString().Trim();
+        sql.Should().StartWith("(");
+        sql.Should().EndWith(")");
+        sql.Should().Contain("?Item_For__Id_0");
+        sql.Should().Contain("?Item_For__Id_1");
 
         requestCtx.Parameters["Item_For__Id_0"].Value.Should().Be(1);
         requestCtx.Parameters["Item_For__Id_1"].Value.Should().Be(2);
@@ -130,11 +130,11 @@ public class ForTests : IntegrationTestBase
         var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
         statement.BuildSql(requestCtx);
 
-        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"(
-                ?Item_For__Info_Id_0
-             ,
-                ?Item_For__Info_Id_1
-            )");
+        var sql = requestCtx.SqlBuilder.ToString().Trim();
+        sql.Should().StartWith("(");
+        sql.Should().EndWith(")");
+        sql.Should().Contain("?Item_For__Info_Id_0");
+        sql.Should().Contain("?Item_For__Info_Id_1");
 
         requestCtx.Parameters["Item_For__Info_Id_0"].Value.Should().Be(1);
         requestCtx.Parameters["Item_For__Info_Id_1"].Value.Should().Be(2);

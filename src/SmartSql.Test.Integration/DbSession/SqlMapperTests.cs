@@ -24,11 +24,11 @@ public class SqlMapperTests : IntegrationTestBase
     [Fact]
     public void Should_ReturnSingle_When_QuerySingleDynamic()
     {
-        var list = SqlMapper.QuerySingleDynamic(new RequestContext
+        var result = SqlMapper.QuerySingleDynamic(new RequestContext
         {
             RealSql = "SELECT T.* From T_AllPrimitive T limit 1"
         });
-        list.Should().NotBeNull();
+        ((object)result).Should().NotBeNull();
     }
 
     [Fact]

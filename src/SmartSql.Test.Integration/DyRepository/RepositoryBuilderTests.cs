@@ -1,48 +1,37 @@
 using System;
-using System.IO;
-using System.Linq;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using SmartSql.DataSource;
 using SmartSql.DyRepository;
 using SmartSql.Test.Repositories;
 using Xunit;
 
 namespace SmartSql.Test.Integration.DyRepository;
 
-public class RepositoryBuilderTests
+public class RepositoryBuilderTests : IntegrationTestBase
 {
-    protected ISqlMapper SqlMapper { get; }
+    private readonly IRepositoryBuilder _repositoryBuilder;
+    private readonly IRepositoryFactory _repositoryFactory;
 
-    IRepositoryBuilder _repositoryBuilder;
-    IRepositoryFactory _repositoryFactory;
-
-    public RepositoryBuilderTests()
+    public RepositoryBuilderTests(SmartSqlFixture fixture) : base(fixture)
     {
-        var loggerFactory = new LoggerFactory(Enumerable.Empty<ILoggerProvider>(),
-            new LoggerFilterOptions { MinLevel = LogLevel.Debug });
-        var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs",
-            "SmartSql-RepositoryBuilderTests.log");
-        loggerFactory.AddFile(logPath, LogLevel.Trace);
-
-        var smartSqlBuilder = new SmartSqlBuilder()
-            .UseXmlConfig()
-            .UseLoggerFactory(loggerFactory)
-            .UseAlias(nameof(RepositoryBuilderTests) + Guid.NewGuid())
-            .AddFilter<TestPrepareStatementFilter>()
-            .Build();
-        SqlMapper = smartSqlBuilder.SqlMapper;
-        _repositoryBuilder = new EmitRepositoryBuilder(null, null,
-            loggerFactory.CreateLogger<EmitRepositoryBuilder>());
-        _repositoryFactory = new RepositoryFactory(_repositoryBuilder,
-            loggerFactory.CreateLogger<RepositoryFactory>());
+        _repositoryBuilder = fixture.RepositoryBuilder;
+        _repositoryFactory = fixture.RepositoryFactory;
     }
 
     [Fact]
     public void Should_BuildRepositoryType_When_CallingBuild()
     {
-        var repositoryImplType =
-            _repositoryBuilder.Build(typeof(IAllPrimitiveRepository), SqlMapper.SmartSqlConfig);
+        var loggerFactory = Fixture.LoggerFactory;
+        var builder = new SmartSqlBuilder()
+            .UseXmlConfig()
+            .UseLoggerFactory(loggerFactory)
+            .UseAlias("RepoBuilderTests_" + Guid.NewGuid())
+            .RegisterEntity(typeof(Entities.AllPrimitive))
+            .UseCUDConfigBuilder()
+            .Build();
+        var repoBuilder = new EmitRepositoryBuilder(null, null,
+            loggerFactory.CreateLogger<EmitRepositoryBuilder>());
+        var repositoryImplType = repoBuilder.Build(typeof(IAllPrimitiveRepository), builder.SmartSqlConfig);
     }
 
     [Fact]

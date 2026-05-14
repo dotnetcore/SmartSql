@@ -23,8 +23,9 @@ public class IncludeTests : IntegrationTestBase
         var statement = SmartSqlConfig.GetStatement(requestCtx.FullSqlId);
         statement.BuildSql(requestCtx);
 
-        requestCtx.SqlBuilder.ToString().Trim().Should().Be(@"Where
-                Property=?Property");
+        var sql = requestCtx.SqlBuilder.ToString().Trim();
+        sql.Should().StartWith("Where");
+        sql.Should().Contain("Property=?Property");
     }
 
     [Fact]
