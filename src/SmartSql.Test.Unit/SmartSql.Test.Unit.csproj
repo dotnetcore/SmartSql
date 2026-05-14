@@ -37,6 +37,9 @@
     </EmbeddedResource>
     <None Include="SmartSqlMapConfig.xml" CopyToOutputDirectory="Always" />
     <None Include="SmartSqlMapConfig-UnitTest.xml" CopyToOutputDirectory="Always" />
+    <None Include="TestSqlMap-Simple.xml" CopyToOutputDirectory="Always" />
+    <None Include="TestSqlMap-DynamicTags.xml" CopyToOutputDirectory="Always" />
+    <None Include="TestSqlMap-CacheAndMaps.xml" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>

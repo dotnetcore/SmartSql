@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<SmartSqlMap Scope="CacheScope" xmlns="http://SmartSql.net/schemas/SmartSqlMap.xsd">
+  <Caches>
+    <Cache Id="TestCache" Type="Fifo">
+      <Property Name="CacheSize" Value="100"/>
+      <FlushInterval Hours="1" Minutes="30" Seconds="0"/>
+      <FlushOnExecute Statement="InsertUser"/>
+    </Cache>
+  </Caches>
+  <ResultMaps>
+    <ResultMap Id="UserResult">
+      <Result Property="Id" Column="Id"/>
+      <Result Property="Name" Column="UserName"/>
+    </ResultMap>
+  </ResultMaps>
+  <ParameterMaps>
+    <ParameterMap Id="UserParameter">
+      <Parameter Property="Id" DbType="Int64"/>
+      <Parameter Property="Name"/>
+    </ParameterMap>
+  </ParameterMaps>
+  <MultipleResultMaps>
+    <MultipleResultMap Id="UserMultipleResult">
+      <Root MapId="CacheScope.UserResult"/>
+      <Result Property="Items" MapId="CacheScope.UserResult"/>
+    </MultipleResultMap>
+  </MultipleResultMaps>
+  <Statements>
+    <Statement Id="GetAll" Cache="TestCache" ResultMap="UserResult">
+      SELECT * FROM Users
+    </Statement>
+    <Statement Id="InsertUser" ParameterMap="UserParameter">
+      INSERT INTO Users (Id, Name) VALUES ($Id, $Name)
+    </Statement>
+  </Statements>
+</SmartSqlMap>
