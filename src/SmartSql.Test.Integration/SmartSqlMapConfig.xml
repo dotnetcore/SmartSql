@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <SmartSqlMapConfig xmlns="http://SmartSql.net/schemas/SmartSqlMapConfig.xsd">
-    <Settings IgnoreParameterCase="false" ParameterPrefix="$" IsCacheEnabled="true" EnablePropertyChangedTrack="true"
+    <Settings IgnoreParameterCase="false" ParameterPrefix="$" IsCacheEnabled="false" EnablePropertyChangedTrack="true"
               IgnoreDbNull="true"/>
     <Properties>
         <Property Name="DbProvider" Value="MySql" />

@@ -13,7 +13,7 @@ public class DITests
     public void Should_ResolveServices_When_AddingSmartSql()
     {
         IServiceCollection services = new ServiceCollection();
-        services.AddSmartSql("AddSmartSql");
+        services.AddSmartSql(sp => new SmartSqlBuilder().UseXmlConfig().UseCache(false).UseAlias("AddSmartSql"));
         var serviceProvider = services.BuildServiceProvider();
         GetSmartSqlService(serviceProvider);
     }
@@ -41,7 +41,7 @@ public class DITests
         IServiceCollection services = new ServiceCollection();
         services.AddSmartSql((sp, smartsqlBuilder) =>
         {
-            smartsqlBuilder.UseAlias("AddSmartSqlByAction");
+            smartsqlBuilder.UseAlias("AddSmartSqlByAction").UseCache(false);
         });
         var serviceProvider = services.BuildServiceProvider();
         GetSmartSqlService(serviceProvider);
@@ -50,11 +50,12 @@ public class DITests
     [Fact]
     public void Should_ResolveRepository_When_AddingFromAssembly()
     {
+        const string alias = "AddSmartSqlFromAssembly";
         IServiceCollection services = new ServiceCollection();
-        services.AddSmartSql("AddSmartSqlFromAssembly")
+        services.AddSmartSql(sp => new SmartSqlBuilder().UseXmlConfig().UseCache(false).UseAlias(alias))
             .AddRepositoryFromAssembly(o =>
             {
-                o.SmartSqlAlias = "AddSmartSqlFromAssembly";
+                o.SmartSqlAlias = alias;
                 o.AssemblyString = "SmartSql.Test";
                 o.Filter = (type) => { return type.Namespace == "SmartSql.Test.Repositories"; };
             });
@@ -69,7 +70,7 @@ public class DITests
     {
         const string alias = "AddRepositoryFromAssemblyUseAlias";
         IServiceCollection services = new ServiceCollection();
-        services.AddSmartSql(alias)
+        services.AddSmartSql(sp => new SmartSqlBuilder().UseXmlConfig().UseCache(false).UseAlias(alias))
             .AddRepositoryFromAssembly(o =>
             {
                 o.SmartSqlAlias = alias;
