@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -10,7 +10,7 @@ namespace SmartSql.Test.Repositories
 {
     public interface IAllPrimitiveRepository
     {
-        [Statement(Id = "QueryByTaken", Sql = "SELECT T.* From T_AllPrimitive T limit ?Taken")]
+        [Statement(Id = "QueryByTaken", Sql = "SELECT T.* From T_AllPrimitive T limit $Taken")]
         IList<AllPrimitive> Query([Param("Taken")] int taken);
 
         long Insert(AllPrimitive entity);
@@ -25,13 +25,13 @@ namespace SmartSql.Test.Repositories
         [Statement(Id = "Insert")]
         long InsertByAnnotationAOPTransaction(AllPrimitive entity);
 
-        [Statement(Id = "QueryDictionary", Sql = "SELECT T.* From T_AllPrimitive T limit ?Taken")]
+        [Statement(Id = "QueryDictionary", Sql = "SELECT T.* From T_AllPrimitive T limit $Taken")]
         IList<IDictionary<string, object>> QueryDictionary([Param("Taken")] int taken);
 
-        [Statement(Sql = "SELECT NumericalEnum FROM T_AllPrimitive WHERE NumericalEnum = ?numericalEnum")]
+        [Statement(Sql = "SELECT NumericalEnum FROM T_AllPrimitive WHERE NumericalEnum = $numericalEnum")]
         List<NumericalEnum11> GetNumericalEnums(int numericalEnum);
 
-        [Statement(Sql = "truncate table T_AllPrimitive")]
+        [Statement(Sql = "DELETE FROM T_AllPrimitive")]
         void Truncate();
     }
 }
