@@ -1,5 +1,23 @@
 {
-  "extends": [
-    "config:base"
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Asia/Shanghai",
+  "labels": ["dependencies"],
+  "commitMessagePrefix": "fix(deps)",
+  "commitMessageTopic": "{{depName}}",
+  "rangeStrategy": "bump",
+  "lockFileMaintenance": { "enabled": false },
+  "prConcurrentLimit": 5,
+  "packageRules": [
+    {
+      "description": "Group Spring ecosystem updates into a single PR",
+      "matchPackagePatterns": ["^org\\.springframework"],
+      "groupName": "spring"
+    },
+    {
+      "description": "Group Kotlin-related updates into a single PR",
+      "matchPackagePatterns": ["^org\\.jetbrains\\.kotlin"],
+      "groupName": "kotlin"
+    }
   ]
 }
