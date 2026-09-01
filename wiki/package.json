@@ -9,7 +9,7 @@
     "preview": "vitepress preview",
     "fix:mermaid": "node scripts/fix-mermaid.mjs"
   },
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@11.25.0",
   "devDependencies": {
     "vitepress": "^1.6.4",
     "vitepress-mermaid-renderer": "^1.1.23"
